@@ -510,7 +510,11 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         templateName=STRING? 
 	 *         constants+=ConstantDef* 
 	 *         (spaces+=AddressSpace spaces+=AddressSpace*)? 
-	 *         ((regs+=Register | regs+=RegisterFile | regs+=RegisterAlias) regs+=RegisterFile? ((regs+=Register | regs+=RegisterAlias)? regs+=RegisterFile?)*)? 
+	 *         (
+	 *             (regs+=Register | regs+=RegisterFile | regs+=RegisterAlias) 
+	 *             regs+=RegisterAlias? 
+	 *             ((regs+=Register | regs+=RegisterFile)? regs+=RegisterAlias?)*
+	 *         )? 
 	 *         instr+=Instruction*
 	 *     )
 	 */
@@ -585,7 +589,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         superType=[InstructionSet|ID]? 
 	 *         (constants+=ConstantDecl constants+=ConstantDecl*)? 
 	 *         (spaces+=AddressSpace spaces+=AddressSpace*)? 
-	 *         ((regs+=Register | regs+=RegisterFile | regs+=RegisterAlias) regs+=RegisterFile? ((regs+=Register | regs+=RegisterAlias)? regs+=RegisterFile?)*)? 
+	 *         ((regs+=Register | regs+=RegisterFile | regs+=RegisterAlias) regs+=Register? ((regs+=RegisterFile | regs+=RegisterAlias)? regs+=Register?)*)? 
 	 *         instr+=Instruction*
 	 *     )
 	 */
