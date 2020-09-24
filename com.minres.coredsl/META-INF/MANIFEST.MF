@@ -27,3 +27,5 @@ Export-Package: com.minres.coredsl,
  com.minres.coredsl.parser.antlr,
  com.minres.coredsl.parser.antlr.internal
 Import-Package: org.apache.log4j
+Bundle-ClassPath: lib/groovy-templates-3.0.0-rc-2-indy.jar,
+ .
