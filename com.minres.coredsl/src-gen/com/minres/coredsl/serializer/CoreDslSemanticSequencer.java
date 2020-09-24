@@ -589,7 +589,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         superType=[InstructionSet|ID]? 
 	 *         (constants+=ConstantDecl constants+=ConstantDecl*)? 
 	 *         (spaces+=AddressSpace spaces+=AddressSpace*)? 
-	 *         ((regs+=Register | regs+=RegisterFile | regs+=RegisterAlias) regs+=Register? ((regs+=RegisterFile | regs+=RegisterAlias)? regs+=Register?)*)? 
+	 *         ((regs+=Register | regs+=RegisterFile | regs+=RegisterAlias) regs+=RegisterFile? ((regs+=Register | regs+=RegisterAlias)? regs+=RegisterFile?)*)? 
 	 *         instr+=Instruction*
 	 *     )
 	 */
