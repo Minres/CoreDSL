@@ -16,7 +16,7 @@ Import :
 ISA: InstructionSet | CoreDef;
 
 InstructionSet :
-	'InsructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' 
+	'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' 
         ('constants'      '{' constants+=ConstantDecl (',' constants+=ConstantDecl)* '}')?
         ('address_spaces' '{' spaces+=AddressSpace    (',' spaces+=AddressSpace)*    '}')?
     	('registers'      '{' regs+=(Register|RegisterFile|RegisterAlias) (',' regs+=(Register|RegisterFile|RegisterAlias))* '}')?
