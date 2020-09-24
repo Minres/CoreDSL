@@ -8,5 +8,22 @@ Bundle-SymbolicName: com.minres.coredsl; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext,
  org.eclipse.xtext.xbase,
- org.eclipse.equinox.common;bundle-version="3.5.0"
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.eclipse.emf.ecore,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
+ org.eclipse.xtext.util,
+ org.eclipse.emf.common,
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: com.minres.coredsl,
+ com.minres.coredsl.services,
+ com.minres.coredsl.coreDsl,
+ com.minres.coredsl.validation,
+ com.minres.coredsl.coreDsl.util,
+ com.minres.coredsl.serializer,
+ com.minres.coredsl.generator,
+ com.minres.coredsl.scoping,
+ com.minres.coredsl.coreDsl.impl,
+ com.minres.coredsl.parser.antlr,
+ com.minres.coredsl.parser.antlr.internal
+Import-Package: org.apache.log4j
