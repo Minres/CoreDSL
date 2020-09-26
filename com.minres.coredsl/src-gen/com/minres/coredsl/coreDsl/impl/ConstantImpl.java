@@ -4,42 +4,21 @@
 package com.minres.coredsl.coreDsl.impl;
 
 import com.minres.coredsl.coreDsl.Constant;
-import com.minres.coredsl.coreDsl.ConstantDefault;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
 
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
 
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Constant</b></em>'.
  * <!-- end-user-doc -->
- * <p>
- * The following features are implemented:
- * </p>
- * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.ConstantImpl#getConstantDefault <em>Constant Default</em>}</li>
- * </ul>
  *
  * @generated
  */
-public class ConstantImpl extends RValueImpl implements Constant
+public class ConstantImpl extends MinimalEObjectImpl.Container implements Constant
 {
-  /**
-   * The cached value of the '{@link #getConstantDefault() <em>Constant Default</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getConstantDefault()
-   * @generated
-   * @ordered
-   */
-  protected ConstantDefault constantDefault;
-
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -59,138 +38,6 @@ public class ConstantImpl extends RValueImpl implements Constant
   protected EClass eStaticClass()
   {
     return CoreDslPackage.Literals.CONSTANT;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public ConstantDefault getConstantDefault()
-  {
-    return constantDefault;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetConstantDefault(ConstantDefault newConstantDefault, NotificationChain msgs)
-  {
-    ConstantDefault oldConstantDefault = constantDefault;
-    constantDefault = newConstantDefault;
-    if (eNotificationRequired())
-    {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CoreDslPackage.CONSTANT__CONSTANT_DEFAULT, oldConstantDefault, newConstantDefault);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setConstantDefault(ConstantDefault newConstantDefault)
-  {
-    if (newConstantDefault != constantDefault)
-    {
-      NotificationChain msgs = null;
-      if (constantDefault != null)
-        msgs = ((InternalEObject)constantDefault).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.CONSTANT__CONSTANT_DEFAULT, null, msgs);
-      if (newConstantDefault != null)
-        msgs = ((InternalEObject)newConstantDefault).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.CONSTANT__CONSTANT_DEFAULT, null, msgs);
-      msgs = basicSetConstantDefault(newConstantDefault, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.CONSTANT__CONSTANT_DEFAULT, newConstantDefault, newConstantDefault));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-  {
-    switch (featureID)
-    {
-      case CoreDslPackage.CONSTANT__CONSTANT_DEFAULT:
-        return basicSetConstantDefault(null, msgs);
-    }
-    return super.eInverseRemove(otherEnd, featureID, msgs);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eGet(int featureID, boolean resolve, boolean coreType)
-  {
-    switch (featureID)
-    {
-      case CoreDslPackage.CONSTANT__CONSTANT_DEFAULT:
-        return getConstantDefault();
-    }
-    return super.eGet(featureID, resolve, coreType);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eSet(int featureID, Object newValue)
-  {
-    switch (featureID)
-    {
-      case CoreDslPackage.CONSTANT__CONSTANT_DEFAULT:
-        setConstantDefault((ConstantDefault)newValue);
-        return;
-    }
-    super.eSet(featureID, newValue);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eUnset(int featureID)
-  {
-    switch (featureID)
-    {
-      case CoreDslPackage.CONSTANT__CONSTANT_DEFAULT:
-        setConstantDefault((ConstantDefault)null);
-        return;
-    }
-    super.eUnset(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean eIsSet(int featureID)
-  {
-    switch (featureID)
-    {
-      case CoreDslPackage.CONSTANT__CONSTANT_DEFAULT:
-        return constantDefault != null;
-    }
-    return super.eIsSet(featureID);
   }
 
 } //ConstantImpl

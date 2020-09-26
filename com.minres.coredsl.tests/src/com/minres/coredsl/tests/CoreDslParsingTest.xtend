@@ -14,109 +14,169 @@ import org.junit.runner.RunWith
 import static org.junit.Assert.*
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.InstructionSet
-import com.minres.coredsl.coreDsl.RegisterFile
-import com.minres.coredsl.coreDsl.Register
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
-class CoreDslParsingTest{
-    
-    @Inject ParseHelper<DescriptionContent> parseHelper
+class CoreDslParsingTest {
 
-    val isa1 = '''
-            InsructionSet RV32I {
-                constants {
-                    XLEN, FLEN
-                }
-                address_spaces {
-                    MEMB[8], MEMH[16], MEMW[32], SFR[32]
-                }            
-                registers { 
-                    [31:0]   X[XLEN], FL[16], PC[48]
-                } 
-                instructions { 
-                    ADDI {
-                        encoding: imm[11:0] | rs1[4:0] | b000 | rd[4:0] | b0010011;
-                        X[rd] <= X[rs1] + sext(imm, XLEN);
-                    }
-                    SLTI {
-                        encoding: imm[11:0] | rs1[4:0] | b010 | rd[4:0] | b0010011;
-                        X[rd] <= choose(X[rs1] < sext(imm, XLEN), 1, 0);
-                    }
-                    SLTIU {
-                        encoding: imm[11:0] | rs1[4:0] | b011 | rd[4:0] | b0010011;
-                        X[rd] <= choose(X[rs1] < zext(imm, XLEN), 1, 0);
-                    }
-                    SW {
-                        encoding: imm[11:5] | rs2[4:0] | rs1[4:0] | b010 | imm[4:0] | b0100011;
-                        val offset[XLEN] <= X[rs1] + sext(imm, XLEN);
-                        MEMW[offset]{32} <= X[rs2];
-                    }
-                    JAL(no_cont) {
-                            encoding:imm[20:20]s | imm[10:1]s | imm[11:11]s | imm[19:12]s | rd[4:0] | b1101111;
-                            if(rd!=0) X[rd] <= zext(PC);
-                            PC<=PC+sext(imm, 48);
-                    }
-                }
-            }
-        '''
-        
-    @Test 
-    def void loadModel() {
-    	val content = parseHelper.parse(isa1)
-    	assertEquals(1, content.definitions.size)
-        val InstructionSet result = content.definitions.get(0) as InstructionSet
-        assertNotNull(result)
-        val resource = result.eResource
-        EcoreUtil.resolveAll(resource);
-        assertEquals(0, resource.errors.size)
-        assertEquals(0, resource.warnings.size)
-        assertEquals("RV32I", result.name)
-        assertNull(result.superType)
-        assertEquals(result.spaces.size(), 4)
-        assertNotNull(result.regs)
-        assertNotNull(result.instr)
+	@Inject ParseHelper<DescriptionContent> parseHelper
 
-        assertEquals(3, result.regs.size)        
+	val isa1 = '''
+		InstructionSet RV32I {
+		    constants {
+		        unsigned int XLEN, FLEN;
+		        unsigned CSR_SIZE = 4096;
+		        unsigned REG_FILE_SIZE=32;
+		    }
+		    address_spaces {
+		        char MEM[1<<XLEN];
+		        unsigned CSR[CSR_SIZE];
+		    }            
+		    registers { 
+		    	[[is_pc]] unsigned int PC ;
+		    	int X[REG_FILE_SIZE];
+		    } 
+		    instructions { 
+		        ADDI {
+		            encoding: imm[11:0] | rs1[4:0] | b000 | rd[4:0] | b0010011;
+		            behavior: {
+		                X[rd] = X[rs1] + (int)imm;
+		            }
+		        }
+		        SLTI {
+		            encoding: imm[11:0] | rs1[4:0] | b010 | rd[4:0] | b0010011;
+		            behavior: {
+		                X[rd] = X[rs1] < (int)imm? 1 : 0;
+		            }
+		        }
+		        SLTIU {
+		            encoding: imm[11:0] | rs1[4:0] | b011 | rd[4:0] | b0010011;
+		            behavior: {
+		                X[rd] = X[rs1] < (unsigned int)imm? 1 : 0;
+		            }
+		        }
+		        SW {
+		            encoding: imm[11:5] | rs2[4:0] | rs1[4:0] | b010 | imm[4:0] | b0100011;
+		            behavior: {
+		                int offset = X[rs1] + (int)imm;
+		                MEM[offset] = X[rs2];
+		            }
+		        }
+		        JAL[[no_cont]] {
+		            encoding:imm[20:20]s | imm[10:1]s | imm[11:11]s | imm[19:12]s | rd[4:0] | b1101111;
+		            behavior: {
+		            if(rd!=0) X[rd] = (unsigned)PC;
+		                PC = PC+(signed)imm;
+		            }
+		        }
+		    }
+		}
+	'''
 
-        assertTrue(result.regs.get(0) instanceof RegisterFile)
-        assertEquals("X", (result.regs.get(0) as RegisterFile).name)
-        assertEquals(0, (result.regs.get(0) as RegisterFile).bitSize)
-        assertNotNull((result.regs.get(0) as RegisterFile).bitSizeConst)
-        //assertEquals(32, result.regs.get(0).bitSizeConst.value)
-        val regFile = result.regs.get(0) as RegisterFile
-        assertEquals(31, regFile.range.left)
-        assertEquals(0, regFile.range.right)
-        
-        assertTrue(result.regs.get(2) instanceof Register)
-        assertEquals("PC", (result.regs.get(2) as Register).name)
-        assertEquals(48, (result.regs.get(2) as Register).bitSize)
-        assertNull((result.regs.get(2) as Register).bitSizeConst)
-        
-        assertEquals(5, result.instr.size)
-        val i0 = result.instr.get(0);
-        assertEquals("ADDI", i0.name)
-        assertEquals(5, i0.encoding.fields.size)
-        assertNotNull(i0.operation)
-        assertEquals(1,i0.operation.statements.size)
-        
-        val i1 = result.instr.get(1);
-        assertEquals("SLTI", i1.name)
-        assertEquals(5, i1.encoding.fields.size)
-        assertNotNull(i1.operation)
-        assertEquals(1,i1.operation.statements.size)
+	@Test
+	def void loadModel() {
+		val content = parseHelper.parse(isa1)
+		assertEquals(1, content.definitions.size)
+		val resource = content.eResource
+		EcoreUtil.resolveAll(resource);
+		assertEquals(0, resource.errors.size)
+		assertEquals(0, resource.warnings.size)
+		
+		val InstructionSet result = content.definitions.get(0) as InstructionSet
+		assertNotNull(result)
+		assertEquals("RV32I", result.name)
+		assertNull(result.superType)
+		assertEquals(2, result.spaces.size())
+		assertNotNull(result.regs)
+		assertNotNull(result.instr)
 
-        val i2 = result.instr.get(2);
-        assertEquals("SLTIU", i2.name)
-        assertEquals(5, i2.encoding.fields.size)
-        assertNotNull(i2.operation)
-        assertEquals(1,i2.operation.statements.size)
+		assertEquals(2, result.regs.size)
 
-        val i3 = result.instr.get(3);
-        assertEquals("SW", i3.name)
-        assertEquals(6, i3.encoding.fields.size)
-        assertNotNull(i3.operation)
-        assertEquals(2,i3.operation.statements.size)
+		assertEquals(5, result.instr.size)
+		val i0 = result.instr.get(0);
+		assertEquals("ADDI", i0.name)
+		assertEquals(5, i0.encoding.fields.size)
+
+		val i1 = result.instr.get(1);
+		assertEquals("SLTI", i1.name)
+		assertEquals(5, i1.encoding.fields.size)
+
+		val i2 = result.instr.get(2);
+		assertEquals("SLTIU", i2.name)
+		assertEquals(5, i2.encoding.fields.size)
+
+		val i3 = result.instr.get(3);
+		assertEquals("SW", i3.name)
+		assertEquals(6, i3.encoding.fields.size)
+
+	}
+
+	val vec2d_ = '''
+InstructionSet Vec2D {
+    registers{
+        union ISAXRegFile {
+            double doublePrec;  // for a double precision entry
+            struct vector2d {
+	            float x_coord;
+	            float y_coord;
+			} vector2d;
+        } ISAXRegFile[32];
+       	struct simd{
+       		unsigned a1;
+       		unsigned a1;
+       		unsigned a3;
+       		unsigned a4;
+       	};
+       	typedef struct simd simd_t;
+       	simd_t reg[32];
     }
+	functions{
+	    double sqrt(float x) {
+	        const double precision = 0.00001;
+	        double result = 1;
+	        double check = 1 - x;
+	        if (check < 0)
+	            check = -check;
+	        while (check >= precision) {
+	            result = (x / result + result) / 2.0;
+	            check = result * result - x;
+	            if (check < 0)
+	                check = -check;
+	        }
+	        return result;
+	    }
+	}
+	instructions{
+		VectorL{
+		    encoding: b10101 | rd[4:0] | rs1[4:0];
+		    args_disass:"{name(rd)}, {name(rs1)}";
+            behavior: {
+			    float xc = ISAXRegFile[rs1].vector2d.x_coord;
+			    float yc = ISAXRegFile[rs1].vector2d.y_coord;
+			    double result;
+			    double sqdist = xc*xc + yc*yc;
+			    if(sqdist==0 || sqdist[30:23]==0xff)
+			        result = 0; // avoid special cases
+			    else
+			        result = sqrt(sqdist);
+			    ISAXRegFile[rd].doublePrec = result;
+		    }
+	    }
+	}
+}
+	'''
 
- }
+	@Test
+	def void loaVec2D() {
+		val content = parseHelper.parse(vec2d_)
+		assertEquals(1, content.definitions.size)
+		val resource = content.eResource
+		EcoreUtil.resolveAll(resource);
+		assertEquals(0, resource.errors.size)
+		assertEquals(0, resource.warnings.size)
+		
+		val InstructionSet instructionSet = content.definitions.get(0) as InstructionSet
+		assertNotNull(instructionSet)
+		assertEquals("Vec2D", instructionSet.name)
+	}
+}

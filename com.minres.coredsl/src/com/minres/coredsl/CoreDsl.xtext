@@ -2,243 +2,449 @@ grammar com.minres.coredsl.CoreDsl with org.eclipse.xtext.common.Terminals
 
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
-generate coreDsl "http://www.minres.com/coredsl/CoreDsl"
+generate coreDsl "http://www.minres.com/coredsl/CoreDsl/2.0"
 
-DescriptionContent: 
-	(imports+=Import)*
-	definitions+=ISA+
-;
+DescriptionContent
+	: (imports+=Import)* definitions+=ISA+ 
+	;
 
-Import :
-	'import' importURI=STRING
-;
+Import
+	: 'import' importURI=STRING
+	;
 
-ISA: InstructionSet | CoreDef;
+ISA
+	: InstructionSet
+	| CoreDef
+	;
 
 InstructionSet :
-	'InsructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' 
-        ('constants'      '{' constants+=ConstantDecl (',' constants+=ConstantDecl)* '}')?
-        ('address_spaces' '{' spaces+=AddressSpace    (',' spaces+=AddressSpace)*    '}')?
-    	('registers'      '{' regs+=(Register|RegisterFile|RegisterAlias) (',' regs+=(Register|RegisterFile|RegisterAlias))* '}')?
-    	('instructions'   '{' (instr+=Instruction)+ '}')?
+	'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' 
+        ('constants'      '{' constants+=Declaration+   '}')?
+        ('address_spaces' '{' spaces+=Declaration+      '}')?
+    	('registers'      '{' regs+=Declaration+        '}')?
+    	('functions'      '{' func+=FunctionDefinition+ '}')?
+    	('instructions'   '{' (instr+=Instruction)+     '}')
     '}'
 ;
 
 CoreDef:
 	'Core' name=ID ( 'provides' contributingType+=[InstructionSet] (',' contributingType+=[InstructionSet])*)? '{' 
-        ('template' ':' templateName=STRING ';')?
-        ('constants'      '{' (constants+=ConstantDef)+ '}')?
-        ('address_spaces' '{' spaces+=AddressSpace (',' spaces+=AddressSpace)* '}')?
-    	('registers'      '{' regs+=(Register|RegisterFile|RegisterAlias)    (',' regs+=(Register|RegisterFile|RegisterAlias))*    '}')?
-    	('instructions'   '{' (instr+=Instruction)+ '}')?
+        ('constants'      '{' constants+=Declaration+   '}')?
+        ('address_spaces' '{' spaces+=Declaration+      '}')?
+    	('registers'      '{' regs+=Declaration+        '}')?
+    	('instructions'   '{' (instr+=Instruction)+     '}')?
     '}'
 ;
 
-RangeSpec:
-	'[' left=NATURAL ':' right=NATURAL ']'
-;
-
 Instruction:
-	name=ID ('(' attributes+=InstrAttribute (',' attributes+=InstrAttribute)* ')' )? '{' 
-	('encoding' ':' encoding=Encoding ';') & ('args_disass' ':' disass=STRING ';')?
-	operation=Operation? '}'
+	name=ID ('[[' attributes+=InstrAttribute (',' attributes+=InstrAttribute)* ']]' )? '{' 
+		('encoding' ':' encoding=Encoding ';') ('args_disass' ':' disass=STRING ';')? ('behavior' ':' behavior=CompoundStatement)
+	'}'
 ;
 
-Encoding:
-	fields+=Field ('|' fields+=Field)*
-;
+Encoding
+	:	fields+=Field ('|' fields+=Field)*
+	;
 
-Field: BitValue | BitField;
+Field
+	: 	BitValue
+	|	BitField
+	;
 
-BitValue:
-    name=BVAL
-;
+BitValue
+	: 	name=BVAL
+	;
 
-BitField:
-    name=ID bitRange=RangeSpec ("'"? type=DataType)?
-;
+BitField
+	:	name=ID bitRange=RangeSpec ("'"? type=BitfieldDataType)?
+	;
 
-Operation:
-	statements+=Statement+
-;
+RangeSpec
+	:	'[' left=NATURAL ':' right=NATURAL ']'
+	;
 
-Statement: Assignment | ConditionalStmt | DirectCode | Procedure;
+FunctionDefinition
+	:   extern?='extern'? type=TypeSpecifier name=ID '(' ParameterList ')' statement=CompoundStatement
+	;
 
-Assignment:
-	(
-		{IndexedAssignment}  to=[IndexedVariable|ID] '[' index=Expression ']' |
-		{RegisterAssignment} to=[RegisterVariable] |
-		{ScalarAssignment}   to=Scalar
-	) (bitWidth=BitSizeSpec)? '<=' expression=Expression ';'
-;
+fragment ParameterList: params+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*;
 
-ConditionalStmt:
-	'if' '(' cond=BooleanOrExpr ')' (thenStmts+= Statement| ('{' thenStmts+= Statement+ '}')) 
-	(=> 'else' (elseStmts+= Statement| ('{' elseStmts+= Statement+ '}')))?
-;
+ParameterDeclaration
+    :   type=TypeSpecifier
+    	(	declarator=DirectDeclarator
+    	|	declarator=AbstractDeclarator
+    	)?
+    ;
 
-DirectCode:
-	'C++' '{' code+=STRING (code+=STRING)* '}'
-;
+///////////////////////////////////////////////////////////////////////////////
+// Statements
+Statement
+    :   CompoundStatement
+    |   ExpressionStatement
+    |   SelectionStatement
+    |   IterationStatement
+    |   JumpStatement
+    ;
 
-Procedure:
-	name=PROCEDURENAME '(' args+=Expression (',' args+=Expression)* ')' ';'
-;
+LabeledStatement
+    :   'case' constExpr=ConstantExpression ':' stmt=Statement
+    |   'default' ':' stmt=Statement
+    ;
 
-Constant: ConstantDef | ConstantDecl;
+CompoundStatement
+    :   {CompoundStatement} '{' items+=BlockItem* '}'
+    ;
 
-ConstantDef:
-    name=ID  ':=' value=NATURAL ('(' attributes+=ConstAttribute (',' attributes+=ConstAttribute)* ')' )?';'
-;
+BlockItem
+    :   Statement
+    |   Declaration
+    ;
 
-ConstantDecl returns Constant:
-    name=ID (constantDefault = ConstantDefault)?
-;
+ExpressionStatement
+    :   {ExpressionStatement} expr=AssignmentExpression? ';'
+    ;
 
-ConstantDefault:
-	':=' defaultValue=NATURAL
-;
+SelectionStatement
+    :   IfStatement
+    |   SwitchStatement
+    ;
+IfStatement
+    :   'if' '(' cond=ConditionalExpression ')' thenStmt=Statement (=> 'else' elseStmt=Statement)?
+    ;
+SwitchStatement
+    :   'switch' '(' cond=ConditionalExpression ')' '{' items+=LabeledStatement '}'
+    ;
 
-Variable: IndexedVariable | ScalarVariable ;
+IterationStatement
+    :   type='while' '(' cond=ConditionalExpression ')' stmt=Statement
+    |   type='do' stmt=Statement 'while' '(' cond=ConditionalExpression ')' ';'
+    |   type='for' '(' ForCondition ')' stmt=Statement
+    ;
 
-IndexedVariable: AddressSpace | RegisterFile ;
+fragment ForCondition
+	:   (startDecl=Declaration | startExpr=Expression? ';') endExpr=ConditionalExpression? ';'  (loopExprs+=AssignmentExpression (',' loopExprs+=AssignmentExpression)*)?
+	;
 
-ScalarVariable:   RegisterVariable | Scalar;
+JumpStatement
+    :   type='continue' ';'
+    |   type='break' ';'
+    |   type='return' expr=ConditionalExpression? ';'
+    ;
 
-RegisterVariable: Register | RegisterAlias;
 
-AddressSpace:
-    name=ID  '['  (bitSize=NATURAL|bitSizeConst=[Constant]) ']'
-;
+///////////////////////////////////////////////////////////////////////////////
+// Declarations
 
-RegisterFile:
-    (-> range=RangeSpec name=ID) '[' (bitSize=NATURAL|bitSizeConst=[Constant]) ']' ('(' attributes+=RegAttribute (',' attributes+=RegAttribute)* ')' )?
-;
+Declaration
+	:   TypeOrVarDeclaration
+	|   TypedefDeclaration
+	;
+	
+TypeOrVarDeclaration
+	:	DeclarationSpecifier* type=TypeSpecifier size=BitSizeSpecifier? (init+=InitDeclarator (',' init+=InitDeclarator)*)? ';'
+	;
+	
+TypedefDeclaration
+	:	'typedef' DeclarationSpecifier* type=TypeSpecifier init+=InitDeclarator ';'
+	;
+	
+fragment DeclarationSpecifier
+    :   storage+=StorageClassSpecifier
+    |   qualifiers+=TypeQualifier
+    |   AttributeList
+    ;
 
-Register:
-    name=ID '[' (bitSize=NATURAL|bitSizeConst=[Constant]) ']' ('(' attributes+=RegAttribute (',' attributes+=RegAttribute)* ')' )?
-;
+fragment AttributeList:	'[[' attrs+=Attribute (',' attrs+=Attribute)* ']]';
 
-RegisterAlias:
-    'alias' name=ID '[' (bitSize=NATURAL|bitSizeConst=[Constant]) ']' (
-    	'(' attributes+=RegAttribute (',' attributes+=RegAttribute)* ')' 
-    )? 'is' (original=[Register] | original=[RegisterFile] '[' (index=NumberLiteral |index=ValueRef) ']')
-;
+TypeSpecifier
+	:	DataTypeSpecifier
+	|	TypedefRef
+	;
 
-Scalar:
-	'val' name=ID '['  (bitSize=NATURAL|bitSizeConst=[Constant]) ']' 
-;
+DataTypeSpecifier
+	:	PodSpecifier 
+	|	StructOrUnionSpecifier
+	|	EnumSpecifier
+	;
+    
+TypedefRef
+	:	ref=[DirectDeclarator]
+	;
+    
+PodSpecifier
+	:	dataType+=DataTypes+
+	;
 
-// dummy rule to add a property
-ScalarBase returns Scalar:
-	{Scalar} determined?='is_determined'
-;
+BitSizeSpecifier
+	:	'<' (value=NATURAL|constant=[Constant]) '>'
+	;
 
-NumberLiteral:
-	value=NATURAL
-; 
+EnumSpecifier
+    :   'enum' name=ID? '{' EnumeratorList ','? '}'
+    |   'enum' name=ID
+    ;
 
-Expression: BooleanOrExpr;
+fragment EnumeratorList:   enumerators+=Enumerator (',' enumerators+=Enumerator)*;
 
-BooleanOrExpr returns Expression:
-	BooleanAndExpr ({BooleanExpr.left=current} op='||' right=BooleanAndExpr)*
-;
+Enumerator
+    :   name=ID
+    |   name=ID '=' expression=ConstantExpression
+    ;
 
-BooleanAndExpr returns Expression:
-	BitOrExpr ({BooleanExpr.left=current} op='&&' right=BitOrExpr)*
-;
+StructOrUnionSpecifier
+    :   composeType=StructOrUnion name=ID? '{' (decls += StructDeclaration)* '}'
+    |   composeType=StructOrUnion name=ID
+    ;
 
-BitOrExpr returns Expression:
-	BitXOrExpr ({BitExpr.left=current} op='|' right=BitXOrExpr)*
-;
+StructDeclaration
+    :   specifier=StructDeclarationSpecifier decls += DirectDeclarator(',' decls+=DirectDeclarator)* ';'
+    ;
 
-BitXOrExpr returns Expression:
-	BitAndExpr ({BitExpr.left=current} op='^' right=BitAndExpr)*
-;
+StructDeclarationSpecifier
+    :   type=TypeSpecifier
+    |   qualifiers+=TypeQualifier
+    ;
 
-BitAndExpr returns Expression:
-	EqualityExpr ({BitExpr.left=current} op='&' right=EqualityExpr)*
-;
+InitDeclarator
+    :   declarator=DirectDeclarator ('=' initializer=Initializer)?
+    ;
 
-EqualityExpr returns Expression:
-	ComparisonExpr ({ComparisonExpr.left=current} op=('=='|'!=') right=ComparisonExpr)*
-;
+DirectDeclarator
+    :   name=ID ( ':' index=IntegerConstant)? 
+    	(  	{DirectDeclarator.left=current} '[' (qualifiers+=TypeQualifier)? expr=ConditionalExpression? ']'
+//    	|   {DirectDeclarator.left=current} '[' (qualifiers+=TypeQualifier)? '*' ']'
+//    	|   {DirectDeclarator.left=current} '(' ParameterList ')'
+    	)?
+    ;
+    
+fragment InitializerList:   init+=(DesignatedInitializer|Initializer) (',' init+=(DesignatedInitializer|Initializer))?;
 
-ComparisonExpr returns Expression:
-	ShiftExpr ({ComparisonExpr.left=current} op=('<'|'>'|'<='|'>=') right=ShiftExpr)*
-;
+Initializer
+    :   expr=ConditionalExpression
+    |   '{' InitializerList ','? '}'
+    ;
 
-ShiftExpr returns Expression:
-	AdditionExpr ({ShiftExpr.left=current} op=('<<'|'>>') right=AdditionExpr)*
-;
+DesignatedInitializer
+	:	(designators+=Designator)+ '=' init=Initializer
+	;
 
-AdditionExpr returns Expression:
-    MultiplicationExpr ({AdditionExpr.left=current} op=('+' | '-')  right=MultiplicationExpr)*
-;
+Designator
+    :   '[' idx=ConstantExpression ']'
+    |   '.' prop=ID
+    ;
 
-MultiplicationExpr returns Expression:
-    UnitaryExpr ({MultiplicationExpr.left=current} op=('*' | '/' | '%') right=UnitaryExpr)*
-;
+AbstractDeclarator
+    :	DirectAbstractDeclarator
+    ;
+/*
+ direct_abstract_declarator
+	: '(' abstract_declarator ')'
+	| '(' parameter_type_list ')'
+	| '(' ')'
+	| '[' constant_expression ']'
+	| '[' ']'
+	| direct_abstract_declarator '[' ']'
+	| direct_abstract_declarator '[' constant_expression ']'
+	| direct_abstract_declarator '(' ')'
+	| direct_abstract_declarator '(' parameter_type_list ')'
+	;
+ 
+ */
+ 
+DirectAbstractDeclarator 
+    :   {DirectAbstractDeclarator} '(' (declarator=AbstractDeclarator? | ParameterList) ')'
+    |	{DirectAbstractDeclarator} '[' expr=ConstantExpression? ']'
+    ;
 
-UnitaryExpr returns Expression:
-    TypeConv | ({UnitaryExpr} op=('-'|'+'|'~'|'!') expr=UnitaryExpr)
-;
+///////////////////////////////////////////////////////////////////////////////
+// Expressions
+Expression 
+    :   AssignmentExpression ({Expression.left=current} ',' right=AssignmentExpression)?
+    ;
 
-TypeConv returns Expression:
-    Primary ({TypeConv.expr=current} "'"? type=DataType)?
-;
-       
-Primary returns Expression:
-    '(' Expression ')' |
-    {Function} name=FUNCTIONNAME '(' (args+=Expression (',' args+=Expression)* )? ')' |
-    NumberLiteral |
-    ValueRef
-;
+AssignmentExpression returns Expression
+    :   UnaryExpression {AssignmentExpression.left=current} op=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=') right=ConditionalExpression
+    ;
 
-RValue: Constant | Field;
+ConditionalExpression returns Expression
+    :   LogicalOrExpression ({ConditionalExpression.cond=current} '?' left=ConditionalExpression ':' right=ConditionalExpression)?
+    ;
 
-ValueRef:
-	(
-			value=[IndexedVariable|ID] '[' index=Expression ']' |
-			value=[ScalarVariable|ID] |
-			-> value=[RValue] 
-	) (bitWidth=BitSizeSpec)?
-;
+LogicalOrExpression returns Expression
+    :   LogicalAndExpression ({LogicalExpr.left=current} op='||' right=LogicalOrExpression)?
+    ;
 
-BitSizeSpec:
-'{' (value=NATURAL|constant=[Constant]) '}'	
-;
+LogicalAndExpression returns Expression
+    :   InclusiveOrExpression ({LogicalExpr.left=current} op='&&' right=LogicalAndExpression)?
+    ;
 
-enum DataType:
-	NONE | UNSIGNED="u" | SIGNED="s" | FLOAT="f" | DOUBLE="d" | QUAD="q" | BOOLEAN='b'
-;
+InclusiveOrExpression returns Expression
+    :   ExclusiveOrExpression ({LogicalExpr.left=current} op='|' right=InclusiveOrExpression)?
+    ;
 
-enum RegAttribute: PC='is_pc'|  DEL='delete';
+ExclusiveOrExpression returns Expression
+    :   AndExpression ({LogicalExpr.left=current} op='^' right=ExclusiveOrExpression)?
+    ;
 
-enum ConstAttribute: REG_WIDTH='is_reg_with'|  ADDR_WIDTH='is_addr_width';
+AndExpression returns Expression
+    :   EqualityExpression ({LogicalExpr.left=current} op='&' right=AndExpression)?
+    ;
 
-enum InstrAttribute: NO_CONT='no_cont' | COND='cond' | FLUSH='flush';
+EqualityExpression returns Expression
+    :   RelationalExpression ({LogicalExpr.left=current} op=('=='|'!=') right=EqualityExpression)?
+    ;
 
-terminal PROCEDURENAME:	('raise' | 'leave' | 'wait' | 'dispatch_' ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'.')*);
+RelationalExpression returns Expression
+    :   ShiftExpression ({LogicalExpr.left=current} op=('<'|'>'|'<='|'>=') right=RelationalExpression)?
+    ;
 
-terminal FUNCTIONNAME: ('sext' | 'zext' | 'choose' | 'shll' | 'shrl' | 'shra'  | 'fdispatch_' ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'.')*);
+ShiftExpression returns Expression
+    :   AdditiveExpression ({ArithmeticExpression.left=current} op=('<<'|'>>') right=ShiftExpression)?
+    ;
+
+AdditiveExpression returns Expression
+    :   MultiplicativeExpression ({ArithmeticExpression.left=current} op=('+'|'-') right=AdditiveExpression)?
+    ;
+
+MultiplicativeExpression returns Expression
+    :   CastExpression ({ArithmeticExpression.left=current} op=('*' | '/' | '%') right=MultiplicativeExpression)?
+    ;
+
+CastExpression
+    :   UnaryExpression
+    |	'(' type=DataTypeSpecifier ')' left=CastExpression
+    ;
+
+UnaryExpression
+    :   PostfixExpression
+    |   op='++' left=UnaryExpression
+    |   op='--' left=UnaryExpression
+    |   UnaryOperator left=CastExpression
+    |   op='sizeof' '(' (left=PostfixExpression |  type=DataTypeSpecifier ) ')'
+//    |   op='_Alignof' '(' type=TypeSpecifier ')'
+    ;
+
+fragment UnaryOperator:	op=('&' | '*' | '+' | '-' | '~' | '!');
+
+PostfixExpression
+    :   PrimaryExpression ({PostfixExpression.left=current} ops+=PostfixOperator)*
+    ;
+
+PostfixOperator
+	:  	op='[' args+=ConditionalExpression (':' args+=ConditionalExpression)? ']'
+	|  	op='(' (args+=ConditionalExpression (',' args+=ConditionalExpression)*)?')' //function call
+	|   op='.' member=[DirectDeclarator]  //member=PostfixExpression
+	|   op='->' member=[DirectDeclarator] //member=PostfixExpression
+	|   op='++'
+	|  	op='--'
+	;
+	
+PrimaryExpression
+    :	ref=[VariableRef]
+    |   constant=Constant
+    |   literal+=StringLiteral+
+    |   '(' left=ConditionalExpression ')'
+    ;
+
+VariableRef hidden()
+	:	FunctionDefinition|DirectDeclarator|Field
+	;
+
+StringLiteral
+    :   EncodingPrefix? val=STRING
+    ;
+
+fragment EncodingPrefix :   prefix= ('u8'|'u'|'U'|'L');
+
+ConstantExpression returns Expression
+    :   ConditionalExpression
+    ;
+///////////////////////////////////////////////////////////////////////////////
+// Constants
+Constant
+    :   IntegerConstant
+    |	FloatingConstant
+    |   CharacterConstant
+    |   BoolConstant
+    ;
+
+IntegerConstant
+    :   val=NATURAL IntegerSuffix?
+    ;
+    
+FloatingConstant
+    :  	val=FLOAT FloatingSuffix?
+    ;
+    
+BoolConstant
+    :   val=BOOLEAN
+    ;
+    
+fragment IntegerSuffix
+    :   UnsignedSuffix LongSuffix?
+    |   UnsignedSuffix LongLongSuffix
+    |   LongSuffix UnsignedSuffix?
+    |   LongLongSuffix UnsignedSuffix?
+    ;
+
+fragment UnsignedSuffix:   unsigned?=('u'|'U');
+
+fragment LongSuffix:   long?=('l'|'L');
+
+fragment LongLongSuffix:   longlong?=('ll' | 'LL');
+
+fragment FloatingSuffix:   f?='f' | l?='l' | f?='F' | f?='L';
+
+CharacterConstant
+    :   val=CHARCONST
+    |   enc="L" val=CHARCONST
+    |   enc="u" val=CHARCONST
+    |   enc="U" val=CHARCONST
+    ;
+///////////////////////////////////////////////////////////////////////////////
+
+enum DataTypes
+	: BOOL='bool' | CHAR='char' | SHORT='short' | INT='int' | LONG='long'
+	| SIGNED='signed' | UNSIGNED='unsigned'
+	| FLOAT='float'	| DOUBLE='double'
+	| FRAC='frac' | ACCUM='accum'
+	;
+
+enum TypeQualifier: CONST='const' | VOLATILE='volatile';
+
+enum StorageClassSpecifier: EXTERN='extern' | STATIC='static';
+
+enum Attribute: NONE | IS_PC='is_pc'| DEL='delete';
+	
+enum InstrAttribute: NONE | NO_CONT='no_cont' | COND='cond' | FLUSH='flush';
+
+enum StructOrUnion:   STRUCT='struct'|UNION='union';
+
+enum BitfieldDataType:	UNSIGNED="u" | SIGNED="s"; //| FLOAT="f" | DOUBLE="d" | QUAD="q" | BOOLEAN='b';
 
 terminal BVAL : 'b'('0'..'9')+;
 
 terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false' ;
 
-terminal NATURAL returns ecore::EBigInteger:
-	('0' | '1'..'9' (('_')? '0'..'9')*) | //DECIMAL 
-	(('0b' | '0B') '0'..'1' (('_')? '0'..'1')*) | // BINARY
-	(('0x'|'0X') ('0'..'9'|'a'..'f'|'A'..'F')  (('_')? ('0'..'9'|'a'..'f'|'A'..'F'))*) | // HEX
-	('0' ('_')? '0'..'7' (('_')? '0'..'7')*) // OCT
-;
+terminal FLOAT returns ecore::EBigDecimal:  (('0'..'9')+ '.' ('0'..'9')*) (('e' | 'E') ('+' | '-')? ('0'..'9')+)?;
+
+terminal NATURAL returns ecore::EBigInteger: (DECIMALCONSTANT) | (BINARYCONSTANT) | (HEXADECIMALCONSTANT) | (OCTALCONSTANT);
+
+terminal fragment BINARYCONSTANT:	('0b' | '0B') '0'..'1' (('_')? '0'..'1')*;
+
+terminal fragment OCTALCONSTANT:   '0' ('_')? '0'..'7' (('_')? '0'..'7')*;
+
+terminal fragment DECIMALCONSTANT:   '0' | '1'..'9' (('_')? '0'..'9')*;
+
+terminal fragment HEXADECIMALCONSTANT:   ('0x'|'0X') ('0'..'9'|'a'..'f'|'A'..'F')  (('_')? ('0'..'9'|'a'..'f'|'A'..'F'))*;
+
+terminal CHARCONST: "'" ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|"'") )* "'";
 
 @Override 
 terminal INT returns ecore::EInt: 'this one has been deactivated';
     
 @Override 
-terminal ID : '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'.')*;
+terminal ID : '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
     
 @Override
 terminal STRING	:	'"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';

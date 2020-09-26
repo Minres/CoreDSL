@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link com.minres.coredsl.coreDsl.Instruction#getAttributes <em>Attributes</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.Instruction#getEncoding <em>Encoding</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.Instruction#getDisass <em>Disass</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.Instruction#getOperation <em>Operation</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.Instruction#getBehavior <em>Behavior</em>}</li>
  * </ul>
  *
  * @see com.minres.coredsl.coreDsl.CoreDslPackage#getInstruction()
@@ -110,25 +110,25 @@ public interface Instruction extends EObject
   void setDisass(String value);
 
   /**
-   * Returns the value of the '<em><b>Operation</b></em>' containment reference.
+   * Returns the value of the '<em><b>Behavior</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Operation</em>' containment reference.
-   * @see #setOperation(Operation)
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getInstruction_Operation()
+   * @return the value of the '<em>Behavior</em>' containment reference.
+   * @see #setBehavior(CompoundStatement)
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getInstruction_Behavior()
    * @model containment="true"
    * @generated
    */
-  Operation getOperation();
+  CompoundStatement getBehavior();
 
   /**
-   * Sets the value of the '{@link com.minres.coredsl.coreDsl.Instruction#getOperation <em>Operation</em>}' containment reference.
+   * Sets the value of the '{@link com.minres.coredsl.coreDsl.Instruction#getBehavior <em>Behavior</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Operation</em>' containment reference.
-   * @see #getOperation()
+   * @param value the new value of the '<em>Behavior</em>' containment reference.
+   * @see #getBehavior()
    * @generated
    */
-  void setOperation(Operation value);
+  void setBehavior(CompoundStatement value);
 
 } // Instruction

@@ -101,11 +101,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
         return createCoreDefAdapter();
       }
       @Override
-      public Adapter caseRangeSpec(RangeSpec object)
-      {
-        return createRangeSpecAdapter();
-      }
-      @Override
       public Adapter caseInstruction(Instruction object)
       {
         return createInstructionAdapter();
@@ -131,9 +126,24 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
         return createBitFieldAdapter();
       }
       @Override
-      public Adapter caseOperation(Operation object)
+      public Adapter caseRangeSpec(RangeSpec object)
       {
-        return createOperationAdapter();
+        return createRangeSpecAdapter();
+      }
+      @Override
+      public Adapter caseFunctionDefinition(FunctionDefinition object)
+      {
+        return createFunctionDefinitionAdapter();
+      }
+      @Override
+      public Adapter caseParameterList(ParameterList object)
+      {
+        return createParameterListAdapter();
+      }
+      @Override
+      public Adapter caseParameterDeclaration(ParameterDeclaration object)
+      {
+        return createParameterDeclarationAdapter();
       }
       @Override
       public Adapter caseStatement(Statement object)
@@ -141,89 +151,174 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
         return createStatementAdapter();
       }
       @Override
-      public Adapter caseAssignment(Assignment object)
+      public Adapter caseLabeledStatement(LabeledStatement object)
       {
-        return createAssignmentAdapter();
+        return createLabeledStatementAdapter();
       }
       @Override
-      public Adapter caseConditionalStmt(ConditionalStmt object)
+      public Adapter caseCompoundStatement(CompoundStatement object)
       {
-        return createConditionalStmtAdapter();
+        return createCompoundStatementAdapter();
       }
       @Override
-      public Adapter caseDirectCode(DirectCode object)
+      public Adapter caseBlockItem(BlockItem object)
       {
-        return createDirectCodeAdapter();
+        return createBlockItemAdapter();
       }
       @Override
-      public Adapter caseProcedure(Procedure object)
+      public Adapter caseExpressionStatement(ExpressionStatement object)
       {
-        return createProcedureAdapter();
+        return createExpressionStatementAdapter();
       }
       @Override
-      public Adapter caseConstant(Constant object)
+      public Adapter caseSelectionStatement(SelectionStatement object)
       {
-        return createConstantAdapter();
+        return createSelectionStatementAdapter();
       }
       @Override
-      public Adapter caseConstantDef(ConstantDef object)
+      public Adapter caseIfStatement(IfStatement object)
       {
-        return createConstantDefAdapter();
+        return createIfStatementAdapter();
       }
       @Override
-      public Adapter caseConstantDefault(ConstantDefault object)
+      public Adapter caseSwitchStatement(SwitchStatement object)
       {
-        return createConstantDefaultAdapter();
+        return createSwitchStatementAdapter();
       }
       @Override
-      public Adapter caseVariable(Variable object)
+      public Adapter caseIterationStatement(IterationStatement object)
       {
-        return createVariableAdapter();
+        return createIterationStatementAdapter();
       }
       @Override
-      public Adapter caseIndexedVariable(IndexedVariable object)
+      public Adapter caseForCondition(ForCondition object)
       {
-        return createIndexedVariableAdapter();
+        return createForConditionAdapter();
       }
       @Override
-      public Adapter caseScalarVariable(ScalarVariable object)
+      public Adapter caseJumpStatement(JumpStatement object)
       {
-        return createScalarVariableAdapter();
+        return createJumpStatementAdapter();
       }
       @Override
-      public Adapter caseRegisterVariable(RegisterVariable object)
+      public Adapter caseDeclaration(Declaration object)
       {
-        return createRegisterVariableAdapter();
+        return createDeclarationAdapter();
       }
       @Override
-      public Adapter caseAddressSpace(AddressSpace object)
+      public Adapter caseTypeOrVarDeclaration(TypeOrVarDeclaration object)
       {
-        return createAddressSpaceAdapter();
+        return createTypeOrVarDeclarationAdapter();
       }
       @Override
-      public Adapter caseRegisterFile(RegisterFile object)
+      public Adapter caseTypedefDeclaration(TypedefDeclaration object)
       {
-        return createRegisterFileAdapter();
+        return createTypedefDeclarationAdapter();
       }
       @Override
-      public Adapter caseRegister(Register object)
+      public Adapter caseDeclarationSpecifier(DeclarationSpecifier object)
       {
-        return createRegisterAdapter();
+        return createDeclarationSpecifierAdapter();
       }
       @Override
-      public Adapter caseRegisterAlias(RegisterAlias object)
+      public Adapter caseAttributeList(AttributeList object)
       {
-        return createRegisterAliasAdapter();
+        return createAttributeListAdapter();
       }
       @Override
-      public Adapter caseScalar(Scalar object)
+      public Adapter caseTypeSpecifier(TypeSpecifier object)
       {
-        return createScalarAdapter();
+        return createTypeSpecifierAdapter();
       }
       @Override
-      public Adapter caseNumberLiteral(NumberLiteral object)
+      public Adapter caseDataTypeSpecifier(DataTypeSpecifier object)
       {
-        return createNumberLiteralAdapter();
+        return createDataTypeSpecifierAdapter();
+      }
+      @Override
+      public Adapter caseTypedefRef(TypedefRef object)
+      {
+        return createTypedefRefAdapter();
+      }
+      @Override
+      public Adapter casePodSpecifier(PodSpecifier object)
+      {
+        return createPodSpecifierAdapter();
+      }
+      @Override
+      public Adapter caseBitSizeSpecifier(BitSizeSpecifier object)
+      {
+        return createBitSizeSpecifierAdapter();
+      }
+      @Override
+      public Adapter caseEnumSpecifier(EnumSpecifier object)
+      {
+        return createEnumSpecifierAdapter();
+      }
+      @Override
+      public Adapter caseEnumeratorList(EnumeratorList object)
+      {
+        return createEnumeratorListAdapter();
+      }
+      @Override
+      public Adapter caseEnumerator(Enumerator object)
+      {
+        return createEnumeratorAdapter();
+      }
+      @Override
+      public Adapter caseStructOrUnionSpecifier(StructOrUnionSpecifier object)
+      {
+        return createStructOrUnionSpecifierAdapter();
+      }
+      @Override
+      public Adapter caseStructDeclaration(StructDeclaration object)
+      {
+        return createStructDeclarationAdapter();
+      }
+      @Override
+      public Adapter caseStructDeclarationSpecifier(StructDeclarationSpecifier object)
+      {
+        return createStructDeclarationSpecifierAdapter();
+      }
+      @Override
+      public Adapter caseInitDeclarator(InitDeclarator object)
+      {
+        return createInitDeclaratorAdapter();
+      }
+      @Override
+      public Adapter caseDirectDeclarator(DirectDeclarator object)
+      {
+        return createDirectDeclaratorAdapter();
+      }
+      @Override
+      public Adapter caseInitializerList(InitializerList object)
+      {
+        return createInitializerListAdapter();
+      }
+      @Override
+      public Adapter caseInitializer(Initializer object)
+      {
+        return createInitializerAdapter();
+      }
+      @Override
+      public Adapter caseDesignatedInitializer(DesignatedInitializer object)
+      {
+        return createDesignatedInitializerAdapter();
+      }
+      @Override
+      public Adapter caseDesignator(Designator object)
+      {
+        return createDesignatorAdapter();
+      }
+      @Override
+      public Adapter caseAbstractDeclarator(AbstractDeclarator object)
+      {
+        return createAbstractDeclaratorAdapter();
+      }
+      @Override
+      public Adapter caseDirectAbstractDeclarator(DirectAbstractDeclarator object)
+      {
+        return createDirectAbstractDeclaratorAdapter();
       }
       @Override
       public Adapter caseExpression(Expression object)
@@ -231,79 +326,119 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
         return createExpressionAdapter();
       }
       @Override
-      public Adapter caseRValue(RValue object)
+      public Adapter caseCastExpression(CastExpression object)
       {
-        return createRValueAdapter();
+        return createCastExpressionAdapter();
       }
       @Override
-      public Adapter caseValueRef(ValueRef object)
+      public Adapter caseUnaryExpression(UnaryExpression object)
       {
-        return createValueRefAdapter();
+        return createUnaryExpressionAdapter();
       }
       @Override
-      public Adapter caseBitSizeSpec(BitSizeSpec object)
+      public Adapter caseUnaryOperator(UnaryOperator object)
       {
-        return createBitSizeSpecAdapter();
+        return createUnaryOperatorAdapter();
       }
       @Override
-      public Adapter caseIndexedAssignment(IndexedAssignment object)
+      public Adapter casePostfixExpression(PostfixExpression object)
       {
-        return createIndexedAssignmentAdapter();
+        return createPostfixExpressionAdapter();
       }
       @Override
-      public Adapter caseRegisterAssignment(RegisterAssignment object)
+      public Adapter casePostfixOperator(PostfixOperator object)
       {
-        return createRegisterAssignmentAdapter();
+        return createPostfixOperatorAdapter();
       }
       @Override
-      public Adapter caseScalarAssignment(ScalarAssignment object)
+      public Adapter casePrimaryExpression(PrimaryExpression object)
       {
-        return createScalarAssignmentAdapter();
+        return createPrimaryExpressionAdapter();
       }
       @Override
-      public Adapter caseBooleanExpr(BooleanExpr object)
+      public Adapter caseVariableRef(VariableRef object)
       {
-        return createBooleanExprAdapter();
+        return createVariableRefAdapter();
       }
       @Override
-      public Adapter caseBitExpr(BitExpr object)
+      public Adapter caseStringLiteral(StringLiteral object)
       {
-        return createBitExprAdapter();
+        return createStringLiteralAdapter();
       }
       @Override
-      public Adapter caseComparisonExpr(ComparisonExpr object)
+      public Adapter caseEncodingPrefix(EncodingPrefix object)
       {
-        return createComparisonExprAdapter();
+        return createEncodingPrefixAdapter();
       }
       @Override
-      public Adapter caseShiftExpr(ShiftExpr object)
+      public Adapter caseConstant(Constant object)
       {
-        return createShiftExprAdapter();
+        return createConstantAdapter();
       }
       @Override
-      public Adapter caseAdditionExpr(AdditionExpr object)
+      public Adapter caseIntegerConstant(IntegerConstant object)
       {
-        return createAdditionExprAdapter();
+        return createIntegerConstantAdapter();
       }
       @Override
-      public Adapter caseMultiplicationExpr(MultiplicationExpr object)
+      public Adapter caseFloatingConstant(FloatingConstant object)
       {
-        return createMultiplicationExprAdapter();
+        return createFloatingConstantAdapter();
       }
       @Override
-      public Adapter caseUnitaryExpr(UnitaryExpr object)
+      public Adapter caseBoolConstant(BoolConstant object)
       {
-        return createUnitaryExprAdapter();
+        return createBoolConstantAdapter();
       }
       @Override
-      public Adapter caseTypeConv(TypeConv object)
+      public Adapter caseIntegerSuffix(IntegerSuffix object)
       {
-        return createTypeConvAdapter();
+        return createIntegerSuffixAdapter();
       }
       @Override
-      public Adapter caseFunction(Function object)
+      public Adapter caseUnsignedSuffix(UnsignedSuffix object)
       {
-        return createFunctionAdapter();
+        return createUnsignedSuffixAdapter();
+      }
+      @Override
+      public Adapter caseLongSuffix(LongSuffix object)
+      {
+        return createLongSuffixAdapter();
+      }
+      @Override
+      public Adapter caseLongLongSuffix(LongLongSuffix object)
+      {
+        return createLongLongSuffixAdapter();
+      }
+      @Override
+      public Adapter caseFloatingSuffix(FloatingSuffix object)
+      {
+        return createFloatingSuffixAdapter();
+      }
+      @Override
+      public Adapter caseCharacterConstant(CharacterConstant object)
+      {
+        return createCharacterConstantAdapter();
+      }
+      @Override
+      public Adapter caseAssignmentExpression(AssignmentExpression object)
+      {
+        return createAssignmentExpressionAdapter();
+      }
+      @Override
+      public Adapter caseConditionalExpression(ConditionalExpression object)
+      {
+        return createConditionalExpressionAdapter();
+      }
+      @Override
+      public Adapter caseLogicalExpr(LogicalExpr object)
+      {
+        return createLogicalExprAdapter();
+      }
+      @Override
+      public Adapter caseArithmeticExpression(ArithmeticExpression object)
+      {
+        return createArithmeticExpressionAdapter();
       }
       @Override
       public Adapter defaultCase(EObject object)
@@ -403,21 +538,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.RangeSpec <em>Range Spec</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.RangeSpec
-   * @generated
-   */
-  public Adapter createRangeSpecAdapter()
-  {
-    return null;
-  }
-
-  /**
    * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Instruction <em>Instruction</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -493,16 +613,61 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Operation <em>Operation</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.RangeSpec <em>Range Spec</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.Operation
+   * @see com.minres.coredsl.coreDsl.RangeSpec
    * @generated
    */
-  public Adapter createOperationAdapter()
+  public Adapter createRangeSpecAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.FunctionDefinition <em>Function Definition</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.FunctionDefinition
+   * @generated
+   */
+  public Adapter createFunctionDefinitionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ParameterList <em>Parameter List</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.ParameterList
+   * @generated
+   */
+  public Adapter createParameterListAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ParameterDeclaration <em>Parameter Declaration</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.ParameterDeclaration
+   * @generated
+   */
+  public Adapter createParameterDeclarationAdapter()
   {
     return null;
   }
@@ -523,256 +688,511 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Assignment <em>Assignment</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.LabeledStatement <em>Labeled Statement</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.Assignment
+   * @see com.minres.coredsl.coreDsl.LabeledStatement
    * @generated
    */
-  public Adapter createAssignmentAdapter()
+  public Adapter createLabeledStatementAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ConditionalStmt <em>Conditional Stmt</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.CompoundStatement <em>Compound Statement</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.ConditionalStmt
+   * @see com.minres.coredsl.coreDsl.CompoundStatement
    * @generated
    */
-  public Adapter createConditionalStmtAdapter()
+  public Adapter createCompoundStatementAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.DirectCode <em>Direct Code</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.BlockItem <em>Block Item</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.DirectCode
+   * @see com.minres.coredsl.coreDsl.BlockItem
    * @generated
    */
-  public Adapter createDirectCodeAdapter()
+  public Adapter createBlockItemAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Procedure <em>Procedure</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ExpressionStatement <em>Expression Statement</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.Procedure
+   * @see com.minres.coredsl.coreDsl.ExpressionStatement
    * @generated
    */
-  public Adapter createProcedureAdapter()
+  public Adapter createExpressionStatementAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Constant <em>Constant</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.SelectionStatement <em>Selection Statement</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.Constant
+   * @see com.minres.coredsl.coreDsl.SelectionStatement
    * @generated
    */
-  public Adapter createConstantAdapter()
+  public Adapter createSelectionStatementAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ConstantDef <em>Constant Def</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.IfStatement <em>If Statement</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.ConstantDef
+   * @see com.minres.coredsl.coreDsl.IfStatement
    * @generated
    */
-  public Adapter createConstantDefAdapter()
+  public Adapter createIfStatementAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ConstantDefault <em>Constant Default</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.SwitchStatement <em>Switch Statement</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.ConstantDefault
+   * @see com.minres.coredsl.coreDsl.SwitchStatement
    * @generated
    */
-  public Adapter createConstantDefaultAdapter()
+  public Adapter createSwitchStatementAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Variable <em>Variable</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.IterationStatement <em>Iteration Statement</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.Variable
+   * @see com.minres.coredsl.coreDsl.IterationStatement
    * @generated
    */
-  public Adapter createVariableAdapter()
+  public Adapter createIterationStatementAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.IndexedVariable <em>Indexed Variable</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ForCondition <em>For Condition</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.IndexedVariable
+   * @see com.minres.coredsl.coreDsl.ForCondition
    * @generated
    */
-  public Adapter createIndexedVariableAdapter()
+  public Adapter createForConditionAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ScalarVariable <em>Scalar Variable</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.JumpStatement <em>Jump Statement</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.ScalarVariable
+   * @see com.minres.coredsl.coreDsl.JumpStatement
    * @generated
    */
-  public Adapter createScalarVariableAdapter()
+  public Adapter createJumpStatementAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.RegisterVariable <em>Register Variable</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Declaration <em>Declaration</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.RegisterVariable
+   * @see com.minres.coredsl.coreDsl.Declaration
    * @generated
    */
-  public Adapter createRegisterVariableAdapter()
+  public Adapter createDeclarationAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.AddressSpace <em>Address Space</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration <em>Type Or Var Declaration</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.AddressSpace
+   * @see com.minres.coredsl.coreDsl.TypeOrVarDeclaration
    * @generated
    */
-  public Adapter createAddressSpaceAdapter()
+  public Adapter createTypeOrVarDeclarationAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.RegisterFile <em>Register File</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.TypedefDeclaration <em>Typedef Declaration</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.RegisterFile
+   * @see com.minres.coredsl.coreDsl.TypedefDeclaration
    * @generated
    */
-  public Adapter createRegisterFileAdapter()
+  public Adapter createTypedefDeclarationAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Register <em>Register</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.DeclarationSpecifier <em>Declaration Specifier</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.Register
+   * @see com.minres.coredsl.coreDsl.DeclarationSpecifier
    * @generated
    */
-  public Adapter createRegisterAdapter()
+  public Adapter createDeclarationSpecifierAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.RegisterAlias <em>Register Alias</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.AttributeList <em>Attribute List</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.RegisterAlias
+   * @see com.minres.coredsl.coreDsl.AttributeList
    * @generated
    */
-  public Adapter createRegisterAliasAdapter()
+  public Adapter createAttributeListAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Scalar <em>Scalar</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.TypeSpecifier <em>Type Specifier</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.Scalar
+   * @see com.minres.coredsl.coreDsl.TypeSpecifier
    * @generated
    */
-  public Adapter createScalarAdapter()
+  public Adapter createTypeSpecifierAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.NumberLiteral <em>Number Literal</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.DataTypeSpecifier <em>Data Type Specifier</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.NumberLiteral
+   * @see com.minres.coredsl.coreDsl.DataTypeSpecifier
    * @generated
    */
-  public Adapter createNumberLiteralAdapter()
+  public Adapter createDataTypeSpecifierAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.TypedefRef <em>Typedef Ref</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.TypedefRef
+   * @generated
+   */
+  public Adapter createTypedefRefAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.PodSpecifier <em>Pod Specifier</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.PodSpecifier
+   * @generated
+   */
+  public Adapter createPodSpecifierAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.BitSizeSpecifier <em>Bit Size Specifier</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.BitSizeSpecifier
+   * @generated
+   */
+  public Adapter createBitSizeSpecifierAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.EnumSpecifier <em>Enum Specifier</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.EnumSpecifier
+   * @generated
+   */
+  public Adapter createEnumSpecifierAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.EnumeratorList <em>Enumerator List</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.EnumeratorList
+   * @generated
+   */
+  public Adapter createEnumeratorListAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Enumerator <em>Enumerator</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.Enumerator
+   * @generated
+   */
+  public Adapter createEnumeratorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.StructOrUnionSpecifier <em>Struct Or Union Specifier</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.StructOrUnionSpecifier
+   * @generated
+   */
+  public Adapter createStructOrUnionSpecifierAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.StructDeclaration <em>Struct Declaration</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.StructDeclaration
+   * @generated
+   */
+  public Adapter createStructDeclarationAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.StructDeclarationSpecifier <em>Struct Declaration Specifier</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.StructDeclarationSpecifier
+   * @generated
+   */
+  public Adapter createStructDeclarationSpecifierAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.InitDeclarator <em>Init Declarator</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.InitDeclarator
+   * @generated
+   */
+  public Adapter createInitDeclaratorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.DirectDeclarator <em>Direct Declarator</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.DirectDeclarator
+   * @generated
+   */
+  public Adapter createDirectDeclaratorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.InitializerList <em>Initializer List</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.InitializerList
+   * @generated
+   */
+  public Adapter createInitializerListAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Initializer <em>Initializer</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.Initializer
+   * @generated
+   */
+  public Adapter createInitializerAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.DesignatedInitializer <em>Designated Initializer</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.DesignatedInitializer
+   * @generated
+   */
+  public Adapter createDesignatedInitializerAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Designator <em>Designator</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.Designator
+   * @generated
+   */
+  public Adapter createDesignatorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.AbstractDeclarator <em>Abstract Declarator</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.AbstractDeclarator
+   * @generated
+   */
+  public Adapter createAbstractDeclaratorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.DirectAbstractDeclarator <em>Direct Abstract Declarator</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.DirectAbstractDeclarator
+   * @generated
+   */
+  public Adapter createDirectAbstractDeclaratorAdapter()
   {
     return null;
   }
@@ -793,226 +1213,346 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.RValue <em>RValue</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.CastExpression <em>Cast Expression</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.RValue
+   * @see com.minres.coredsl.coreDsl.CastExpression
    * @generated
    */
-  public Adapter createRValueAdapter()
+  public Adapter createCastExpressionAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ValueRef <em>Value Ref</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.UnaryExpression <em>Unary Expression</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.ValueRef
+   * @see com.minres.coredsl.coreDsl.UnaryExpression
    * @generated
    */
-  public Adapter createValueRefAdapter()
+  public Adapter createUnaryExpressionAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.BitSizeSpec <em>Bit Size Spec</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.UnaryOperator <em>Unary Operator</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.BitSizeSpec
+   * @see com.minres.coredsl.coreDsl.UnaryOperator
    * @generated
    */
-  public Adapter createBitSizeSpecAdapter()
+  public Adapter createUnaryOperatorAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.IndexedAssignment <em>Indexed Assignment</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.PostfixExpression <em>Postfix Expression</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.IndexedAssignment
+   * @see com.minres.coredsl.coreDsl.PostfixExpression
    * @generated
    */
-  public Adapter createIndexedAssignmentAdapter()
+  public Adapter createPostfixExpressionAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.RegisterAssignment <em>Register Assignment</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.PostfixOperator <em>Postfix Operator</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.RegisterAssignment
+   * @see com.minres.coredsl.coreDsl.PostfixOperator
    * @generated
    */
-  public Adapter createRegisterAssignmentAdapter()
+  public Adapter createPostfixOperatorAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ScalarAssignment <em>Scalar Assignment</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.PrimaryExpression <em>Primary Expression</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.ScalarAssignment
+   * @see com.minres.coredsl.coreDsl.PrimaryExpression
    * @generated
    */
-  public Adapter createScalarAssignmentAdapter()
+  public Adapter createPrimaryExpressionAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.BooleanExpr <em>Boolean Expr</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.VariableRef <em>Variable Ref</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.BooleanExpr
+   * @see com.minres.coredsl.coreDsl.VariableRef
    * @generated
    */
-  public Adapter createBooleanExprAdapter()
+  public Adapter createVariableRefAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.BitExpr <em>Bit Expr</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.StringLiteral <em>String Literal</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.BitExpr
+   * @see com.minres.coredsl.coreDsl.StringLiteral
    * @generated
    */
-  public Adapter createBitExprAdapter()
+  public Adapter createStringLiteralAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ComparisonExpr <em>Comparison Expr</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.EncodingPrefix <em>Encoding Prefix</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.ComparisonExpr
+   * @see com.minres.coredsl.coreDsl.EncodingPrefix
    * @generated
    */
-  public Adapter createComparisonExprAdapter()
+  public Adapter createEncodingPrefixAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ShiftExpr <em>Shift Expr</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Constant <em>Constant</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.ShiftExpr
+   * @see com.minres.coredsl.coreDsl.Constant
    * @generated
    */
-  public Adapter createShiftExprAdapter()
+  public Adapter createConstantAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.AdditionExpr <em>Addition Expr</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.IntegerConstant <em>Integer Constant</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.AdditionExpr
+   * @see com.minres.coredsl.coreDsl.IntegerConstant
    * @generated
    */
-  public Adapter createAdditionExprAdapter()
+  public Adapter createIntegerConstantAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.MultiplicationExpr <em>Multiplication Expr</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.FloatingConstant <em>Floating Constant</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.MultiplicationExpr
+   * @see com.minres.coredsl.coreDsl.FloatingConstant
    * @generated
    */
-  public Adapter createMultiplicationExprAdapter()
+  public Adapter createFloatingConstantAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.UnitaryExpr <em>Unitary Expr</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.BoolConstant <em>Bool Constant</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.UnitaryExpr
+   * @see com.minres.coredsl.coreDsl.BoolConstant
    * @generated
    */
-  public Adapter createUnitaryExprAdapter()
+  public Adapter createBoolConstantAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.TypeConv <em>Type Conv</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.IntegerSuffix <em>Integer Suffix</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.TypeConv
+   * @see com.minres.coredsl.coreDsl.IntegerSuffix
    * @generated
    */
-  public Adapter createTypeConvAdapter()
+  public Adapter createIntegerSuffixAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Function <em>Function</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.UnsignedSuffix <em>Unsigned Suffix</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.Function
+   * @see com.minres.coredsl.coreDsl.UnsignedSuffix
    * @generated
    */
-  public Adapter createFunctionAdapter()
+  public Adapter createUnsignedSuffixAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.LongSuffix <em>Long Suffix</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.LongSuffix
+   * @generated
+   */
+  public Adapter createLongSuffixAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.LongLongSuffix <em>Long Long Suffix</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.LongLongSuffix
+   * @generated
+   */
+  public Adapter createLongLongSuffixAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.FloatingSuffix <em>Floating Suffix</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.FloatingSuffix
+   * @generated
+   */
+  public Adapter createFloatingSuffixAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.CharacterConstant <em>Character Constant</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.CharacterConstant
+   * @generated
+   */
+  public Adapter createCharacterConstantAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.AssignmentExpression <em>Assignment Expression</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.AssignmentExpression
+   * @generated
+   */
+  public Adapter createAssignmentExpressionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ConditionalExpression <em>Conditional Expression</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.ConditionalExpression
+   * @generated
+   */
+  public Adapter createConditionalExpressionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.LogicalExpr <em>Logical Expr</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.LogicalExpr
+   * @generated
+   */
+  public Adapter createLogicalExprAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ArithmeticExpression <em>Arithmetic Expression</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.ArithmeticExpression
+   * @generated
+   */
+  public Adapter createArithmeticExpressionAdapter()
   {
     return null;
   }

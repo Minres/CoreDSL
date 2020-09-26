@@ -15,7 +15,7 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.InstructionSet#getSuperType <em>Super Type</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.InstructionSet#getConstants <em>Constants</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.InstructionSet#getFunc <em>Func</em>}</li>
  * </ul>
  *
  * @see com.minres.coredsl.coreDsl.CoreDslPackage#getInstructionSet()
@@ -47,15 +47,15 @@ public interface InstructionSet extends ISA
   void setSuperType(InstructionSet value);
 
   /**
-   * Returns the value of the '<em><b>Constants</b></em>' containment reference list.
-   * The list contents are of type {@link com.minres.coredsl.coreDsl.Constant}.
+   * Returns the value of the '<em><b>Func</b></em>' containment reference list.
+   * The list contents are of type {@link com.minres.coredsl.coreDsl.FunctionDefinition}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Constants</em>' containment reference list.
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getInstructionSet_Constants()
+   * @return the value of the '<em>Func</em>' containment reference list.
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getInstructionSet_Func()
    * @model containment="true"
    * @generated
    */
-  EList<Constant> getConstants();
+  EList<FunctionDefinition> getFunc();
 
 } // InstructionSet

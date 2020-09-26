@@ -5,30 +5,13 @@ package com.minres.coredsl.scoping;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
-import com.minres.coredsl.coreDsl.AddressSpace;
-import com.minres.coredsl.coreDsl.BitField;
-import com.minres.coredsl.coreDsl.ConditionalStmt;
-import com.minres.coredsl.coreDsl.Constant;
 import com.minres.coredsl.coreDsl.CoreDef;
-import com.minres.coredsl.coreDsl.Expression;
+import com.minres.coredsl.coreDsl.DirectDeclarator;
 import com.minres.coredsl.coreDsl.ISA;
-import com.minres.coredsl.coreDsl.IndexedAssignment;
-import com.minres.coredsl.coreDsl.IndexedVariable;
-import com.minres.coredsl.coreDsl.Instruction;
 import com.minres.coredsl.coreDsl.InstructionSet;
-import com.minres.coredsl.coreDsl.Operation;
-import com.minres.coredsl.coreDsl.Register;
-import com.minres.coredsl.coreDsl.RegisterAlias;
-import com.minres.coredsl.coreDsl.RegisterFile;
-import com.minres.coredsl.coreDsl.RegisterVariable;
-import com.minres.coredsl.coreDsl.Scalar;
-import com.minres.coredsl.coreDsl.ScalarAssignment;
-import com.minres.coredsl.coreDsl.ScalarVariable;
-import com.minres.coredsl.coreDsl.Statement;
-import com.minres.coredsl.coreDsl.ValueRef;
-import com.minres.coredsl.coreDsl.Variable;
+import com.minres.coredsl.coreDsl.TypedefDeclaration;
+import com.minres.coredsl.coreDsl.VariableRef;
 import com.minres.coredsl.scoping.AbstractCoreDslScopeProvider;
-import java.util.Arrays;
 import java.util.List;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -37,7 +20,7 @@ import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
-import org.eclipse.xtext.xbase.lib.IterableExtensions;
+import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 
 /**
@@ -51,138 +34,40 @@ public class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
   @Override
   public IScope getScope(final EObject context, final EReference reference) {
     String _name = reference.getEReferenceType().getName();
-    boolean _equals = Objects.equal(_name, "ArrayValue");
+    boolean _equals = Objects.equal(_name, "VariableRef");
     if (_equals) {
       ISA _parentOfType = this.<ISA>parentOfType(context, ISA.class);
       final ISA isa = ((ISA) _parentOfType);
-      Iterable<AddressSpace> _allOfType = this.<AddressSpace>allOfType(isa, AddressSpace.class);
-      Iterable<RegisterFile> _allOfType_1 = this.<RegisterFile>allOfType(isa, RegisterFile.class);
-      Iterable<IndexedVariable> _plus = Iterables.<IndexedVariable>concat(_allOfType, _allOfType_1);
-      return Scopes.scopeFor(_plus);
+      return Scopes.scopeFor(this.<VariableRef>allOfType(isa, VariableRef.class));
     } else {
       String _name_1 = reference.getEReferenceType().getName();
-      boolean _equals_1 = Objects.equal(_name_1, "Register");
+      boolean _equals_1 = Objects.equal(_name_1, "TypedefDeclaration");
       if (_equals_1) {
         ISA _parentOfType_1 = this.<ISA>parentOfType(context, ISA.class);
         final ISA isa_1 = ((ISA) _parentOfType_1);
-        final IScope scope = Scopes.scopeFor(this.<Register>allOfType(isa_1, Register.class));
-        return scope;
+        final Iterable<TypedefDeclaration> res = this.<TypedefDeclaration>allOfType(isa_1, TypedefDeclaration.class);
+        return Scopes.scopeFor(res);
       } else {
         String _name_2 = reference.getEReferenceType().getName();
-        boolean _equals_2 = Objects.equal(_name_2, "Constant");
+        boolean _equals_2 = Objects.equal(_name_2, "DirectDeclarator");
         if (_equals_2) {
           ISA _parentOfType_2 = this.<ISA>parentOfType(context, ISA.class);
           final ISA isa_2 = ((ISA) _parentOfType_2);
-          final IScope scope_1 = Scopes.scopeFor(this.<Constant>allOfType(isa_2, Constant.class));
-          return scope_1;
+          return Scopes.scopeFor(this.<DirectDeclarator>allOfType(isa_2, DirectDeclarator.class));
         } else {
+          Class<? extends EObject> _class = context.getClass();
+          String _plus = ("Unmatched: context " + _class);
+          String _plus_1 = (_plus + " in ");
+          EObject _eContainer = context.eContainer();
+          String _plus_2 = (_plus_1 + _eContainer);
+          String _plus_3 = (_plus_2 + ", reference ");
           String _name_3 = reference.getEReferenceType().getName();
-          boolean _equals_3 = Objects.equal(_name_3, "Scalar");
-          if (_equals_3) {
-            Instruction _parentOfType_3 = this.<Instruction>parentOfType(context, Instruction.class);
-            final Instruction instr = ((Instruction) _parentOfType_3);
-            final IScope scope_2 = Scopes.scopeFor(EcoreUtil2.<Scalar>getAllContentsOfType(instr, Scalar.class));
-            return scope_2;
-          } else {
-            if ((((context instanceof ValueRef) || (context instanceof IndexedAssignment)) && Objects.equal(reference.getEReferenceType().getName(), "EObject"))) {
-              return this.symbolsDefinedBefore(context.eContainer(), context);
-            } else {
-              String _name_4 = reference.getEReferenceType().getName();
-              boolean _equals_4 = Objects.equal(_name_4, "Variable");
-              if (_equals_4) {
-                ISA _parentOfType_4 = this.<ISA>parentOfType(context, ISA.class);
-                final ISA isa_3 = ((ISA) _parentOfType_4);
-                return Scopes.scopeFor(this.<Variable>allOfType(isa_3, Variable.class));
-              } else {
-                String _name_5 = reference.getEReferenceType().getName();
-                boolean _equals_5 = Objects.equal(_name_5, "IndexedVariable");
-                if (_equals_5) {
-                  ISA _parentOfType_5 = this.<ISA>parentOfType(context, ISA.class);
-                  final ISA isa_4 = ((ISA) _parentOfType_5);
-                  return Scopes.scopeFor(this.<IndexedVariable>allOfType(isa_4, IndexedVariable.class));
-                } else {
-                  String _name_6 = reference.getEReferenceType().getName();
-                  boolean _equals_6 = Objects.equal(_name_6, "ScalarVariable");
-                  if (_equals_6) {
-                    ISA _parentOfType_6 = this.<ISA>parentOfType(context, ISA.class);
-                    final ISA isa_5 = ((ISA) _parentOfType_6);
-                    return Scopes.scopeFor(this.<ScalarVariable>allOfType(isa_5, ScalarVariable.class));
-                  } else {
-                    if (((context instanceof RegisterAlias) && Objects.equal(reference.getEReferenceType().getName(), "RegisterDef"))) {
-                      ISA _parentOfType_7 = this.<ISA>parentOfType(context, ISA.class);
-                      final ISA isa_6 = ((ISA) _parentOfType_7);
-                      Iterable<Register> _allOfType_2 = this.<Register>allOfType(isa_6, Register.class);
-                      Iterable<RegisterFile> _allOfType_3 = this.<RegisterFile>allOfType(isa_6, RegisterFile.class);
-                      Iterable<Variable> _plus_1 = Iterables.<Variable>concat(_allOfType_2, _allOfType_3);
-                      return Scopes.scopeFor(_plus_1);
-                    } else {
-                      return super.getScope(context, reference);
-                    }
-                  }
-                }
-              }
-            }
-          }
+          String _plus_4 = (_plus_3 + _name_3);
+          InputOutput.<String>println(_plus_4);
+          return super.getScope(context, reference);
         }
       }
     }
-  }
-  
-  protected IScope _symbolsDefinedBefore(final EObject cont, final EObject o) {
-    return this.symbolsDefinedBefore(cont.eContainer(), o.eContainer());
-  }
-  
-  protected IScope _symbolsDefinedBefore(final ConditionalStmt stmt, final EObject o) {
-    Expression _cond = stmt.getCond();
-    boolean _tripleEquals = (_cond == o);
-    if (_tripleEquals) {
-      return this.symbolsDefinedBefore(stmt.eContainer(), o.eContainer());
-    } else {
-      boolean _contains = stmt.getThenStmts().contains(o);
-      if (_contains) {
-        return Scopes.scopeFor(
-          this.localsDefinedBefore(stmt.getThenStmts(), o), 
-          this.symbolsDefinedBefore(stmt.eContainer(), o.eContainer()));
-      } else {
-        int _size = stmt.getElseStmts().size();
-        boolean _greaterThan = (_size > 0);
-        if (_greaterThan) {
-          return Scopes.scopeFor(
-            this.localsDefinedBefore(stmt.getElseStmts(), o), 
-            this.symbolsDefinedBefore(stmt.eContainer(), o.eContainer()));
-        }
-      }
-    }
-    return null;
-  }
-  
-  protected IScope _symbolsDefinedBefore(final Operation oper, final EObject o) {
-    IScope _xblockexpression = null;
-    {
-      ISA _parentOfType = this.<ISA>parentOfType(oper, ISA.class);
-      final ISA isa = ((ISA) _parentOfType);
-      EObject _eContainer = oper.eContainer();
-      final Instruction inst = ((Instruction) _eContainer);
-      List<Scalar> _list = IterableExtensions.<Scalar>toList(this.localsDefinedBefore(oper.getStatements(), o));
-      List<IndexedVariable> _list_1 = IterableExtensions.<IndexedVariable>toList(this.<IndexedVariable>allOfType(isa, IndexedVariable.class));
-      Iterable<Variable> _plus = Iterables.<Variable>concat(_list, _list_1);
-      List<RegisterVariable> _list_2 = IterableExtensions.<RegisterVariable>toList(this.<RegisterVariable>allOfType(isa, RegisterVariable.class));
-      Iterable<Variable> _plus_1 = Iterables.<Variable>concat(_plus, _list_2);
-      List<Constant> _list_3 = IterableExtensions.<Constant>toList(this.<Constant>allOfType(isa, Constant.class));
-      Iterable<EObject> _plus_2 = Iterables.<EObject>concat(_plus_1, _list_3);
-      List<BitField> _allContentsOfType = EcoreUtil2.<BitField>getAllContentsOfType(inst, BitField.class);
-      Iterable<EObject> _plus_3 = Iterables.<EObject>concat(_plus_2, _allContentsOfType);
-      _xblockexpression = Scopes.scopeFor(_plus_3);
-    }
-    return _xblockexpression;
-  }
-  
-  private Iterable<Scalar> localsDefinedBefore(final List<Statement> list, final EObject o) {
-    final int idx = list.indexOf(o);
-    final Function1<ScalarAssignment, Scalar> _function = (ScalarAssignment a) -> {
-      return a.getTo();
-    };
-    return IterableExtensions.<ScalarAssignment, Scalar>map(Iterables.<ScalarAssignment>filter(list.subList(0, idx), ScalarAssignment.class), _function);
   }
   
   public <T extends EObject> T parentOfType(final EObject obj, final Class<T> clazz) {
@@ -248,18 +133,5 @@ public class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
       }
     }
     return null;
-  }
-  
-  public IScope symbolsDefinedBefore(final EObject stmt, final EObject o) {
-    if (stmt instanceof ConditionalStmt) {
-      return _symbolsDefinedBefore((ConditionalStmt)stmt, o);
-    } else if (stmt instanceof Operation) {
-      return _symbolsDefinedBefore((Operation)stmt, o);
-    } else if (stmt != null) {
-      return _symbolsDefinedBefore(stmt, o);
-    } else {
-      throw new IllegalArgumentException("Unhandled parameter types: " +
-        Arrays.<Object>asList(stmt, o).toString());
-    }
   }
 }

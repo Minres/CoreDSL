@@ -4,43 +4,56 @@
 package com.minres.coredsl.serializer;
 
 import com.google.inject.Inject;
-import com.minres.coredsl.coreDsl.AdditionExpr;
-import com.minres.coredsl.coreDsl.AddressSpace;
-import com.minres.coredsl.coreDsl.BitExpr;
+import com.minres.coredsl.coreDsl.ArithmeticExpression;
+import com.minres.coredsl.coreDsl.AssignmentExpression;
 import com.minres.coredsl.coreDsl.BitField;
-import com.minres.coredsl.coreDsl.BitSizeSpec;
+import com.minres.coredsl.coreDsl.BitSizeSpecifier;
 import com.minres.coredsl.coreDsl.BitValue;
-import com.minres.coredsl.coreDsl.BooleanExpr;
-import com.minres.coredsl.coreDsl.ComparisonExpr;
-import com.minres.coredsl.coreDsl.ConditionalStmt;
-import com.minres.coredsl.coreDsl.Constant;
-import com.minres.coredsl.coreDsl.ConstantDef;
-import com.minres.coredsl.coreDsl.ConstantDefault;
+import com.minres.coredsl.coreDsl.BoolConstant;
+import com.minres.coredsl.coreDsl.CastExpression;
+import com.minres.coredsl.coreDsl.CharacterConstant;
+import com.minres.coredsl.coreDsl.CompoundStatement;
+import com.minres.coredsl.coreDsl.ConditionalExpression;
 import com.minres.coredsl.coreDsl.CoreDef;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.DescriptionContent;
-import com.minres.coredsl.coreDsl.DirectCode;
+import com.minres.coredsl.coreDsl.DesignatedInitializer;
+import com.minres.coredsl.coreDsl.Designator;
+import com.minres.coredsl.coreDsl.DirectAbstractDeclarator;
+import com.minres.coredsl.coreDsl.DirectDeclarator;
 import com.minres.coredsl.coreDsl.Encoding;
-import com.minres.coredsl.coreDsl.Function;
+import com.minres.coredsl.coreDsl.EnumSpecifier;
+import com.minres.coredsl.coreDsl.Enumerator;
+import com.minres.coredsl.coreDsl.Expression;
+import com.minres.coredsl.coreDsl.ExpressionStatement;
+import com.minres.coredsl.coreDsl.FloatingConstant;
+import com.minres.coredsl.coreDsl.FunctionDefinition;
+import com.minres.coredsl.coreDsl.IfStatement;
 import com.minres.coredsl.coreDsl.Import;
-import com.minres.coredsl.coreDsl.IndexedAssignment;
+import com.minres.coredsl.coreDsl.InitDeclarator;
+import com.minres.coredsl.coreDsl.Initializer;
 import com.minres.coredsl.coreDsl.Instruction;
 import com.minres.coredsl.coreDsl.InstructionSet;
-import com.minres.coredsl.coreDsl.MultiplicationExpr;
-import com.minres.coredsl.coreDsl.NumberLiteral;
-import com.minres.coredsl.coreDsl.Operation;
-import com.minres.coredsl.coreDsl.Procedure;
+import com.minres.coredsl.coreDsl.IntegerConstant;
+import com.minres.coredsl.coreDsl.IterationStatement;
+import com.minres.coredsl.coreDsl.JumpStatement;
+import com.minres.coredsl.coreDsl.LabeledStatement;
+import com.minres.coredsl.coreDsl.LogicalExpr;
+import com.minres.coredsl.coreDsl.ParameterDeclaration;
+import com.minres.coredsl.coreDsl.PodSpecifier;
+import com.minres.coredsl.coreDsl.PostfixExpression;
+import com.minres.coredsl.coreDsl.PostfixOperator;
+import com.minres.coredsl.coreDsl.PrimaryExpression;
 import com.minres.coredsl.coreDsl.RangeSpec;
-import com.minres.coredsl.coreDsl.Register;
-import com.minres.coredsl.coreDsl.RegisterAlias;
-import com.minres.coredsl.coreDsl.RegisterAssignment;
-import com.minres.coredsl.coreDsl.RegisterFile;
-import com.minres.coredsl.coreDsl.Scalar;
-import com.minres.coredsl.coreDsl.ScalarAssignment;
-import com.minres.coredsl.coreDsl.ShiftExpr;
-import com.minres.coredsl.coreDsl.TypeConv;
-import com.minres.coredsl.coreDsl.UnitaryExpr;
-import com.minres.coredsl.coreDsl.ValueRef;
+import com.minres.coredsl.coreDsl.StringLiteral;
+import com.minres.coredsl.coreDsl.StructDeclaration;
+import com.minres.coredsl.coreDsl.StructDeclarationSpecifier;
+import com.minres.coredsl.coreDsl.StructOrUnionSpecifier;
+import com.minres.coredsl.coreDsl.SwitchStatement;
+import com.minres.coredsl.coreDsl.TypeOrVarDeclaration;
+import com.minres.coredsl.coreDsl.TypedefDeclaration;
+import com.minres.coredsl.coreDsl.TypedefRef;
+import com.minres.coredsl.coreDsl.UnaryExpression;
 import com.minres.coredsl.services.CoreDslGrammarAccess;
 import java.util.Set;
 import org.eclipse.emf.ecore.EObject;
@@ -67,41 +80,65 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 		Set<Parameter> parameters = context.getEnabledBooleanParameters();
 		if (epackage == CoreDslPackage.eINSTANCE)
 			switch (semanticObject.eClass().getClassifierID()) {
-			case CoreDslPackage.ADDITION_EXPR:
-				sequence_AdditionExpr(context, (AdditionExpr) semanticObject); 
-				return; 
-			case CoreDslPackage.ADDRESS_SPACE:
-				sequence_AddressSpace(context, (AddressSpace) semanticObject); 
-				return; 
-			case CoreDslPackage.BIT_EXPR:
-				sequence_BitAndExpr_BitOrExpr_BitXOrExpr(context, (BitExpr) semanticObject); 
+			case CoreDslPackage.ARITHMETIC_EXPRESSION:
+				if (action == grammarAccess.getShiftExpressionAccess().getArithmeticExpressionLeftAction_1_0()
+						|| rule == grammarAccess.getAdditiveExpressionRule()) {
+					sequence_AdditiveExpression_MultiplicativeExpression(context, (ArithmeticExpression) semanticObject); 
+					return; 
+				}
+				else if (rule == grammarAccess.getConditionalExpressionRule()
+						|| action == grammarAccess.getConditionalExpressionAccess().getConditionalExpressionCondAction_1_0()
+						|| rule == grammarAccess.getLogicalOrExpressionRule()
+						|| action == grammarAccess.getLogicalOrExpressionAccess().getLogicalExprLeftAction_1_0()
+						|| rule == grammarAccess.getLogicalAndExpressionRule()
+						|| action == grammarAccess.getLogicalAndExpressionAccess().getLogicalExprLeftAction_1_0()
+						|| rule == grammarAccess.getInclusiveOrExpressionRule()
+						|| action == grammarAccess.getInclusiveOrExpressionAccess().getLogicalExprLeftAction_1_0()
+						|| rule == grammarAccess.getExclusiveOrExpressionRule()
+						|| action == grammarAccess.getExclusiveOrExpressionAccess().getLogicalExprLeftAction_1_0()
+						|| rule == grammarAccess.getAndExpressionRule()
+						|| action == grammarAccess.getAndExpressionAccess().getLogicalExprLeftAction_1_0()
+						|| rule == grammarAccess.getEqualityExpressionRule()
+						|| action == grammarAccess.getEqualityExpressionAccess().getLogicalExprLeftAction_1_0()
+						|| rule == grammarAccess.getRelationalExpressionRule()
+						|| action == grammarAccess.getRelationalExpressionAccess().getLogicalExprLeftAction_1_0()
+						|| rule == grammarAccess.getShiftExpressionRule()
+						|| rule == grammarAccess.getConstantExpressionRule()) {
+					sequence_AdditiveExpression_MultiplicativeExpression_ShiftExpression(context, (ArithmeticExpression) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getAdditiveExpressionAccess().getArithmeticExpressionLeftAction_1_0()
+						|| rule == grammarAccess.getMultiplicativeExpressionRule()) {
+					sequence_MultiplicativeExpression(context, (ArithmeticExpression) semanticObject); 
+					return; 
+				}
+				else break;
+			case CoreDslPackage.ASSIGNMENT_EXPRESSION:
+				sequence_AssignmentExpression(context, (AssignmentExpression) semanticObject); 
 				return; 
 			case CoreDslPackage.BIT_FIELD:
 				sequence_BitField(context, (BitField) semanticObject); 
 				return; 
-			case CoreDslPackage.BIT_SIZE_SPEC:
-				sequence_BitSizeSpec(context, (BitSizeSpec) semanticObject); 
+			case CoreDslPackage.BIT_SIZE_SPECIFIER:
+				sequence_BitSizeSpecifier(context, (BitSizeSpecifier) semanticObject); 
 				return; 
 			case CoreDslPackage.BIT_VALUE:
 				sequence_BitValue(context, (BitValue) semanticObject); 
 				return; 
-			case CoreDslPackage.BOOLEAN_EXPR:
-				sequence_BooleanAndExpr_BooleanOrExpr(context, (BooleanExpr) semanticObject); 
+			case CoreDslPackage.BOOL_CONSTANT:
+				sequence_BoolConstant(context, (BoolConstant) semanticObject); 
 				return; 
-			case CoreDslPackage.COMPARISON_EXPR:
-				sequence_ComparisonExpr_EqualityExpr(context, (ComparisonExpr) semanticObject); 
+			case CoreDslPackage.CAST_EXPRESSION:
+				sequence_CastExpression(context, (CastExpression) semanticObject); 
 				return; 
-			case CoreDslPackage.CONDITIONAL_STMT:
-				sequence_ConditionalStmt(context, (ConditionalStmt) semanticObject); 
+			case CoreDslPackage.CHARACTER_CONSTANT:
+				sequence_CharacterConstant(context, (CharacterConstant) semanticObject); 
 				return; 
-			case CoreDslPackage.CONSTANT:
-				sequence_ConstantDecl(context, (Constant) semanticObject); 
+			case CoreDslPackage.COMPOUND_STATEMENT:
+				sequence_CompoundStatement(context, (CompoundStatement) semanticObject); 
 				return; 
-			case CoreDslPackage.CONSTANT_DEF:
-				sequence_ConstantDef(context, (ConstantDef) semanticObject); 
-				return; 
-			case CoreDslPackage.CONSTANT_DEFAULT:
-				sequence_ConstantDefault(context, (ConstantDefault) semanticObject); 
+			case CoreDslPackage.CONDITIONAL_EXPRESSION:
+				sequence_ConditionalExpression(context, (ConditionalExpression) semanticObject); 
 				return; 
 			case CoreDslPackage.CORE_DEF:
 				sequence_CoreDef(context, (CoreDef) semanticObject); 
@@ -109,20 +146,58 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 			case CoreDslPackage.DESCRIPTION_CONTENT:
 				sequence_DescriptionContent(context, (DescriptionContent) semanticObject); 
 				return; 
-			case CoreDslPackage.DIRECT_CODE:
-				sequence_DirectCode(context, (DirectCode) semanticObject); 
+			case CoreDslPackage.DESIGNATED_INITIALIZER:
+				sequence_DesignatedInitializer(context, (DesignatedInitializer) semanticObject); 
 				return; 
+			case CoreDslPackage.DESIGNATOR:
+				sequence_Designator(context, (Designator) semanticObject); 
+				return; 
+			case CoreDslPackage.DIRECT_ABSTRACT_DECLARATOR:
+				sequence_DirectAbstractDeclarator_ParameterList(context, (DirectAbstractDeclarator) semanticObject); 
+				return; 
+			case CoreDslPackage.DIRECT_DECLARATOR:
+				if (rule == grammarAccess.getDirectDeclaratorRule()
+						|| rule == grammarAccess.getVariableRefRule()) {
+					sequence_DirectDeclarator(context, (DirectDeclarator) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getDirectDeclaratorAccess().getDirectDeclaratorLeftAction_2_0()) {
+					sequence_DirectDeclarator_DirectDeclarator_2_0(context, (DirectDeclarator) semanticObject); 
+					return; 
+				}
+				else break;
 			case CoreDslPackage.ENCODING:
 				sequence_Encoding(context, (Encoding) semanticObject); 
 				return; 
-			case CoreDslPackage.FUNCTION:
-				sequence_Primary(context, (Function) semanticObject); 
+			case CoreDslPackage.ENUM_SPECIFIER:
+				sequence_EnumSpecifier_EnumeratorList(context, (EnumSpecifier) semanticObject); 
+				return; 
+			case CoreDslPackage.ENUMERATOR:
+				sequence_Enumerator(context, (Enumerator) semanticObject); 
+				return; 
+			case CoreDslPackage.EXPRESSION:
+				sequence_Expression(context, (Expression) semanticObject); 
+				return; 
+			case CoreDslPackage.EXPRESSION_STATEMENT:
+				sequence_ExpressionStatement(context, (ExpressionStatement) semanticObject); 
+				return; 
+			case CoreDslPackage.FLOATING_CONSTANT:
+				sequence_FloatingConstant_FloatingSuffix(context, (FloatingConstant) semanticObject); 
+				return; 
+			case CoreDslPackage.FUNCTION_DEFINITION:
+				sequence_FunctionDefinition_ParameterList(context, (FunctionDefinition) semanticObject); 
+				return; 
+			case CoreDslPackage.IF_STATEMENT:
+				sequence_IfStatement(context, (IfStatement) semanticObject); 
 				return; 
 			case CoreDslPackage.IMPORT:
 				sequence_Import(context, (Import) semanticObject); 
 				return; 
-			case CoreDslPackage.INDEXED_ASSIGNMENT:
-				sequence_Assignment(context, (IndexedAssignment) semanticObject); 
+			case CoreDslPackage.INIT_DECLARATOR:
+				sequence_InitDeclarator(context, (InitDeclarator) semanticObject); 
+				return; 
+			case CoreDslPackage.INITIALIZER:
+				sequence_Initializer_InitializerList(context, (Initializer) semanticObject); 
 				return; 
 			case CoreDslPackage.INSTRUCTION:
 				sequence_Instruction(context, (Instruction) semanticObject); 
@@ -130,59 +205,101 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 			case CoreDslPackage.INSTRUCTION_SET:
 				sequence_InstructionSet(context, (InstructionSet) semanticObject); 
 				return; 
-			case CoreDslPackage.MULTIPLICATION_EXPR:
-				sequence_MultiplicationExpr(context, (MultiplicationExpr) semanticObject); 
+			case CoreDslPackage.INTEGER_CONSTANT:
+				sequence_IntegerConstant_LongLongSuffix_LongSuffix_UnsignedSuffix(context, (IntegerConstant) semanticObject); 
 				return; 
-			case CoreDslPackage.NUMBER_LITERAL:
-				sequence_NumberLiteral(context, (NumberLiteral) semanticObject); 
+			case CoreDslPackage.ITERATION_STATEMENT:
+				sequence_ForCondition_IterationStatement(context, (IterationStatement) semanticObject); 
 				return; 
-			case CoreDslPackage.OPERATION:
-				sequence_Operation(context, (Operation) semanticObject); 
+			case CoreDslPackage.JUMP_STATEMENT:
+				sequence_JumpStatement(context, (JumpStatement) semanticObject); 
 				return; 
-			case CoreDslPackage.PROCEDURE:
-				sequence_Procedure(context, (Procedure) semanticObject); 
+			case CoreDslPackage.LABELED_STATEMENT:
+				sequence_LabeledStatement(context, (LabeledStatement) semanticObject); 
+				return; 
+			case CoreDslPackage.LOGICAL_EXPR:
+				if (rule == grammarAccess.getConditionalExpressionRule()
+						|| action == grammarAccess.getConditionalExpressionAccess().getConditionalExpressionCondAction_1_0()
+						|| rule == grammarAccess.getLogicalOrExpressionRule()
+						|| rule == grammarAccess.getConstantExpressionRule()) {
+					sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_LogicalOrExpression_RelationalExpression(context, (LogicalExpr) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getLogicalOrExpressionAccess().getLogicalExprLeftAction_1_0()
+						|| rule == grammarAccess.getLogicalAndExpressionRule()) {
+					sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_RelationalExpression(context, (LogicalExpr) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getLogicalAndExpressionAccess().getLogicalExprLeftAction_1_0()
+						|| rule == grammarAccess.getInclusiveOrExpressionRule()) {
+					sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_RelationalExpression(context, (LogicalExpr) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getInclusiveOrExpressionAccess().getLogicalExprLeftAction_1_0()
+						|| rule == grammarAccess.getExclusiveOrExpressionRule()) {
+					sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_RelationalExpression(context, (LogicalExpr) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getExclusiveOrExpressionAccess().getLogicalExprLeftAction_1_0()
+						|| rule == grammarAccess.getAndExpressionRule()) {
+					sequence_AndExpression_EqualityExpression_RelationalExpression(context, (LogicalExpr) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getAndExpressionAccess().getLogicalExprLeftAction_1_0()
+						|| rule == grammarAccess.getEqualityExpressionRule()) {
+					sequence_EqualityExpression_RelationalExpression(context, (LogicalExpr) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getEqualityExpressionAccess().getLogicalExprLeftAction_1_0()
+						|| rule == grammarAccess.getRelationalExpressionRule()) {
+					sequence_RelationalExpression(context, (LogicalExpr) semanticObject); 
+					return; 
+				}
+				else break;
+			case CoreDslPackage.PARAMETER_DECLARATION:
+				sequence_ParameterDeclaration(context, (ParameterDeclaration) semanticObject); 
+				return; 
+			case CoreDslPackage.POD_SPECIFIER:
+				sequence_PodSpecifier(context, (PodSpecifier) semanticObject); 
+				return; 
+			case CoreDslPackage.POSTFIX_EXPRESSION:
+				sequence_PostfixExpression(context, (PostfixExpression) semanticObject); 
+				return; 
+			case CoreDslPackage.POSTFIX_OPERATOR:
+				sequence_PostfixOperator(context, (PostfixOperator) semanticObject); 
+				return; 
+			case CoreDslPackage.PRIMARY_EXPRESSION:
+				sequence_PrimaryExpression(context, (PrimaryExpression) semanticObject); 
 				return; 
 			case CoreDslPackage.RANGE_SPEC:
 				sequence_RangeSpec(context, (RangeSpec) semanticObject); 
 				return; 
-			case CoreDslPackage.REGISTER:
-				sequence_Register(context, (Register) semanticObject); 
+			case CoreDslPackage.STRING_LITERAL:
+				sequence_EncodingPrefix_StringLiteral(context, (StringLiteral) semanticObject); 
 				return; 
-			case CoreDslPackage.REGISTER_ALIAS:
-				sequence_RegisterAlias(context, (RegisterAlias) semanticObject); 
+			case CoreDslPackage.STRUCT_DECLARATION:
+				sequence_StructDeclaration(context, (StructDeclaration) semanticObject); 
 				return; 
-			case CoreDslPackage.REGISTER_ASSIGNMENT:
-				sequence_Assignment(context, (RegisterAssignment) semanticObject); 
+			case CoreDslPackage.STRUCT_DECLARATION_SPECIFIER:
+				sequence_StructDeclarationSpecifier(context, (StructDeclarationSpecifier) semanticObject); 
 				return; 
-			case CoreDslPackage.REGISTER_FILE:
-				sequence_RegisterFile(context, (RegisterFile) semanticObject); 
+			case CoreDslPackage.STRUCT_OR_UNION_SPECIFIER:
+				sequence_StructOrUnionSpecifier(context, (StructOrUnionSpecifier) semanticObject); 
 				return; 
-			case CoreDslPackage.SCALAR:
-				if (rule == grammarAccess.getScalarBaseRule()) {
-					sequence_ScalarBase(context, (Scalar) semanticObject); 
-					return; 
-				}
-				else if (rule == grammarAccess.getVariableRule()
-						|| rule == grammarAccess.getScalarVariableRule()
-						|| rule == grammarAccess.getScalarRule()) {
-					sequence_Scalar(context, (Scalar) semanticObject); 
-					return; 
-				}
-				else break;
-			case CoreDslPackage.SCALAR_ASSIGNMENT:
-				sequence_Assignment(context, (ScalarAssignment) semanticObject); 
+			case CoreDslPackage.SWITCH_STATEMENT:
+				sequence_SwitchStatement(context, (SwitchStatement) semanticObject); 
 				return; 
-			case CoreDslPackage.SHIFT_EXPR:
-				sequence_ShiftExpr(context, (ShiftExpr) semanticObject); 
+			case CoreDslPackage.TYPE_OR_VAR_DECLARATION:
+				sequence_AttributeList_DeclarationSpecifier_TypeOrVarDeclaration(context, (TypeOrVarDeclaration) semanticObject); 
 				return; 
-			case CoreDslPackage.TYPE_CONV:
-				sequence_TypeConv(context, (TypeConv) semanticObject); 
+			case CoreDslPackage.TYPEDEF_DECLARATION:
+				sequence_AttributeList_DeclarationSpecifier_TypedefDeclaration(context, (TypedefDeclaration) semanticObject); 
 				return; 
-			case CoreDslPackage.UNITARY_EXPR:
-				sequence_UnitaryExpr(context, (UnitaryExpr) semanticObject); 
+			case CoreDslPackage.TYPEDEF_REF:
+				sequence_TypedefRef(context, (TypedefRef) semanticObject); 
 				return; 
-			case CoreDslPackage.VALUE_REF:
-				sequence_ValueRef(context, (ValueRef) semanticObject); 
+			case CoreDslPackage.UNARY_EXPRESSION:
+				sequence_UnaryExpression_UnaryOperator(context, (UnaryExpression) semanticObject); 
 				return; 
 			}
 		if (errorAcceptor != null)
@@ -191,129 +308,209 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     Expression returns AdditionExpr
-	 *     BooleanOrExpr returns AdditionExpr
-	 *     BooleanOrExpr.BooleanExpr_1_0 returns AdditionExpr
-	 *     BooleanAndExpr returns AdditionExpr
-	 *     BooleanAndExpr.BooleanExpr_1_0 returns AdditionExpr
-	 *     BitOrExpr returns AdditionExpr
-	 *     BitOrExpr.BitExpr_1_0 returns AdditionExpr
-	 *     BitXOrExpr returns AdditionExpr
-	 *     BitXOrExpr.BitExpr_1_0 returns AdditionExpr
-	 *     BitAndExpr returns AdditionExpr
-	 *     BitAndExpr.BitExpr_1_0 returns AdditionExpr
-	 *     EqualityExpr returns AdditionExpr
-	 *     EqualityExpr.ComparisonExpr_1_0 returns AdditionExpr
-	 *     ComparisonExpr returns AdditionExpr
-	 *     ComparisonExpr.ComparisonExpr_1_0 returns AdditionExpr
-	 *     ShiftExpr returns AdditionExpr
-	 *     ShiftExpr.ShiftExpr_1_0 returns AdditionExpr
-	 *     AdditionExpr returns AdditionExpr
-	 *     AdditionExpr.AdditionExpr_1_0 returns AdditionExpr
-	 *     MultiplicationExpr returns AdditionExpr
-	 *     MultiplicationExpr.MultiplicationExpr_1_0 returns AdditionExpr
-	 *     UnitaryExpr returns AdditionExpr
-	 *     TypeConv returns AdditionExpr
-	 *     TypeConv.TypeConv_1_0 returns AdditionExpr
-	 *     Primary returns AdditionExpr
-	 *
-	 * Constraint:
-	 *     (left=AdditionExpr_AdditionExpr_1_0 (op='+' | op='-') right=MultiplicationExpr)
-	 */
-	protected void sequence_AdditionExpr(ISerializationContext context, AdditionExpr semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Variable returns AddressSpace
-	 *     IndexedVariable returns AddressSpace
-	 *     AddressSpace returns AddressSpace
-	 *
-	 * Constraint:
-	 *     (name=ID (bitSize=NATURAL | bitSizeConst=[Constant|ID]))
-	 */
-	protected void sequence_AddressSpace(ISerializationContext context, AddressSpace semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Statement returns IndexedAssignment
-	 *     Assignment returns IndexedAssignment
-	 *
-	 * Constraint:
-	 *     (to=[IndexedVariable|ID] index=Expression bitWidth=BitSizeSpec? expression=Expression)
-	 */
-	protected void sequence_Assignment(ISerializationContext context, IndexedAssignment semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Statement returns RegisterAssignment
-	 *     Assignment returns RegisterAssignment
-	 *
-	 * Constraint:
-	 *     (to=[RegisterVariable|ID] bitWidth=BitSizeSpec? expression=Expression)
-	 */
-	protected void sequence_Assignment(ISerializationContext context, RegisterAssignment semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Statement returns ScalarAssignment
-	 *     Assignment returns ScalarAssignment
-	 *
-	 * Constraint:
-	 *     (to=Scalar bitWidth=BitSizeSpec? expression=Expression)
-	 */
-	protected void sequence_Assignment(ISerializationContext context, ScalarAssignment semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Expression returns BitExpr
-	 *     BooleanOrExpr returns BitExpr
-	 *     BooleanOrExpr.BooleanExpr_1_0 returns BitExpr
-	 *     BooleanAndExpr returns BitExpr
-	 *     BooleanAndExpr.BooleanExpr_1_0 returns BitExpr
-	 *     BitOrExpr returns BitExpr
-	 *     BitOrExpr.BitExpr_1_0 returns BitExpr
-	 *     BitXOrExpr returns BitExpr
-	 *     BitXOrExpr.BitExpr_1_0 returns BitExpr
-	 *     BitAndExpr returns BitExpr
-	 *     BitAndExpr.BitExpr_1_0 returns BitExpr
-	 *     EqualityExpr returns BitExpr
-	 *     EqualityExpr.ComparisonExpr_1_0 returns BitExpr
-	 *     ComparisonExpr returns BitExpr
-	 *     ComparisonExpr.ComparisonExpr_1_0 returns BitExpr
-	 *     ShiftExpr returns BitExpr
-	 *     ShiftExpr.ShiftExpr_1_0 returns BitExpr
-	 *     AdditionExpr returns BitExpr
-	 *     AdditionExpr.AdditionExpr_1_0 returns BitExpr
-	 *     MultiplicationExpr returns BitExpr
-	 *     MultiplicationExpr.MultiplicationExpr_1_0 returns BitExpr
-	 *     UnitaryExpr returns BitExpr
-	 *     TypeConv returns BitExpr
-	 *     TypeConv.TypeConv_1_0 returns BitExpr
-	 *     Primary returns BitExpr
+	 *     ShiftExpression.ArithmeticExpression_1_0 returns ArithmeticExpression
+	 *     AdditiveExpression returns ArithmeticExpression
 	 *
 	 * Constraint:
 	 *     (
-	 *         (left=BitOrExpr_BitExpr_1_0 op='|' right=BitXOrExpr) | 
-	 *         (left=BitXOrExpr_BitExpr_1_0 op='^' right=BitAndExpr) | 
-	 *         (left=BitAndExpr_BitExpr_1_0 op='&' right=EqualityExpr)
+	 *         (left=AdditiveExpression_ArithmeticExpression_1_0 (op='+' | op='-') right=AdditiveExpression) | 
+	 *         (left=MultiplicativeExpression_ArithmeticExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
 	 *     )
 	 */
-	protected void sequence_BitAndExpr_BitOrExpr_BitXOrExpr(ISerializationContext context, BitExpr semanticObject) {
+	protected void sequence_AdditiveExpression_MultiplicativeExpression(ISerializationContext context, ArithmeticExpression semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     ConditionalExpression returns ArithmeticExpression
+	 *     ConditionalExpression.ConditionalExpression_1_0 returns ArithmeticExpression
+	 *     LogicalOrExpression returns ArithmeticExpression
+	 *     LogicalOrExpression.LogicalExpr_1_0 returns ArithmeticExpression
+	 *     LogicalAndExpression returns ArithmeticExpression
+	 *     LogicalAndExpression.LogicalExpr_1_0 returns ArithmeticExpression
+	 *     InclusiveOrExpression returns ArithmeticExpression
+	 *     InclusiveOrExpression.LogicalExpr_1_0 returns ArithmeticExpression
+	 *     ExclusiveOrExpression returns ArithmeticExpression
+	 *     ExclusiveOrExpression.LogicalExpr_1_0 returns ArithmeticExpression
+	 *     AndExpression returns ArithmeticExpression
+	 *     AndExpression.LogicalExpr_1_0 returns ArithmeticExpression
+	 *     EqualityExpression returns ArithmeticExpression
+	 *     EqualityExpression.LogicalExpr_1_0 returns ArithmeticExpression
+	 *     RelationalExpression returns ArithmeticExpression
+	 *     RelationalExpression.LogicalExpr_1_0 returns ArithmeticExpression
+	 *     ShiftExpression returns ArithmeticExpression
+	 *     ConstantExpression returns ArithmeticExpression
+	 *
+	 * Constraint:
+	 *     (
+	 *         (left=ShiftExpression_ArithmeticExpression_1_0 (op='<<' | op='>>') right=ShiftExpression) | 
+	 *         (left=AdditiveExpression_ArithmeticExpression_1_0 (op='+' | op='-') right=AdditiveExpression) | 
+	 *         (left=MultiplicativeExpression_ArithmeticExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
+	 *     )
+	 */
+	protected void sequence_AdditiveExpression_MultiplicativeExpression_ShiftExpression(ISerializationContext context, ArithmeticExpression semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     ConditionalExpression returns LogicalExpr
+	 *     ConditionalExpression.ConditionalExpression_1_0 returns LogicalExpr
+	 *     LogicalOrExpression returns LogicalExpr
+	 *     ConstantExpression returns LogicalExpr
+	 *
+	 * Constraint:
+	 *     (
+	 *         (left=LogicalOrExpression_LogicalExpr_1_0 op='||' right=LogicalOrExpression) | 
+	 *         (left=LogicalAndExpression_LogicalExpr_1_0 op='&&' right=LogicalAndExpression) | 
+	 *         (left=InclusiveOrExpression_LogicalExpr_1_0 op='|' right=InclusiveOrExpression) | 
+	 *         (left=ExclusiveOrExpression_LogicalExpr_1_0 op='^' right=ExclusiveOrExpression) | 
+	 *         (left=AndExpression_LogicalExpr_1_0 op='&' right=AndExpression) | 
+	 *         (left=EqualityExpression_LogicalExpr_1_0 (op='==' | op='!=') right=EqualityExpression) | 
+	 *         (left=RelationalExpression_LogicalExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression)
+	 *     )
+	 */
+	protected void sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_LogicalOrExpression_RelationalExpression(ISerializationContext context, LogicalExpr semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     LogicalOrExpression.LogicalExpr_1_0 returns LogicalExpr
+	 *     LogicalAndExpression returns LogicalExpr
+	 *
+	 * Constraint:
+	 *     (
+	 *         (left=LogicalAndExpression_LogicalExpr_1_0 op='&&' right=LogicalAndExpression) | 
+	 *         (left=InclusiveOrExpression_LogicalExpr_1_0 op='|' right=InclusiveOrExpression) | 
+	 *         (left=ExclusiveOrExpression_LogicalExpr_1_0 op='^' right=ExclusiveOrExpression) | 
+	 *         (left=AndExpression_LogicalExpr_1_0 op='&' right=AndExpression) | 
+	 *         (left=EqualityExpression_LogicalExpr_1_0 (op='==' | op='!=') right=EqualityExpression) | 
+	 *         (left=RelationalExpression_LogicalExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression)
+	 *     )
+	 */
+	protected void sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_RelationalExpression(ISerializationContext context, LogicalExpr semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     LogicalAndExpression.LogicalExpr_1_0 returns LogicalExpr
+	 *     InclusiveOrExpression returns LogicalExpr
+	 *
+	 * Constraint:
+	 *     (
+	 *         (left=InclusiveOrExpression_LogicalExpr_1_0 op='|' right=InclusiveOrExpression) | 
+	 *         (left=ExclusiveOrExpression_LogicalExpr_1_0 op='^' right=ExclusiveOrExpression) | 
+	 *         (left=AndExpression_LogicalExpr_1_0 op='&' right=AndExpression) | 
+	 *         (left=EqualityExpression_LogicalExpr_1_0 (op='==' | op='!=') right=EqualityExpression) | 
+	 *         (left=RelationalExpression_LogicalExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression)
+	 *     )
+	 */
+	protected void sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_RelationalExpression(ISerializationContext context, LogicalExpr semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     InclusiveOrExpression.LogicalExpr_1_0 returns LogicalExpr
+	 *     ExclusiveOrExpression returns LogicalExpr
+	 *
+	 * Constraint:
+	 *     (
+	 *         (left=ExclusiveOrExpression_LogicalExpr_1_0 op='^' right=ExclusiveOrExpression) | 
+	 *         (left=AndExpression_LogicalExpr_1_0 op='&' right=AndExpression) | 
+	 *         (left=EqualityExpression_LogicalExpr_1_0 (op='==' | op='!=') right=EqualityExpression) | 
+	 *         (left=RelationalExpression_LogicalExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression)
+	 *     )
+	 */
+	protected void sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_RelationalExpression(ISerializationContext context, LogicalExpr semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     ExclusiveOrExpression.LogicalExpr_1_0 returns LogicalExpr
+	 *     AndExpression returns LogicalExpr
+	 *
+	 * Constraint:
+	 *     (
+	 *         (left=AndExpression_LogicalExpr_1_0 op='&' right=AndExpression) | 
+	 *         (left=EqualityExpression_LogicalExpr_1_0 (op='==' | op='!=') right=EqualityExpression) | 
+	 *         (left=RelationalExpression_LogicalExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression)
+	 *     )
+	 */
+	protected void sequence_AndExpression_EqualityExpression_RelationalExpression(ISerializationContext context, LogicalExpr semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Expression returns AssignmentExpression
+	 *     Expression.Expression_1_0 returns AssignmentExpression
+	 *     AssignmentExpression returns AssignmentExpression
+	 *
+	 * Constraint:
+	 *     (
+	 *         left=AssignmentExpression_AssignmentExpression_1 
+	 *         (
+	 *             op='=' | 
+	 *             op='*=' | 
+	 *             op='/=' | 
+	 *             op='%=' | 
+	 *             op='+=' | 
+	 *             op='-=' | 
+	 *             op='<<=' | 
+	 *             op='>>=' | 
+	 *             op='&=' | 
+	 *             op='^=' | 
+	 *             op='|='
+	 *         ) 
+	 *         right=ConditionalExpression
+	 *     )
+	 */
+	protected void sequence_AssignmentExpression(ISerializationContext context, AssignmentExpression semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     BlockItem returns TypeOrVarDeclaration
+	 *     Declaration returns TypeOrVarDeclaration
+	 *     TypeOrVarDeclaration returns TypeOrVarDeclaration
+	 *
+	 * Constraint:
+	 *     (
+	 *         ((storage+=StorageClassSpecifier | qualifiers+=TypeQualifier)? (attrs+=Attribute attrs+=Attribute*)?)+ 
+	 *         type=TypeSpecifier 
+	 *         size=BitSizeSpecifier? 
+	 *         (init+=InitDeclarator init+=InitDeclarator*)?
+	 *     )
+	 */
+	protected void sequence_AttributeList_DeclarationSpecifier_TypeOrVarDeclaration(ISerializationContext context, TypeOrVarDeclaration semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     BlockItem returns TypedefDeclaration
+	 *     Declaration returns TypedefDeclaration
+	 *     TypedefDeclaration returns TypedefDeclaration
+	 *
+	 * Constraint:
+	 *     (((storage+=StorageClassSpecifier | qualifiers+=TypeQualifier)? (attrs+=Attribute attrs+=Attribute*)?)+ type=TypeSpecifier init+=InitDeclarator)
+	 */
+	protected void sequence_AttributeList_DeclarationSpecifier_TypedefDeclaration(ISerializationContext context, TypedefDeclaration semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -322,10 +519,10 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * Contexts:
 	 *     Field returns BitField
 	 *     BitField returns BitField
-	 *     RValue returns BitField
+	 *     VariableRef returns BitField
 	 *
 	 * Constraint:
-	 *     (name=ID bitRange=RangeSpec type=DataType?)
+	 *     (name=ID bitRange=RangeSpec type=BitfieldDataType?)
 	 */
 	protected void sequence_BitField(ISerializationContext context, BitField semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -334,12 +531,12 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     BitSizeSpec returns BitSizeSpec
+	 *     BitSizeSpecifier returns BitSizeSpecifier
 	 *
 	 * Constraint:
 	 *     (value=NATURAL | constant=[Constant|ID])
 	 */
-	protected void sequence_BitSizeSpec(ISerializationContext context, BitSizeSpec semanticObject) {
+	protected void sequence_BitSizeSpecifier(ISerializationContext context, BitSizeSpecifier semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -348,15 +545,15 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * Contexts:
 	 *     Field returns BitValue
 	 *     BitValue returns BitValue
-	 *     RValue returns BitValue
+	 *     VariableRef returns BitValue
 	 *
 	 * Constraint:
 	 *     name=BVAL
 	 */
 	protected void sequence_BitValue(ISerializationContext context, BitValue semanticObject) {
 		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.RVALUE__NAME) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.RVALUE__NAME));
+			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.VARIABLE_REF__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.VARIABLE_REF__NAME));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
 		feeder.accept(grammarAccess.getBitValueAccess().getNameBVALTerminalRuleCall_0(), semanticObject.getName());
@@ -366,134 +563,115 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     Expression returns BooleanExpr
-	 *     BooleanOrExpr returns BooleanExpr
-	 *     BooleanOrExpr.BooleanExpr_1_0 returns BooleanExpr
-	 *     BooleanAndExpr returns BooleanExpr
-	 *     BooleanAndExpr.BooleanExpr_1_0 returns BooleanExpr
-	 *     BitOrExpr returns BooleanExpr
-	 *     BitOrExpr.BitExpr_1_0 returns BooleanExpr
-	 *     BitXOrExpr returns BooleanExpr
-	 *     BitXOrExpr.BitExpr_1_0 returns BooleanExpr
-	 *     BitAndExpr returns BooleanExpr
-	 *     BitAndExpr.BitExpr_1_0 returns BooleanExpr
-	 *     EqualityExpr returns BooleanExpr
-	 *     EqualityExpr.ComparisonExpr_1_0 returns BooleanExpr
-	 *     ComparisonExpr returns BooleanExpr
-	 *     ComparisonExpr.ComparisonExpr_1_0 returns BooleanExpr
-	 *     ShiftExpr returns BooleanExpr
-	 *     ShiftExpr.ShiftExpr_1_0 returns BooleanExpr
-	 *     AdditionExpr returns BooleanExpr
-	 *     AdditionExpr.AdditionExpr_1_0 returns BooleanExpr
-	 *     MultiplicationExpr returns BooleanExpr
-	 *     MultiplicationExpr.MultiplicationExpr_1_0 returns BooleanExpr
-	 *     UnitaryExpr returns BooleanExpr
-	 *     TypeConv returns BooleanExpr
-	 *     TypeConv.TypeConv_1_0 returns BooleanExpr
-	 *     Primary returns BooleanExpr
+	 *     Constant returns BoolConstant
+	 *     BoolConstant returns BoolConstant
 	 *
 	 * Constraint:
-	 *     ((left=BooleanOrExpr_BooleanExpr_1_0 op='||' right=BooleanAndExpr) | (left=BooleanAndExpr_BooleanExpr_1_0 op='&&' right=BitOrExpr))
+	 *     val=BOOLEAN
 	 */
-	protected void sequence_BooleanAndExpr_BooleanOrExpr(ISerializationContext context, BooleanExpr semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Expression returns ComparisonExpr
-	 *     BooleanOrExpr returns ComparisonExpr
-	 *     BooleanOrExpr.BooleanExpr_1_0 returns ComparisonExpr
-	 *     BooleanAndExpr returns ComparisonExpr
-	 *     BooleanAndExpr.BooleanExpr_1_0 returns ComparisonExpr
-	 *     BitOrExpr returns ComparisonExpr
-	 *     BitOrExpr.BitExpr_1_0 returns ComparisonExpr
-	 *     BitXOrExpr returns ComparisonExpr
-	 *     BitXOrExpr.BitExpr_1_0 returns ComparisonExpr
-	 *     BitAndExpr returns ComparisonExpr
-	 *     BitAndExpr.BitExpr_1_0 returns ComparisonExpr
-	 *     EqualityExpr returns ComparisonExpr
-	 *     EqualityExpr.ComparisonExpr_1_0 returns ComparisonExpr
-	 *     ComparisonExpr returns ComparisonExpr
-	 *     ComparisonExpr.ComparisonExpr_1_0 returns ComparisonExpr
-	 *     ShiftExpr returns ComparisonExpr
-	 *     ShiftExpr.ShiftExpr_1_0 returns ComparisonExpr
-	 *     AdditionExpr returns ComparisonExpr
-	 *     AdditionExpr.AdditionExpr_1_0 returns ComparisonExpr
-	 *     MultiplicationExpr returns ComparisonExpr
-	 *     MultiplicationExpr.MultiplicationExpr_1_0 returns ComparisonExpr
-	 *     UnitaryExpr returns ComparisonExpr
-	 *     TypeConv returns ComparisonExpr
-	 *     TypeConv.TypeConv_1_0 returns ComparisonExpr
-	 *     Primary returns ComparisonExpr
-	 *
-	 * Constraint:
-	 *     (
-	 *         (left=EqualityExpr_ComparisonExpr_1_0 (op='==' | op='!=') right=ComparisonExpr) | 
-	 *         (left=ComparisonExpr_ComparisonExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=ShiftExpr)
-	 *     )
-	 */
-	protected void sequence_ComparisonExpr_EqualityExpr(ISerializationContext context, ComparisonExpr semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Statement returns ConditionalStmt
-	 *     ConditionalStmt returns ConditionalStmt
-	 *
-	 * Constraint:
-	 *     (cond=BooleanOrExpr (thenStmts+=Statement | thenStmts+=Statement+) (elseStmts+=Statement | elseStmts+=Statement+)?)
-	 */
-	protected void sequence_ConditionalStmt(ISerializationContext context, ConditionalStmt semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Constant returns Constant
-	 *     ConstantDecl returns Constant
-	 *     RValue returns Constant
-	 *
-	 * Constraint:
-	 *     (name=ID constantDefault=ConstantDefault?)
-	 */
-	protected void sequence_ConstantDecl(ISerializationContext context, Constant semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Constant returns ConstantDef
-	 *     ConstantDef returns ConstantDef
-	 *     RValue returns ConstantDef
-	 *
-	 * Constraint:
-	 *     (name=ID value=NATURAL (attributes+=ConstAttribute attributes+=ConstAttribute*)?)
-	 */
-	protected void sequence_ConstantDef(ISerializationContext context, ConstantDef semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     ConstantDefault returns ConstantDefault
-	 *
-	 * Constraint:
-	 *     defaultValue=NATURAL
-	 */
-	protected void sequence_ConstantDefault(ISerializationContext context, ConstantDefault semanticObject) {
+	protected void sequence_BoolConstant(ISerializationContext context, BoolConstant semanticObject) {
 		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.CONSTANT_DEFAULT__DEFAULT_VALUE) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.CONSTANT_DEFAULT__DEFAULT_VALUE));
+			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.BOOL_CONSTANT__VAL) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.BOOL_CONSTANT__VAL));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getConstantDefaultAccess().getDefaultValueNATURALTerminalRuleCall_1_0(), semanticObject.getDefaultValue());
+		feeder.accept(grammarAccess.getBoolConstantAccess().getValBOOLEANTerminalRuleCall_0(), semanticObject.isVal());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     ConditionalExpression returns CastExpression
+	 *     ConditionalExpression.ConditionalExpression_1_0 returns CastExpression
+	 *     LogicalOrExpression returns CastExpression
+	 *     LogicalOrExpression.LogicalExpr_1_0 returns CastExpression
+	 *     LogicalAndExpression returns CastExpression
+	 *     LogicalAndExpression.LogicalExpr_1_0 returns CastExpression
+	 *     InclusiveOrExpression returns CastExpression
+	 *     InclusiveOrExpression.LogicalExpr_1_0 returns CastExpression
+	 *     ExclusiveOrExpression returns CastExpression
+	 *     ExclusiveOrExpression.LogicalExpr_1_0 returns CastExpression
+	 *     AndExpression returns CastExpression
+	 *     AndExpression.LogicalExpr_1_0 returns CastExpression
+	 *     EqualityExpression returns CastExpression
+	 *     EqualityExpression.LogicalExpr_1_0 returns CastExpression
+	 *     RelationalExpression returns CastExpression
+	 *     RelationalExpression.LogicalExpr_1_0 returns CastExpression
+	 *     ShiftExpression returns CastExpression
+	 *     ShiftExpression.ArithmeticExpression_1_0 returns CastExpression
+	 *     AdditiveExpression returns CastExpression
+	 *     AdditiveExpression.ArithmeticExpression_1_0 returns CastExpression
+	 *     MultiplicativeExpression returns CastExpression
+	 *     MultiplicativeExpression.ArithmeticExpression_1_0 returns CastExpression
+	 *     CastExpression returns CastExpression
+	 *     ConstantExpression returns CastExpression
+	 *
+	 * Constraint:
+	 *     (type=DataTypeSpecifier left=CastExpression)
+	 */
+	protected void sequence_CastExpression(ISerializationContext context, CastExpression semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.CAST_EXPRESSION__TYPE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.CAST_EXPRESSION__TYPE));
+			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.EXPRESSION__LEFT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.EXPRESSION__LEFT));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getCastExpressionAccess().getTypeDataTypeSpecifierParserRuleCall_1_1_0(), semanticObject.getType());
+		feeder.accept(grammarAccess.getCastExpressionAccess().getLeftCastExpressionParserRuleCall_1_3_0(), semanticObject.getLeft());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Constant returns CharacterConstant
+	 *     CharacterConstant returns CharacterConstant
+	 *
+	 * Constraint:
+	 *     (val=CHARCONST | (enc='L' val=CHARCONST) | (enc='u' val=CHARCONST) | (enc='U' val=CHARCONST))
+	 */
+	protected void sequence_CharacterConstant(ISerializationContext context, CharacterConstant semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Statement returns CompoundStatement
+	 *     CompoundStatement returns CompoundStatement
+	 *     BlockItem returns CompoundStatement
+	 *
+	 * Constraint:
+	 *     items+=BlockItem*
+	 */
+	protected void sequence_CompoundStatement(ISerializationContext context, CompoundStatement semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     ConditionalExpression returns ConditionalExpression
+	 *     ConstantExpression returns ConditionalExpression
+	 *
+	 * Constraint:
+	 *     (cond=ConditionalExpression_ConditionalExpression_1_0 left=ConditionalExpression right=ConditionalExpression)
+	 */
+	protected void sequence_ConditionalExpression(ISerializationContext context, ConditionalExpression semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.CONDITIONAL_EXPRESSION__COND) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.CONDITIONAL_EXPRESSION__COND));
+			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.EXPRESSION__LEFT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.EXPRESSION__LEFT));
+			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.EXPRESSION__RIGHT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.EXPRESSION__RIGHT));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getConditionalExpressionAccess().getConditionalExpressionCondAction_1_0(), semanticObject.getCond());
+		feeder.accept(grammarAccess.getConditionalExpressionAccess().getLeftConditionalExpressionParserRuleCall_1_2_0(), semanticObject.getLeft());
+		feeder.accept(grammarAccess.getConditionalExpressionAccess().getRightConditionalExpressionParserRuleCall_1_4_0(), semanticObject.getRight());
 		feeder.finish();
 	}
 	
@@ -507,14 +685,9 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     (
 	 *         name=ID 
 	 *         (contributingType+=[InstructionSet|ID] contributingType+=[InstructionSet|ID]*)? 
-	 *         templateName=STRING? 
-	 *         constants+=ConstantDef* 
-	 *         (spaces+=AddressSpace spaces+=AddressSpace*)? 
-	 *         (
-	 *             (regs+=Register | regs+=RegisterFile | regs+=RegisterAlias) 
-	 *             regs+=RegisterAlias? 
-	 *             ((regs+=Register | regs+=RegisterFile)? regs+=RegisterAlias?)*
-	 *         )? 
+	 *         constants+=Declaration* 
+	 *         spaces+=Declaration* 
+	 *         regs+=Declaration* 
 	 *         instr+=Instruction*
 	 *     )
 	 */
@@ -537,13 +710,74 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     Statement returns DirectCode
-	 *     DirectCode returns DirectCode
+	 *     DesignatedInitializer returns DesignatedInitializer
 	 *
 	 * Constraint:
-	 *     (code+=STRING code+=STRING*)
+	 *     (designators+=Designator+ init=Initializer)
 	 */
-	protected void sequence_DirectCode(ISerializationContext context, DirectCode semanticObject) {
+	protected void sequence_DesignatedInitializer(ISerializationContext context, DesignatedInitializer semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Designator returns Designator
+	 *
+	 * Constraint:
+	 *     (idx=ConstantExpression | prop=ID)
+	 */
+	protected void sequence_Designator(ISerializationContext context, Designator semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     AbstractDeclarator returns DirectAbstractDeclarator
+	 *     DirectAbstractDeclarator returns DirectAbstractDeclarator
+	 *
+	 * Constraint:
+	 *     ((params+=ParameterDeclaration parameters+=ParameterDeclaration*) | declarator=AbstractDeclarator | expr=ConstantExpression)?
+	 */
+	protected void sequence_DirectAbstractDeclarator_ParameterList(ISerializationContext context, DirectAbstractDeclarator semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     DirectDeclarator returns DirectDeclarator
+	 *     VariableRef returns DirectDeclarator
+	 *
+	 * Constraint:
+	 *     ((name=ID index=IntegerConstant?) | (left=DirectDeclarator_DirectDeclarator_2_0 qualifiers+=TypeQualifier? expr=ConditionalExpression?))
+	 */
+	protected void sequence_DirectDeclarator(ISerializationContext context, DirectDeclarator semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     DirectDeclarator.DirectDeclarator_2_0 returns DirectDeclarator
+	 *
+	 * Constraint:
+	 *     (name=ID index=IntegerConstant?)
+	 */
+	protected void sequence_DirectDeclarator_DirectDeclarator_2_0(ISerializationContext context, DirectDeclarator semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     StringLiteral returns StringLiteral
+	 *
+	 * Constraint:
+	 *     ((prefix='u8' | prefix='u' | prefix='U' | prefix='L')? val=STRING)
+	 */
+	protected void sequence_EncodingPrefix_StringLiteral(ISerializationContext context, StringLiteral semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -556,6 +790,155 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     (fields+=Field fields+=Field*)
 	 */
 	protected void sequence_Encoding(ISerializationContext context, Encoding semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     TypeSpecifier returns EnumSpecifier
+	 *     DataTypeSpecifier returns EnumSpecifier
+	 *     EnumSpecifier returns EnumSpecifier
+	 *
+	 * Constraint:
+	 *     ((name=ID? enumerators+=Enumerator enumerators+=Enumerator*) | name=ID)
+	 */
+	protected void sequence_EnumSpecifier_EnumeratorList(ISerializationContext context, EnumSpecifier semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Enumerator returns Enumerator
+	 *
+	 * Constraint:
+	 *     (name=ID | (name=ID expression=ConstantExpression))
+	 */
+	protected void sequence_Enumerator(ISerializationContext context, Enumerator semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     AndExpression.LogicalExpr_1_0 returns LogicalExpr
+	 *     EqualityExpression returns LogicalExpr
+	 *
+	 * Constraint:
+	 *     (
+	 *         (left=EqualityExpression_LogicalExpr_1_0 (op='==' | op='!=') right=EqualityExpression) | 
+	 *         (left=RelationalExpression_LogicalExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression)
+	 *     )
+	 */
+	protected void sequence_EqualityExpression_RelationalExpression(ISerializationContext context, LogicalExpr semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Statement returns ExpressionStatement
+	 *     BlockItem returns ExpressionStatement
+	 *     ExpressionStatement returns ExpressionStatement
+	 *
+	 * Constraint:
+	 *     expr=AssignmentExpression?
+	 */
+	protected void sequence_ExpressionStatement(ISerializationContext context, ExpressionStatement semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Expression returns Expression
+	 *
+	 * Constraint:
+	 *     (left=Expression_Expression_1_0 right=AssignmentExpression)
+	 */
+	protected void sequence_Expression(ISerializationContext context, Expression semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.EXPRESSION__LEFT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.EXPRESSION__LEFT));
+			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.EXPRESSION__RIGHT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.EXPRESSION__RIGHT));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getExpressionAccess().getExpressionLeftAction_1_0(), semanticObject.getLeft());
+		feeder.accept(grammarAccess.getExpressionAccess().getRightAssignmentExpressionParserRuleCall_1_2_0(), semanticObject.getRight());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Constant returns FloatingConstant
+	 *     FloatingConstant returns FloatingConstant
+	 *
+	 * Constraint:
+	 *     (val=FLOAT (f?='f' | l?='l' | f?='F' | f?='L')?)
+	 */
+	protected void sequence_FloatingConstant_FloatingSuffix(ISerializationContext context, FloatingConstant semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Statement returns IterationStatement
+	 *     BlockItem returns IterationStatement
+	 *     IterationStatement returns IterationStatement
+	 *
+	 * Constraint:
+	 *     (
+	 *         (type='while' cond=ConditionalExpression stmt=Statement) | 
+	 *         (type='do' stmt=Statement cond=ConditionalExpression) | 
+	 *         (
+	 *             type='for' 
+	 *             (startDecl=Declaration | startExpr=Expression)? 
+	 *             endExpr=ConditionalExpression? 
+	 *             (loopExprs+=AssignmentExpression loopExprs+=AssignmentExpression*)? 
+	 *             stmt=Statement
+	 *         )
+	 *     )
+	 */
+	protected void sequence_ForCondition_IterationStatement(ISerializationContext context, IterationStatement semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     FunctionDefinition returns FunctionDefinition
+	 *     VariableRef returns FunctionDefinition
+	 *
+	 * Constraint:
+	 *     (
+	 *         extern?='extern'? 
+	 *         type=TypeSpecifier 
+	 *         name=ID 
+	 *         params+=ParameterDeclaration 
+	 *         parameters+=ParameterDeclaration* 
+	 *         statement=CompoundStatement
+	 *     )
+	 */
+	protected void sequence_FunctionDefinition_ParameterList(ISerializationContext context, FunctionDefinition semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Statement returns IfStatement
+	 *     BlockItem returns IfStatement
+	 *     SelectionStatement returns IfStatement
+	 *     IfStatement returns IfStatement
+	 *
+	 * Constraint:
+	 *     (cond=ConditionalExpression thenStmt=Statement elseStmt=Statement?)
+	 */
+	protected void sequence_IfStatement(ISerializationContext context, IfStatement semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -580,6 +963,30 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
+	 *     InitDeclarator returns InitDeclarator
+	 *
+	 * Constraint:
+	 *     (declarator=DirectDeclarator initializer=Initializer?)
+	 */
+	protected void sequence_InitDeclarator(ISerializationContext context, InitDeclarator semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Initializer returns Initializer
+	 *
+	 * Constraint:
+	 *     (((init+=DesignatedInitializer | init+=Initializer) (init+=DesignatedInitializer | init+=Initializer)?) | expr=ConditionalExpression)
+	 */
+	protected void sequence_Initializer_InitializerList(ISerializationContext context, Initializer semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
 	 *     ISA returns InstructionSet
 	 *     InstructionSet returns InstructionSet
 	 *
@@ -587,10 +994,11 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     (
 	 *         name=ID 
 	 *         superType=[InstructionSet|ID]? 
-	 *         (constants+=ConstantDecl constants+=ConstantDecl*)? 
-	 *         (spaces+=AddressSpace spaces+=AddressSpace*)? 
-	 *         ((regs+=Register | regs+=RegisterFile | regs+=RegisterAlias) regs+=RegisterFile? ((regs+=Register | regs+=RegisterAlias)? regs+=RegisterFile?)*)? 
-	 *         instr+=Instruction*
+	 *         constants+=Declaration* 
+	 *         spaces+=Declaration* 
+	 *         regs+=Declaration* 
+	 *         func+=FunctionDefinition* 
+	 *         instr+=Instruction+
 	 *     )
 	 */
 	protected void sequence_InstructionSet(ISerializationContext context, InstructionSet semanticObject) {
@@ -603,7 +1011,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     Instruction returns Instruction
 	 *
 	 * Constraint:
-	 *     ((disass=STRING | operation=Operation)? (name=ID (attributes+=InstrAttribute attributes+=InstrAttribute*)? encoding=Encoding)?)+
+	 *     (name=ID (attributes+=InstrAttribute attributes+=InstrAttribute*)? encoding=Encoding disass=STRING? behavior=CompoundStatement)
 	 */
 	protected void sequence_Instruction(ISerializationContext context, Instruction semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -612,140 +1020,184 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     Expression returns MultiplicationExpr
-	 *     BooleanOrExpr returns MultiplicationExpr
-	 *     BooleanOrExpr.BooleanExpr_1_0 returns MultiplicationExpr
-	 *     BooleanAndExpr returns MultiplicationExpr
-	 *     BooleanAndExpr.BooleanExpr_1_0 returns MultiplicationExpr
-	 *     BitOrExpr returns MultiplicationExpr
-	 *     BitOrExpr.BitExpr_1_0 returns MultiplicationExpr
-	 *     BitXOrExpr returns MultiplicationExpr
-	 *     BitXOrExpr.BitExpr_1_0 returns MultiplicationExpr
-	 *     BitAndExpr returns MultiplicationExpr
-	 *     BitAndExpr.BitExpr_1_0 returns MultiplicationExpr
-	 *     EqualityExpr returns MultiplicationExpr
-	 *     EqualityExpr.ComparisonExpr_1_0 returns MultiplicationExpr
-	 *     ComparisonExpr returns MultiplicationExpr
-	 *     ComparisonExpr.ComparisonExpr_1_0 returns MultiplicationExpr
-	 *     ShiftExpr returns MultiplicationExpr
-	 *     ShiftExpr.ShiftExpr_1_0 returns MultiplicationExpr
-	 *     AdditionExpr returns MultiplicationExpr
-	 *     AdditionExpr.AdditionExpr_1_0 returns MultiplicationExpr
-	 *     MultiplicationExpr returns MultiplicationExpr
-	 *     MultiplicationExpr.MultiplicationExpr_1_0 returns MultiplicationExpr
-	 *     UnitaryExpr returns MultiplicationExpr
-	 *     TypeConv returns MultiplicationExpr
-	 *     TypeConv.TypeConv_1_0 returns MultiplicationExpr
-	 *     Primary returns MultiplicationExpr
+	 *     Constant returns IntegerConstant
+	 *     IntegerConstant returns IntegerConstant
 	 *
 	 * Constraint:
-	 *     (left=MultiplicationExpr_MultiplicationExpr_1_0 (op='*' | op='/' | op='%') right=UnitaryExpr)
+	 *     (
+	 *         val=NATURAL 
+	 *         (unsigned?='u' | unsigned?='U')? 
+	 *         (
+	 *             (long?='l' | long?='L' | longlong?='ll' | longlong?='LL') 
+	 *             ((unsigned?='u' | unsigned?='U')? (long?='l' | long?='L' | longlong?='ll' | longlong?='LL'))* 
+	 *             (unsigned?='u' | unsigned?='U')?
+	 *         )?
+	 *     )
 	 */
-	protected void sequence_MultiplicationExpr(ISerializationContext context, MultiplicationExpr semanticObject) {
+	protected void sequence_IntegerConstant_LongLongSuffix_LongSuffix_UnsignedSuffix(ISerializationContext context, IntegerConstant semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
 	/**
 	 * Contexts:
-	 *     NumberLiteral returns NumberLiteral
-	 *     Expression returns NumberLiteral
-	 *     BooleanOrExpr returns NumberLiteral
-	 *     BooleanOrExpr.BooleanExpr_1_0 returns NumberLiteral
-	 *     BooleanAndExpr returns NumberLiteral
-	 *     BooleanAndExpr.BooleanExpr_1_0 returns NumberLiteral
-	 *     BitOrExpr returns NumberLiteral
-	 *     BitOrExpr.BitExpr_1_0 returns NumberLiteral
-	 *     BitXOrExpr returns NumberLiteral
-	 *     BitXOrExpr.BitExpr_1_0 returns NumberLiteral
-	 *     BitAndExpr returns NumberLiteral
-	 *     BitAndExpr.BitExpr_1_0 returns NumberLiteral
-	 *     EqualityExpr returns NumberLiteral
-	 *     EqualityExpr.ComparisonExpr_1_0 returns NumberLiteral
-	 *     ComparisonExpr returns NumberLiteral
-	 *     ComparisonExpr.ComparisonExpr_1_0 returns NumberLiteral
-	 *     ShiftExpr returns NumberLiteral
-	 *     ShiftExpr.ShiftExpr_1_0 returns NumberLiteral
-	 *     AdditionExpr returns NumberLiteral
-	 *     AdditionExpr.AdditionExpr_1_0 returns NumberLiteral
-	 *     MultiplicationExpr returns NumberLiteral
-	 *     MultiplicationExpr.MultiplicationExpr_1_0 returns NumberLiteral
-	 *     UnitaryExpr returns NumberLiteral
-	 *     TypeConv returns NumberLiteral
-	 *     TypeConv.TypeConv_1_0 returns NumberLiteral
-	 *     Primary returns NumberLiteral
+	 *     Statement returns JumpStatement
+	 *     BlockItem returns JumpStatement
+	 *     JumpStatement returns JumpStatement
 	 *
 	 * Constraint:
-	 *     value=NATURAL
+	 *     (type='continue' | type='break' | (type='return' expr=ConditionalExpression?))
 	 */
-	protected void sequence_NumberLiteral(ISerializationContext context, NumberLiteral semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.NUMBER_LITERAL__VALUE) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.NUMBER_LITERAL__VALUE));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getNumberLiteralAccess().getValueNATURALTerminalRuleCall_0(), semanticObject.getValue());
-		feeder.finish();
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Operation returns Operation
-	 *
-	 * Constraint:
-	 *     statements+=Statement+
-	 */
-	protected void sequence_Operation(ISerializationContext context, Operation semanticObject) {
+	protected void sequence_JumpStatement(ISerializationContext context, JumpStatement semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
 	/**
 	 * Contexts:
-	 *     Expression returns Function
-	 *     BooleanOrExpr returns Function
-	 *     BooleanOrExpr.BooleanExpr_1_0 returns Function
-	 *     BooleanAndExpr returns Function
-	 *     BooleanAndExpr.BooleanExpr_1_0 returns Function
-	 *     BitOrExpr returns Function
-	 *     BitOrExpr.BitExpr_1_0 returns Function
-	 *     BitXOrExpr returns Function
-	 *     BitXOrExpr.BitExpr_1_0 returns Function
-	 *     BitAndExpr returns Function
-	 *     BitAndExpr.BitExpr_1_0 returns Function
-	 *     EqualityExpr returns Function
-	 *     EqualityExpr.ComparisonExpr_1_0 returns Function
-	 *     ComparisonExpr returns Function
-	 *     ComparisonExpr.ComparisonExpr_1_0 returns Function
-	 *     ShiftExpr returns Function
-	 *     ShiftExpr.ShiftExpr_1_0 returns Function
-	 *     AdditionExpr returns Function
-	 *     AdditionExpr.AdditionExpr_1_0 returns Function
-	 *     MultiplicationExpr returns Function
-	 *     MultiplicationExpr.MultiplicationExpr_1_0 returns Function
-	 *     UnitaryExpr returns Function
-	 *     TypeConv returns Function
-	 *     TypeConv.TypeConv_1_0 returns Function
-	 *     Primary returns Function
+	 *     LabeledStatement returns LabeledStatement
 	 *
 	 * Constraint:
-	 *     (name=FUNCTIONNAME (args+=Expression args+=Expression*)?)
+	 *     ((constExpr=ConstantExpression stmt=Statement) | stmt=Statement)
 	 */
-	protected void sequence_Primary(ISerializationContext context, Function semanticObject) {
+	protected void sequence_LabeledStatement(ISerializationContext context, LabeledStatement semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
 	/**
 	 * Contexts:
-	 *     Statement returns Procedure
-	 *     Procedure returns Procedure
+	 *     AdditiveExpression.ArithmeticExpression_1_0 returns ArithmeticExpression
+	 *     MultiplicativeExpression returns ArithmeticExpression
 	 *
 	 * Constraint:
-	 *     (name=PROCEDURENAME args+=Expression args+=Expression*)
+	 *     (left=MultiplicativeExpression_ArithmeticExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
 	 */
-	protected void sequence_Procedure(ISerializationContext context, Procedure semanticObject) {
+	protected void sequence_MultiplicativeExpression(ISerializationContext context, ArithmeticExpression semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     ParameterDeclaration returns ParameterDeclaration
+	 *
+	 * Constraint:
+	 *     (type=TypeSpecifier (declarator=DirectDeclarator | declarator=AbstractDeclarator)?)
+	 */
+	protected void sequence_ParameterDeclaration(ISerializationContext context, ParameterDeclaration semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     TypeSpecifier returns PodSpecifier
+	 *     DataTypeSpecifier returns PodSpecifier
+	 *     PodSpecifier returns PodSpecifier
+	 *
+	 * Constraint:
+	 *     dataType+=DataTypes+
+	 */
+	protected void sequence_PodSpecifier(ISerializationContext context, PodSpecifier semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     AssignmentExpression.AssignmentExpression_1 returns PostfixExpression
+	 *     ConditionalExpression returns PostfixExpression
+	 *     ConditionalExpression.ConditionalExpression_1_0 returns PostfixExpression
+	 *     LogicalOrExpression returns PostfixExpression
+	 *     LogicalOrExpression.LogicalExpr_1_0 returns PostfixExpression
+	 *     LogicalAndExpression returns PostfixExpression
+	 *     LogicalAndExpression.LogicalExpr_1_0 returns PostfixExpression
+	 *     InclusiveOrExpression returns PostfixExpression
+	 *     InclusiveOrExpression.LogicalExpr_1_0 returns PostfixExpression
+	 *     ExclusiveOrExpression returns PostfixExpression
+	 *     ExclusiveOrExpression.LogicalExpr_1_0 returns PostfixExpression
+	 *     AndExpression returns PostfixExpression
+	 *     AndExpression.LogicalExpr_1_0 returns PostfixExpression
+	 *     EqualityExpression returns PostfixExpression
+	 *     EqualityExpression.LogicalExpr_1_0 returns PostfixExpression
+	 *     RelationalExpression returns PostfixExpression
+	 *     RelationalExpression.LogicalExpr_1_0 returns PostfixExpression
+	 *     ShiftExpression returns PostfixExpression
+	 *     ShiftExpression.ArithmeticExpression_1_0 returns PostfixExpression
+	 *     AdditiveExpression returns PostfixExpression
+	 *     AdditiveExpression.ArithmeticExpression_1_0 returns PostfixExpression
+	 *     MultiplicativeExpression returns PostfixExpression
+	 *     MultiplicativeExpression.ArithmeticExpression_1_0 returns PostfixExpression
+	 *     CastExpression returns PostfixExpression
+	 *     UnaryExpression returns PostfixExpression
+	 *     PostfixExpression returns PostfixExpression
+	 *     PostfixExpression.PostfixExpression_1_0 returns PostfixExpression
+	 *     ConstantExpression returns PostfixExpression
+	 *
+	 * Constraint:
+	 *     (left=PostfixExpression_PostfixExpression_1_0 ops+=PostfixOperator)
+	 */
+	protected void sequence_PostfixExpression(ISerializationContext context, PostfixExpression semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     PostfixOperator returns PostfixOperator
+	 *
+	 * Constraint:
+	 *     (
+	 *         (op='[' args+=ConditionalExpression args+=ConditionalExpression?) | 
+	 *         (op='(' (args+=ConditionalExpression args+=ConditionalExpression*)?) | 
+	 *         (op='.' member=[DirectDeclarator|ID]) | 
+	 *         (op='->' member=[DirectDeclarator|ID]) | 
+	 *         op='++' | 
+	 *         op='--'
+	 *     )
+	 */
+	protected void sequence_PostfixOperator(ISerializationContext context, PostfixOperator semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     AssignmentExpression.AssignmentExpression_1 returns PrimaryExpression
+	 *     ConditionalExpression returns PrimaryExpression
+	 *     ConditionalExpression.ConditionalExpression_1_0 returns PrimaryExpression
+	 *     LogicalOrExpression returns PrimaryExpression
+	 *     LogicalOrExpression.LogicalExpr_1_0 returns PrimaryExpression
+	 *     LogicalAndExpression returns PrimaryExpression
+	 *     LogicalAndExpression.LogicalExpr_1_0 returns PrimaryExpression
+	 *     InclusiveOrExpression returns PrimaryExpression
+	 *     InclusiveOrExpression.LogicalExpr_1_0 returns PrimaryExpression
+	 *     ExclusiveOrExpression returns PrimaryExpression
+	 *     ExclusiveOrExpression.LogicalExpr_1_0 returns PrimaryExpression
+	 *     AndExpression returns PrimaryExpression
+	 *     AndExpression.LogicalExpr_1_0 returns PrimaryExpression
+	 *     EqualityExpression returns PrimaryExpression
+	 *     EqualityExpression.LogicalExpr_1_0 returns PrimaryExpression
+	 *     RelationalExpression returns PrimaryExpression
+	 *     RelationalExpression.LogicalExpr_1_0 returns PrimaryExpression
+	 *     ShiftExpression returns PrimaryExpression
+	 *     ShiftExpression.ArithmeticExpression_1_0 returns PrimaryExpression
+	 *     AdditiveExpression returns PrimaryExpression
+	 *     AdditiveExpression.ArithmeticExpression_1_0 returns PrimaryExpression
+	 *     MultiplicativeExpression returns PrimaryExpression
+	 *     MultiplicativeExpression.ArithmeticExpression_1_0 returns PrimaryExpression
+	 *     CastExpression returns PrimaryExpression
+	 *     UnaryExpression returns PrimaryExpression
+	 *     PostfixExpression returns PrimaryExpression
+	 *     PostfixExpression.PostfixExpression_1_0 returns PrimaryExpression
+	 *     PrimaryExpression returns PrimaryExpression
+	 *     ConstantExpression returns PrimaryExpression
+	 *
+	 * Constraint:
+	 *     (ref=[VariableRef|ID] | constant=Constant | literal+=StringLiteral+ | left=ConditionalExpression)
+	 */
+	protected void sequence_PrimaryExpression(ISerializationContext context, PrimaryExpression semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -773,235 +1225,137 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     Variable returns RegisterAlias
-	 *     ScalarVariable returns RegisterAlias
-	 *     RegisterVariable returns RegisterAlias
-	 *     RegisterAlias returns RegisterAlias
+	 *     EqualityExpression.LogicalExpr_1_0 returns LogicalExpr
+	 *     RelationalExpression returns LogicalExpr
+	 *
+	 * Constraint:
+	 *     (left=RelationalExpression_LogicalExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression)
+	 */
+	protected void sequence_RelationalExpression(ISerializationContext context, LogicalExpr semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     StructDeclarationSpecifier returns StructDeclarationSpecifier
+	 *
+	 * Constraint:
+	 *     (type=TypeSpecifier | qualifiers+=TypeQualifier)
+	 */
+	protected void sequence_StructDeclarationSpecifier(ISerializationContext context, StructDeclarationSpecifier semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     StructDeclaration returns StructDeclaration
+	 *
+	 * Constraint:
+	 *     (specifier=StructDeclarationSpecifier decls+=DirectDeclarator decls+=DirectDeclarator*)
+	 */
+	protected void sequence_StructDeclaration(ISerializationContext context, StructDeclaration semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     TypeSpecifier returns StructOrUnionSpecifier
+	 *     DataTypeSpecifier returns StructOrUnionSpecifier
+	 *     StructOrUnionSpecifier returns StructOrUnionSpecifier
+	 *
+	 * Constraint:
+	 *     ((composeType=StructOrUnion name=ID? decls+=StructDeclaration*) | (composeType=StructOrUnion name=ID))
+	 */
+	protected void sequence_StructOrUnionSpecifier(ISerializationContext context, StructOrUnionSpecifier semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Statement returns SwitchStatement
+	 *     BlockItem returns SwitchStatement
+	 *     SelectionStatement returns SwitchStatement
+	 *     SwitchStatement returns SwitchStatement
+	 *
+	 * Constraint:
+	 *     (cond=ConditionalExpression items+=LabeledStatement)
+	 */
+	protected void sequence_SwitchStatement(ISerializationContext context, SwitchStatement semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     TypeSpecifier returns TypedefRef
+	 *     TypedefRef returns TypedefRef
+	 *
+	 * Constraint:
+	 *     ref=[DirectDeclarator|ID]
+	 */
+	protected void sequence_TypedefRef(ISerializationContext context, TypedefRef semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.TYPEDEF_REF__REF) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.TYPEDEF_REF__REF));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getTypedefRefAccess().getRefDirectDeclaratorIDTerminalRuleCall_0_1(), semanticObject.eGet(CoreDslPackage.Literals.TYPEDEF_REF__REF, false));
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     AssignmentExpression.AssignmentExpression_1 returns UnaryExpression
+	 *     ConditionalExpression returns UnaryExpression
+	 *     ConditionalExpression.ConditionalExpression_1_0 returns UnaryExpression
+	 *     LogicalOrExpression returns UnaryExpression
+	 *     LogicalOrExpression.LogicalExpr_1_0 returns UnaryExpression
+	 *     LogicalAndExpression returns UnaryExpression
+	 *     LogicalAndExpression.LogicalExpr_1_0 returns UnaryExpression
+	 *     InclusiveOrExpression returns UnaryExpression
+	 *     InclusiveOrExpression.LogicalExpr_1_0 returns UnaryExpression
+	 *     ExclusiveOrExpression returns UnaryExpression
+	 *     ExclusiveOrExpression.LogicalExpr_1_0 returns UnaryExpression
+	 *     AndExpression returns UnaryExpression
+	 *     AndExpression.LogicalExpr_1_0 returns UnaryExpression
+	 *     EqualityExpression returns UnaryExpression
+	 *     EqualityExpression.LogicalExpr_1_0 returns UnaryExpression
+	 *     RelationalExpression returns UnaryExpression
+	 *     RelationalExpression.LogicalExpr_1_0 returns UnaryExpression
+	 *     ShiftExpression returns UnaryExpression
+	 *     ShiftExpression.ArithmeticExpression_1_0 returns UnaryExpression
+	 *     AdditiveExpression returns UnaryExpression
+	 *     AdditiveExpression.ArithmeticExpression_1_0 returns UnaryExpression
+	 *     MultiplicativeExpression returns UnaryExpression
+	 *     MultiplicativeExpression.ArithmeticExpression_1_0 returns UnaryExpression
+	 *     CastExpression returns UnaryExpression
+	 *     UnaryExpression returns UnaryExpression
+	 *     ConstantExpression returns UnaryExpression
 	 *
 	 * Constraint:
 	 *     (
-	 *         name=ID 
-	 *         (bitSize=NATURAL | bitSizeConst=[Constant|ID]) 
-	 *         (attributes+=RegAttribute attributes+=RegAttribute*)? 
-	 *         (original=[Register|ID] | (original=[RegisterFile|ID] (index=NumberLiteral | index=ValueRef)))
+	 *         (op='++' left=UnaryExpression) | 
+	 *         (op='--' left=UnaryExpression) | 
+	 *         (op='sizeof' (left=PostfixExpression | type=DataTypeSpecifier)) | 
+	 *         (
+	 *             (
+	 *                 op='&' | 
+	 *                 op='*' | 
+	 *                 op='+' | 
+	 *                 op='-' | 
+	 *                 op='~' | 
+	 *                 op='!'
+	 *             ) 
+	 *             left=CastExpression
+	 *         )
 	 *     )
 	 */
-	protected void sequence_RegisterAlias(ISerializationContext context, RegisterAlias semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Variable returns RegisterFile
-	 *     IndexedVariable returns RegisterFile
-	 *     RegisterFile returns RegisterFile
-	 *
-	 * Constraint:
-	 *     (range=RangeSpec name=ID (bitSize=NATURAL | bitSizeConst=[Constant|ID]) (attributes+=RegAttribute attributes+=RegAttribute*)?)
-	 */
-	protected void sequence_RegisterFile(ISerializationContext context, RegisterFile semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Variable returns Register
-	 *     ScalarVariable returns Register
-	 *     RegisterVariable returns Register
-	 *     Register returns Register
-	 *
-	 * Constraint:
-	 *     (name=ID (bitSize=NATURAL | bitSizeConst=[Constant|ID]) (attributes+=RegAttribute attributes+=RegAttribute*)?)
-	 */
-	protected void sequence_Register(ISerializationContext context, Register semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     ScalarBase returns Scalar
-	 *
-	 * Constraint:
-	 *     determined?='is_determined'
-	 */
-	protected void sequence_ScalarBase(ISerializationContext context, Scalar semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.SCALAR__DETERMINED) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.SCALAR__DETERMINED));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getScalarBaseAccess().getDeterminedIs_determinedKeyword_1_0(), semanticObject.isDetermined());
-		feeder.finish();
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Variable returns Scalar
-	 *     ScalarVariable returns Scalar
-	 *     Scalar returns Scalar
-	 *
-	 * Constraint:
-	 *     (name=ID (bitSize=NATURAL | bitSizeConst=[Constant|ID]))
-	 */
-	protected void sequence_Scalar(ISerializationContext context, Scalar semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Expression returns ShiftExpr
-	 *     BooleanOrExpr returns ShiftExpr
-	 *     BooleanOrExpr.BooleanExpr_1_0 returns ShiftExpr
-	 *     BooleanAndExpr returns ShiftExpr
-	 *     BooleanAndExpr.BooleanExpr_1_0 returns ShiftExpr
-	 *     BitOrExpr returns ShiftExpr
-	 *     BitOrExpr.BitExpr_1_0 returns ShiftExpr
-	 *     BitXOrExpr returns ShiftExpr
-	 *     BitXOrExpr.BitExpr_1_0 returns ShiftExpr
-	 *     BitAndExpr returns ShiftExpr
-	 *     BitAndExpr.BitExpr_1_0 returns ShiftExpr
-	 *     EqualityExpr returns ShiftExpr
-	 *     EqualityExpr.ComparisonExpr_1_0 returns ShiftExpr
-	 *     ComparisonExpr returns ShiftExpr
-	 *     ComparisonExpr.ComparisonExpr_1_0 returns ShiftExpr
-	 *     ShiftExpr returns ShiftExpr
-	 *     ShiftExpr.ShiftExpr_1_0 returns ShiftExpr
-	 *     AdditionExpr returns ShiftExpr
-	 *     AdditionExpr.AdditionExpr_1_0 returns ShiftExpr
-	 *     MultiplicationExpr returns ShiftExpr
-	 *     MultiplicationExpr.MultiplicationExpr_1_0 returns ShiftExpr
-	 *     UnitaryExpr returns ShiftExpr
-	 *     TypeConv returns ShiftExpr
-	 *     TypeConv.TypeConv_1_0 returns ShiftExpr
-	 *     Primary returns ShiftExpr
-	 *
-	 * Constraint:
-	 *     (left=ShiftExpr_ShiftExpr_1_0 (op='<<' | op='>>') right=AdditionExpr)
-	 */
-	protected void sequence_ShiftExpr(ISerializationContext context, ShiftExpr semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Expression returns TypeConv
-	 *     BooleanOrExpr returns TypeConv
-	 *     BooleanOrExpr.BooleanExpr_1_0 returns TypeConv
-	 *     BooleanAndExpr returns TypeConv
-	 *     BooleanAndExpr.BooleanExpr_1_0 returns TypeConv
-	 *     BitOrExpr returns TypeConv
-	 *     BitOrExpr.BitExpr_1_0 returns TypeConv
-	 *     BitXOrExpr returns TypeConv
-	 *     BitXOrExpr.BitExpr_1_0 returns TypeConv
-	 *     BitAndExpr returns TypeConv
-	 *     BitAndExpr.BitExpr_1_0 returns TypeConv
-	 *     EqualityExpr returns TypeConv
-	 *     EqualityExpr.ComparisonExpr_1_0 returns TypeConv
-	 *     ComparisonExpr returns TypeConv
-	 *     ComparisonExpr.ComparisonExpr_1_0 returns TypeConv
-	 *     ShiftExpr returns TypeConv
-	 *     ShiftExpr.ShiftExpr_1_0 returns TypeConv
-	 *     AdditionExpr returns TypeConv
-	 *     AdditionExpr.AdditionExpr_1_0 returns TypeConv
-	 *     MultiplicationExpr returns TypeConv
-	 *     MultiplicationExpr.MultiplicationExpr_1_0 returns TypeConv
-	 *     UnitaryExpr returns TypeConv
-	 *     TypeConv returns TypeConv
-	 *     TypeConv.TypeConv_1_0 returns TypeConv
-	 *     Primary returns TypeConv
-	 *
-	 * Constraint:
-	 *     (expr=TypeConv_TypeConv_1_0 type=DataType)
-	 */
-	protected void sequence_TypeConv(ISerializationContext context, TypeConv semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.TYPE_CONV__EXPR) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.TYPE_CONV__EXPR));
-			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.TYPE_CONV__TYPE) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.TYPE_CONV__TYPE));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getTypeConvAccess().getTypeConvExprAction_1_0(), semanticObject.getExpr());
-		feeder.accept(grammarAccess.getTypeConvAccess().getTypeDataTypeEnumRuleCall_1_2_0(), semanticObject.getType());
-		feeder.finish();
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Expression returns UnitaryExpr
-	 *     BooleanOrExpr returns UnitaryExpr
-	 *     BooleanOrExpr.BooleanExpr_1_0 returns UnitaryExpr
-	 *     BooleanAndExpr returns UnitaryExpr
-	 *     BooleanAndExpr.BooleanExpr_1_0 returns UnitaryExpr
-	 *     BitOrExpr returns UnitaryExpr
-	 *     BitOrExpr.BitExpr_1_0 returns UnitaryExpr
-	 *     BitXOrExpr returns UnitaryExpr
-	 *     BitXOrExpr.BitExpr_1_0 returns UnitaryExpr
-	 *     BitAndExpr returns UnitaryExpr
-	 *     BitAndExpr.BitExpr_1_0 returns UnitaryExpr
-	 *     EqualityExpr returns UnitaryExpr
-	 *     EqualityExpr.ComparisonExpr_1_0 returns UnitaryExpr
-	 *     ComparisonExpr returns UnitaryExpr
-	 *     ComparisonExpr.ComparisonExpr_1_0 returns UnitaryExpr
-	 *     ShiftExpr returns UnitaryExpr
-	 *     ShiftExpr.ShiftExpr_1_0 returns UnitaryExpr
-	 *     AdditionExpr returns UnitaryExpr
-	 *     AdditionExpr.AdditionExpr_1_0 returns UnitaryExpr
-	 *     MultiplicationExpr returns UnitaryExpr
-	 *     MultiplicationExpr.MultiplicationExpr_1_0 returns UnitaryExpr
-	 *     UnitaryExpr returns UnitaryExpr
-	 *     TypeConv returns UnitaryExpr
-	 *     TypeConv.TypeConv_1_0 returns UnitaryExpr
-	 *     Primary returns UnitaryExpr
-	 *
-	 * Constraint:
-	 *     ((op='-' | op='+' | op='~' | op='!') expr=UnitaryExpr)
-	 */
-	protected void sequence_UnitaryExpr(ISerializationContext context, UnitaryExpr semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Expression returns ValueRef
-	 *     BooleanOrExpr returns ValueRef
-	 *     BooleanOrExpr.BooleanExpr_1_0 returns ValueRef
-	 *     BooleanAndExpr returns ValueRef
-	 *     BooleanAndExpr.BooleanExpr_1_0 returns ValueRef
-	 *     BitOrExpr returns ValueRef
-	 *     BitOrExpr.BitExpr_1_0 returns ValueRef
-	 *     BitXOrExpr returns ValueRef
-	 *     BitXOrExpr.BitExpr_1_0 returns ValueRef
-	 *     BitAndExpr returns ValueRef
-	 *     BitAndExpr.BitExpr_1_0 returns ValueRef
-	 *     EqualityExpr returns ValueRef
-	 *     EqualityExpr.ComparisonExpr_1_0 returns ValueRef
-	 *     ComparisonExpr returns ValueRef
-	 *     ComparisonExpr.ComparisonExpr_1_0 returns ValueRef
-	 *     ShiftExpr returns ValueRef
-	 *     ShiftExpr.ShiftExpr_1_0 returns ValueRef
-	 *     AdditionExpr returns ValueRef
-	 *     AdditionExpr.AdditionExpr_1_0 returns ValueRef
-	 *     MultiplicationExpr returns ValueRef
-	 *     MultiplicationExpr.MultiplicationExpr_1_0 returns ValueRef
-	 *     UnitaryExpr returns ValueRef
-	 *     TypeConv returns ValueRef
-	 *     TypeConv.TypeConv_1_0 returns ValueRef
-	 *     Primary returns ValueRef
-	 *     ValueRef returns ValueRef
-	 *
-	 * Constraint:
-	 *     (((value=[IndexedVariable|ID] index=Expression) | value=[ScalarVariable|ID] | value=[RValue|ID]) bitWidth=BitSizeSpec?)
-	 */
-	protected void sequence_ValueRef(ISerializationContext context, ValueRef semanticObject) {
+	protected void sequence_UnaryExpression_UnaryOperator(ISerializationContext context, UnaryExpression semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	

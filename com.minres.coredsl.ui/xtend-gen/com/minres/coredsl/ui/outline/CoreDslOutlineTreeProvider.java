@@ -4,11 +4,6 @@
 package com.minres.coredsl.ui.outline;
 
 import com.minres.coredsl.coreDsl.BitField;
-import com.minres.coredsl.coreDsl.ConditionalStmt;
-import com.minres.coredsl.coreDsl.Statement;
-import com.minres.coredsl.coreDsl.Variable;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
 
 /**
@@ -18,28 +13,7 @@ import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
  */
 @SuppressWarnings("all")
 public class CoreDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
-  public boolean _isLeaf(final Variable register) {
-    return true;
-  }
-  
   public boolean _isLeaf(final BitField bitField) {
     return true;
-  }
-  
-  public boolean _isLeaf(final Statement stmt) {
-    return (!(stmt instanceof ConditionalStmt));
-  }
-  
-  public void _createChildren(final IOutlineNode parentNode, final Statement stmt) {
-    if ((stmt instanceof ConditionalStmt)) {
-      EList<Statement> _thenStmts = ((ConditionalStmt)stmt).getThenStmts();
-      for (final Statement element : _thenStmts) {
-        this.createNode(parentNode, element);
-      }
-      EList<Statement> _elseStmts = ((ConditionalStmt)stmt).getElseStmts();
-      for (final Statement element_1 : _elseStmts) {
-        this.createNode(parentNode, element_1);
-      }
-    }
   }
 }

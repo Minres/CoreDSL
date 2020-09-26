@@ -4,11 +4,7 @@
 package com.minres.coredsl.ui.outline
 
 import com.minres.coredsl.coreDsl.BitField
-import com.minres.coredsl.coreDsl.ConditionalStmt
-import com.minres.coredsl.coreDsl.Statement
-import org.eclipse.xtext.ui.editor.outline.IOutlineNode
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
-import com.minres.coredsl.coreDsl.Variable
 
 /**
  * Customization of the default outline structure.
@@ -18,22 +14,22 @@ import com.minres.coredsl.coreDsl.Variable
 class CoreDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
 
 	// feature nodes are leafs and not expandable
-	def boolean _isLeaf(Variable register) {
-		return true;
-	}
+//	def boolean _isLeaf(Variable register) {
+//		return true;
+//	}
 
     def boolean _isLeaf(BitField bitField) {
         return true;
     }
     
-    def boolean _isLeaf(Statement stmt) {
-        return !(stmt instanceof ConditionalStmt);
-    }
-    
-	def void _createChildren(IOutlineNode parentNode, Statement stmt) {
-		if(stmt instanceof ConditionalStmt) {
-			for (element : stmt.thenStmts) createNode(parentNode, element)
-			for (element : stmt.elseStmts) createNode(parentNode, element)
-		}
-	}
+//    def boolean _isLeaf(Statement stmt) {
+//        return !(stmt instanceof ConditionalStmt);
+//    }
+//    
+//	def void _createChildren(IOutlineNode parentNode, Statement stmt) {
+//		if(stmt instanceof ConditionalStmt) {
+//			for (element : stmt.thenStmts) createNode(parentNode, element)
+//			for (element : stmt.elseStmts) createNode(parentNode, element)
+//		}
+//	}
 }

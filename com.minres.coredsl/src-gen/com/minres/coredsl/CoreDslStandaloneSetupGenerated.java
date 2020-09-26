@@ -30,8 +30,8 @@ public class CoreDslStandaloneSetupGenerated implements ISetup {
 	}
 	
 	public void register(Injector injector) {
-		if (!EPackage.Registry.INSTANCE.containsKey("http://www.minres.com/coredsl/CoreDsl")) {
-			EPackage.Registry.INSTANCE.put("http://www.minres.com/coredsl/CoreDsl", CoreDslPackage.eINSTANCE);
+		if (!EPackage.Registry.INSTANCE.containsKey("http://www.minres.com/coredsl/CoreDsl/2.0")) {
+			EPackage.Registry.INSTANCE.put("http://www.minres.com/coredsl/CoreDsl/2.0", CoreDslPackage.eINSTANCE);
 		}
 		IResourceFactory resourceFactory = injector.getInstance(IResourceFactory.class);
 		IResourceServiceProvider serviceProvider = injector.getInstance(IResourceServiceProvider.class);

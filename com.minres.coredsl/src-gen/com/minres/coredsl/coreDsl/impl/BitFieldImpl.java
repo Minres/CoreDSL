@@ -4,8 +4,8 @@
 package com.minres.coredsl.coreDsl.impl;
 
 import com.minres.coredsl.coreDsl.BitField;
+import com.minres.coredsl.coreDsl.BitfieldDataType;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
-import com.minres.coredsl.coreDsl.DataType;
 import com.minres.coredsl.coreDsl.RangeSpec;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -50,7 +50,7 @@ public class BitFieldImpl extends FieldImpl implements BitField
    * @generated
    * @ordered
    */
-  protected static final DataType TYPE_EDEFAULT = DataType.NONE;
+  protected static final BitfieldDataType TYPE_EDEFAULT = BitfieldDataType.UNSIGNED;
 
   /**
    * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
@@ -60,7 +60,7 @@ public class BitFieldImpl extends FieldImpl implements BitField
    * @generated
    * @ordered
    */
-  protected DataType type = TYPE_EDEFAULT;
+  protected BitfieldDataType type = TYPE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -139,7 +139,7 @@ public class BitFieldImpl extends FieldImpl implements BitField
    * @generated
    */
   @Override
-  public DataType getType()
+  public BitfieldDataType getType()
   {
     return type;
   }
@@ -150,9 +150,9 @@ public class BitFieldImpl extends FieldImpl implements BitField
    * @generated
    */
   @Override
-  public void setType(DataType newType)
+  public void setType(BitfieldDataType newType)
   {
-    DataType oldType = type;
+    BitfieldDataType oldType = type;
     type = newType == null ? TYPE_EDEFAULT : newType;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.BIT_FIELD__TYPE, oldType, type));
@@ -206,7 +206,7 @@ public class BitFieldImpl extends FieldImpl implements BitField
         setBitRange((RangeSpec)newValue);
         return;
       case CoreDslPackage.BIT_FIELD__TYPE:
-        setType((DataType)newValue);
+        setType((BitfieldDataType)newValue);
         return;
     }
     super.eSet(featureID, newValue);

@@ -71,47 +71,74 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
       case CoreDslPackage.ISA: return createISA();
       case CoreDslPackage.INSTRUCTION_SET: return createInstructionSet();
       case CoreDslPackage.CORE_DEF: return createCoreDef();
-      case CoreDslPackage.RANGE_SPEC: return createRangeSpec();
       case CoreDslPackage.INSTRUCTION: return createInstruction();
       case CoreDslPackage.ENCODING: return createEncoding();
       case CoreDslPackage.FIELD: return createField();
       case CoreDslPackage.BIT_VALUE: return createBitValue();
       case CoreDslPackage.BIT_FIELD: return createBitField();
-      case CoreDslPackage.OPERATION: return createOperation();
+      case CoreDslPackage.RANGE_SPEC: return createRangeSpec();
+      case CoreDslPackage.FUNCTION_DEFINITION: return createFunctionDefinition();
+      case CoreDslPackage.PARAMETER_LIST: return createParameterList();
+      case CoreDslPackage.PARAMETER_DECLARATION: return createParameterDeclaration();
       case CoreDslPackage.STATEMENT: return createStatement();
-      case CoreDslPackage.ASSIGNMENT: return createAssignment();
-      case CoreDslPackage.CONDITIONAL_STMT: return createConditionalStmt();
-      case CoreDslPackage.DIRECT_CODE: return createDirectCode();
-      case CoreDslPackage.PROCEDURE: return createProcedure();
-      case CoreDslPackage.CONSTANT: return createConstant();
-      case CoreDslPackage.CONSTANT_DEF: return createConstantDef();
-      case CoreDslPackage.CONSTANT_DEFAULT: return createConstantDefault();
-      case CoreDslPackage.VARIABLE: return createVariable();
-      case CoreDslPackage.INDEXED_VARIABLE: return createIndexedVariable();
-      case CoreDslPackage.SCALAR_VARIABLE: return createScalarVariable();
-      case CoreDslPackage.REGISTER_VARIABLE: return createRegisterVariable();
-      case CoreDslPackage.ADDRESS_SPACE: return createAddressSpace();
-      case CoreDslPackage.REGISTER_FILE: return createRegisterFile();
-      case CoreDslPackage.REGISTER: return createRegister();
-      case CoreDslPackage.REGISTER_ALIAS: return createRegisterAlias();
-      case CoreDslPackage.SCALAR: return createScalar();
-      case CoreDslPackage.NUMBER_LITERAL: return createNumberLiteral();
+      case CoreDslPackage.LABELED_STATEMENT: return createLabeledStatement();
+      case CoreDslPackage.COMPOUND_STATEMENT: return createCompoundStatement();
+      case CoreDslPackage.BLOCK_ITEM: return createBlockItem();
+      case CoreDslPackage.EXPRESSION_STATEMENT: return createExpressionStatement();
+      case CoreDslPackage.SELECTION_STATEMENT: return createSelectionStatement();
+      case CoreDslPackage.IF_STATEMENT: return createIfStatement();
+      case CoreDslPackage.SWITCH_STATEMENT: return createSwitchStatement();
+      case CoreDslPackage.ITERATION_STATEMENT: return createIterationStatement();
+      case CoreDslPackage.FOR_CONDITION: return createForCondition();
+      case CoreDslPackage.JUMP_STATEMENT: return createJumpStatement();
+      case CoreDslPackage.DECLARATION: return createDeclaration();
+      case CoreDslPackage.TYPE_OR_VAR_DECLARATION: return createTypeOrVarDeclaration();
+      case CoreDslPackage.TYPEDEF_DECLARATION: return createTypedefDeclaration();
+      case CoreDslPackage.DECLARATION_SPECIFIER: return createDeclarationSpecifier();
+      case CoreDslPackage.ATTRIBUTE_LIST: return createAttributeList();
+      case CoreDslPackage.TYPE_SPECIFIER: return createTypeSpecifier();
+      case CoreDslPackage.DATA_TYPE_SPECIFIER: return createDataTypeSpecifier();
+      case CoreDslPackage.TYPEDEF_REF: return createTypedefRef();
+      case CoreDslPackage.POD_SPECIFIER: return createPodSpecifier();
+      case CoreDslPackage.BIT_SIZE_SPECIFIER: return createBitSizeSpecifier();
+      case CoreDslPackage.ENUM_SPECIFIER: return createEnumSpecifier();
+      case CoreDslPackage.ENUMERATOR_LIST: return createEnumeratorList();
+      case CoreDslPackage.ENUMERATOR: return createEnumerator();
+      case CoreDslPackage.STRUCT_OR_UNION_SPECIFIER: return createStructOrUnionSpecifier();
+      case CoreDslPackage.STRUCT_DECLARATION: return createStructDeclaration();
+      case CoreDslPackage.STRUCT_DECLARATION_SPECIFIER: return createStructDeclarationSpecifier();
+      case CoreDslPackage.INIT_DECLARATOR: return createInitDeclarator();
+      case CoreDslPackage.DIRECT_DECLARATOR: return createDirectDeclarator();
+      case CoreDslPackage.INITIALIZER_LIST: return createInitializerList();
+      case CoreDslPackage.INITIALIZER: return createInitializer();
+      case CoreDslPackage.DESIGNATED_INITIALIZER: return createDesignatedInitializer();
+      case CoreDslPackage.DESIGNATOR: return createDesignator();
+      case CoreDslPackage.ABSTRACT_DECLARATOR: return createAbstractDeclarator();
+      case CoreDslPackage.DIRECT_ABSTRACT_DECLARATOR: return createDirectAbstractDeclarator();
       case CoreDslPackage.EXPRESSION: return createExpression();
-      case CoreDslPackage.RVALUE: return createRValue();
-      case CoreDslPackage.VALUE_REF: return createValueRef();
-      case CoreDslPackage.BIT_SIZE_SPEC: return createBitSizeSpec();
-      case CoreDslPackage.INDEXED_ASSIGNMENT: return createIndexedAssignment();
-      case CoreDslPackage.REGISTER_ASSIGNMENT: return createRegisterAssignment();
-      case CoreDslPackage.SCALAR_ASSIGNMENT: return createScalarAssignment();
-      case CoreDslPackage.BOOLEAN_EXPR: return createBooleanExpr();
-      case CoreDslPackage.BIT_EXPR: return createBitExpr();
-      case CoreDslPackage.COMPARISON_EXPR: return createComparisonExpr();
-      case CoreDslPackage.SHIFT_EXPR: return createShiftExpr();
-      case CoreDslPackage.ADDITION_EXPR: return createAdditionExpr();
-      case CoreDslPackage.MULTIPLICATION_EXPR: return createMultiplicationExpr();
-      case CoreDslPackage.UNITARY_EXPR: return createUnitaryExpr();
-      case CoreDslPackage.TYPE_CONV: return createTypeConv();
-      case CoreDslPackage.FUNCTION: return createFunction();
+      case CoreDslPackage.CAST_EXPRESSION: return createCastExpression();
+      case CoreDslPackage.UNARY_EXPRESSION: return createUnaryExpression();
+      case CoreDslPackage.UNARY_OPERATOR: return createUnaryOperator();
+      case CoreDslPackage.POSTFIX_EXPRESSION: return createPostfixExpression();
+      case CoreDslPackage.POSTFIX_OPERATOR: return createPostfixOperator();
+      case CoreDslPackage.PRIMARY_EXPRESSION: return createPrimaryExpression();
+      case CoreDslPackage.VARIABLE_REF: return createVariableRef();
+      case CoreDslPackage.STRING_LITERAL: return createStringLiteral();
+      case CoreDslPackage.ENCODING_PREFIX: return createEncodingPrefix();
+      case CoreDslPackage.CONSTANT: return createConstant();
+      case CoreDslPackage.INTEGER_CONSTANT: return createIntegerConstant();
+      case CoreDslPackage.FLOATING_CONSTANT: return createFloatingConstant();
+      case CoreDslPackage.BOOL_CONSTANT: return createBoolConstant();
+      case CoreDslPackage.INTEGER_SUFFIX: return createIntegerSuffix();
+      case CoreDslPackage.UNSIGNED_SUFFIX: return createUnsignedSuffix();
+      case CoreDslPackage.LONG_SUFFIX: return createLongSuffix();
+      case CoreDslPackage.LONG_LONG_SUFFIX: return createLongLongSuffix();
+      case CoreDslPackage.FLOATING_SUFFIX: return createFloatingSuffix();
+      case CoreDslPackage.CHARACTER_CONSTANT: return createCharacterConstant();
+      case CoreDslPackage.ASSIGNMENT_EXPRESSION: return createAssignmentExpression();
+      case CoreDslPackage.CONDITIONAL_EXPRESSION: return createConditionalExpression();
+      case CoreDslPackage.LOGICAL_EXPR: return createLogicalExpr();
+      case CoreDslPackage.ARITHMETIC_EXPRESSION: return createArithmeticExpression();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -127,14 +154,20 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
   {
     switch (eDataType.getClassifierID())
     {
-      case CoreDslPackage.DATA_TYPE:
-        return createDataTypeFromString(eDataType, initialValue);
-      case CoreDslPackage.REG_ATTRIBUTE:
-        return createRegAttributeFromString(eDataType, initialValue);
-      case CoreDslPackage.CONST_ATTRIBUTE:
-        return createConstAttributeFromString(eDataType, initialValue);
+      case CoreDslPackage.DATA_TYPES:
+        return createDataTypesFromString(eDataType, initialValue);
+      case CoreDslPackage.TYPE_QUALIFIER:
+        return createTypeQualifierFromString(eDataType, initialValue);
+      case CoreDslPackage.STORAGE_CLASS_SPECIFIER:
+        return createStorageClassSpecifierFromString(eDataType, initialValue);
+      case CoreDslPackage.ATTRIBUTE:
+        return createAttributeFromString(eDataType, initialValue);
       case CoreDslPackage.INSTR_ATTRIBUTE:
         return createInstrAttributeFromString(eDataType, initialValue);
+      case CoreDslPackage.STRUCT_OR_UNION:
+        return createStructOrUnionFromString(eDataType, initialValue);
+      case CoreDslPackage.BITFIELD_DATA_TYPE:
+        return createBitfieldDataTypeFromString(eDataType, initialValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -150,14 +183,20 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
   {
     switch (eDataType.getClassifierID())
     {
-      case CoreDslPackage.DATA_TYPE:
-        return convertDataTypeToString(eDataType, instanceValue);
-      case CoreDslPackage.REG_ATTRIBUTE:
-        return convertRegAttributeToString(eDataType, instanceValue);
-      case CoreDslPackage.CONST_ATTRIBUTE:
-        return convertConstAttributeToString(eDataType, instanceValue);
+      case CoreDslPackage.DATA_TYPES:
+        return convertDataTypesToString(eDataType, instanceValue);
+      case CoreDslPackage.TYPE_QUALIFIER:
+        return convertTypeQualifierToString(eDataType, instanceValue);
+      case CoreDslPackage.STORAGE_CLASS_SPECIFIER:
+        return convertStorageClassSpecifierToString(eDataType, instanceValue);
+      case CoreDslPackage.ATTRIBUTE:
+        return convertAttributeToString(eDataType, instanceValue);
       case CoreDslPackage.INSTR_ATTRIBUTE:
         return convertInstrAttributeToString(eDataType, instanceValue);
+      case CoreDslPackage.STRUCT_OR_UNION:
+        return convertStructOrUnionToString(eDataType, instanceValue);
+      case CoreDslPackage.BITFIELD_DATA_TYPE:
+        return convertBitfieldDataTypeToString(eDataType, instanceValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -229,18 +268,6 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public RangeSpec createRangeSpec()
-  {
-    RangeSpecImpl rangeSpec = new RangeSpecImpl();
-    return rangeSpec;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public Instruction createInstruction()
   {
     InstructionImpl instruction = new InstructionImpl();
@@ -301,10 +328,46 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public Operation createOperation()
+  public RangeSpec createRangeSpec()
   {
-    OperationImpl operation = new OperationImpl();
-    return operation;
+    RangeSpecImpl rangeSpec = new RangeSpecImpl();
+    return rangeSpec;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public FunctionDefinition createFunctionDefinition()
+  {
+    FunctionDefinitionImpl functionDefinition = new FunctionDefinitionImpl();
+    return functionDefinition;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public ParameterList createParameterList()
+  {
+    ParameterListImpl parameterList = new ParameterListImpl();
+    return parameterList;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public ParameterDeclaration createParameterDeclaration()
+  {
+    ParameterDeclarationImpl parameterDeclaration = new ParameterDeclarationImpl();
+    return parameterDeclaration;
   }
 
   /**
@@ -325,10 +388,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public Assignment createAssignment()
+  public LabeledStatement createLabeledStatement()
   {
-    AssignmentImpl assignment = new AssignmentImpl();
-    return assignment;
+    LabeledStatementImpl labeledStatement = new LabeledStatementImpl();
+    return labeledStatement;
   }
 
   /**
@@ -337,10 +400,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public ConditionalStmt createConditionalStmt()
+  public CompoundStatement createCompoundStatement()
   {
-    ConditionalStmtImpl conditionalStmt = new ConditionalStmtImpl();
-    return conditionalStmt;
+    CompoundStatementImpl compoundStatement = new CompoundStatementImpl();
+    return compoundStatement;
   }
 
   /**
@@ -349,10 +412,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public DirectCode createDirectCode()
+  public BlockItem createBlockItem()
   {
-    DirectCodeImpl directCode = new DirectCodeImpl();
-    return directCode;
+    BlockItemImpl blockItem = new BlockItemImpl();
+    return blockItem;
   }
 
   /**
@@ -361,10 +424,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public Procedure createProcedure()
+  public ExpressionStatement createExpressionStatement()
   {
-    ProcedureImpl procedure = new ProcedureImpl();
-    return procedure;
+    ExpressionStatementImpl expressionStatement = new ExpressionStatementImpl();
+    return expressionStatement;
   }
 
   /**
@@ -373,10 +436,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public Constant createConstant()
+  public SelectionStatement createSelectionStatement()
   {
-    ConstantImpl constant = new ConstantImpl();
-    return constant;
+    SelectionStatementImpl selectionStatement = new SelectionStatementImpl();
+    return selectionStatement;
   }
 
   /**
@@ -385,10 +448,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public ConstantDef createConstantDef()
+  public IfStatement createIfStatement()
   {
-    ConstantDefImpl constantDef = new ConstantDefImpl();
-    return constantDef;
+    IfStatementImpl ifStatement = new IfStatementImpl();
+    return ifStatement;
   }
 
   /**
@@ -397,10 +460,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public ConstantDefault createConstantDefault()
+  public SwitchStatement createSwitchStatement()
   {
-    ConstantDefaultImpl constantDefault = new ConstantDefaultImpl();
-    return constantDefault;
+    SwitchStatementImpl switchStatement = new SwitchStatementImpl();
+    return switchStatement;
   }
 
   /**
@@ -409,10 +472,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public Variable createVariable()
+  public IterationStatement createIterationStatement()
   {
-    VariableImpl variable = new VariableImpl();
-    return variable;
+    IterationStatementImpl iterationStatement = new IterationStatementImpl();
+    return iterationStatement;
   }
 
   /**
@@ -421,10 +484,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public IndexedVariable createIndexedVariable()
+  public ForCondition createForCondition()
   {
-    IndexedVariableImpl indexedVariable = new IndexedVariableImpl();
-    return indexedVariable;
+    ForConditionImpl forCondition = new ForConditionImpl();
+    return forCondition;
   }
 
   /**
@@ -433,10 +496,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public ScalarVariable createScalarVariable()
+  public JumpStatement createJumpStatement()
   {
-    ScalarVariableImpl scalarVariable = new ScalarVariableImpl();
-    return scalarVariable;
+    JumpStatementImpl jumpStatement = new JumpStatementImpl();
+    return jumpStatement;
   }
 
   /**
@@ -445,10 +508,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public RegisterVariable createRegisterVariable()
+  public Declaration createDeclaration()
   {
-    RegisterVariableImpl registerVariable = new RegisterVariableImpl();
-    return registerVariable;
+    DeclarationImpl declaration = new DeclarationImpl();
+    return declaration;
   }
 
   /**
@@ -457,10 +520,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public AddressSpace createAddressSpace()
+  public TypeOrVarDeclaration createTypeOrVarDeclaration()
   {
-    AddressSpaceImpl addressSpace = new AddressSpaceImpl();
-    return addressSpace;
+    TypeOrVarDeclarationImpl typeOrVarDeclaration = new TypeOrVarDeclarationImpl();
+    return typeOrVarDeclaration;
   }
 
   /**
@@ -469,10 +532,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public RegisterFile createRegisterFile()
+  public TypedefDeclaration createTypedefDeclaration()
   {
-    RegisterFileImpl registerFile = new RegisterFileImpl();
-    return registerFile;
+    TypedefDeclarationImpl typedefDeclaration = new TypedefDeclarationImpl();
+    return typedefDeclaration;
   }
 
   /**
@@ -481,10 +544,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public Register createRegister()
+  public DeclarationSpecifier createDeclarationSpecifier()
   {
-    RegisterImpl register = new RegisterImpl();
-    return register;
+    DeclarationSpecifierImpl declarationSpecifier = new DeclarationSpecifierImpl();
+    return declarationSpecifier;
   }
 
   /**
@@ -493,10 +556,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public RegisterAlias createRegisterAlias()
+  public AttributeList createAttributeList()
   {
-    RegisterAliasImpl registerAlias = new RegisterAliasImpl();
-    return registerAlias;
+    AttributeListImpl attributeList = new AttributeListImpl();
+    return attributeList;
   }
 
   /**
@@ -505,10 +568,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public Scalar createScalar()
+  public TypeSpecifier createTypeSpecifier()
   {
-    ScalarImpl scalar = new ScalarImpl();
-    return scalar;
+    TypeSpecifierImpl typeSpecifier = new TypeSpecifierImpl();
+    return typeSpecifier;
   }
 
   /**
@@ -517,10 +580,214 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public NumberLiteral createNumberLiteral()
+  public DataTypeSpecifier createDataTypeSpecifier()
   {
-    NumberLiteralImpl numberLiteral = new NumberLiteralImpl();
-    return numberLiteral;
+    DataTypeSpecifierImpl dataTypeSpecifier = new DataTypeSpecifierImpl();
+    return dataTypeSpecifier;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public TypedefRef createTypedefRef()
+  {
+    TypedefRefImpl typedefRef = new TypedefRefImpl();
+    return typedefRef;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public PodSpecifier createPodSpecifier()
+  {
+    PodSpecifierImpl podSpecifier = new PodSpecifierImpl();
+    return podSpecifier;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public BitSizeSpecifier createBitSizeSpecifier()
+  {
+    BitSizeSpecifierImpl bitSizeSpecifier = new BitSizeSpecifierImpl();
+    return bitSizeSpecifier;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EnumSpecifier createEnumSpecifier()
+  {
+    EnumSpecifierImpl enumSpecifier = new EnumSpecifierImpl();
+    return enumSpecifier;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EnumeratorList createEnumeratorList()
+  {
+    EnumeratorListImpl enumeratorList = new EnumeratorListImpl();
+    return enumeratorList;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Enumerator createEnumerator()
+  {
+    EnumeratorImpl enumerator = new EnumeratorImpl();
+    return enumerator;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public StructOrUnionSpecifier createStructOrUnionSpecifier()
+  {
+    StructOrUnionSpecifierImpl structOrUnionSpecifier = new StructOrUnionSpecifierImpl();
+    return structOrUnionSpecifier;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public StructDeclaration createStructDeclaration()
+  {
+    StructDeclarationImpl structDeclaration = new StructDeclarationImpl();
+    return structDeclaration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public StructDeclarationSpecifier createStructDeclarationSpecifier()
+  {
+    StructDeclarationSpecifierImpl structDeclarationSpecifier = new StructDeclarationSpecifierImpl();
+    return structDeclarationSpecifier;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public InitDeclarator createInitDeclarator()
+  {
+    InitDeclaratorImpl initDeclarator = new InitDeclaratorImpl();
+    return initDeclarator;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public DirectDeclarator createDirectDeclarator()
+  {
+    DirectDeclaratorImpl directDeclarator = new DirectDeclaratorImpl();
+    return directDeclarator;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public InitializerList createInitializerList()
+  {
+    InitializerListImpl initializerList = new InitializerListImpl();
+    return initializerList;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Initializer createInitializer()
+  {
+    InitializerImpl initializer = new InitializerImpl();
+    return initializer;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public DesignatedInitializer createDesignatedInitializer()
+  {
+    DesignatedInitializerImpl designatedInitializer = new DesignatedInitializerImpl();
+    return designatedInitializer;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Designator createDesignator()
+  {
+    DesignatorImpl designator = new DesignatorImpl();
+    return designator;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public AbstractDeclarator createAbstractDeclarator()
+  {
+    AbstractDeclaratorImpl abstractDeclarator = new AbstractDeclaratorImpl();
+    return abstractDeclarator;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public DirectAbstractDeclarator createDirectAbstractDeclarator()
+  {
+    DirectAbstractDeclaratorImpl directAbstractDeclarator = new DirectAbstractDeclaratorImpl();
+    return directAbstractDeclarator;
   }
 
   /**
@@ -541,10 +808,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public RValue createRValue()
+  public CastExpression createCastExpression()
   {
-    RValueImpl rValue = new RValueImpl();
-    return rValue;
+    CastExpressionImpl castExpression = new CastExpressionImpl();
+    return castExpression;
   }
 
   /**
@@ -553,10 +820,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public ValueRef createValueRef()
+  public UnaryExpression createUnaryExpression()
   {
-    ValueRefImpl valueRef = new ValueRefImpl();
-    return valueRef;
+    UnaryExpressionImpl unaryExpression = new UnaryExpressionImpl();
+    return unaryExpression;
   }
 
   /**
@@ -565,10 +832,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public BitSizeSpec createBitSizeSpec()
+  public UnaryOperator createUnaryOperator()
   {
-    BitSizeSpecImpl bitSizeSpec = new BitSizeSpecImpl();
-    return bitSizeSpec;
+    UnaryOperatorImpl unaryOperator = new UnaryOperatorImpl();
+    return unaryOperator;
   }
 
   /**
@@ -577,10 +844,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public IndexedAssignment createIndexedAssignment()
+  public PostfixExpression createPostfixExpression()
   {
-    IndexedAssignmentImpl indexedAssignment = new IndexedAssignmentImpl();
-    return indexedAssignment;
+    PostfixExpressionImpl postfixExpression = new PostfixExpressionImpl();
+    return postfixExpression;
   }
 
   /**
@@ -589,10 +856,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public RegisterAssignment createRegisterAssignment()
+  public PostfixOperator createPostfixOperator()
   {
-    RegisterAssignmentImpl registerAssignment = new RegisterAssignmentImpl();
-    return registerAssignment;
+    PostfixOperatorImpl postfixOperator = new PostfixOperatorImpl();
+    return postfixOperator;
   }
 
   /**
@@ -601,10 +868,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public ScalarAssignment createScalarAssignment()
+  public PrimaryExpression createPrimaryExpression()
   {
-    ScalarAssignmentImpl scalarAssignment = new ScalarAssignmentImpl();
-    return scalarAssignment;
+    PrimaryExpressionImpl primaryExpression = new PrimaryExpressionImpl();
+    return primaryExpression;
   }
 
   /**
@@ -613,10 +880,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public BooleanExpr createBooleanExpr()
+  public VariableRef createVariableRef()
   {
-    BooleanExprImpl booleanExpr = new BooleanExprImpl();
-    return booleanExpr;
+    VariableRefImpl variableRef = new VariableRefImpl();
+    return variableRef;
   }
 
   /**
@@ -625,10 +892,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public BitExpr createBitExpr()
+  public StringLiteral createStringLiteral()
   {
-    BitExprImpl bitExpr = new BitExprImpl();
-    return bitExpr;
+    StringLiteralImpl stringLiteral = new StringLiteralImpl();
+    return stringLiteral;
   }
 
   /**
@@ -637,10 +904,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public ComparisonExpr createComparisonExpr()
+  public EncodingPrefix createEncodingPrefix()
   {
-    ComparisonExprImpl comparisonExpr = new ComparisonExprImpl();
-    return comparisonExpr;
+    EncodingPrefixImpl encodingPrefix = new EncodingPrefixImpl();
+    return encodingPrefix;
   }
 
   /**
@@ -649,10 +916,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public ShiftExpr createShiftExpr()
+  public Constant createConstant()
   {
-    ShiftExprImpl shiftExpr = new ShiftExprImpl();
-    return shiftExpr;
+    ConstantImpl constant = new ConstantImpl();
+    return constant;
   }
 
   /**
@@ -661,10 +928,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public AdditionExpr createAdditionExpr()
+  public IntegerConstant createIntegerConstant()
   {
-    AdditionExprImpl additionExpr = new AdditionExprImpl();
-    return additionExpr;
+    IntegerConstantImpl integerConstant = new IntegerConstantImpl();
+    return integerConstant;
   }
 
   /**
@@ -673,10 +940,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public MultiplicationExpr createMultiplicationExpr()
+  public FloatingConstant createFloatingConstant()
   {
-    MultiplicationExprImpl multiplicationExpr = new MultiplicationExprImpl();
-    return multiplicationExpr;
+    FloatingConstantImpl floatingConstant = new FloatingConstantImpl();
+    return floatingConstant;
   }
 
   /**
@@ -685,10 +952,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public UnitaryExpr createUnitaryExpr()
+  public BoolConstant createBoolConstant()
   {
-    UnitaryExprImpl unitaryExpr = new UnitaryExprImpl();
-    return unitaryExpr;
+    BoolConstantImpl boolConstant = new BoolConstantImpl();
+    return boolConstant;
   }
 
   /**
@@ -697,10 +964,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public TypeConv createTypeConv()
+  public IntegerSuffix createIntegerSuffix()
   {
-    TypeConvImpl typeConv = new TypeConvImpl();
-    return typeConv;
+    IntegerSuffixImpl integerSuffix = new IntegerSuffixImpl();
+    return integerSuffix;
   }
 
   /**
@@ -709,10 +976,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public Function createFunction()
+  public UnsignedSuffix createUnsignedSuffix()
   {
-    FunctionImpl function = new FunctionImpl();
-    return function;
+    UnsignedSuffixImpl unsignedSuffix = new UnsignedSuffixImpl();
+    return unsignedSuffix;
   }
 
   /**
@@ -720,9 +987,105 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public DataType createDataTypeFromString(EDataType eDataType, String initialValue)
+  @Override
+  public LongSuffix createLongSuffix()
   {
-    DataType result = DataType.get(initialValue);
+    LongSuffixImpl longSuffix = new LongSuffixImpl();
+    return longSuffix;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public LongLongSuffix createLongLongSuffix()
+  {
+    LongLongSuffixImpl longLongSuffix = new LongLongSuffixImpl();
+    return longLongSuffix;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public FloatingSuffix createFloatingSuffix()
+  {
+    FloatingSuffixImpl floatingSuffix = new FloatingSuffixImpl();
+    return floatingSuffix;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public CharacterConstant createCharacterConstant()
+  {
+    CharacterConstantImpl characterConstant = new CharacterConstantImpl();
+    return characterConstant;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public AssignmentExpression createAssignmentExpression()
+  {
+    AssignmentExpressionImpl assignmentExpression = new AssignmentExpressionImpl();
+    return assignmentExpression;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public ConditionalExpression createConditionalExpression()
+  {
+    ConditionalExpressionImpl conditionalExpression = new ConditionalExpressionImpl();
+    return conditionalExpression;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public LogicalExpr createLogicalExpr()
+  {
+    LogicalExprImpl logicalExpr = new LogicalExprImpl();
+    return logicalExpr;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public ArithmeticExpression createArithmeticExpression()
+  {
+    ArithmeticExpressionImpl arithmeticExpression = new ArithmeticExpressionImpl();
+    return arithmeticExpression;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DataTypes createDataTypesFromString(EDataType eDataType, String initialValue)
+  {
+    DataTypes result = DataTypes.get(initialValue);
     if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
     return result;
   }
@@ -732,7 +1095,7 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public String convertDataTypeToString(EDataType eDataType, Object instanceValue)
+  public String convertDataTypesToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }
@@ -742,9 +1105,9 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public RegAttribute createRegAttributeFromString(EDataType eDataType, String initialValue)
+  public TypeQualifier createTypeQualifierFromString(EDataType eDataType, String initialValue)
   {
-    RegAttribute result = RegAttribute.get(initialValue);
+    TypeQualifier result = TypeQualifier.get(initialValue);
     if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
     return result;
   }
@@ -754,7 +1117,7 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public String convertRegAttributeToString(EDataType eDataType, Object instanceValue)
+  public String convertTypeQualifierToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }
@@ -764,9 +1127,9 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public ConstAttribute createConstAttributeFromString(EDataType eDataType, String initialValue)
+  public StorageClassSpecifier createStorageClassSpecifierFromString(EDataType eDataType, String initialValue)
   {
-    ConstAttribute result = ConstAttribute.get(initialValue);
+    StorageClassSpecifier result = StorageClassSpecifier.get(initialValue);
     if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
     return result;
   }
@@ -776,7 +1139,29 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public String convertConstAttributeToString(EDataType eDataType, Object instanceValue)
+  public String convertStorageClassSpecifierToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Attribute createAttributeFromString(EDataType eDataType, String initialValue)
+  {
+    Attribute result = Attribute.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertAttributeToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }
@@ -799,6 +1184,50 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   public String convertInstrAttributeToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public StructOrUnion createStructOrUnionFromString(EDataType eDataType, String initialValue)
+  {
+    StructOrUnion result = StructOrUnion.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertStructOrUnionToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BitfieldDataType createBitfieldDataTypeFromString(EDataType eDataType, String initialValue)
+  {
+    BitfieldDataType result = BitfieldDataType.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertBitfieldDataTypeToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

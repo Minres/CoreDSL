@@ -14,6 +14,6 @@ package com.minres.coredsl.coreDsl;
  * @model
  * @generated
  */
-public interface Field extends RValue
+public interface Field extends VariableRef
 {
 } // Field

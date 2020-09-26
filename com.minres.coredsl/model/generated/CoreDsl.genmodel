@@ -6,27 +6,45 @@
     copyrightFields="false" runtimeVersion="2.20">
   <genPackages prefix="CoreDsl" basePackage="com.minres.coredsl" disposableProviderFactory="true"
       fileExtensions="core_desc" ecorePackage="CoreDsl.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//DataType">
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataType/NONE"/>
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataType/UNSIGNED"/>
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataType/SIGNED"/>
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataType/FLOAT"/>
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataType/DOUBLE"/>
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataType/QUAD"/>
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataType/BOOLEAN"/>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//DataTypes">
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/BOOL"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/CHAR"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/SHORT"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/INT"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/LONG"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/SIGNED"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/UNSIGNED"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/FLOAT"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/DOUBLE"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/FRAC"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/ACCUM"/>
     </genEnums>
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//RegAttribute">
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//RegAttribute/PC"/>
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//RegAttribute/DEL"/>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//TypeQualifier">
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//TypeQualifier/CONST"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//TypeQualifier/VOLATILE"/>
     </genEnums>
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//ConstAttribute">
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//ConstAttribute/REG_WIDTH"/>
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//ConstAttribute/ADDR_WIDTH"/>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//StorageClassSpecifier">
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//StorageClassSpecifier/EXTERN"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//StorageClassSpecifier/STATIC"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//Attribute">
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//Attribute/NONE"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//Attribute/IS_PC"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//Attribute/DEL"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//InstrAttribute">
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//InstrAttribute/NONE"/>
       <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//InstrAttribute/NO_CONT"/>
       <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//InstrAttribute/COND"/>
       <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//InstrAttribute/FLUSH"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//StructOrUnion">
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//StructOrUnion/STRUCT"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//StructOrUnion/UNION"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//BitfieldDataType">
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//BitfieldDataType/UNSIGNED"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//BitfieldDataType/SIGNED"/>
     </genEnums>
     <genClasses ecoreClass="CoreDsl.ecore#//DescriptionContent">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DescriptionContent/imports"/>
@@ -37,29 +55,24 @@
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//ISA">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//ISA/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ISA/constants"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ISA/spaces"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ISA/regs"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ISA/instr"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//InstructionSet">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//InstructionSet/superType"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//InstructionSet/constants"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//InstructionSet/func"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//CoreDef">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//CoreDef/contributingType"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//CoreDef/templateName"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//CoreDef/constants"/>
-    </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//RangeSpec">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//RangeSpec/left"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//RangeSpec/right"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//Instruction">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//Instruction/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//Instruction/attributes"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Instruction/encoding"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//Instruction/disass"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Instruction/operation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Instruction/behavior"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//Encoding">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Encoding/fields"/>
@@ -70,126 +83,213 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//BitField/bitRange"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//BitField/type"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//Operation">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Operation/statements"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//RangeSpec">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//RangeSpec/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//RangeSpec/right"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//FunctionDefinition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//FunctionDefinition/extern"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//FunctionDefinition/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//FunctionDefinition/statement"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//ParameterList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ParameterList/params"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ParameterList/parameters"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//ParameterDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ParameterDeclaration/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ParameterDeclaration/declarator"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//Statement"/>
-    <genClasses ecoreClass="CoreDsl.ecore#//Assignment">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Assignment/bitWidth"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Assignment/expression"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//LabeledStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//LabeledStatement/constExpr"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//LabeledStatement/stmt"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//ConditionalStmt">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ConditionalStmt/cond"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ConditionalStmt/thenStmts"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ConditionalStmt/elseStmts"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//CompoundStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//CompoundStatement/items"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//DirectCode">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//DirectCode/code"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//BlockItem"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//ExpressionStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ExpressionStatement/expr"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//Procedure">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//Procedure/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Procedure/args"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//SelectionStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//SelectionStatement/cond"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//Constant">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Constant/constantDefault"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//IfStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//IfStatement/thenStmt"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//IfStatement/elseStmt"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//ConstantDef">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//ConstantDef/value"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//ConstantDef/attributes"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//SwitchStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//SwitchStatement/items"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//ConstantDefault">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//ConstantDefault/defaultValue"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//IterationStatement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//IterationStatement/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//IterationStatement/cond"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//IterationStatement/stmt"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//Variable">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//Variable/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//Variable/bitSize"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Variable/bitSizeConst"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//ForCondition">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ForCondition/startDecl"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ForCondition/startExpr"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ForCondition/endExpr"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ForCondition/loopExprs"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//IndexedVariable"/>
-    <genClasses ecoreClass="CoreDsl.ecore#//ScalarVariable"/>
-    <genClasses ecoreClass="CoreDsl.ecore#//RegisterVariable">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//RegisterVariable/attributes"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//JumpStatement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//JumpStatement/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//JumpStatement/expr"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//AddressSpace"/>
-    <genClasses ecoreClass="CoreDsl.ecore#//RegisterFile">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//RegisterFile/range"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//RegisterFile/attributes"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//Declaration"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//TypeOrVarDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypeOrVarDeclaration/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypeOrVarDeclaration/size"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypeOrVarDeclaration/init"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//Register"/>
-    <genClasses ecoreClass="CoreDsl.ecore#//RegisterAlias">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//RegisterAlias/original"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//RegisterAlias/index"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//TypedefDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypedefDeclaration/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypedefDeclaration/init"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//Scalar">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//Scalar/determined"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//DeclarationSpecifier">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//DeclarationSpecifier/storage"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//DeclarationSpecifier/qualifiers"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//NumberLiteral">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//NumberLiteral/value"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//AttributeList">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//AttributeList/attrs"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//Expression"/>
-    <genClasses ecoreClass="CoreDsl.ecore#//RValue">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//RValue/name"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//TypeSpecifier"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//DataTypeSpecifier"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//TypedefRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypedefRef/ref"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//ValueRef">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ValueRef/value"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ValueRef/index"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ValueRef/bitWidth"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//PodSpecifier">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//PodSpecifier/dataType"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//BitSizeSpec">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//BitSizeSpec/value"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//BitSizeSpec/constant"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//BitSizeSpecifier">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//BitSizeSpecifier/value"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//BitSizeSpecifier/constant"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//IndexedAssignment">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//IndexedAssignment/to"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//IndexedAssignment/index"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//EnumSpecifier">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//EnumSpecifier/name"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//RegisterAssignment">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//RegisterAssignment/to"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//EnumeratorList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//EnumeratorList/enumerators"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//ScalarAssignment">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ScalarAssignment/to"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//Enumerator">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//Enumerator/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Enumerator/expression"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//BooleanExpr">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//BooleanExpr/left"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//BooleanExpr/op"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//BooleanExpr/right"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//StructOrUnionSpecifier">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//StructOrUnionSpecifier/composeType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//StructOrUnionSpecifier/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//StructOrUnionSpecifier/decls"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//BitExpr">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//BitExpr/left"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//BitExpr/op"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//BitExpr/right"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//StructDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//StructDeclaration/specifier"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//StructDeclaration/decls"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//ComparisonExpr">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ComparisonExpr/left"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//ComparisonExpr/op"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ComparisonExpr/right"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//StructDeclarationSpecifier">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//StructDeclarationSpecifier/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//StructDeclarationSpecifier/qualifiers"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//ShiftExpr">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ShiftExpr/left"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//ShiftExpr/op"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ShiftExpr/right"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//InitDeclarator">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//InitDeclarator/declarator"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//InitDeclarator/initializer"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//AdditionExpr">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//AdditionExpr/left"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//AdditionExpr/op"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//AdditionExpr/right"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//DirectDeclarator">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DirectDeclarator/index"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DirectDeclarator/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//DirectDeclarator/qualifiers"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DirectDeclarator/expr"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//MultiplicationExpr">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//MultiplicationExpr/left"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//MultiplicationExpr/op"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//MultiplicationExpr/right"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//InitializerList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//InitializerList/init"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//UnitaryExpr">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//UnitaryExpr/op"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//UnitaryExpr/expr"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//Initializer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Initializer/expr"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//TypeConv">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypeConv/expr"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//TypeConv/type"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//DesignatedInitializer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DesignatedInitializer/designators"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DesignatedInitializer/init"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//Function">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//Function/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Function/args"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//Designator">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Designator/idx"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//Designator/prop"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//AbstractDeclarator"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//DirectAbstractDeclarator">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DirectAbstractDeclarator/declarator"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DirectAbstractDeclarator/expr"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//Expression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Expression/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Expression/right"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//CastExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//CastExpression/type"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//UnaryExpression"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//UnaryOperator">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//UnaryOperator/op"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//PostfixExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//PostfixExpression/ops"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//PostfixOperator">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//PostfixOperator/op"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//PostfixOperator/args"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//PostfixOperator/member"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//PrimaryExpression">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//PrimaryExpression/ref"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//PrimaryExpression/constant"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//PrimaryExpression/literal"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//VariableRef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//VariableRef/name"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//StringLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//StringLiteral/val"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//EncodingPrefix">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//EncodingPrefix/prefix"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//Constant"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//IntegerConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//IntegerConstant/val"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//FloatingConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//FloatingConstant/val"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//BoolConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//BoolConstant/val"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//IntegerSuffix"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//UnsignedSuffix">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//UnsignedSuffix/unsigned"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//LongSuffix">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//LongSuffix/long"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//LongLongSuffix">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//LongLongSuffix/longlong"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//FloatingSuffix">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//FloatingSuffix/f"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//FloatingSuffix/l"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//CharacterConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//CharacterConstant/val"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//CharacterConstant/enc"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//AssignmentExpression">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//AssignmentExpression/op"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//ConditionalExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ConditionalExpression/cond"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//LogicalExpr">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//LogicalExpr/op"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//ArithmeticExpression">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//ArithmeticExpression/op"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

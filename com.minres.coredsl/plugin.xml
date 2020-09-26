@@ -3,7 +3,7 @@
 <plugin>
 	<extension point="org.eclipse.emf.ecore.generated_package">
 		<package
-			uri = "http://www.minres.com/coredsl/CoreDsl"
+			uri = "http://www.minres.com/coredsl/CoreDsl/2.0"
 			class = "com.minres.coredsl.coreDsl.CoreDslPackage"
 			genModel = "model/generated/CoreDsl.genmodel" />
 	</extension>

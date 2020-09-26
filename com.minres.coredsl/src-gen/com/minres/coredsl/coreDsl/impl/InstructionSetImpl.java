@@ -3,8 +3,8 @@
  */
 package com.minres.coredsl.coreDsl.impl;
 
-import com.minres.coredsl.coreDsl.Constant;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
+import com.minres.coredsl.coreDsl.FunctionDefinition;
 import com.minres.coredsl.coreDsl.InstructionSet;
 
 import java.util.Collection;
@@ -31,7 +31,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * </p>
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.InstructionSetImpl#getSuperType <em>Super Type</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.InstructionSetImpl#getConstants <em>Constants</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.InstructionSetImpl#getFunc <em>Func</em>}</li>
  * </ul>
  *
  * @generated
@@ -49,14 +49,14 @@ public class InstructionSetImpl extends ISAImpl implements InstructionSet
   protected InstructionSet superType;
 
   /**
-   * The cached value of the '{@link #getConstants() <em>Constants</em>}' containment reference list.
+   * The cached value of the '{@link #getFunc() <em>Func</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getConstants()
+   * @see #getFunc()
    * @generated
    * @ordered
    */
-  protected EList<Constant> constants;
+  protected EList<FunctionDefinition> func;
 
   /**
    * <!-- begin-user-doc -->
@@ -130,13 +130,13 @@ public class InstructionSetImpl extends ISAImpl implements InstructionSet
    * @generated
    */
   @Override
-  public EList<Constant> getConstants()
+  public EList<FunctionDefinition> getFunc()
   {
-    if (constants == null)
+    if (func == null)
     {
-      constants = new EObjectContainmentEList<Constant>(Constant.class, this, CoreDslPackage.INSTRUCTION_SET__CONSTANTS);
+      func = new EObjectContainmentEList<FunctionDefinition>(FunctionDefinition.class, this, CoreDslPackage.INSTRUCTION_SET__FUNC);
     }
-    return constants;
+    return func;
   }
 
   /**
@@ -149,8 +149,8 @@ public class InstructionSetImpl extends ISAImpl implements InstructionSet
   {
     switch (featureID)
     {
-      case CoreDslPackage.INSTRUCTION_SET__CONSTANTS:
-        return ((InternalEList<?>)getConstants()).basicRemove(otherEnd, msgs);
+      case CoreDslPackage.INSTRUCTION_SET__FUNC:
+        return ((InternalEList<?>)getFunc()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -168,8 +168,8 @@ public class InstructionSetImpl extends ISAImpl implements InstructionSet
       case CoreDslPackage.INSTRUCTION_SET__SUPER_TYPE:
         if (resolve) return getSuperType();
         return basicGetSuperType();
-      case CoreDslPackage.INSTRUCTION_SET__CONSTANTS:
-        return getConstants();
+      case CoreDslPackage.INSTRUCTION_SET__FUNC:
+        return getFunc();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -188,9 +188,9 @@ public class InstructionSetImpl extends ISAImpl implements InstructionSet
       case CoreDslPackage.INSTRUCTION_SET__SUPER_TYPE:
         setSuperType((InstructionSet)newValue);
         return;
-      case CoreDslPackage.INSTRUCTION_SET__CONSTANTS:
-        getConstants().clear();
-        getConstants().addAll((Collection<? extends Constant>)newValue);
+      case CoreDslPackage.INSTRUCTION_SET__FUNC:
+        getFunc().clear();
+        getFunc().addAll((Collection<? extends FunctionDefinition>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -209,8 +209,8 @@ public class InstructionSetImpl extends ISAImpl implements InstructionSet
       case CoreDslPackage.INSTRUCTION_SET__SUPER_TYPE:
         setSuperType((InstructionSet)null);
         return;
-      case CoreDslPackage.INSTRUCTION_SET__CONSTANTS:
-        getConstants().clear();
+      case CoreDslPackage.INSTRUCTION_SET__FUNC:
+        getFunc().clear();
         return;
     }
     super.eUnset(featureID);
@@ -228,8 +228,8 @@ public class InstructionSetImpl extends ISAImpl implements InstructionSet
     {
       case CoreDslPackage.INSTRUCTION_SET__SUPER_TYPE:
         return superType != null;
-      case CoreDslPackage.INSTRUCTION_SET__CONSTANTS:
-        return constants != null && !constants.isEmpty();
+      case CoreDslPackage.INSTRUCTION_SET__FUNC:
+        return func != null && !func.isEmpty();
     }
     return super.eIsSet(featureID);
   }

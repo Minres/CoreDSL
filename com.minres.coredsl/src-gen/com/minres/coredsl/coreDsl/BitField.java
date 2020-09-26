@@ -47,27 +47,27 @@ public interface BitField extends Field
 
   /**
    * Returns the value of the '<em><b>Type</b></em>' attribute.
-   * The literals are from the enumeration {@link com.minres.coredsl.coreDsl.DataType}.
+   * The literals are from the enumeration {@link com.minres.coredsl.coreDsl.BitfieldDataType}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Type</em>' attribute.
-   * @see com.minres.coredsl.coreDsl.DataType
-   * @see #setType(DataType)
+   * @see com.minres.coredsl.coreDsl.BitfieldDataType
+   * @see #setType(BitfieldDataType)
    * @see com.minres.coredsl.coreDsl.CoreDslPackage#getBitField_Type()
    * @model
    * @generated
    */
-  DataType getType();
+  BitfieldDataType getType();
 
   /**
    * Sets the value of the '{@link com.minres.coredsl.coreDsl.BitField#getType <em>Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Type</em>' attribute.
-   * @see com.minres.coredsl.coreDsl.DataType
+   * @see com.minres.coredsl.coreDsl.BitfieldDataType
    * @see #getType()
    * @generated
    */
-  void setType(DataType value);
+  void setType(BitfieldDataType value);
 
 } // BitField

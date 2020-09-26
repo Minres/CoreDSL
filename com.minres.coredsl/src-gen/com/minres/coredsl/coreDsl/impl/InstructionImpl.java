@@ -3,11 +3,11 @@
  */
 package com.minres.coredsl.coreDsl.impl;
 
+import com.minres.coredsl.coreDsl.CompoundStatement;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.Encoding;
 import com.minres.coredsl.coreDsl.InstrAttribute;
 import com.minres.coredsl.coreDsl.Instruction;
-import com.minres.coredsl.coreDsl.Operation;
 
 import java.util.Collection;
 
@@ -36,7 +36,7 @@ import org.eclipse.emf.ecore.util.EDataTypeEList;
  *   <li>{@link com.minres.coredsl.coreDsl.impl.InstructionImpl#getAttributes <em>Attributes</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.InstructionImpl#getEncoding <em>Encoding</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.InstructionImpl#getDisass <em>Disass</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.InstructionImpl#getOperation <em>Operation</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.InstructionImpl#getBehavior <em>Behavior</em>}</li>
  * </ul>
  *
  * @generated
@@ -104,14 +104,14 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
   protected String disass = DISASS_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getOperation() <em>Operation</em>}' containment reference.
+   * The cached value of the '{@link #getBehavior() <em>Behavior</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getOperation()
+   * @see #getBehavior()
    * @generated
    * @ordered
    */
-  protected Operation operation;
+  protected CompoundStatement behavior;
 
   /**
    * <!-- begin-user-doc -->
@@ -255,9 +255,9 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
    * @generated
    */
   @Override
-  public Operation getOperation()
+  public CompoundStatement getBehavior()
   {
-    return operation;
+    return behavior;
   }
 
   /**
@@ -265,13 +265,13 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetOperation(Operation newOperation, NotificationChain msgs)
+  public NotificationChain basicSetBehavior(CompoundStatement newBehavior, NotificationChain msgs)
   {
-    Operation oldOperation = operation;
-    operation = newOperation;
+    CompoundStatement oldBehavior = behavior;
+    behavior = newBehavior;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CoreDslPackage.INSTRUCTION__OPERATION, oldOperation, newOperation);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CoreDslPackage.INSTRUCTION__BEHAVIOR, oldBehavior, newBehavior);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -283,20 +283,20 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
    * @generated
    */
   @Override
-  public void setOperation(Operation newOperation)
+  public void setBehavior(CompoundStatement newBehavior)
   {
-    if (newOperation != operation)
+    if (newBehavior != behavior)
     {
       NotificationChain msgs = null;
-      if (operation != null)
-        msgs = ((InternalEObject)operation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.INSTRUCTION__OPERATION, null, msgs);
-      if (newOperation != null)
-        msgs = ((InternalEObject)newOperation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.INSTRUCTION__OPERATION, null, msgs);
-      msgs = basicSetOperation(newOperation, msgs);
+      if (behavior != null)
+        msgs = ((InternalEObject)behavior).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.INSTRUCTION__BEHAVIOR, null, msgs);
+      if (newBehavior != null)
+        msgs = ((InternalEObject)newBehavior).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.INSTRUCTION__BEHAVIOR, null, msgs);
+      msgs = basicSetBehavior(newBehavior, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.INSTRUCTION__OPERATION, newOperation, newOperation));
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.INSTRUCTION__BEHAVIOR, newBehavior, newBehavior));
   }
 
   /**
@@ -311,8 +311,8 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
     {
       case CoreDslPackage.INSTRUCTION__ENCODING:
         return basicSetEncoding(null, msgs);
-      case CoreDslPackage.INSTRUCTION__OPERATION:
-        return basicSetOperation(null, msgs);
+      case CoreDslPackage.INSTRUCTION__BEHAVIOR:
+        return basicSetBehavior(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -335,8 +335,8 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
         return getEncoding();
       case CoreDslPackage.INSTRUCTION__DISASS:
         return getDisass();
-      case CoreDslPackage.INSTRUCTION__OPERATION:
-        return getOperation();
+      case CoreDslPackage.INSTRUCTION__BEHAVIOR:
+        return getBehavior();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -365,8 +365,8 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
       case CoreDslPackage.INSTRUCTION__DISASS:
         setDisass((String)newValue);
         return;
-      case CoreDslPackage.INSTRUCTION__OPERATION:
-        setOperation((Operation)newValue);
+      case CoreDslPackage.INSTRUCTION__BEHAVIOR:
+        setBehavior((CompoundStatement)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -394,8 +394,8 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
       case CoreDslPackage.INSTRUCTION__DISASS:
         setDisass(DISASS_EDEFAULT);
         return;
-      case CoreDslPackage.INSTRUCTION__OPERATION:
-        setOperation((Operation)null);
+      case CoreDslPackage.INSTRUCTION__BEHAVIOR:
+        setBehavior((CompoundStatement)null);
         return;
     }
     super.eUnset(featureID);
@@ -419,8 +419,8 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
         return encoding != null;
       case CoreDslPackage.INSTRUCTION__DISASS:
         return DISASS_EDEFAULT == null ? disass != null : !DISASS_EDEFAULT.equals(disass);
-      case CoreDslPackage.INSTRUCTION__OPERATION:
-        return operation != null;
+      case CoreDslPackage.INSTRUCTION__BEHAVIOR:
+        return behavior != null;
     }
     return super.eIsSet(featureID);
   }

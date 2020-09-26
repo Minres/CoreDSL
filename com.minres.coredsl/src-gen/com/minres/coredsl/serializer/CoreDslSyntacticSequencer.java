@@ -11,6 +11,8 @@ import org.eclipse.xtext.IGrammarAccess;
 import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.serializer.analysis.GrammarAlias.AbstractElementAlias;
+import org.eclipse.xtext.serializer.analysis.GrammarAlias.AlternativeAlias;
+import org.eclipse.xtext.serializer.analysis.GrammarAlias.GroupAlias;
 import org.eclipse.xtext.serializer.analysis.GrammarAlias.TokenAlias;
 import org.eclipse.xtext.serializer.analysis.ISyntacticSequencerPDAProvider.ISynNavigable;
 import org.eclipse.xtext.serializer.analysis.ISyntacticSequencerPDAProvider.ISynTransition;
@@ -21,21 +23,17 @@ public class CoreDslSyntacticSequencer extends AbstractSyntacticSequencer {
 
 	protected CoreDslGrammarAccess grammarAccess;
 	protected AbstractElementAlias match_BitField_ApostropheKeyword_2_0_q;
-	protected AbstractElementAlias match_Instruction_RightCurlyBracketKeyword_1_2_a;
-	protected AbstractElementAlias match_Instruction_RightCurlyBracketKeyword_1_2_p;
-	protected AbstractElementAlias match_Primary_LeftParenthesisKeyword_0_0_a;
-	protected AbstractElementAlias match_Primary_LeftParenthesisKeyword_0_0_p;
-	protected AbstractElementAlias match_TypeConv_ApostropheKeyword_1_1_q;
+	protected AbstractElementAlias match_DirectAbstractDeclarator___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3___or___LeftSquareBracketKeyword_1_1_RightSquareBracketKeyword_1_3__;
+	protected AbstractElementAlias match_EnumSpecifier_CommaKeyword_0_4_q;
+	protected AbstractElementAlias match_Initializer_CommaKeyword_1_2_q;
 	
 	@Inject
 	protected void init(IGrammarAccess access) {
 		grammarAccess = (CoreDslGrammarAccess) access;
 		match_BitField_ApostropheKeyword_2_0_q = new TokenAlias(false, true, grammarAccess.getBitFieldAccess().getApostropheKeyword_2_0());
-		match_Instruction_RightCurlyBracketKeyword_1_2_a = new TokenAlias(true, true, grammarAccess.getInstructionAccess().getRightCurlyBracketKeyword_1_2());
-		match_Instruction_RightCurlyBracketKeyword_1_2_p = new TokenAlias(true, false, grammarAccess.getInstructionAccess().getRightCurlyBracketKeyword_1_2());
-		match_Primary_LeftParenthesisKeyword_0_0_a = new TokenAlias(true, true, grammarAccess.getPrimaryAccess().getLeftParenthesisKeyword_0_0());
-		match_Primary_LeftParenthesisKeyword_0_0_p = new TokenAlias(true, false, grammarAccess.getPrimaryAccess().getLeftParenthesisKeyword_0_0());
-		match_TypeConv_ApostropheKeyword_1_1_q = new TokenAlias(false, true, grammarAccess.getTypeConvAccess().getApostropheKeyword_1_1());
+		match_DirectAbstractDeclarator___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3___or___LeftSquareBracketKeyword_1_1_RightSquareBracketKeyword_1_3__ = new AlternativeAlias(false, false, new GroupAlias(false, false, new TokenAlias(false, false, grammarAccess.getDirectAbstractDeclaratorAccess().getLeftParenthesisKeyword_0_1()), new TokenAlias(false, false, grammarAccess.getDirectAbstractDeclaratorAccess().getRightParenthesisKeyword_0_3())), new GroupAlias(false, false, new TokenAlias(false, false, grammarAccess.getDirectAbstractDeclaratorAccess().getLeftSquareBracketKeyword_1_1()), new TokenAlias(false, false, grammarAccess.getDirectAbstractDeclaratorAccess().getRightSquareBracketKeyword_1_3())));
+		match_EnumSpecifier_CommaKeyword_0_4_q = new TokenAlias(false, true, grammarAccess.getEnumSpecifierAccess().getCommaKeyword_0_4());
+		match_Initializer_CommaKeyword_1_2_q = new TokenAlias(false, true, grammarAccess.getInitializerAccess().getCommaKeyword_1_2());
 	}
 	
 	@Override
@@ -52,16 +50,12 @@ public class CoreDslSyntacticSequencer extends AbstractSyntacticSequencer {
 			List<INode> syntaxNodes = getNodesFor(transitionNodes, syntax);
 			if (match_BitField_ApostropheKeyword_2_0_q.equals(syntax))
 				emit_BitField_ApostropheKeyword_2_0_q(semanticObject, getLastNavigableState(), syntaxNodes);
-			else if (match_Instruction_RightCurlyBracketKeyword_1_2_a.equals(syntax))
-				emit_Instruction_RightCurlyBracketKeyword_1_2_a(semanticObject, getLastNavigableState(), syntaxNodes);
-			else if (match_Instruction_RightCurlyBracketKeyword_1_2_p.equals(syntax))
-				emit_Instruction_RightCurlyBracketKeyword_1_2_p(semanticObject, getLastNavigableState(), syntaxNodes);
-			else if (match_Primary_LeftParenthesisKeyword_0_0_a.equals(syntax))
-				emit_Primary_LeftParenthesisKeyword_0_0_a(semanticObject, getLastNavigableState(), syntaxNodes);
-			else if (match_Primary_LeftParenthesisKeyword_0_0_p.equals(syntax))
-				emit_Primary_LeftParenthesisKeyword_0_0_p(semanticObject, getLastNavigableState(), syntaxNodes);
-			else if (match_TypeConv_ApostropheKeyword_1_1_q.equals(syntax))
-				emit_TypeConv_ApostropheKeyword_1_1_q(semanticObject, getLastNavigableState(), syntaxNodes);
+			else if (match_DirectAbstractDeclarator___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3___or___LeftSquareBracketKeyword_1_1_RightSquareBracketKeyword_1_3__.equals(syntax))
+				emit_DirectAbstractDeclarator___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3___or___LeftSquareBracketKeyword_1_1_RightSquareBracketKeyword_1_3__(semanticObject, getLastNavigableState(), syntaxNodes);
+			else if (match_EnumSpecifier_CommaKeyword_0_4_q.equals(syntax))
+				emit_EnumSpecifier_CommaKeyword_0_4_q(semanticObject, getLastNavigableState(), syntaxNodes);
+			else if (match_Initializer_CommaKeyword_1_2_q.equals(syntax))
+				emit_Initializer_CommaKeyword_1_2_q(semanticObject, getLastNavigableState(), syntaxNodes);
 			else acceptNodes(getLastNavigableState(), syntaxNodes);
 		}
 	}
@@ -71,7 +65,7 @@ public class CoreDslSyntacticSequencer extends AbstractSyntacticSequencer {
 	 *     '''?
 	 *
 	 * This ambiguous syntax occurs at:
-	 *     bitRange=RangeSpec (ambiguity) type=DataType
+	 *     bitRange=RangeSpec (ambiguity) type=BitfieldDataType
 	 */
 	protected void emit_BitField_ApostropheKeyword_2_0_q(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
 		acceptNodes(transition, nodes);
@@ -79,95 +73,35 @@ public class CoreDslSyntacticSequencer extends AbstractSyntacticSequencer {
 	
 	/**
 	 * Ambiguous syntax:
-	 *     '}'*
-	 *
-	 * This ambiguous syntax occurs at:
-	 *     (rule start) (ambiguity) 'args_disass' ':' disass=STRING
-	 *     (rule start) (ambiguity) name=ID
-	 *     (rule start) (ambiguity) operation=Operation
-	 *     disass=STRING ';' (ambiguity) operation=Operation
-	 *     encoding=Encoding ';' (ambiguity) 'args_disass' ':' disass=STRING
-	 *     encoding=Encoding ';' (ambiguity) (rule end)
-	 *     encoding=Encoding ';' (ambiguity) name=ID
-	 *     encoding=Encoding ';' (ambiguity) operation=Operation
-	 */
-	protected void emit_Instruction_RightCurlyBracketKeyword_1_2_a(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
-		acceptNodes(transition, nodes);
-	}
-	
-	/**
-	 * Ambiguous syntax:
-	 *     '}'+
+	 *     ('(' ')') | ('[' ']')
 	 *
 	 * This ambiguous syntax occurs at:
 	 *     (rule start) (ambiguity) (rule start)
-	 *     disass=STRING ';' (ambiguity) 'args_disass' ':' disass=STRING
-	 *     disass=STRING ';' (ambiguity) (rule end)
-	 *     disass=STRING ';' (ambiguity) name=ID
-	 *     operation=Operation (ambiguity) 'args_disass' ':' disass=STRING
-	 *     operation=Operation (ambiguity) (rule end)
-	 *     operation=Operation (ambiguity) name=ID
-	 *     operation=Operation (ambiguity) operation=Operation
 	 */
-	protected void emit_Instruction_RightCurlyBracketKeyword_1_2_p(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
+	protected void emit_DirectAbstractDeclarator___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3___or___LeftSquareBracketKeyword_1_1_RightSquareBracketKeyword_1_3__(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
 		acceptNodes(transition, nodes);
 	}
 	
 	/**
 	 * Ambiguous syntax:
-	 *     '('*
+	 *     ','?
 	 *
 	 * This ambiguous syntax occurs at:
-	 *     (rule start) (ambiguity) name=FUNCTIONNAME
-	 *     (rule start) (ambiguity) op='!'
-	 *     (rule start) (ambiguity) op='+'
-	 *     (rule start) (ambiguity) op='-'
-	 *     (rule start) (ambiguity) op='~'
-	 *     (rule start) (ambiguity) value=NATURAL
-	 *     (rule start) (ambiguity) value=[IndexedVariable|ID]
-	 *     (rule start) (ambiguity) value=[RValue|ID]
-	 *     (rule start) (ambiguity) value=[ScalarVariable|ID]
-	 *     (rule start) (ambiguity) {AdditionExpr.left=}
-	 *     (rule start) (ambiguity) {BitExpr.left=}
-	 *     (rule start) (ambiguity) {BooleanExpr.left=}
-	 *     (rule start) (ambiguity) {ComparisonExpr.left=}
-	 *     (rule start) (ambiguity) {MultiplicationExpr.left=}
-	 *     (rule start) (ambiguity) {ShiftExpr.left=}
-	 *     (rule start) (ambiguity) {TypeConv.expr=}
+	 *     enumerators+=Enumerator (ambiguity) '}' (rule end)
 	 */
-	protected void emit_Primary_LeftParenthesisKeyword_0_0_a(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
+	protected void emit_EnumSpecifier_CommaKeyword_0_4_q(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
 		acceptNodes(transition, nodes);
 	}
 	
 	/**
 	 * Ambiguous syntax:
-	 *     '('+
+	 *     ','?
 	 *
 	 * This ambiguous syntax occurs at:
-	 *     (rule start) (ambiguity) op='!'
-	 *     (rule start) (ambiguity) op='+'
-	 *     (rule start) (ambiguity) op='-'
-	 *     (rule start) (ambiguity) op='~'
-	 *     (rule start) (ambiguity) {AdditionExpr.left=}
-	 *     (rule start) (ambiguity) {BitExpr.left=}
-	 *     (rule start) (ambiguity) {BooleanExpr.left=}
-	 *     (rule start) (ambiguity) {ComparisonExpr.left=}
-	 *     (rule start) (ambiguity) {MultiplicationExpr.left=}
-	 *     (rule start) (ambiguity) {ShiftExpr.left=}
-	 *     (rule start) (ambiguity) {TypeConv.expr=}
+	 *     init+=DesignatedInitializer (ambiguity) '}' (rule end)
+	 *     init+=Initializer (ambiguity) '}' (rule end)
 	 */
-	protected void emit_Primary_LeftParenthesisKeyword_0_0_p(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
-		acceptNodes(transition, nodes);
-	}
-	
-	/**
-	 * Ambiguous syntax:
-	 *     '''?
-	 *
-	 * This ambiguous syntax occurs at:
-	 *     {TypeConv.expr=} (ambiguity) type=DataType
-	 */
-	protected void emit_TypeConv_ApostropheKeyword_1_1_q(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
+	protected void emit_Initializer_CommaKeyword_1_2_q(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
 		acceptNodes(transition, nodes);
 	}
 	

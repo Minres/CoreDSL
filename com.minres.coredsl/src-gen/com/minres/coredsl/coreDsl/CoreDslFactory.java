@@ -69,15 +69,6 @@ public interface CoreDslFactory extends EFactory
   CoreDef createCoreDef();
 
   /**
-   * Returns a new object of class '<em>Range Spec</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Range Spec</em>'.
-   * @generated
-   */
-  RangeSpec createRangeSpec();
-
-  /**
    * Returns a new object of class '<em>Instruction</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -123,13 +114,40 @@ public interface CoreDslFactory extends EFactory
   BitField createBitField();
 
   /**
-   * Returns a new object of class '<em>Operation</em>'.
+   * Returns a new object of class '<em>Range Spec</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Operation</em>'.
+   * @return a new object of class '<em>Range Spec</em>'.
    * @generated
    */
-  Operation createOperation();
+  RangeSpec createRangeSpec();
+
+  /**
+   * Returns a new object of class '<em>Function Definition</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Function Definition</em>'.
+   * @generated
+   */
+  FunctionDefinition createFunctionDefinition();
+
+  /**
+   * Returns a new object of class '<em>Parameter List</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Parameter List</em>'.
+   * @generated
+   */
+  ParameterList createParameterList();
+
+  /**
+   * Returns a new object of class '<em>Parameter Declaration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Parameter Declaration</em>'.
+   * @generated
+   */
+  ParameterDeclaration createParameterDeclaration();
 
   /**
    * Returns a new object of class '<em>Statement</em>'.
@@ -141,157 +159,310 @@ public interface CoreDslFactory extends EFactory
   Statement createStatement();
 
   /**
-   * Returns a new object of class '<em>Assignment</em>'.
+   * Returns a new object of class '<em>Labeled Statement</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Assignment</em>'.
+   * @return a new object of class '<em>Labeled Statement</em>'.
    * @generated
    */
-  Assignment createAssignment();
+  LabeledStatement createLabeledStatement();
 
   /**
-   * Returns a new object of class '<em>Conditional Stmt</em>'.
+   * Returns a new object of class '<em>Compound Statement</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Conditional Stmt</em>'.
+   * @return a new object of class '<em>Compound Statement</em>'.
    * @generated
    */
-  ConditionalStmt createConditionalStmt();
+  CompoundStatement createCompoundStatement();
 
   /**
-   * Returns a new object of class '<em>Direct Code</em>'.
+   * Returns a new object of class '<em>Block Item</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Direct Code</em>'.
+   * @return a new object of class '<em>Block Item</em>'.
    * @generated
    */
-  DirectCode createDirectCode();
+  BlockItem createBlockItem();
 
   /**
-   * Returns a new object of class '<em>Procedure</em>'.
+   * Returns a new object of class '<em>Expression Statement</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Procedure</em>'.
+   * @return a new object of class '<em>Expression Statement</em>'.
    * @generated
    */
-  Procedure createProcedure();
+  ExpressionStatement createExpressionStatement();
 
   /**
-   * Returns a new object of class '<em>Constant</em>'.
+   * Returns a new object of class '<em>Selection Statement</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Constant</em>'.
+   * @return a new object of class '<em>Selection Statement</em>'.
    * @generated
    */
-  Constant createConstant();
+  SelectionStatement createSelectionStatement();
 
   /**
-   * Returns a new object of class '<em>Constant Def</em>'.
+   * Returns a new object of class '<em>If Statement</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Constant Def</em>'.
+   * @return a new object of class '<em>If Statement</em>'.
    * @generated
    */
-  ConstantDef createConstantDef();
+  IfStatement createIfStatement();
 
   /**
-   * Returns a new object of class '<em>Constant Default</em>'.
+   * Returns a new object of class '<em>Switch Statement</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Constant Default</em>'.
+   * @return a new object of class '<em>Switch Statement</em>'.
    * @generated
    */
-  ConstantDefault createConstantDefault();
+  SwitchStatement createSwitchStatement();
 
   /**
-   * Returns a new object of class '<em>Variable</em>'.
+   * Returns a new object of class '<em>Iteration Statement</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Variable</em>'.
+   * @return a new object of class '<em>Iteration Statement</em>'.
    * @generated
    */
-  Variable createVariable();
+  IterationStatement createIterationStatement();
 
   /**
-   * Returns a new object of class '<em>Indexed Variable</em>'.
+   * Returns a new object of class '<em>For Condition</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Indexed Variable</em>'.
+   * @return a new object of class '<em>For Condition</em>'.
    * @generated
    */
-  IndexedVariable createIndexedVariable();
+  ForCondition createForCondition();
 
   /**
-   * Returns a new object of class '<em>Scalar Variable</em>'.
+   * Returns a new object of class '<em>Jump Statement</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Scalar Variable</em>'.
+   * @return a new object of class '<em>Jump Statement</em>'.
    * @generated
    */
-  ScalarVariable createScalarVariable();
+  JumpStatement createJumpStatement();
 
   /**
-   * Returns a new object of class '<em>Register Variable</em>'.
+   * Returns a new object of class '<em>Declaration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Register Variable</em>'.
+   * @return a new object of class '<em>Declaration</em>'.
    * @generated
    */
-  RegisterVariable createRegisterVariable();
+  Declaration createDeclaration();
 
   /**
-   * Returns a new object of class '<em>Address Space</em>'.
+   * Returns a new object of class '<em>Type Or Var Declaration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Address Space</em>'.
+   * @return a new object of class '<em>Type Or Var Declaration</em>'.
    * @generated
    */
-  AddressSpace createAddressSpace();
+  TypeOrVarDeclaration createTypeOrVarDeclaration();
 
   /**
-   * Returns a new object of class '<em>Register File</em>'.
+   * Returns a new object of class '<em>Typedef Declaration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Register File</em>'.
+   * @return a new object of class '<em>Typedef Declaration</em>'.
    * @generated
    */
-  RegisterFile createRegisterFile();
+  TypedefDeclaration createTypedefDeclaration();
 
   /**
-   * Returns a new object of class '<em>Register</em>'.
+   * Returns a new object of class '<em>Declaration Specifier</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Register</em>'.
+   * @return a new object of class '<em>Declaration Specifier</em>'.
    * @generated
    */
-  Register createRegister();
+  DeclarationSpecifier createDeclarationSpecifier();
 
   /**
-   * Returns a new object of class '<em>Register Alias</em>'.
+   * Returns a new object of class '<em>Attribute List</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Register Alias</em>'.
+   * @return a new object of class '<em>Attribute List</em>'.
    * @generated
    */
-  RegisterAlias createRegisterAlias();
+  AttributeList createAttributeList();
 
   /**
-   * Returns a new object of class '<em>Scalar</em>'.
+   * Returns a new object of class '<em>Type Specifier</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Scalar</em>'.
+   * @return a new object of class '<em>Type Specifier</em>'.
    * @generated
    */
-  Scalar createScalar();
+  TypeSpecifier createTypeSpecifier();
 
   /**
-   * Returns a new object of class '<em>Number Literal</em>'.
+   * Returns a new object of class '<em>Data Type Specifier</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Number Literal</em>'.
+   * @return a new object of class '<em>Data Type Specifier</em>'.
    * @generated
    */
-  NumberLiteral createNumberLiteral();
+  DataTypeSpecifier createDataTypeSpecifier();
+
+  /**
+   * Returns a new object of class '<em>Typedef Ref</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Typedef Ref</em>'.
+   * @generated
+   */
+  TypedefRef createTypedefRef();
+
+  /**
+   * Returns a new object of class '<em>Pod Specifier</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Pod Specifier</em>'.
+   * @generated
+   */
+  PodSpecifier createPodSpecifier();
+
+  /**
+   * Returns a new object of class '<em>Bit Size Specifier</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Bit Size Specifier</em>'.
+   * @generated
+   */
+  BitSizeSpecifier createBitSizeSpecifier();
+
+  /**
+   * Returns a new object of class '<em>Enum Specifier</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Enum Specifier</em>'.
+   * @generated
+   */
+  EnumSpecifier createEnumSpecifier();
+
+  /**
+   * Returns a new object of class '<em>Enumerator List</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Enumerator List</em>'.
+   * @generated
+   */
+  EnumeratorList createEnumeratorList();
+
+  /**
+   * Returns a new object of class '<em>Enumerator</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Enumerator</em>'.
+   * @generated
+   */
+  Enumerator createEnumerator();
+
+  /**
+   * Returns a new object of class '<em>Struct Or Union Specifier</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Struct Or Union Specifier</em>'.
+   * @generated
+   */
+  StructOrUnionSpecifier createStructOrUnionSpecifier();
+
+  /**
+   * Returns a new object of class '<em>Struct Declaration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Struct Declaration</em>'.
+   * @generated
+   */
+  StructDeclaration createStructDeclaration();
+
+  /**
+   * Returns a new object of class '<em>Struct Declaration Specifier</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Struct Declaration Specifier</em>'.
+   * @generated
+   */
+  StructDeclarationSpecifier createStructDeclarationSpecifier();
+
+  /**
+   * Returns a new object of class '<em>Init Declarator</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Init Declarator</em>'.
+   * @generated
+   */
+  InitDeclarator createInitDeclarator();
+
+  /**
+   * Returns a new object of class '<em>Direct Declarator</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Direct Declarator</em>'.
+   * @generated
+   */
+  DirectDeclarator createDirectDeclarator();
+
+  /**
+   * Returns a new object of class '<em>Initializer List</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Initializer List</em>'.
+   * @generated
+   */
+  InitializerList createInitializerList();
+
+  /**
+   * Returns a new object of class '<em>Initializer</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Initializer</em>'.
+   * @generated
+   */
+  Initializer createInitializer();
+
+  /**
+   * Returns a new object of class '<em>Designated Initializer</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Designated Initializer</em>'.
+   * @generated
+   */
+  DesignatedInitializer createDesignatedInitializer();
+
+  /**
+   * Returns a new object of class '<em>Designator</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Designator</em>'.
+   * @generated
+   */
+  Designator createDesignator();
+
+  /**
+   * Returns a new object of class '<em>Abstract Declarator</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Abstract Declarator</em>'.
+   * @generated
+   */
+  AbstractDeclarator createAbstractDeclarator();
+
+  /**
+   * Returns a new object of class '<em>Direct Abstract Declarator</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Direct Abstract Declarator</em>'.
+   * @generated
+   */
+  DirectAbstractDeclarator createDirectAbstractDeclarator();
 
   /**
    * Returns a new object of class '<em>Expression</em>'.
@@ -303,139 +474,211 @@ public interface CoreDslFactory extends EFactory
   Expression createExpression();
 
   /**
-   * Returns a new object of class '<em>RValue</em>'.
+   * Returns a new object of class '<em>Cast Expression</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>RValue</em>'.
+   * @return a new object of class '<em>Cast Expression</em>'.
    * @generated
    */
-  RValue createRValue();
+  CastExpression createCastExpression();
 
   /**
-   * Returns a new object of class '<em>Value Ref</em>'.
+   * Returns a new object of class '<em>Unary Expression</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Value Ref</em>'.
+   * @return a new object of class '<em>Unary Expression</em>'.
    * @generated
    */
-  ValueRef createValueRef();
+  UnaryExpression createUnaryExpression();
 
   /**
-   * Returns a new object of class '<em>Bit Size Spec</em>'.
+   * Returns a new object of class '<em>Unary Operator</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Bit Size Spec</em>'.
+   * @return a new object of class '<em>Unary Operator</em>'.
    * @generated
    */
-  BitSizeSpec createBitSizeSpec();
+  UnaryOperator createUnaryOperator();
 
   /**
-   * Returns a new object of class '<em>Indexed Assignment</em>'.
+   * Returns a new object of class '<em>Postfix Expression</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Indexed Assignment</em>'.
+   * @return a new object of class '<em>Postfix Expression</em>'.
    * @generated
    */
-  IndexedAssignment createIndexedAssignment();
+  PostfixExpression createPostfixExpression();
 
   /**
-   * Returns a new object of class '<em>Register Assignment</em>'.
+   * Returns a new object of class '<em>Postfix Operator</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Register Assignment</em>'.
+   * @return a new object of class '<em>Postfix Operator</em>'.
    * @generated
    */
-  RegisterAssignment createRegisterAssignment();
+  PostfixOperator createPostfixOperator();
 
   /**
-   * Returns a new object of class '<em>Scalar Assignment</em>'.
+   * Returns a new object of class '<em>Primary Expression</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Scalar Assignment</em>'.
+   * @return a new object of class '<em>Primary Expression</em>'.
    * @generated
    */
-  ScalarAssignment createScalarAssignment();
+  PrimaryExpression createPrimaryExpression();
 
   /**
-   * Returns a new object of class '<em>Boolean Expr</em>'.
+   * Returns a new object of class '<em>Variable Ref</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Boolean Expr</em>'.
+   * @return a new object of class '<em>Variable Ref</em>'.
    * @generated
    */
-  BooleanExpr createBooleanExpr();
+  VariableRef createVariableRef();
 
   /**
-   * Returns a new object of class '<em>Bit Expr</em>'.
+   * Returns a new object of class '<em>String Literal</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Bit Expr</em>'.
+   * @return a new object of class '<em>String Literal</em>'.
    * @generated
    */
-  BitExpr createBitExpr();
+  StringLiteral createStringLiteral();
 
   /**
-   * Returns a new object of class '<em>Comparison Expr</em>'.
+   * Returns a new object of class '<em>Encoding Prefix</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Comparison Expr</em>'.
+   * @return a new object of class '<em>Encoding Prefix</em>'.
    * @generated
    */
-  ComparisonExpr createComparisonExpr();
+  EncodingPrefix createEncodingPrefix();
 
   /**
-   * Returns a new object of class '<em>Shift Expr</em>'.
+   * Returns a new object of class '<em>Constant</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Shift Expr</em>'.
+   * @return a new object of class '<em>Constant</em>'.
    * @generated
    */
-  ShiftExpr createShiftExpr();
+  Constant createConstant();
 
   /**
-   * Returns a new object of class '<em>Addition Expr</em>'.
+   * Returns a new object of class '<em>Integer Constant</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Addition Expr</em>'.
+   * @return a new object of class '<em>Integer Constant</em>'.
    * @generated
    */
-  AdditionExpr createAdditionExpr();
+  IntegerConstant createIntegerConstant();
 
   /**
-   * Returns a new object of class '<em>Multiplication Expr</em>'.
+   * Returns a new object of class '<em>Floating Constant</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Multiplication Expr</em>'.
+   * @return a new object of class '<em>Floating Constant</em>'.
    * @generated
    */
-  MultiplicationExpr createMultiplicationExpr();
+  FloatingConstant createFloatingConstant();
 
   /**
-   * Returns a new object of class '<em>Unitary Expr</em>'.
+   * Returns a new object of class '<em>Bool Constant</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Unitary Expr</em>'.
+   * @return a new object of class '<em>Bool Constant</em>'.
    * @generated
    */
-  UnitaryExpr createUnitaryExpr();
+  BoolConstant createBoolConstant();
 
   /**
-   * Returns a new object of class '<em>Type Conv</em>'.
+   * Returns a new object of class '<em>Integer Suffix</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Type Conv</em>'.
+   * @return a new object of class '<em>Integer Suffix</em>'.
    * @generated
    */
-  TypeConv createTypeConv();
+  IntegerSuffix createIntegerSuffix();
 
   /**
-   * Returns a new object of class '<em>Function</em>'.
+   * Returns a new object of class '<em>Unsigned Suffix</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Function</em>'.
+   * @return a new object of class '<em>Unsigned Suffix</em>'.
    * @generated
    */
-  Function createFunction();
+  UnsignedSuffix createUnsignedSuffix();
+
+  /**
+   * Returns a new object of class '<em>Long Suffix</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Long Suffix</em>'.
+   * @generated
+   */
+  LongSuffix createLongSuffix();
+
+  /**
+   * Returns a new object of class '<em>Long Long Suffix</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Long Long Suffix</em>'.
+   * @generated
+   */
+  LongLongSuffix createLongLongSuffix();
+
+  /**
+   * Returns a new object of class '<em>Floating Suffix</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Floating Suffix</em>'.
+   * @generated
+   */
+  FloatingSuffix createFloatingSuffix();
+
+  /**
+   * Returns a new object of class '<em>Character Constant</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Character Constant</em>'.
+   * @generated
+   */
+  CharacterConstant createCharacterConstant();
+
+  /**
+   * Returns a new object of class '<em>Assignment Expression</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Assignment Expression</em>'.
+   * @generated
+   */
+  AssignmentExpression createAssignmentExpression();
+
+  /**
+   * Returns a new object of class '<em>Conditional Expression</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Conditional Expression</em>'.
+   * @generated
+   */
+  ConditionalExpression createConditionalExpression();
+
+  /**
+   * Returns a new object of class '<em>Logical Expr</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Logical Expr</em>'.
+   * @generated
+   */
+  LogicalExpr createLogicalExpr();
+
+  /**
+   * Returns a new object of class '<em>Arithmetic Expression</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Arithmetic Expression</em>'.
+   * @generated
+   */
+  ArithmeticExpression createArithmeticExpression();
 
   /**
    * Returns the package supported by this factory.

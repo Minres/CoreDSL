@@ -21,6 +21,16 @@ import org.eclipse.emf.common.util.Enumerator;
 public enum InstrAttribute implements Enumerator
 {
   /**
+   * The '<em><b>NONE</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #NONE_VALUE
+   * @generated
+   * @ordered
+   */
+  NONE(0, "NONE", "NONE"),
+
+  /**
    * The '<em><b>NO CONT</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -28,7 +38,7 @@ public enum InstrAttribute implements Enumerator
    * @generated
    * @ordered
    */
-  NO_CONT(0, "NO_CONT", "no_cont"),
+  NO_CONT(1, "NO_CONT", "no_cont"),
 
   /**
    * The '<em><b>COND</b></em>' literal object.
@@ -38,7 +48,7 @@ public enum InstrAttribute implements Enumerator
    * @generated
    * @ordered
    */
-  COND(1, "COND", "cond"),
+  COND(2, "COND", "cond"),
 
   /**
    * The '<em><b>FLUSH</b></em>' literal object.
@@ -48,7 +58,18 @@ public enum InstrAttribute implements Enumerator
    * @generated
    * @ordered
    */
-  FLUSH(2, "FLUSH", "flush");
+  FLUSH(3, "FLUSH", "flush");
+
+  /**
+   * The '<em><b>NONE</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #NONE
+   * @model
+   * @generated
+   * @ordered
+   */
+  public static final int NONE_VALUE = 0;
 
   /**
    * The '<em><b>NO CONT</b></em>' literal value.
@@ -59,7 +80,7 @@ public enum InstrAttribute implements Enumerator
    * @generated
    * @ordered
    */
-  public static final int NO_CONT_VALUE = 0;
+  public static final int NO_CONT_VALUE = 1;
 
   /**
    * The '<em><b>COND</b></em>' literal value.
@@ -70,7 +91,7 @@ public enum InstrAttribute implements Enumerator
    * @generated
    * @ordered
    */
-  public static final int COND_VALUE = 1;
+  public static final int COND_VALUE = 2;
 
   /**
    * The '<em><b>FLUSH</b></em>' literal value.
@@ -81,7 +102,7 @@ public enum InstrAttribute implements Enumerator
    * @generated
    * @ordered
    */
-  public static final int FLUSH_VALUE = 2;
+  public static final int FLUSH_VALUE = 3;
 
   /**
    * An array of all the '<em><b>Instr Attribute</b></em>' enumerators.
@@ -92,6 +113,7 @@ public enum InstrAttribute implements Enumerator
   private static final InstrAttribute[] VALUES_ARRAY =
     new InstrAttribute[]
     {
+      NONE,
       NO_CONT,
       COND,
       FLUSH,
@@ -159,6 +181,7 @@ public enum InstrAttribute implements Enumerator
   {
     switch (value)
     {
+      case NONE_VALUE: return NONE;
       case NO_CONT_VALUE: return NO_CONT;
       case COND_VALUE: return COND;
       case FLUSH_VALUE: return FLUSH;

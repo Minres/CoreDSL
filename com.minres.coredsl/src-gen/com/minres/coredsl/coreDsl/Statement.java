@@ -3,7 +3,6 @@
  */
 package com.minres.coredsl.coreDsl;
 
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -15,6 +14,6 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Statement extends EObject
+public interface Statement extends BlockItem
 {
 } // Statement

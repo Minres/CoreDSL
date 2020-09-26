@@ -3,45 +3,18 @@
  */
 package com.minres.coredsl.coreDsl;
 
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Constant</b></em>'.
  * <!-- end-user-doc -->
  *
- * <p>
- * The following features are supported:
- * </p>
- * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.Constant#getConstantDefault <em>Constant Default</em>}</li>
- * </ul>
  *
  * @see com.minres.coredsl.coreDsl.CoreDslPackage#getConstant()
  * @model
  * @generated
  */
-public interface Constant extends RValue
+public interface Constant extends EObject
 {
-  /**
-   * Returns the value of the '<em><b>Constant Default</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Constant Default</em>' containment reference.
-   * @see #setConstantDefault(ConstantDefault)
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getConstant_ConstantDefault()
-   * @model containment="true"
-   * @generated
-   */
-  ConstantDefault getConstantDefault();
-
-  /**
-   * Sets the value of the '{@link com.minres.coredsl.coreDsl.Constant#getConstantDefault <em>Constant Default</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Constant Default</em>' containment reference.
-   * @see #getConstantDefault()
-   * @generated
-   */
-  void setConstantDefault(ConstantDefault value);
-
 } // Constant
