@@ -5,7 +5,6 @@ import com.minres.coredsl.coreDsl.Constant
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.InstructionSet
-import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 
@@ -79,10 +78,10 @@ class ExpressionUtilsProvider {
 //			default: return false
 //		}
 //	}
-    
-	def dispatch List<EObject> symbolsDefinedBefore(EObject cont, EObject o){
-		cont.eContainer.symbolsDefinedBefore(o.eContainer)
-	}
+//    
+//	def dispatch List<EObject> symbolsDefinedBefore(EObject cont, EObject o){
+//		cont.eContainer.symbolsDefinedBefore(o.eContainer)
+//	}
 
 //	def dispatch List<EObject>  symbolsDefinedBefore(ConditionalStmt stmt, EObject o){
 //		if(stmt.cond === o){

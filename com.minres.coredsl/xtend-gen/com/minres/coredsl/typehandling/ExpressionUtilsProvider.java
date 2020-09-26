@@ -36,10 +36,6 @@ public class ExpressionUtilsProvider {
     return false;
   }
   
-  protected List<EObject> _symbolsDefinedBefore(final EObject cont, final EObject o) {
-    return this.symbolsDefinedBefore(cont.eContainer(), o.eContainer());
-  }
-  
   public <T extends EObject> T parentOfType(final EObject obj, final Class<T> clazz) {
     EObject _eContainer = obj.eContainer();
     boolean _tripleEquals = (_eContainer == null);
@@ -90,9 +86,5 @@ public class ExpressionUtilsProvider {
       }
     }
     return null;
-  }
-  
-  public List<EObject> symbolsDefinedBefore(final EObject cont, final EObject o) {
-    return _symbolsDefinedBefore(cont, o);
   }
 }

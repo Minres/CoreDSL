@@ -4,16 +4,15 @@
 package com.minres.coredsl.scoping
 
 import com.minres.coredsl.coreDsl.CoreDef
+import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.InstructionSet
+import com.minres.coredsl.coreDsl.TypedefDeclaration
+import com.minres.coredsl.coreDsl.VariableRef
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.EcoreUtil2
-import org.eclipse.xtext.scoping.IScope
-import com.minres.coredsl.coreDsl.VariableRef
 import org.eclipse.xtext.scoping.Scopes
-import com.minres.coredsl.coreDsl.TypedefDeclaration
-import com.minres.coredsl.coreDsl.DirectDeclarator
 
 /**
  * This class contains custom scoping description.

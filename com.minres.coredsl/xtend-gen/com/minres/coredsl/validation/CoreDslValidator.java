@@ -3,11 +3,7 @@
  */
 package com.minres.coredsl.validation;
 
-import com.google.inject.Inject;
-import com.minres.coredsl.typehandling.ExpressionTypeProvider;
-import com.minres.coredsl.typehandling.ExpressionUtilsProvider;
 import com.minres.coredsl.validation.AbstractCoreDslValidator;
-import org.eclipse.xtext.xbase.lib.Extension;
 
 /**
  * This class contains custom validation rules.
@@ -16,14 +12,6 @@ import org.eclipse.xtext.xbase.lib.Extension;
  */
 @SuppressWarnings("all")
 public class CoreDslValidator extends AbstractCoreDslValidator {
-  @Inject
-  @Extension
-  private ExpressionTypeProvider _expressionTypeProvider;
-  
-  @Inject
-  @Extension
-  private ExpressionUtilsProvider _expressionUtilsProvider;
-  
   protected static final String ISSUE_CODE_PREFIX = "com.minres.coredsl.";
   
   public static final String FORWARD_REFERENCE = (CoreDslValidator.ISSUE_CODE_PREFIX + "ForwardReference");

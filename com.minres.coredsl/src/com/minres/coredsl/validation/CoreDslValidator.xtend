@@ -3,13 +3,6 @@
  */
 package com.minres.coredsl.validation
 
-import com.google.inject.Inject
-import com.minres.coredsl.coreDsl.CoreDslPackage
-import com.minres.coredsl.typehandling.ExpressionTypeProvider
-import com.minres.coredsl.typehandling.ExpressionUtilsProvider
-import org.eclipse.emf.ecore.EClass
-import org.eclipse.xtext.validation.Check
-
 /**
  * This class contains custom validation rules. 
  *
@@ -17,9 +10,9 @@ import org.eclipse.xtext.validation.Check
  */
 class CoreDslValidator extends AbstractCoreDslValidator {
 	
-	@Inject extension ExpressionTypeProvider
+//	@Inject extension ExpressionTypeProvider
 	
-	@Inject extension ExpressionUtilsProvider
+//	@Inject extension ExpressionUtilsProvider
 
 	protected static val ISSUE_CODE_PREFIX = "com.minres.coredsl."
 	public static val FORWARD_REFERENCE = ISSUE_CODE_PREFIX + "ForwardReference"
