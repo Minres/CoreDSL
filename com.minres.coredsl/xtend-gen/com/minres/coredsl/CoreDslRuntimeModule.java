@@ -5,9 +5,7 @@ package com.minres.coredsl;
 
 import com.minres.coredsl.AbstractCoreDslRuntimeModule;
 import com.minres.coredsl.converter.CoreDslTerminalConverters;
-import com.minres.coredsl.generator.CoreDslGenerator;
 import org.eclipse.xtext.conversion.IValueConverterService;
-import org.eclipse.xtext.generator.IGenerator2;
 import org.eclipse.xtext.scoping.IGlobalScopeProvider;
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider;
 
@@ -24,10 +22,5 @@ public class CoreDslRuntimeModule extends AbstractCoreDslRuntimeModule {
   @Override
   public Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
     return ImportUriGlobalScopeProvider.class;
-  }
-  
-  @Override
-  public Class<? extends IGenerator2> bindIGenerator2() {
-    return CoreDslGenerator.class;
   }
 }

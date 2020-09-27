@@ -49,7 +49,7 @@ Workflow {
 				debugGrammar=true
 			}
 			generator = {
-				generateXtendStub = true
+				generateStub = false
 			}
 			junitSupport = {
 				junitVersion = "5"
