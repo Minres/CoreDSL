@@ -2,3 +2,4 @@
 *.java_trace
 *.java._trace
 *.xtendbin
+/plugin.xml_gen
