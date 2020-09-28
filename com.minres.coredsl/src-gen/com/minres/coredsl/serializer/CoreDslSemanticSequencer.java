@@ -8,6 +8,7 @@ import com.minres.coredsl.coreDsl.ArithmeticExpression;
 import com.minres.coredsl.coreDsl.AssignmentExpression;
 import com.minres.coredsl.coreDsl.BitField;
 import com.minres.coredsl.coreDsl.BitSizeSpecifier;
+import com.minres.coredsl.coreDsl.BitSizeValue;
 import com.minres.coredsl.coreDsl.BitValue;
 import com.minres.coredsl.coreDsl.BoolConstant;
 import com.minres.coredsl.coreDsl.CastExpression;
@@ -121,6 +122,9 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				return; 
 			case CoreDslPackage.BIT_SIZE_SPECIFIER:
 				sequence_BitSizeSpecifier(context, (BitSizeSpecifier) semanticObject); 
+				return; 
+			case CoreDslPackage.BIT_SIZE_VALUE:
+				sequence_BitSizeValue(context, (BitSizeValue) semanticObject); 
 				return; 
 			case CoreDslPackage.BIT_VALUE:
 				sequence_BitValue(context, (BitValue) semanticObject); 
@@ -534,9 +538,21 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     BitSizeSpecifier returns BitSizeSpecifier
 	 *
 	 * Constraint:
-	 *     (value=NATURAL | constant=[Constant|ID])
+	 *     (size+=BitSizeValue (size+=BitSizeValue size+=BitSizeValue size+=BitSizeValue)?)
 	 */
 	protected void sequence_BitSizeSpecifier(ISerializationContext context, BitSizeSpecifier semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     BitSizeValue returns BitSizeValue
+	 *
+	 * Constraint:
+	 *     (val+=NATURAL | constant+=[Constant|ID])
+	 */
+	protected void sequence_BitSizeValue(ISerializationContext context, BitSizeValue semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	

@@ -176,7 +176,12 @@ PodSpecifier
 	;
 
 BitSizeSpecifier
-	:	'<' (value=NATURAL|constant=[Constant]) '>'
+	:	'<' size+=BitSizeValue (',' size+=BitSizeValue ',' size+=BitSizeValue ',' size+=BitSizeValue)? '>'
+	;
+
+BitSizeValue
+	:	val+=NATURAL
+	|	constant+=[Constant]
 	;
 
 EnumSpecifier

@@ -4,18 +4,22 @@
 package com.minres.coredsl.coreDsl.impl;
 
 import com.minres.coredsl.coreDsl.BitSizeSpecifier;
-import com.minres.coredsl.coreDsl.Constant;
+import com.minres.coredsl.coreDsl.BitSizeValue;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
 
-import java.math.BigInteger;
+import java.util.Collection;
 
-import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -25,8 +29,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.BitSizeSpecifierImpl#getValue <em>Value</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.BitSizeSpecifierImpl#getConstant <em>Constant</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.BitSizeSpecifierImpl#getSize <em>Size</em>}</li>
  * </ul>
  *
  * @generated
@@ -34,34 +37,14 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 public class BitSizeSpecifierImpl extends MinimalEObjectImpl.Container implements BitSizeSpecifier
 {
   /**
-   * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
+   * The cached value of the '{@link #getSize() <em>Size</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getValue()
+   * @see #getSize()
    * @generated
    * @ordered
    */
-  protected static final BigInteger VALUE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getValue()
-   * @generated
-   * @ordered
-   */
-  protected BigInteger value = VALUE_EDEFAULT;
-
-  /**
-   * The cached value of the '{@link #getConstant() <em>Constant</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getConstant()
-   * @generated
-   * @ordered
-   */
-  protected Constant constant;
+  protected EList<BitSizeValue> size;
 
   /**
    * <!-- begin-user-doc -->
@@ -90,54 +73,13 @@ public class BitSizeSpecifierImpl extends MinimalEObjectImpl.Container implement
    * @generated
    */
   @Override
-  public BigInteger getValue()
+  public EList<BitSizeValue> getSize()
   {
-    return value;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setValue(BigInteger newValue)
-  {
-    BigInteger oldValue = value;
-    value = newValue;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.BIT_SIZE_SPECIFIER__VALUE, oldValue, value));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Constant getConstant()
-  {
-    if (constant != null && constant.eIsProxy())
+    if (size == null)
     {
-      InternalEObject oldConstant = (InternalEObject)constant;
-      constant = (Constant)eResolveProxy(oldConstant);
-      if (constant != oldConstant)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, CoreDslPackage.BIT_SIZE_SPECIFIER__CONSTANT, oldConstant, constant));
-      }
+      size = new EObjectContainmentEList<BitSizeValue>(BitSizeValue.class, this, CoreDslPackage.BIT_SIZE_SPECIFIER__SIZE);
     }
-    return constant;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Constant basicGetConstant()
-  {
-    return constant;
+    return size;
   }
 
   /**
@@ -146,12 +88,14 @@ public class BitSizeSpecifierImpl extends MinimalEObjectImpl.Container implement
    * @generated
    */
   @Override
-  public void setConstant(Constant newConstant)
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
-    Constant oldConstant = constant;
-    constant = newConstant;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.BIT_SIZE_SPECIFIER__CONSTANT, oldConstant, constant));
+    switch (featureID)
+    {
+      case CoreDslPackage.BIT_SIZE_SPECIFIER__SIZE:
+        return ((InternalEList<?>)getSize()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
   }
 
   /**
@@ -164,11 +108,8 @@ public class BitSizeSpecifierImpl extends MinimalEObjectImpl.Container implement
   {
     switch (featureID)
     {
-      case CoreDslPackage.BIT_SIZE_SPECIFIER__VALUE:
-        return getValue();
-      case CoreDslPackage.BIT_SIZE_SPECIFIER__CONSTANT:
-        if (resolve) return getConstant();
-        return basicGetConstant();
+      case CoreDslPackage.BIT_SIZE_SPECIFIER__SIZE:
+        return getSize();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -178,16 +119,15 @@ public class BitSizeSpecifierImpl extends MinimalEObjectImpl.Container implement
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case CoreDslPackage.BIT_SIZE_SPECIFIER__VALUE:
-        setValue((BigInteger)newValue);
-        return;
-      case CoreDslPackage.BIT_SIZE_SPECIFIER__CONSTANT:
-        setConstant((Constant)newValue);
+      case CoreDslPackage.BIT_SIZE_SPECIFIER__SIZE:
+        getSize().clear();
+        getSize().addAll((Collection<? extends BitSizeValue>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -203,11 +143,8 @@ public class BitSizeSpecifierImpl extends MinimalEObjectImpl.Container implement
   {
     switch (featureID)
     {
-      case CoreDslPackage.BIT_SIZE_SPECIFIER__VALUE:
-        setValue(VALUE_EDEFAULT);
-        return;
-      case CoreDslPackage.BIT_SIZE_SPECIFIER__CONSTANT:
-        setConstant((Constant)null);
+      case CoreDslPackage.BIT_SIZE_SPECIFIER__SIZE:
+        getSize().clear();
         return;
     }
     super.eUnset(featureID);
@@ -223,29 +160,10 @@ public class BitSizeSpecifierImpl extends MinimalEObjectImpl.Container implement
   {
     switch (featureID)
     {
-      case CoreDslPackage.BIT_SIZE_SPECIFIER__VALUE:
-        return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
-      case CoreDslPackage.BIT_SIZE_SPECIFIER__CONSTANT:
-        return constant != null;
+      case CoreDslPackage.BIT_SIZE_SPECIFIER__SIZE:
+        return size != null && !size.isEmpty();
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
-
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (value: ");
-    result.append(value);
-    result.append(')');
-    return result.toString();
   }
 
 } //BitSizeSpecifierImpl

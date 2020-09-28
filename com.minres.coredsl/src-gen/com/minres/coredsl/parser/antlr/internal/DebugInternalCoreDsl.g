@@ -458,12 +458,25 @@ rulePodSpecifier:
 // Rule BitSizeSpecifier
 ruleBitSizeSpecifier:
 	'<'
+	ruleBitSizeValue
+	(
+		','
+		ruleBitSizeValue
+		','
+		ruleBitSizeValue
+		','
+		ruleBitSizeValue
+	)?
+	'>'
+;
+
+// Rule BitSizeValue
+ruleBitSizeValue:
 	(
 		RULE_NATURAL
 		    |
 		RULE_ID
 	)
-	'>'
 ;
 
 // Rule EnumSpecifier

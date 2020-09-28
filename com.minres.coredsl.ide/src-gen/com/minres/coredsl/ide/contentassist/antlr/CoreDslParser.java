@@ -45,7 +45,7 @@ public class CoreDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getDeclarationSpecifierAccess().getAlternatives(), "rule__DeclarationSpecifier__Alternatives");
 			builder.put(grammarAccess.getTypeSpecifierAccess().getAlternatives(), "rule__TypeSpecifier__Alternatives");
 			builder.put(grammarAccess.getDataTypeSpecifierAccess().getAlternatives(), "rule__DataTypeSpecifier__Alternatives");
-			builder.put(grammarAccess.getBitSizeSpecifierAccess().getAlternatives_1(), "rule__BitSizeSpecifier__Alternatives_1");
+			builder.put(grammarAccess.getBitSizeValueAccess().getAlternatives(), "rule__BitSizeValue__Alternatives");
 			builder.put(grammarAccess.getEnumSpecifierAccess().getAlternatives(), "rule__EnumSpecifier__Alternatives");
 			builder.put(grammarAccess.getEnumeratorAccess().getAlternatives(), "rule__Enumerator__Alternatives");
 			builder.put(grammarAccess.getStructOrUnionSpecifierAccess().getAlternatives(), "rule__StructOrUnionSpecifier__Alternatives");
@@ -139,6 +139,7 @@ public class CoreDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getAttributeListAccess().getGroup(), "rule__AttributeList__Group__0");
 			builder.put(grammarAccess.getAttributeListAccess().getGroup_2(), "rule__AttributeList__Group_2__0");
 			builder.put(grammarAccess.getBitSizeSpecifierAccess().getGroup(), "rule__BitSizeSpecifier__Group__0");
+			builder.put(grammarAccess.getBitSizeSpecifierAccess().getGroup_2(), "rule__BitSizeSpecifier__Group_2__0");
 			builder.put(grammarAccess.getEnumSpecifierAccess().getGroup_0(), "rule__EnumSpecifier__Group_0__0");
 			builder.put(grammarAccess.getEnumSpecifierAccess().getGroup_1(), "rule__EnumSpecifier__Group_1__0");
 			builder.put(grammarAccess.getEnumeratorListAccess().getGroup(), "rule__EnumeratorList__Group__0");
@@ -290,8 +291,12 @@ public class CoreDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getAttributeListAccess().getAttrsAssignment_2_1(), "rule__AttributeList__AttrsAssignment_2_1");
 			builder.put(grammarAccess.getTypedefRefAccess().getRefAssignment(), "rule__TypedefRef__RefAssignment");
 			builder.put(grammarAccess.getPodSpecifierAccess().getDataTypeAssignment(), "rule__PodSpecifier__DataTypeAssignment");
-			builder.put(grammarAccess.getBitSizeSpecifierAccess().getValueAssignment_1_0(), "rule__BitSizeSpecifier__ValueAssignment_1_0");
-			builder.put(grammarAccess.getBitSizeSpecifierAccess().getConstantAssignment_1_1(), "rule__BitSizeSpecifier__ConstantAssignment_1_1");
+			builder.put(grammarAccess.getBitSizeSpecifierAccess().getSizeAssignment_1(), "rule__BitSizeSpecifier__SizeAssignment_1");
+			builder.put(grammarAccess.getBitSizeSpecifierAccess().getSizeAssignment_2_1(), "rule__BitSizeSpecifier__SizeAssignment_2_1");
+			builder.put(grammarAccess.getBitSizeSpecifierAccess().getSizeAssignment_2_3(), "rule__BitSizeSpecifier__SizeAssignment_2_3");
+			builder.put(grammarAccess.getBitSizeSpecifierAccess().getSizeAssignment_2_5(), "rule__BitSizeSpecifier__SizeAssignment_2_5");
+			builder.put(grammarAccess.getBitSizeValueAccess().getValAssignment_0(), "rule__BitSizeValue__ValAssignment_0");
+			builder.put(grammarAccess.getBitSizeValueAccess().getConstantAssignment_1(), "rule__BitSizeValue__ConstantAssignment_1");
 			builder.put(grammarAccess.getEnumSpecifierAccess().getNameAssignment_0_1(), "rule__EnumSpecifier__NameAssignment_0_1");
 			builder.put(grammarAccess.getEnumSpecifierAccess().getNameAssignment_1_1(), "rule__EnumSpecifier__NameAssignment_1_1");
 			builder.put(grammarAccess.getEnumeratorListAccess().getEnumeratorsAssignment_0(), "rule__EnumeratorList__EnumeratorsAssignment_0");

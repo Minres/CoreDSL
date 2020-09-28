@@ -359,6 +359,13 @@ public class CoreDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case CoreDslPackage.BIT_SIZE_VALUE:
+      {
+        BitSizeValue bitSizeValue = (BitSizeValue)theEObject;
+        T result = caseBitSizeValue(bitSizeValue);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case CoreDslPackage.ENUM_SPECIFIER:
       {
         EnumSpecifier enumSpecifier = (EnumSpecifier)theEObject;
@@ -1224,6 +1231,22 @@ public class CoreDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseBitSizeSpecifier(BitSizeSpecifier object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Bit Size Value</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Bit Size Value</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseBitSizeValue(BitSizeValue object)
   {
     return null;
   }

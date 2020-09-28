@@ -3,7 +3,7 @@
  */
 package com.minres.coredsl.coreDsl;
 
-import java.math.BigInteger;
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
 
@@ -16,8 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.BitSizeSpecifier#getValue <em>Value</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.BitSizeSpecifier#getConstant <em>Constant</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.BitSizeSpecifier#getSize <em>Size</em>}</li>
  * </ul>
  *
  * @see com.minres.coredsl.coreDsl.CoreDslPackage#getBitSizeSpecifier()
@@ -27,47 +26,15 @@ import org.eclipse.emf.ecore.EObject;
 public interface BitSizeSpecifier extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Value</b></em>' attribute.
+   * Returns the value of the '<em><b>Size</b></em>' containment reference list.
+   * The list contents are of type {@link com.minres.coredsl.coreDsl.BitSizeValue}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Value</em>' attribute.
-   * @see #setValue(BigInteger)
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getBitSizeSpecifier_Value()
-   * @model
+   * @return the value of the '<em>Size</em>' containment reference list.
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getBitSizeSpecifier_Size()
+   * @model containment="true"
    * @generated
    */
-  BigInteger getValue();
-
-  /**
-   * Sets the value of the '{@link com.minres.coredsl.coreDsl.BitSizeSpecifier#getValue <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Value</em>' attribute.
-   * @see #getValue()
-   * @generated
-   */
-  void setValue(BigInteger value);
-
-  /**
-   * Returns the value of the '<em><b>Constant</b></em>' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Constant</em>' reference.
-   * @see #setConstant(Constant)
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getBitSizeSpecifier_Constant()
-   * @model
-   * @generated
-   */
-  Constant getConstant();
-
-  /**
-   * Sets the value of the '{@link com.minres.coredsl.coreDsl.BitSizeSpecifier#getConstant <em>Constant</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Constant</em>' reference.
-   * @see #getConstant()
-   * @generated
-   */
-  void setConstant(Constant value);
+  EList<BitSizeValue> getSize();
 
 } // BitSizeSpecifier

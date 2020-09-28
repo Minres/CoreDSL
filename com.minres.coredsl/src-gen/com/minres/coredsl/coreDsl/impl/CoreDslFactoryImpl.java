@@ -101,6 +101,7 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
       case CoreDslPackage.TYPEDEF_REF: return createTypedefRef();
       case CoreDslPackage.POD_SPECIFIER: return createPodSpecifier();
       case CoreDslPackage.BIT_SIZE_SPECIFIER: return createBitSizeSpecifier();
+      case CoreDslPackage.BIT_SIZE_VALUE: return createBitSizeValue();
       case CoreDslPackage.ENUM_SPECIFIER: return createEnumSpecifier();
       case CoreDslPackage.ENUMERATOR_LIST: return createEnumeratorList();
       case CoreDslPackage.ENUMERATOR: return createEnumerator();
@@ -620,6 +621,18 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
   {
     BitSizeSpecifierImpl bitSizeSpecifier = new BitSizeSpecifierImpl();
     return bitSizeSpecifier;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public BitSizeValue createBitSizeValue()
+  {
+    BitSizeValueImpl bitSizeValue = new BitSizeValueImpl();
+    return bitSizeValue;
   }
 
   /**

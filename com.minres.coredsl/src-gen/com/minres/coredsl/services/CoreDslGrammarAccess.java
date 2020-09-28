@@ -1717,44 +1717,100 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.BitSizeSpecifier");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cLessThanSignKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Alternatives cAlternatives_1 = (Alternatives)cGroup.eContents().get(1);
-		private final Assignment cValueAssignment_1_0 = (Assignment)cAlternatives_1.eContents().get(0);
-		private final RuleCall cValueNATURALTerminalRuleCall_1_0_0 = (RuleCall)cValueAssignment_1_0.eContents().get(0);
-		private final Assignment cConstantAssignment_1_1 = (Assignment)cAlternatives_1.eContents().get(1);
-		private final CrossReference cConstantConstantCrossReference_1_1_0 = (CrossReference)cConstantAssignment_1_1.eContents().get(0);
-		private final RuleCall cConstantConstantIDTerminalRuleCall_1_1_0_1 = (RuleCall)cConstantConstantCrossReference_1_1_0.eContents().get(1);
-		private final Keyword cGreaterThanSignKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Assignment cSizeAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cSizeBitSizeValueParserRuleCall_1_0 = (RuleCall)cSizeAssignment_1.eContents().get(0);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cCommaKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cSizeAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cSizeBitSizeValueParserRuleCall_2_1_0 = (RuleCall)cSizeAssignment_2_1.eContents().get(0);
+		private final Keyword cCommaKeyword_2_2 = (Keyword)cGroup_2.eContents().get(2);
+		private final Assignment cSizeAssignment_2_3 = (Assignment)cGroup_2.eContents().get(3);
+		private final RuleCall cSizeBitSizeValueParserRuleCall_2_3_0 = (RuleCall)cSizeAssignment_2_3.eContents().get(0);
+		private final Keyword cCommaKeyword_2_4 = (Keyword)cGroup_2.eContents().get(4);
+		private final Assignment cSizeAssignment_2_5 = (Assignment)cGroup_2.eContents().get(5);
+		private final RuleCall cSizeBitSizeValueParserRuleCall_2_5_0 = (RuleCall)cSizeAssignment_2_5.eContents().get(0);
+		private final Keyword cGreaterThanSignKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		
 		//BitSizeSpecifier:
-		//	'<' (value=NATURAL | constant=[Constant]) '>';
+		//	'<' size+=BitSizeValue (',' size+=BitSizeValue ',' size+=BitSizeValue ',' size+=BitSizeValue)? '>';
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'<' (value=NATURAL | constant=[Constant]) '>'
+		//'<' size+=BitSizeValue (',' size+=BitSizeValue ',' size+=BitSizeValue ',' size+=BitSizeValue)? '>'
 		public Group getGroup() { return cGroup; }
 		
 		//'<'
 		public Keyword getLessThanSignKeyword_0() { return cLessThanSignKeyword_0; }
 		
-		//(value=NATURAL | constant=[Constant])
-		public Alternatives getAlternatives_1() { return cAlternatives_1; }
+		//size+=BitSizeValue
+		public Assignment getSizeAssignment_1() { return cSizeAssignment_1; }
 		
-		//value=NATURAL
-		public Assignment getValueAssignment_1_0() { return cValueAssignment_1_0; }
+		//BitSizeValue
+		public RuleCall getSizeBitSizeValueParserRuleCall_1_0() { return cSizeBitSizeValueParserRuleCall_1_0; }
 		
-		//NATURAL
-		public RuleCall getValueNATURALTerminalRuleCall_1_0_0() { return cValueNATURALTerminalRuleCall_1_0_0; }
+		//(',' size+=BitSizeValue ',' size+=BitSizeValue ',' size+=BitSizeValue)?
+		public Group getGroup_2() { return cGroup_2; }
 		
-		//constant=[Constant]
-		public Assignment getConstantAssignment_1_1() { return cConstantAssignment_1_1; }
+		//','
+		public Keyword getCommaKeyword_2_0() { return cCommaKeyword_2_0; }
 		
-		//[Constant]
-		public CrossReference getConstantConstantCrossReference_1_1_0() { return cConstantConstantCrossReference_1_1_0; }
+		//size+=BitSizeValue
+		public Assignment getSizeAssignment_2_1() { return cSizeAssignment_2_1; }
 		
-		//ID
-		public RuleCall getConstantConstantIDTerminalRuleCall_1_1_0_1() { return cConstantConstantIDTerminalRuleCall_1_1_0_1; }
+		//BitSizeValue
+		public RuleCall getSizeBitSizeValueParserRuleCall_2_1_0() { return cSizeBitSizeValueParserRuleCall_2_1_0; }
+		
+		//','
+		public Keyword getCommaKeyword_2_2() { return cCommaKeyword_2_2; }
+		
+		//size+=BitSizeValue
+		public Assignment getSizeAssignment_2_3() { return cSizeAssignment_2_3; }
+		
+		//BitSizeValue
+		public RuleCall getSizeBitSizeValueParserRuleCall_2_3_0() { return cSizeBitSizeValueParserRuleCall_2_3_0; }
+		
+		//','
+		public Keyword getCommaKeyword_2_4() { return cCommaKeyword_2_4; }
+		
+		//size+=BitSizeValue
+		public Assignment getSizeAssignment_2_5() { return cSizeAssignment_2_5; }
+		
+		//BitSizeValue
+		public RuleCall getSizeBitSizeValueParserRuleCall_2_5_0() { return cSizeBitSizeValueParserRuleCall_2_5_0; }
 		
 		//'>'
-		public Keyword getGreaterThanSignKeyword_2() { return cGreaterThanSignKeyword_2; }
+		public Keyword getGreaterThanSignKeyword_3() { return cGreaterThanSignKeyword_3; }
+	}
+	public class BitSizeValueElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.BitSizeValue");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final Assignment cValAssignment_0 = (Assignment)cAlternatives.eContents().get(0);
+		private final RuleCall cValNATURALTerminalRuleCall_0_0 = (RuleCall)cValAssignment_0.eContents().get(0);
+		private final Assignment cConstantAssignment_1 = (Assignment)cAlternatives.eContents().get(1);
+		private final CrossReference cConstantConstantCrossReference_1_0 = (CrossReference)cConstantAssignment_1.eContents().get(0);
+		private final RuleCall cConstantConstantIDTerminalRuleCall_1_0_1 = (RuleCall)cConstantConstantCrossReference_1_0.eContents().get(1);
+		
+		//BitSizeValue:
+		//	val+=NATURAL
+		//	| constant+=[Constant];
+		@Override public ParserRule getRule() { return rule; }
+		
+		//val+=NATURAL | constant+=[Constant]
+		public Alternatives getAlternatives() { return cAlternatives; }
+		
+		//val+=NATURAL
+		public Assignment getValAssignment_0() { return cValAssignment_0; }
+		
+		//NATURAL
+		public RuleCall getValNATURALTerminalRuleCall_0_0() { return cValNATURALTerminalRuleCall_0_0; }
+		
+		//constant+=[Constant]
+		public Assignment getConstantAssignment_1() { return cConstantAssignment_1; }
+		
+		//[Constant]
+		public CrossReference getConstantConstantCrossReference_1_0() { return cConstantConstantCrossReference_1_0; }
+		
+		//ID
+		public RuleCall getConstantConstantIDTerminalRuleCall_1_0_1() { return cConstantConstantIDTerminalRuleCall_1_0_1; }
 	}
 	public class EnumSpecifierElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.EnumSpecifier");
@@ -4241,6 +4297,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final TypedefRefElements pTypedefRef;
 	private final PodSpecifierElements pPodSpecifier;
 	private final BitSizeSpecifierElements pBitSizeSpecifier;
+	private final BitSizeValueElements pBitSizeValue;
 	private final EnumSpecifierElements pEnumSpecifier;
 	private final EnumeratorListElements pEnumeratorList;
 	private final EnumeratorElements pEnumerator;
@@ -4352,6 +4409,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.pTypedefRef = new TypedefRefElements();
 		this.pPodSpecifier = new PodSpecifierElements();
 		this.pBitSizeSpecifier = new BitSizeSpecifierElements();
+		this.pBitSizeValue = new BitSizeValueElements();
 		this.pEnumSpecifier = new EnumSpecifierElements();
 		this.pEnumeratorList = new EnumeratorListElements();
 		this.pEnumerator = new EnumeratorElements();
@@ -4822,13 +4880,24 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//BitSizeSpecifier:
-	//	'<' (value=NATURAL | constant=[Constant]) '>';
+	//	'<' size+=BitSizeValue (',' size+=BitSizeValue ',' size+=BitSizeValue ',' size+=BitSizeValue)? '>';
 	public BitSizeSpecifierElements getBitSizeSpecifierAccess() {
 		return pBitSizeSpecifier;
 	}
 	
 	public ParserRule getBitSizeSpecifierRule() {
 		return getBitSizeSpecifierAccess().getRule();
+	}
+	
+	//BitSizeValue:
+	//	val+=NATURAL
+	//	| constant+=[Constant];
+	public BitSizeValueElements getBitSizeValueAccess() {
+		return pBitSizeValue;
+	}
+	
+	public ParserRule getBitSizeValueRule() {
+		return getBitSizeValueAccess().getRule();
 	}
 	
 	//EnumSpecifier:

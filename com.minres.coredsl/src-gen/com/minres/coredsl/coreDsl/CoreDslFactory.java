@@ -339,6 +339,15 @@ public interface CoreDslFactory extends EFactory
   BitSizeSpecifier createBitSizeSpecifier();
 
   /**
+   * Returns a new object of class '<em>Bit Size Value</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Bit Size Value</em>'.
+   * @generated
+   */
+  BitSizeValue createBitSizeValue();
+
+  /**
    * Returns a new object of class '<em>Enum Specifier</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

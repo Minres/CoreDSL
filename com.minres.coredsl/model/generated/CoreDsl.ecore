@@ -161,8 +161,14 @@
         upperBound="-1" eType="#//DataTypes"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BitSizeSpecifier">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="constant" eType="#//Constant"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="size" upperBound="-1" eType="#//BitSizeValue"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BitSizeValue">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" unique="false" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constant" unique="false"
+        upperBound="-1" eType="#//Constant"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EnumSpecifier" eSuperTypes="#//DataTypeSpecifier #//EnumeratorList">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

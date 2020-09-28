@@ -251,6 +251,11 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
         return createBitSizeSpecifierAdapter();
       }
       @Override
+      public Adapter caseBitSizeValue(BitSizeValue object)
+      {
+        return createBitSizeValueAdapter();
+      }
+      @Override
       public Adapter caseEnumSpecifier(EnumSpecifier object)
       {
         return createEnumSpecifierAdapter();
@@ -983,6 +988,21 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createBitSizeSpecifierAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.BitSizeValue <em>Bit Size Value</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.BitSizeValue
+   * @generated
+   */
+  public Adapter createBitSizeValueAdapter()
   {
     return null;
   }

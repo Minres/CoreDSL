@@ -10,6 +10,7 @@ import com.minres.coredsl.coreDsl.Attribute;
 import com.minres.coredsl.coreDsl.AttributeList;
 import com.minres.coredsl.coreDsl.BitField;
 import com.minres.coredsl.coreDsl.BitSizeSpecifier;
+import com.minres.coredsl.coreDsl.BitSizeValue;
 import com.minres.coredsl.coreDsl.BitValue;
 import com.minres.coredsl.coreDsl.BitfieldDataType;
 import com.minres.coredsl.coreDsl.BlockItem;
@@ -345,6 +346,13 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   private EClass bitSizeSpecifierEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass bitSizeValueEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1720,9 +1728,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EAttribute getBitSizeSpecifier_Value()
+  public EReference getBitSizeSpecifier_Size()
   {
-    return (EAttribute)bitSizeSpecifierEClass.getEStructuralFeatures().get(0);
+    return (EReference)bitSizeSpecifierEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1731,9 +1739,31 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EReference getBitSizeSpecifier_Constant()
+  public EClass getBitSizeValue()
   {
-    return (EReference)bitSizeSpecifierEClass.getEStructuralFeatures().get(1);
+    return bitSizeValueEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getBitSizeValue_Val()
+  {
+    return (EAttribute)bitSizeValueEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getBitSizeValue_Constant()
+  {
+    return (EReference)bitSizeValueEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2969,8 +2999,11 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     createEAttribute(podSpecifierEClass, POD_SPECIFIER__DATA_TYPE);
 
     bitSizeSpecifierEClass = createEClass(BIT_SIZE_SPECIFIER);
-    createEAttribute(bitSizeSpecifierEClass, BIT_SIZE_SPECIFIER__VALUE);
-    createEReference(bitSizeSpecifierEClass, BIT_SIZE_SPECIFIER__CONSTANT);
+    createEReference(bitSizeSpecifierEClass, BIT_SIZE_SPECIFIER__SIZE);
+
+    bitSizeValueEClass = createEClass(BIT_SIZE_VALUE);
+    createEAttribute(bitSizeValueEClass, BIT_SIZE_VALUE__VAL);
+    createEReference(bitSizeValueEClass, BIT_SIZE_VALUE__CONSTANT);
 
     enumSpecifierEClass = createEClass(ENUM_SPECIFIER);
     createEAttribute(enumSpecifierEClass, ENUM_SPECIFIER__NAME);
@@ -3323,8 +3356,11 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     initEAttribute(getPodSpecifier_DataType(), this.getDataTypes(), "dataType", null, 0, -1, PodSpecifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(bitSizeSpecifierEClass, BitSizeSpecifier.class, "BitSizeSpecifier", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getBitSizeSpecifier_Value(), ecorePackage.getEBigInteger(), "value", null, 0, 1, BitSizeSpecifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBitSizeSpecifier_Constant(), this.getConstant(), null, "constant", null, 0, 1, BitSizeSpecifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBitSizeSpecifier_Size(), this.getBitSizeValue(), null, "size", null, 0, -1, BitSizeSpecifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(bitSizeValueEClass, BitSizeValue.class, "BitSizeValue", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getBitSizeValue_Val(), ecorePackage.getEBigInteger(), "val", null, 0, -1, BitSizeValue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBitSizeValue_Constant(), this.getConstant(), null, "constant", null, 0, -1, BitSizeValue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(enumSpecifierEClass, EnumSpecifier.class, "EnumSpecifier", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getEnumSpecifier_Name(), ecorePackage.getEString(), "name", null, 0, 1, EnumSpecifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

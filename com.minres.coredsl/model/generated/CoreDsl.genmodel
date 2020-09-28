@@ -163,8 +163,11 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//PodSpecifier/dataType"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//BitSizeSpecifier">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//BitSizeSpecifier/value"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//BitSizeSpecifier/constant"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//BitSizeSpecifier/size"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//BitSizeValue">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//BitSizeValue/val"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//BitSizeValue/constant"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//EnumSpecifier">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//EnumSpecifier/name"/>
