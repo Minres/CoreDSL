@@ -1239,13 +1239,22 @@ public interface CoreDslPackage extends EPackage
   int TYPE_OR_VAR_DECLARATION__SIZE = DECLARATION_FEATURE_COUNT + 4;
 
   /**
+   * The feature id for the '<em><b>Is ptr</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TYPE_OR_VAR_DECLARATION__IS_PTR = DECLARATION_FEATURE_COUNT + 5;
+
+  /**
    * The feature id for the '<em><b>Init</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TYPE_OR_VAR_DECLARATION__INIT = DECLARATION_FEATURE_COUNT + 5;
+  int TYPE_OR_VAR_DECLARATION__INIT = DECLARATION_FEATURE_COUNT + 6;
 
   /**
    * The number of structural features of the '<em>Type Or Var Declaration</em>' class.
@@ -1254,7 +1263,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TYPE_OR_VAR_DECLARATION_FEATURE_COUNT = DECLARATION_FEATURE_COUNT + 6;
+  int TYPE_OR_VAR_DECLARATION_FEATURE_COUNT = DECLARATION_FEATURE_COUNT + 7;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.TypedefDeclarationImpl <em>Typedef Declaration</em>}' class.
@@ -1884,7 +1893,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getInitializerList()
    * @generated
    */
-  int INITIALIZER_LIST = 44;
+  int INITIALIZER_LIST = 45;
 
   /**
    * The feature id for the '<em><b>Init</b></em>' containment reference list.
@@ -1912,7 +1921,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getInitializer()
    * @generated
    */
-  int INITIALIZER = 45;
+  int INITIALIZER = 44;
 
   /**
    * The feature id for the '<em><b>Init</b></em>' containment reference list.
@@ -3879,6 +3888,17 @@ public interface CoreDslPackage extends EPackage
   EReference getTypeOrVarDeclaration_Size();
 
   /**
+   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration#isIs_ptr <em>Is ptr</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Is ptr</em>'.
+   * @see com.minres.coredsl.coreDsl.TypeOrVarDeclaration#isIs_ptr()
+   * @see #getTypeOrVarDeclaration()
+   * @generated
+   */
+  EAttribute getTypeOrVarDeclaration_Is_ptr();
+
+  /**
    * Returns the meta object for the containment reference list '{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getInit <em>Init</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4357,27 +4377,6 @@ public interface CoreDslPackage extends EPackage
   EReference getDirectDeclarator_Expr();
 
   /**
-   * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.InitializerList <em>Initializer List</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Initializer List</em>'.
-   * @see com.minres.coredsl.coreDsl.InitializerList
-   * @generated
-   */
-  EClass getInitializerList();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link com.minres.coredsl.coreDsl.InitializerList#getInit <em>Init</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Init</em>'.
-   * @see com.minres.coredsl.coreDsl.InitializerList#getInit()
-   * @see #getInitializerList()
-   * @generated
-   */
-  EReference getInitializerList_Init();
-
-  /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.Initializer <em>Initializer</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4397,6 +4396,27 @@ public interface CoreDslPackage extends EPackage
    * @generated
    */
   EReference getInitializer_Expr();
+
+  /**
+   * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.InitializerList <em>Initializer List</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Initializer List</em>'.
+   * @see com.minres.coredsl.coreDsl.InitializerList
+   * @generated
+   */
+  EClass getInitializerList();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link com.minres.coredsl.coreDsl.InitializerList#getInit <em>Init</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Init</em>'.
+   * @see com.minres.coredsl.coreDsl.InitializerList#getInit()
+   * @see #getInitializerList()
+   * @generated
+   */
+  EReference getInitializerList_Init();
 
   /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.DesignatedInitializer <em>Designated Initializer</em>}'.
@@ -5782,6 +5802,14 @@ public interface CoreDslPackage extends EPackage
     EReference TYPE_OR_VAR_DECLARATION__SIZE = eINSTANCE.getTypeOrVarDeclaration_Size();
 
     /**
+     * The meta object literal for the '<em><b>Is ptr</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TYPE_OR_VAR_DECLARATION__IS_PTR = eINSTANCE.getTypeOrVarDeclaration_Is_ptr();
+
+    /**
      * The meta object literal for the '<em><b>Init</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -6176,24 +6204,6 @@ public interface CoreDslPackage extends EPackage
     EReference DIRECT_DECLARATOR__EXPR = eINSTANCE.getDirectDeclarator_Expr();
 
     /**
-     * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.InitializerListImpl <em>Initializer List</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see com.minres.coredsl.coreDsl.impl.InitializerListImpl
-     * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getInitializerList()
-     * @generated
-     */
-    EClass INITIALIZER_LIST = eINSTANCE.getInitializerList();
-
-    /**
-     * The meta object literal for the '<em><b>Init</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference INITIALIZER_LIST__INIT = eINSTANCE.getInitializerList_Init();
-
-    /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.InitializerImpl <em>Initializer</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -6210,6 +6220,24 @@ public interface CoreDslPackage extends EPackage
      * @generated
      */
     EReference INITIALIZER__EXPR = eINSTANCE.getInitializer_Expr();
+
+    /**
+     * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.InitializerListImpl <em>Initializer List</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.minres.coredsl.coreDsl.impl.InitializerListImpl
+     * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getInitializerList()
+     * @generated
+     */
+    EClass INITIALIZER_LIST = eINSTANCE.getInitializerList();
+
+    /**
+     * The meta object literal for the '<em><b>Init</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference INITIALIZER_LIST__INIT = eINSTANCE.getInitializerList_Init();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.DesignatedInitializerImpl <em>Designated Initializer</em>}' class.

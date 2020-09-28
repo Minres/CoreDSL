@@ -23,12 +23,12 @@ import org.junit.runner.RunWith;
 @RunWith(XtextRunner.class)
 @InjectWith(CoreDslInjectorProvider.class)
 @SuppressWarnings("all")
-public class CoreDslParsingTest {
+public class CoreDslLoadTest {
   @Inject
   private ParseHelper<DescriptionContent> parseHelper;
   
   @Test
-  public void parseSimpleModel() {
+  public void loadSimpleModel() {
     try {
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("InstructionSet RV32I {");
@@ -211,7 +211,7 @@ public class CoreDslParsingTest {
   }
   
   @Test
-  public void parseSqrt() {
+  public void loadSqrt() {
     try {
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("InstructionSet Vec2D {");
@@ -385,7 +385,7 @@ public class CoreDslParsingTest {
   }
   
   @Test
-  public void parseRob() {
+  public void loadSine() {
     try {
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("InstructionSet RISCVROB {");

@@ -1463,21 +1463,24 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cTypeTypeSpecifierParserRuleCall_1_0 = (RuleCall)cTypeAssignment_1.eContents().get(0);
 		private final Assignment cSizeAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cSizeBitSizeSpecifierParserRuleCall_2_0 = (RuleCall)cSizeAssignment_2.eContents().get(0);
-		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
-		private final Assignment cInitAssignment_3_0 = (Assignment)cGroup_3.eContents().get(0);
-		private final RuleCall cInitInitDeclaratorParserRuleCall_3_0_0 = (RuleCall)cInitAssignment_3_0.eContents().get(0);
-		private final Group cGroup_3_1 = (Group)cGroup_3.eContents().get(1);
-		private final Keyword cCommaKeyword_3_1_0 = (Keyword)cGroup_3_1.eContents().get(0);
-		private final Assignment cInitAssignment_3_1_1 = (Assignment)cGroup_3_1.eContents().get(1);
-		private final RuleCall cInitInitDeclaratorParserRuleCall_3_1_1_0 = (RuleCall)cInitAssignment_3_1_1.eContents().get(0);
-		private final Keyword cSemicolonKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Assignment cIs_ptrAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final Keyword cIs_ptrAsteriskKeyword_3_0 = (Keyword)cIs_ptrAssignment_3.eContents().get(0);
+		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
+		private final Assignment cInitAssignment_4_0 = (Assignment)cGroup_4.eContents().get(0);
+		private final RuleCall cInitInitDeclaratorParserRuleCall_4_0_0 = (RuleCall)cInitAssignment_4_0.eContents().get(0);
+		private final Group cGroup_4_1 = (Group)cGroup_4.eContents().get(1);
+		private final Keyword cCommaKeyword_4_1_0 = (Keyword)cGroup_4_1.eContents().get(0);
+		private final Assignment cInitAssignment_4_1_1 = (Assignment)cGroup_4_1.eContents().get(1);
+		private final RuleCall cInitInitDeclaratorParserRuleCall_4_1_1_0 = (RuleCall)cInitAssignment_4_1_1.eContents().get(0);
+		private final Keyword cSemicolonKeyword_5 = (Keyword)cGroup.eContents().get(5);
 		
 		//TypeOrVarDeclaration:
-		//	DeclarationSpecifier* type=TypeSpecifier size=BitSizeSpecifier? (init+=InitDeclarator (',' init+=InitDeclarator)*)?
-		//	';';
+		//	DeclarationSpecifier* type=TypeSpecifier size=BitSizeSpecifier? is_ptr?='*'? (init+=InitDeclarator (','
+		//	init+=InitDeclarator)*)? ';';
 		@Override public ParserRule getRule() { return rule; }
 		
-		//DeclarationSpecifier* type=TypeSpecifier size=BitSizeSpecifier? (init+=InitDeclarator (',' init+=InitDeclarator)*)? ';'
+		//DeclarationSpecifier* type=TypeSpecifier size=BitSizeSpecifier? is_ptr?='*'? (init+=InitDeclarator (','
+		//init+=InitDeclarator)*)? ';'
 		public Group getGroup() { return cGroup; }
 		
 		//DeclarationSpecifier*
@@ -1495,29 +1498,35 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//BitSizeSpecifier
 		public RuleCall getSizeBitSizeSpecifierParserRuleCall_2_0() { return cSizeBitSizeSpecifierParserRuleCall_2_0; }
 		
+		//is_ptr?='*'?
+		public Assignment getIs_ptrAssignment_3() { return cIs_ptrAssignment_3; }
+		
+		//'*'
+		public Keyword getIs_ptrAsteriskKeyword_3_0() { return cIs_ptrAsteriskKeyword_3_0; }
+		
 		//(init+=InitDeclarator (',' init+=InitDeclarator)*)?
-		public Group getGroup_3() { return cGroup_3; }
+		public Group getGroup_4() { return cGroup_4; }
 		
 		//init+=InitDeclarator
-		public Assignment getInitAssignment_3_0() { return cInitAssignment_3_0; }
+		public Assignment getInitAssignment_4_0() { return cInitAssignment_4_0; }
 		
 		//InitDeclarator
-		public RuleCall getInitInitDeclaratorParserRuleCall_3_0_0() { return cInitInitDeclaratorParserRuleCall_3_0_0; }
+		public RuleCall getInitInitDeclaratorParserRuleCall_4_0_0() { return cInitInitDeclaratorParserRuleCall_4_0_0; }
 		
 		//(',' init+=InitDeclarator)*
-		public Group getGroup_3_1() { return cGroup_3_1; }
+		public Group getGroup_4_1() { return cGroup_4_1; }
 		
 		//','
-		public Keyword getCommaKeyword_3_1_0() { return cCommaKeyword_3_1_0; }
+		public Keyword getCommaKeyword_4_1_0() { return cCommaKeyword_4_1_0; }
 		
 		//init+=InitDeclarator
-		public Assignment getInitAssignment_3_1_1() { return cInitAssignment_3_1_1; }
+		public Assignment getInitAssignment_4_1_1() { return cInitAssignment_4_1_1; }
 		
 		//InitDeclarator
-		public RuleCall getInitInitDeclaratorParserRuleCall_3_1_1_0() { return cInitInitDeclaratorParserRuleCall_3_1_1_0; }
+		public RuleCall getInitInitDeclaratorParserRuleCall_4_1_1_0() { return cInitInitDeclaratorParserRuleCall_4_1_1_0; }
 		
 		//';'
-		public Keyword getSemicolonKeyword_4() { return cSemicolonKeyword_4; }
+		public Keyword getSemicolonKeyword_5() { return cSemicolonKeyword_5; }
 	}
 	public class TypedefDeclarationElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.TypedefDeclaration");
@@ -2205,57 +2214,6 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//']'
 		public Keyword getRightSquareBracketKeyword_2_4() { return cRightSquareBracketKeyword_2_4; }
 	}
-	public class InitializerListElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.InitializerList");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Assignment cInitAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final Alternatives cInitAlternatives_0_0 = (Alternatives)cInitAssignment_0.eContents().get(0);
-		private final RuleCall cInitDesignatedInitializerParserRuleCall_0_0_0 = (RuleCall)cInitAlternatives_0_0.eContents().get(0);
-		private final RuleCall cInitInitializerParserRuleCall_0_0_1 = (RuleCall)cInitAlternatives_0_0.eContents().get(1);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cCommaKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cInitAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final Alternatives cInitAlternatives_1_1_0 = (Alternatives)cInitAssignment_1_1.eContents().get(0);
-		private final RuleCall cInitDesignatedInitializerParserRuleCall_1_1_0_0 = (RuleCall)cInitAlternatives_1_1_0.eContents().get(0);
-		private final RuleCall cInitInitializerParserRuleCall_1_1_0_1 = (RuleCall)cInitAlternatives_1_1_0.eContents().get(1);
-		
-		//fragment InitializerList:
-		//	init+=(DesignatedInitializer | Initializer) (',' init+=(DesignatedInitializer | Initializer))?;
-		@Override public ParserRule getRule() { return rule; }
-		
-		//init+=(DesignatedInitializer | Initializer) (',' init+=(DesignatedInitializer | Initializer))?
-		public Group getGroup() { return cGroup; }
-		
-		//init+=(DesignatedInitializer | Initializer)
-		public Assignment getInitAssignment_0() { return cInitAssignment_0; }
-		
-		//(DesignatedInitializer | Initializer)
-		public Alternatives getInitAlternatives_0_0() { return cInitAlternatives_0_0; }
-		
-		//DesignatedInitializer
-		public RuleCall getInitDesignatedInitializerParserRuleCall_0_0_0() { return cInitDesignatedInitializerParserRuleCall_0_0_0; }
-		
-		//Initializer
-		public RuleCall getInitInitializerParserRuleCall_0_0_1() { return cInitInitializerParserRuleCall_0_0_1; }
-		
-		//(',' init+=(DesignatedInitializer | Initializer))?
-		public Group getGroup_1() { return cGroup_1; }
-		
-		//','
-		public Keyword getCommaKeyword_1_0() { return cCommaKeyword_1_0; }
-		
-		//init+=(DesignatedInitializer | Initializer)
-		public Assignment getInitAssignment_1_1() { return cInitAssignment_1_1; }
-		
-		//(DesignatedInitializer | Initializer)
-		public Alternatives getInitAlternatives_1_1_0() { return cInitAlternatives_1_1_0; }
-		
-		//DesignatedInitializer
-		public RuleCall getInitDesignatedInitializerParserRuleCall_1_1_0_0() { return cInitDesignatedInitializerParserRuleCall_1_1_0_0; }
-		
-		//Initializer
-		public RuleCall getInitInitializerParserRuleCall_1_1_0_1() { return cInitInitializerParserRuleCall_1_1_0_1; }
-	}
 	public class InitializerElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.Initializer");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
@@ -2295,6 +2253,57 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		
 		//'}'
 		public Keyword getRightCurlyBracketKeyword_1_3() { return cRightCurlyBracketKeyword_1_3; }
+	}
+	public class InitializerListElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.InitializerList");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cInitAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final Alternatives cInitAlternatives_0_0 = (Alternatives)cInitAssignment_0.eContents().get(0);
+		private final RuleCall cInitDesignatedInitializerParserRuleCall_0_0_0 = (RuleCall)cInitAlternatives_0_0.eContents().get(0);
+		private final RuleCall cInitInitializerParserRuleCall_0_0_1 = (RuleCall)cInitAlternatives_0_0.eContents().get(1);
+		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
+		private final Keyword cCommaKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
+		private final Assignment cInitAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
+		private final Alternatives cInitAlternatives_1_1_0 = (Alternatives)cInitAssignment_1_1.eContents().get(0);
+		private final RuleCall cInitDesignatedInitializerParserRuleCall_1_1_0_0 = (RuleCall)cInitAlternatives_1_1_0.eContents().get(0);
+		private final RuleCall cInitInitializerParserRuleCall_1_1_0_1 = (RuleCall)cInitAlternatives_1_1_0.eContents().get(1);
+		
+		//fragment InitializerList:
+		//	init+=(DesignatedInitializer | Initializer) (',' init+=(DesignatedInitializer | Initializer))*;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//init+=(DesignatedInitializer | Initializer) (',' init+=(DesignatedInitializer | Initializer))*
+		public Group getGroup() { return cGroup; }
+		
+		//init+=(DesignatedInitializer | Initializer)
+		public Assignment getInitAssignment_0() { return cInitAssignment_0; }
+		
+		//(DesignatedInitializer | Initializer)
+		public Alternatives getInitAlternatives_0_0() { return cInitAlternatives_0_0; }
+		
+		//DesignatedInitializer
+		public RuleCall getInitDesignatedInitializerParserRuleCall_0_0_0() { return cInitDesignatedInitializerParserRuleCall_0_0_0; }
+		
+		//Initializer
+		public RuleCall getInitInitializerParserRuleCall_0_0_1() { return cInitInitializerParserRuleCall_0_0_1; }
+		
+		//(',' init+=(DesignatedInitializer | Initializer))*
+		public Group getGroup_1() { return cGroup_1; }
+		
+		//','
+		public Keyword getCommaKeyword_1_0() { return cCommaKeyword_1_0; }
+		
+		//init+=(DesignatedInitializer | Initializer)
+		public Assignment getInitAssignment_1_1() { return cInitAssignment_1_1; }
+		
+		//(DesignatedInitializer | Initializer)
+		public Alternatives getInitAlternatives_1_1_0() { return cInitAlternatives_1_1_0; }
+		
+		//DesignatedInitializer
+		public RuleCall getInitDesignatedInitializerParserRuleCall_1_1_0_0() { return cInitDesignatedInitializerParserRuleCall_1_1_0_0; }
+		
+		//Initializer
+		public RuleCall getInitInitializerParserRuleCall_1_1_0_1() { return cInitInitializerParserRuleCall_1_1_0_1; }
 	}
 	public class DesignatedInitializerElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.DesignatedInitializer");
@@ -4311,8 +4320,8 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final StructDeclarationSpecifierElements pStructDeclarationSpecifier;
 	private final InitDeclaratorElements pInitDeclarator;
 	private final DirectDeclaratorElements pDirectDeclarator;
-	private final InitializerListElements pInitializerList;
 	private final InitializerElements pInitializer;
+	private final InitializerListElements pInitializerList;
 	private final DesignatedInitializerElements pDesignatedInitializer;
 	private final DesignatorElements pDesignator;
 	private final AbstractDeclaratorElements pAbstractDeclarator;
@@ -4424,8 +4433,8 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.pStructDeclarationSpecifier = new StructDeclarationSpecifierElements();
 		this.pInitDeclarator = new InitDeclaratorElements();
 		this.pDirectDeclarator = new DirectDeclaratorElements();
-		this.pInitializerList = new InitializerListElements();
 		this.pInitializer = new InitializerElements();
+		this.pInitializerList = new InitializerListElements();
 		this.pDesignatedInitializer = new DesignatedInitializerElements();
 		this.pDesignator = new DesignatorElements();
 		this.pAbstractDeclarator = new AbstractDeclaratorElements();
@@ -4801,8 +4810,8 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//TypeOrVarDeclaration:
-	//	DeclarationSpecifier* type=TypeSpecifier size=BitSizeSpecifier? (init+=InitDeclarator (',' init+=InitDeclarator)*)?
-	//	';';
+	//	DeclarationSpecifier* type=TypeSpecifier size=BitSizeSpecifier? is_ptr?='*'? (init+=InitDeclarator (','
+	//	init+=InitDeclarator)*)? ';';
 	public TypeOrVarDeclarationElements getTypeOrVarDeclarationAccess() {
 		return pTypeOrVarDeclaration;
 	}
@@ -4995,16 +5004,6 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getDirectDeclaratorAccess().getRule();
 	}
 	
-	//fragment InitializerList:
-	//	init+=(DesignatedInitializer | Initializer) (',' init+=(DesignatedInitializer | Initializer))?;
-	public InitializerListElements getInitializerListAccess() {
-		return pInitializerList;
-	}
-	
-	public ParserRule getInitializerListRule() {
-		return getInitializerListAccess().getRule();
-	}
-	
 	//Initializer:
 	//	expr=ConditionalExpression
 	//	| '{' InitializerList ','? '}';
@@ -5014,6 +5013,16 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	public ParserRule getInitializerRule() {
 		return getInitializerAccess().getRule();
+	}
+	
+	//fragment InitializerList:
+	//	init+=(DesignatedInitializer | Initializer) (',' init+=(DesignatedInitializer | Initializer))*;
+	public InitializerListElements getInitializerListAccess() {
+		return pInitializerList;
+	}
+	
+	public ParserRule getInitializerListRule() {
+		return getInitializerListAccess().getRule();
 	}
 	
 	//DesignatedInitializer:

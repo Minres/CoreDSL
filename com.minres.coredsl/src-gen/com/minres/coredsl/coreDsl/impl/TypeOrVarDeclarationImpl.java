@@ -43,6 +43,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getQualifiers <em>Qualifiers</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getType <em>Type</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getSize <em>Size</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#isIs_ptr <em>Is ptr</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getInit <em>Init</em>}</li>
  * </ul>
  *
@@ -99,6 +100,26 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
    * @ordered
    */
   protected BitSizeSpecifier size;
+
+  /**
+   * The default value of the '{@link #isIs_ptr() <em>Is ptr</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isIs_ptr()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean IS_PTR_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isIs_ptr() <em>Is ptr</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isIs_ptr()
+   * @generated
+   * @ordered
+   */
+  protected boolean is_ptr = IS_PTR_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getInit() <em>Init</em>}' containment reference list.
@@ -282,6 +303,31 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
    * @generated
    */
   @Override
+  public boolean isIs_ptr()
+  {
+    return is_ptr;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setIs_ptr(boolean newIs_ptr)
+  {
+    boolean oldIs_ptr = is_ptr;
+    is_ptr = newIs_ptr;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.TYPE_OR_VAR_DECLARATION__IS_PTR, oldIs_ptr, is_ptr));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EList<InitDeclarator> getInit()
   {
     if (init == null)
@@ -331,6 +377,8 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
         return getType();
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__SIZE:
         return getSize();
+      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__IS_PTR:
+        return isIs_ptr();
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__INIT:
         return getInit();
     }
@@ -366,6 +414,9 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__SIZE:
         setSize((BitSizeSpecifier)newValue);
         return;
+      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__IS_PTR:
+        setIs_ptr((Boolean)newValue);
+        return;
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__INIT:
         getInit().clear();
         getInit().addAll((Collection<? extends InitDeclarator>)newValue);
@@ -399,6 +450,9 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__SIZE:
         setSize((BitSizeSpecifier)null);
         return;
+      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__IS_PTR:
+        setIs_ptr(IS_PTR_EDEFAULT);
+        return;
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__INIT:
         getInit().clear();
         return;
@@ -426,6 +480,8 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
         return type != null;
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__SIZE:
         return size != null;
+      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__IS_PTR:
+        return is_ptr != IS_PTR_EDEFAULT;
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__INIT:
         return init != null && !init.isEmpty();
     }
@@ -505,6 +561,8 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
     result.append(storage);
     result.append(", qualifiers: ");
     result.append(qualifiers);
+    result.append(", is_ptr: ");
+    result.append(is_ptr);
     result.append(')');
     return result.toString();
   }

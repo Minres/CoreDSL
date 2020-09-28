@@ -141,6 +141,7 @@
     <genClasses ecoreClass="CoreDsl.ecore#//TypeOrVarDeclaration">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypeOrVarDeclaration/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypeOrVarDeclaration/size"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//TypeOrVarDeclaration/is_ptr"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypeOrVarDeclaration/init"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//TypedefDeclaration">
@@ -202,11 +203,11 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//DirectDeclarator/qualifiers"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DirectDeclarator/expr"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//InitializerList">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//InitializerList/init"/>
-    </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//Initializer">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Initializer/expr"/>
+    </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//InitializerList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//InitializerList/init"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//DesignatedInitializer">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DesignatedInitializer/designators"/>

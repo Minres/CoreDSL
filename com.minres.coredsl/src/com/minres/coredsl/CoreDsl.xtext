@@ -141,7 +141,7 @@ Declaration
 	;
 	
 TypeOrVarDeclaration
-	:	DeclarationSpecifier* type=TypeSpecifier size=BitSizeSpecifier? (init+=InitDeclarator (',' init+=InitDeclarator)*)? ';'
+	:	DeclarationSpecifier* type=TypeSpecifier size=BitSizeSpecifier? is_ptr?='*'? (init+=InitDeclarator (',' init+=InitDeclarator)*)? ';'
 	;
 	
 TypedefDeclaration
@@ -222,12 +222,12 @@ DirectDeclarator
     	)?
     ;
     
-fragment InitializerList:   init+=(DesignatedInitializer|Initializer) (',' init+=(DesignatedInitializer|Initializer))?;
-
 Initializer
     :   expr=ConditionalExpression
     |   '{' InitializerList ','? '}'
     ;
+
+fragment InitializerList:   init+=(DesignatedInitializer|Initializer) (',' init+=(DesignatedInitializer|Initializer))*;
 
 DesignatedInitializer
 	:	(designators+=Designator)+ '=' init=Initializer

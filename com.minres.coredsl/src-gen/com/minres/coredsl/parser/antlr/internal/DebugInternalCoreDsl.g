@@ -383,6 +383,8 @@ ruleTypeOrVarDeclaration:
 	ruleTypeSpecifier
 	ruleBitSizeSpecifier
 	?
+	'*'
+	?
 	(
 		ruleInitDeclarator
 		(
@@ -577,6 +579,18 @@ ruleDirectDeclarator:
 	)?
 ;
 
+// Rule Initializer
+ruleInitializer:
+	(
+		ruleConditionalExpression
+		    |
+		'{'
+		ruleInitializerList
+		','?
+		'}'
+	)
+;
+
 // Rule InitializerList
 ruleInitializerList:
 	(
@@ -589,19 +603,7 @@ ruleInitializerList:
 			ruleDesignatedInitializer
 			    |ruleInitializer
 		)
-	)?
-;
-
-// Rule Initializer
-ruleInitializer:
-	(
-		ruleConditionalExpression
-		    |
-		'{'
-		ruleInitializerList
-		','?
-		'}'
-	)
+	)*
 ;
 
 // Rule DesignatedInitializer

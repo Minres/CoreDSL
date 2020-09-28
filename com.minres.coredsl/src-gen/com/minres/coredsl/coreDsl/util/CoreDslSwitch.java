@@ -428,18 +428,18 @@ public class CoreDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case CoreDslPackage.INITIALIZER_LIST:
-      {
-        InitializerList initializerList = (InitializerList)theEObject;
-        T result = caseInitializerList(initializerList);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case CoreDslPackage.INITIALIZER:
       {
         Initializer initializer = (Initializer)theEObject;
         T result = caseInitializer(initializer);
         if (result == null) result = caseInitializerList(initializer);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CoreDslPackage.INITIALIZER_LIST:
+      {
+        InitializerList initializerList = (InitializerList)theEObject;
+        T result = caseInitializerList(initializerList);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1372,22 +1372,6 @@ public class CoreDslSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Initializer List</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Initializer List</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseInitializerList(InitializerList object)
-  {
-    return null;
-  }
-
-  /**
    * Returns the result of interpreting the object as an instance of '<em>Initializer</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1399,6 +1383,22 @@ public class CoreDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseInitializer(Initializer object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Initializer List</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Initializer List</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseInitializerList(InitializerList object)
   {
     return null;
   }

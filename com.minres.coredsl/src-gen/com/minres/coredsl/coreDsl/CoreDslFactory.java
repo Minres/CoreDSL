@@ -420,15 +420,6 @@ public interface CoreDslFactory extends EFactory
   DirectDeclarator createDirectDeclarator();
 
   /**
-   * Returns a new object of class '<em>Initializer List</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Initializer List</em>'.
-   * @generated
-   */
-  InitializerList createInitializerList();
-
-  /**
    * Returns a new object of class '<em>Initializer</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -436,6 +427,15 @@ public interface CoreDslFactory extends EFactory
    * @generated
    */
   Initializer createInitializer();
+
+  /**
+   * Returns a new object of class '<em>Initializer List</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Initializer List</em>'.
+   * @generated
+   */
+  InitializerList createInitializerList();
 
   /**
    * Returns a new object of class '<em>Designated Initializer</em>'.

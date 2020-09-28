@@ -516,6 +516,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         ((storage+=StorageClassSpecifier | qualifiers+=TypeQualifier)? (attrs+=Attribute attrs+=Attribute*)?)+ 
 	 *         type=TypeSpecifier 
 	 *         size=BitSizeSpecifier? 
+	 *         is_ptr?='*'? 
 	 *         (init+=InitDeclarator init+=InitDeclarator*)?
 	 *     )
 	 */
@@ -997,7 +998,10 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     Initializer returns Initializer
 	 *
 	 * Constraint:
-	 *     (((init+=DesignatedInitializer | init+=Initializer) (init+=DesignatedInitializer | init+=Initializer)?) | expr=ConditionalExpression)
+	 *     (
+	 *         expr=ConditionalExpression | 
+	 *         ((init+=DesignatedInitializer | init+=Initializer) init+=DesignatedInitializer? (init+=Initializer? init+=DesignatedInitializer?)*)
+	 *     )
 	 */
 	protected void sequence_Initializer_InitializerList(ISerializationContext context, Initializer semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);

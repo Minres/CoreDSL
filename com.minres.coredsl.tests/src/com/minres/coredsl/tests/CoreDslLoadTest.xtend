@@ -17,13 +17,13 @@ import com.minres.coredsl.coreDsl.InstructionSet
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
-class CoreDslParsingTest {
+class CoreDslLoadTest {
 
 	@Inject ParseHelper<DescriptionContent> parseHelper
 
 
 	@Test
-	def void parseSimpleModel() {
+	def void loadSimpleModel() {
 		val input = '''
 InstructionSet RV32I {
     constants {
@@ -113,7 +113,7 @@ InstructionSet RV32I {
 
 
 	@Test
-	def void parseSqrt() {
+	def void loadSqrt() {
 		val input = '''
 InstructionSet Vec2D {
     registers{
@@ -181,7 +181,7 @@ InstructionSet Vec2D {
 	}
 	
 	@Test
-	def void parseRob(){
+	def void loadSine(){
 		val input = '''
 InstructionSet RISCVROB {
     constants {

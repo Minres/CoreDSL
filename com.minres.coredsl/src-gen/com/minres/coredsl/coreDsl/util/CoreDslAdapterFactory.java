@@ -296,14 +296,14 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
         return createDirectDeclaratorAdapter();
       }
       @Override
-      public Adapter caseInitializerList(InitializerList object)
-      {
-        return createInitializerListAdapter();
-      }
-      @Override
       public Adapter caseInitializer(Initializer object)
       {
         return createInitializerAdapter();
+      }
+      @Override
+      public Adapter caseInitializerList(InitializerList object)
+      {
+        return createInitializerListAdapter();
       }
       @Override
       public Adapter caseDesignatedInitializer(DesignatedInitializer object)
@@ -1123,21 +1123,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.InitializerList <em>Initializer List</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.InitializerList
-   * @generated
-   */
-  public Adapter createInitializerListAdapter()
-  {
-    return null;
-  }
-
-  /**
    * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Initializer <em>Initializer</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -1148,6 +1133,21 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createInitializerAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.InitializerList <em>Initializer List</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.InitializerList
+   * @generated
+   */
+  public Adapter createInitializerListAdapter()
   {
     return null;
   }

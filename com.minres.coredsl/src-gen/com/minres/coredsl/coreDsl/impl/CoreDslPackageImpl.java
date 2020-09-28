@@ -414,14 +414,14 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass initializerListEClass = null;
+  private EClass initializerEClass = null;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass initializerEClass = null;
+  private EClass initializerListEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1544,9 +1544,20 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
+  public EAttribute getTypeOrVarDeclaration_Is_ptr()
+  {
+    return (EAttribute)typeOrVarDeclarationEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EReference getTypeOrVarDeclaration_Init()
   {
-    return (EReference)typeOrVarDeclarationEClass.getEStructuralFeatures().get(2);
+    return (EReference)typeOrVarDeclarationEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -2039,28 +2050,6 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EClass getInitializerList()
-  {
-    return initializerListEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getInitializerList_Init()
-  {
-    return (EReference)initializerListEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EClass getInitializer()
   {
     return initializerEClass;
@@ -2075,6 +2064,28 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
   public EReference getInitializer_Expr()
   {
     return (EReference)initializerEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getInitializerList()
+  {
+    return initializerListEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getInitializerList_Init()
+  {
+    return (EReference)initializerListEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -2956,6 +2967,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     typeOrVarDeclarationEClass = createEClass(TYPE_OR_VAR_DECLARATION);
     createEReference(typeOrVarDeclarationEClass, TYPE_OR_VAR_DECLARATION__TYPE);
     createEReference(typeOrVarDeclarationEClass, TYPE_OR_VAR_DECLARATION__SIZE);
+    createEAttribute(typeOrVarDeclarationEClass, TYPE_OR_VAR_DECLARATION__IS_PTR);
     createEReference(typeOrVarDeclarationEClass, TYPE_OR_VAR_DECLARATION__INIT);
 
     typedefDeclarationEClass = createEClass(TYPEDEF_DECLARATION);
@@ -3019,11 +3031,11 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     createEAttribute(directDeclaratorEClass, DIRECT_DECLARATOR__QUALIFIERS);
     createEReference(directDeclaratorEClass, DIRECT_DECLARATOR__EXPR);
 
-    initializerListEClass = createEClass(INITIALIZER_LIST);
-    createEReference(initializerListEClass, INITIALIZER_LIST__INIT);
-
     initializerEClass = createEClass(INITIALIZER);
     createEReference(initializerEClass, INITIALIZER__EXPR);
+
+    initializerListEClass = createEClass(INITIALIZER_LIST);
+    createEReference(initializerListEClass, INITIALIZER_LIST__INIT);
 
     designatedInitializerEClass = createEClass(DESIGNATED_INITIALIZER);
     createEReference(designatedInitializerEClass, DESIGNATED_INITIALIZER__DESIGNATORS);
@@ -3310,6 +3322,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     initEClass(typeOrVarDeclarationEClass, TypeOrVarDeclaration.class, "TypeOrVarDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getTypeOrVarDeclaration_Type(), this.getTypeSpecifier(), null, "type", null, 0, 1, TypeOrVarDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTypeOrVarDeclaration_Size(), this.getBitSizeSpecifier(), null, "size", null, 0, 1, TypeOrVarDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTypeOrVarDeclaration_Is_ptr(), ecorePackage.getEBoolean(), "is_ptr", null, 0, 1, TypeOrVarDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTypeOrVarDeclaration_Init(), this.getInitDeclarator(), null, "init", null, 0, -1, TypeOrVarDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(typedefDeclarationEClass, TypedefDeclaration.class, "TypedefDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3373,11 +3386,11 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     initEAttribute(getDirectDeclarator_Qualifiers(), this.getTypeQualifier(), "qualifiers", null, 0, -1, DirectDeclarator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getDirectDeclarator_Expr(), this.getExpression(), null, "expr", null, 0, 1, DirectDeclarator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(initializerListEClass, InitializerList.class, "InitializerList", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getInitializerList_Init(), ecorePackage.getEObject(), null, "init", null, 0, -1, InitializerList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
     initEClass(initializerEClass, Initializer.class, "Initializer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getInitializer_Expr(), this.getExpression(), null, "expr", null, 0, 1, Initializer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(initializerListEClass, InitializerList.class, "InitializerList", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getInitializerList_Init(), ecorePackage.getEObject(), null, "init", null, 0, -1, InitializerList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(designatedInitializerEClass, DesignatedInitializer.class, "DesignatedInitializer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getDesignatedInitializer_Designators(), this.getDesignator(), null, "designators", null, 0, -1, DesignatedInitializer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

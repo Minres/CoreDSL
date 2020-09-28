@@ -132,6 +132,7 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="size" eType="#//BitSizeSpecifier"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="is_ptr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="init" upperBound="-1" eType="#//InitDeclarator"
         containment="true"/>
   </eClassifiers>
@@ -216,12 +217,12 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="expr" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InitializerList">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="init" upperBound="-1" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"
-        containment="true"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Initializer" eSuperTypes="#//InitializerList">
     <eStructuralFeatures xsi:type="ecore:EReference" name="expr" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InitializerList">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="init" upperBound="-1" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DesignatedInitializer">

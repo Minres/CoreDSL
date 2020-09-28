@@ -16,6 +16,7 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getType <em>Type</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getSize <em>Size</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration#isIs_ptr <em>Is ptr</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getInit <em>Init</em>}</li>
  * </ul>
  *
@@ -68,6 +69,28 @@ public interface TypeOrVarDeclaration extends Declaration, DeclarationSpecifier,
    * @generated
    */
   void setSize(BitSizeSpecifier value);
+
+  /**
+   * Returns the value of the '<em><b>Is ptr</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Is ptr</em>' attribute.
+   * @see #setIs_ptr(boolean)
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getTypeOrVarDeclaration_Is_ptr()
+   * @model
+   * @generated
+   */
+  boolean isIs_ptr();
+
+  /**
+   * Sets the value of the '{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration#isIs_ptr <em>Is ptr</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Is ptr</em>' attribute.
+   * @see #isIs_ptr()
+   * @generated
+   */
+  void setIs_ptr(boolean value);
 
   /**
    * Returns the value of the '<em><b>Init</b></em>' containment reference list.
