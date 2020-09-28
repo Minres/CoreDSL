@@ -21,7 +21,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface PostfixExpression extends UnaryExpression
+public interface PostfixExpression extends PrefixExpression
 {
   /**
    * Returns the value of the '<em><b>Ops</b></em>' containment reference list.

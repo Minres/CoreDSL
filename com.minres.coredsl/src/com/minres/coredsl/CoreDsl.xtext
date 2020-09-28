@@ -60,7 +60,7 @@ BitField
 	;
 
 RangeSpec
-	:	'[' left=NATURAL ':' right=NATURAL ']'
+	:	'[' left=INTEGER ':' right=INTEGER ']'
 	;
 
 FunctionDefinition
@@ -180,7 +180,7 @@ BitSizeSpecifier
 	;
 
 BitSizeValue
-	:	val+=NATURAL
+	:	val+=INTEGER
 	|	constant+=[Constant]
 	;
 
@@ -268,7 +268,7 @@ Expression
     ;
 
 AssignmentExpression returns Expression
-    :   UnaryExpression {AssignmentExpression.left=current} op=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=') right=ConditionalExpression
+    :   PrefixExpression {AssignmentExpression.left=current} (assignment+=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=') rights+=ConditionalExpression)+
     ;
 
 ConditionalExpression returns Expression
@@ -276,54 +276,54 @@ ConditionalExpression returns Expression
     ;
 
 LogicalOrExpression returns Expression
-    :   LogicalAndExpression ({LogicalExpr.left=current} op='||' right=LogicalOrExpression)?
+    :   LogicalAndExpression ({InfixExpression.left=current} op='||' right=LogicalOrExpression)?
     ;
 
 LogicalAndExpression returns Expression
-    :   InclusiveOrExpression ({LogicalExpr.left=current} op='&&' right=LogicalAndExpression)?
+    :   InclusiveOrExpression ({InfixExpression.left=current} op='&&' right=LogicalAndExpression)?
     ;
 
 InclusiveOrExpression returns Expression
-    :   ExclusiveOrExpression ({LogicalExpr.left=current} op='|' right=InclusiveOrExpression)?
+    :   ExclusiveOrExpression ({InfixExpression.left=current} op='|' right=InclusiveOrExpression)?
     ;
 
 ExclusiveOrExpression returns Expression
-    :   AndExpression ({LogicalExpr.left=current} op='^' right=ExclusiveOrExpression)?
+    :   AndExpression ({InfixExpression.left=current} op='^' right=ExclusiveOrExpression)?
     ;
 
 AndExpression returns Expression
-    :   EqualityExpression ({LogicalExpr.left=current} op='&' right=AndExpression)?
+    :   EqualityExpression ({InfixExpression.left=current} op='&' right=AndExpression)?
     ;
 
 EqualityExpression returns Expression
-    :   RelationalExpression ({LogicalExpr.left=current} op=('=='|'!=') right=EqualityExpression)?
+    :   RelationalExpression ({InfixExpression.left=current} op=('=='|'!=') right=EqualityExpression)?
     ;
 
 RelationalExpression returns Expression
-    :   ShiftExpression ({LogicalExpr.left=current} op=('<'|'>'|'<='|'>=') right=RelationalExpression)?
+    :   ShiftExpression ({InfixExpression.left=current} op=('<'|'>'|'<='|'>=') right=RelationalExpression)?
     ;
 
 ShiftExpression returns Expression
-    :   AdditiveExpression ({ArithmeticExpression.left=current} op=('<<'|'>>') right=ShiftExpression)?
+    :   AdditiveExpression ({InfixExpression.left=current} op=('<<'|'>>') right=ShiftExpression)?
     ;
 
 AdditiveExpression returns Expression
-    :   MultiplicativeExpression ({ArithmeticExpression.left=current} op=('+'|'-') right=AdditiveExpression)?
+    :   MultiplicativeExpression ({InfixExpression.left=current} op=('+'|'-') right=AdditiveExpression)?
     ;
 
 MultiplicativeExpression returns Expression
-    :   CastExpression ({ArithmeticExpression.left=current} op=('*' | '/' | '%') right=MultiplicativeExpression)?
+    :   CastExpression ({InfixExpression.left=current} op=('*' | '/' | '%') right=MultiplicativeExpression)?
     ;
 
 CastExpression
-    :   UnaryExpression
+    :   PrefixExpression
     |	'(' type=DataTypeSpecifier ')' left=CastExpression
     ;
 
-UnaryExpression
+PrefixExpression
     :   PostfixExpression
-    |   op='++' left=UnaryExpression
-    |   op='--' left=UnaryExpression
+    |   op='++' left=PrefixExpression
+    |   op='--' left=PrefixExpression
     |   UnaryOperator left=CastExpression
     |   op='sizeof' '(' (left=PostfixExpression |  type=DataTypeSpecifier ) ')'
 //    |   op='_Alignof' '(' type=TypeSpecifier ')'
@@ -374,7 +374,7 @@ Constant
     ;
 
 IntegerConstant
-    :   val=NATURAL IntegerSuffix?
+    :   val=INTEGER IntegerSuffix?
     ;
     
 FloatingConstant
@@ -433,7 +433,7 @@ terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false' ;
 
 terminal FLOAT returns ecore::EBigDecimal:  (('0'..'9')+ '.' ('0'..'9')*) (('e' | 'E') ('+' | '-')? ('0'..'9')+)?;
 
-terminal NATURAL returns ecore::EBigInteger: (DECIMALCONSTANT) | (BINARYCONSTANT) | (HEXADECIMALCONSTANT) | (OCTALCONSTANT);
+terminal INTEGER returns ecore::EBigInteger: (DECIMALCONSTANT) | (BINARYCONSTANT) | (HEXADECIMALCONSTANT) | (OCTALCONSTANT) | (VLOGCONSTANT);
 
 terminal fragment BINARYCONSTANT:	('0b' | '0B') '0'..'1' (('_')? '0'..'1')*;
 
@@ -442,6 +442,8 @@ terminal fragment OCTALCONSTANT:   '0' ('_')? '0'..'7' (('_')? '0'..'7')*;
 terminal fragment DECIMALCONSTANT:   '0' | '1'..'9' (('_')? '0'..'9')*;
 
 terminal fragment HEXADECIMALCONSTANT:   ('0x'|'0X') ('0'..'9'|'a'..'f'|'A'..'F')  (('_')? ('0'..'9'|'a'..'f'|'A'..'F'))*;
+
+terminal fragment VLOGCONSTANT: ('0'..'9')+ "'" ('b' ('01')+ | 'o' ('0'..'7')+ | 'd' ('0'..'9')+ | 'h' ('0'..'9'|'a'..'f'|'A'..'F')+); 
 
 terminal CHARCONST: "'" ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|"'") )* "'";
 

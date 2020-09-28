@@ -3,8 +3,8 @@
  */
 package com.minres.coredsl.coreDsl.impl;
 
-import com.minres.coredsl.coreDsl.ArithmeticExpression;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
+import com.minres.coredsl.coreDsl.InfixExpression;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -14,18 +14,18 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Arithmetic Expression</b></em>'.
+ * An implementation of the model object '<em><b>Infix Expression</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.ArithmeticExpressionImpl#getOp <em>Op</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.InfixExpressionImpl#getOp <em>Op</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class ArithmeticExpressionImpl extends ExpressionImpl implements ArithmeticExpression
+public class InfixExpressionImpl extends ExpressionImpl implements InfixExpression
 {
   /**
    * The default value of the '{@link #getOp() <em>Op</em>}' attribute.
@@ -52,7 +52,7 @@ public class ArithmeticExpressionImpl extends ExpressionImpl implements Arithmet
    * <!-- end-user-doc -->
    * @generated
    */
-  protected ArithmeticExpressionImpl()
+  protected InfixExpressionImpl()
   {
     super();
   }
@@ -65,7 +65,7 @@ public class ArithmeticExpressionImpl extends ExpressionImpl implements Arithmet
   @Override
   protected EClass eStaticClass()
   {
-    return CoreDslPackage.Literals.ARITHMETIC_EXPRESSION;
+    return CoreDslPackage.Literals.INFIX_EXPRESSION;
   }
 
   /**
@@ -90,7 +90,7 @@ public class ArithmeticExpressionImpl extends ExpressionImpl implements Arithmet
     String oldOp = op;
     op = newOp;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.ARITHMETIC_EXPRESSION__OP, oldOp, op));
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.INFIX_EXPRESSION__OP, oldOp, op));
   }
 
   /**
@@ -103,7 +103,7 @@ public class ArithmeticExpressionImpl extends ExpressionImpl implements Arithmet
   {
     switch (featureID)
     {
-      case CoreDslPackage.ARITHMETIC_EXPRESSION__OP:
+      case CoreDslPackage.INFIX_EXPRESSION__OP:
         return getOp();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -119,7 +119,7 @@ public class ArithmeticExpressionImpl extends ExpressionImpl implements Arithmet
   {
     switch (featureID)
     {
-      case CoreDslPackage.ARITHMETIC_EXPRESSION__OP:
+      case CoreDslPackage.INFIX_EXPRESSION__OP:
         setOp((String)newValue);
         return;
     }
@@ -136,7 +136,7 @@ public class ArithmeticExpressionImpl extends ExpressionImpl implements Arithmet
   {
     switch (featureID)
     {
-      case CoreDslPackage.ARITHMETIC_EXPRESSION__OP:
+      case CoreDslPackage.INFIX_EXPRESSION__OP:
         setOp(OP_EDEFAULT);
         return;
     }
@@ -153,7 +153,7 @@ public class ArithmeticExpressionImpl extends ExpressionImpl implements Arithmet
   {
     switch (featureID)
     {
-      case CoreDslPackage.ARITHMETIC_EXPRESSION__OP:
+      case CoreDslPackage.INFIX_EXPRESSION__OP:
         return OP_EDEFAULT == null ? op != null : !OP_EDEFAULT.equals(op);
     }
     return super.eIsSet(featureID);
@@ -176,4 +176,4 @@ public class ArithmeticExpressionImpl extends ExpressionImpl implements Arithmet
     return result.toString();
   }
 
-} //ArithmeticExpressionImpl
+} //InfixExpressionImpl

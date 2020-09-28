@@ -336,9 +336,9 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
         return createCastExpressionAdapter();
       }
       @Override
-      public Adapter caseUnaryExpression(UnaryExpression object)
+      public Adapter casePrefixExpression(PrefixExpression object)
       {
-        return createUnaryExpressionAdapter();
+        return createPrefixExpressionAdapter();
       }
       @Override
       public Adapter caseUnaryOperator(UnaryOperator object)
@@ -436,14 +436,9 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
         return createConditionalExpressionAdapter();
       }
       @Override
-      public Adapter caseLogicalExpr(LogicalExpr object)
+      public Adapter caseInfixExpression(InfixExpression object)
       {
-        return createLogicalExprAdapter();
-      }
-      @Override
-      public Adapter caseArithmeticExpression(ArithmeticExpression object)
-      {
-        return createArithmeticExpressionAdapter();
+        return createInfixExpressionAdapter();
       }
       @Override
       public Adapter defaultCase(EObject object)
@@ -1248,16 +1243,16 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.UnaryExpression <em>Unary Expression</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.PrefixExpression <em>Prefix Expression</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.UnaryExpression
+   * @see com.minres.coredsl.coreDsl.PrefixExpression
    * @generated
    */
-  public Adapter createUnaryExpressionAdapter()
+  public Adapter createPrefixExpressionAdapter()
   {
     return null;
   }
@@ -1548,31 +1543,16 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.LogicalExpr <em>Logical Expr</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.InfixExpression <em>Infix Expression</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.LogicalExpr
+   * @see com.minres.coredsl.coreDsl.InfixExpression
    * @generated
    */
-  public Adapter createLogicalExprAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.ArithmeticExpression <em>Arithmetic Expression</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.ArithmeticExpression
-   * @generated
-   */
-  public Adapter createArithmeticExpressionAdapter()
+  public Adapter createInfixExpressionAdapter()
   {
     return null;
   }

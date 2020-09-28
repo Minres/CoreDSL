@@ -4,7 +4,6 @@
 package com.minres.coredsl.coreDsl.impl;
 
 import com.minres.coredsl.coreDsl.AbstractDeclarator;
-import com.minres.coredsl.coreDsl.ArithmeticExpression;
 import com.minres.coredsl.coreDsl.AssignmentExpression;
 import com.minres.coredsl.coreDsl.Attribute;
 import com.minres.coredsl.coreDsl.AttributeList;
@@ -46,6 +45,7 @@ import com.minres.coredsl.coreDsl.ForCondition;
 import com.minres.coredsl.coreDsl.FunctionDefinition;
 import com.minres.coredsl.coreDsl.IfStatement;
 import com.minres.coredsl.coreDsl.Import;
+import com.minres.coredsl.coreDsl.InfixExpression;
 import com.minres.coredsl.coreDsl.InitDeclarator;
 import com.minres.coredsl.coreDsl.Initializer;
 import com.minres.coredsl.coreDsl.InitializerList;
@@ -57,7 +57,6 @@ import com.minres.coredsl.coreDsl.IntegerSuffix;
 import com.minres.coredsl.coreDsl.IterationStatement;
 import com.minres.coredsl.coreDsl.JumpStatement;
 import com.minres.coredsl.coreDsl.LabeledStatement;
-import com.minres.coredsl.coreDsl.LogicalExpr;
 import com.minres.coredsl.coreDsl.LongLongSuffix;
 import com.minres.coredsl.coreDsl.LongSuffix;
 import com.minres.coredsl.coreDsl.ParameterDeclaration;
@@ -65,6 +64,7 @@ import com.minres.coredsl.coreDsl.ParameterList;
 import com.minres.coredsl.coreDsl.PodSpecifier;
 import com.minres.coredsl.coreDsl.PostfixExpression;
 import com.minres.coredsl.coreDsl.PostfixOperator;
+import com.minres.coredsl.coreDsl.PrefixExpression;
 import com.minres.coredsl.coreDsl.PrimaryExpression;
 import com.minres.coredsl.coreDsl.RangeSpec;
 import com.minres.coredsl.coreDsl.SelectionStatement;
@@ -81,7 +81,6 @@ import com.minres.coredsl.coreDsl.TypeQualifier;
 import com.minres.coredsl.coreDsl.TypeSpecifier;
 import com.minres.coredsl.coreDsl.TypedefDeclaration;
 import com.minres.coredsl.coreDsl.TypedefRef;
-import com.minres.coredsl.coreDsl.UnaryExpression;
 import com.minres.coredsl.coreDsl.UnaryOperator;
 import com.minres.coredsl.coreDsl.UnsignedSuffix;
 import com.minres.coredsl.coreDsl.VariableRef;
@@ -471,7 +470,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass unaryExpressionEClass = null;
+  private EClass prefixExpressionEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -611,14 +610,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass logicalExprEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass arithmeticExpressionEClass = null;
+  private EClass infixExpressionEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2256,9 +2248,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EClass getUnaryExpression()
+  public EClass getPrefixExpression()
   {
-    return unaryExpressionEClass;
+    return prefixExpressionEClass;
   }
 
   /**
@@ -2696,9 +2688,20 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EAttribute getAssignmentExpression_Op()
+  public EAttribute getAssignmentExpression_Assignment()
   {
     return (EAttribute)assignmentExpressionEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getAssignmentExpression_Rights()
+  {
+    return (EReference)assignmentExpressionEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2729,9 +2732,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EClass getLogicalExpr()
+  public EClass getInfixExpression()
   {
-    return logicalExprEClass;
+    return infixExpressionEClass;
   }
 
   /**
@@ -2740,31 +2743,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EAttribute getLogicalExpr_Op()
+  public EAttribute getInfixExpression_Op()
   {
-    return (EAttribute)logicalExprEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EClass getArithmeticExpression()
-  {
-    return arithmeticExpressionEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getArithmeticExpression_Op()
-  {
-    return (EAttribute)arithmeticExpressionEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)infixExpressionEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -3065,7 +3046,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     castExpressionEClass = createEClass(CAST_EXPRESSION);
     createEReference(castExpressionEClass, CAST_EXPRESSION__TYPE);
 
-    unaryExpressionEClass = createEClass(UNARY_EXPRESSION);
+    prefixExpressionEClass = createEClass(PREFIX_EXPRESSION);
 
     unaryOperatorEClass = createEClass(UNARY_OPERATOR);
     createEAttribute(unaryOperatorEClass, UNARY_OPERATOR__OP);
@@ -3123,16 +3104,14 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     createEAttribute(characterConstantEClass, CHARACTER_CONSTANT__ENC);
 
     assignmentExpressionEClass = createEClass(ASSIGNMENT_EXPRESSION);
-    createEAttribute(assignmentExpressionEClass, ASSIGNMENT_EXPRESSION__OP);
+    createEAttribute(assignmentExpressionEClass, ASSIGNMENT_EXPRESSION__ASSIGNMENT);
+    createEReference(assignmentExpressionEClass, ASSIGNMENT_EXPRESSION__RIGHTS);
 
     conditionalExpressionEClass = createEClass(CONDITIONAL_EXPRESSION);
     createEReference(conditionalExpressionEClass, CONDITIONAL_EXPRESSION__COND);
 
-    logicalExprEClass = createEClass(LOGICAL_EXPR);
-    createEAttribute(logicalExprEClass, LOGICAL_EXPR__OP);
-
-    arithmeticExpressionEClass = createEClass(ARITHMETIC_EXPRESSION);
-    createEAttribute(arithmeticExpressionEClass, ARITHMETIC_EXPRESSION__OP);
+    infixExpressionEClass = createEClass(INFIX_EXPRESSION);
+    createEAttribute(infixExpressionEClass, INFIX_EXPRESSION__OP);
 
     // Create enums
     dataTypesEEnum = createEEnum(DATA_TYPES);
@@ -3208,10 +3187,10 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     directAbstractDeclaratorEClass.getESuperTypes().add(this.getAbstractDeclarator());
     directAbstractDeclaratorEClass.getESuperTypes().add(this.getParameterList());
     castExpressionEClass.getESuperTypes().add(this.getExpression());
-    unaryExpressionEClass.getESuperTypes().add(this.getExpression());
-    unaryExpressionEClass.getESuperTypes().add(this.getCastExpression());
-    unaryExpressionEClass.getESuperTypes().add(this.getUnaryOperator());
-    postfixExpressionEClass.getESuperTypes().add(this.getUnaryExpression());
+    prefixExpressionEClass.getESuperTypes().add(this.getExpression());
+    prefixExpressionEClass.getESuperTypes().add(this.getCastExpression());
+    prefixExpressionEClass.getESuperTypes().add(this.getUnaryOperator());
+    postfixExpressionEClass.getESuperTypes().add(this.getPrefixExpression());
     primaryExpressionEClass.getESuperTypes().add(this.getPostfixExpression());
     stringLiteralEClass.getESuperTypes().add(this.getEncodingPrefix());
     integerConstantEClass.getESuperTypes().add(this.getConstant());
@@ -3228,8 +3207,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     characterConstantEClass.getESuperTypes().add(this.getConstant());
     assignmentExpressionEClass.getESuperTypes().add(this.getExpression());
     conditionalExpressionEClass.getESuperTypes().add(this.getExpression());
-    logicalExprEClass.getESuperTypes().add(this.getExpression());
-    arithmeticExpressionEClass.getESuperTypes().add(this.getExpression());
+    infixExpressionEClass.getESuperTypes().add(this.getExpression());
 
     // Initialize classes and features; add operations and parameters
     initEClass(descriptionContentEClass, DescriptionContent.class, "DescriptionContent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3422,7 +3400,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     initEClass(castExpressionEClass, CastExpression.class, "CastExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getCastExpression_Type(), this.getDataTypeSpecifier(), null, "type", null, 0, 1, CastExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(unaryExpressionEClass, UnaryExpression.class, "UnaryExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEClass(prefixExpressionEClass, PrefixExpression.class, "PrefixExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(unaryOperatorEClass, UnaryOperator.class, "UnaryOperator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getUnaryOperator_Op(), ecorePackage.getEString(), "op", null, 0, 1, UnaryOperator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3480,16 +3458,14 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     initEAttribute(getCharacterConstant_Enc(), ecorePackage.getEString(), "enc", null, 0, 1, CharacterConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(assignmentExpressionEClass, AssignmentExpression.class, "AssignmentExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getAssignmentExpression_Op(), ecorePackage.getEString(), "op", null, 0, 1, AssignmentExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAssignmentExpression_Assignment(), ecorePackage.getEString(), "assignment", null, 0, -1, AssignmentExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getAssignmentExpression_Rights(), this.getExpression(), null, "rights", null, 0, -1, AssignmentExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(conditionalExpressionEClass, ConditionalExpression.class, "ConditionalExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getConditionalExpression_Cond(), this.getExpression(), null, "cond", null, 0, 1, ConditionalExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(logicalExprEClass, LogicalExpr.class, "LogicalExpr", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getLogicalExpr_Op(), ecorePackage.getEString(), "op", null, 0, 1, LogicalExpr.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(arithmeticExpressionEClass, ArithmeticExpression.class, "ArithmeticExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getArithmeticExpression_Op(), ecorePackage.getEString(), "op", null, 0, 1, ArithmeticExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(infixExpressionEClass, InfixExpression.class, "InfixExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getInfixExpression_Op(), ecorePackage.getEString(), "op", null, 0, 1, InfixExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(dataTypesEEnum, DataTypes.class, "DataTypes");

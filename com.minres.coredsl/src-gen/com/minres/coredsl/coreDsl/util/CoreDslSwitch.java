@@ -488,13 +488,13 @@ public class CoreDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case CoreDslPackage.UNARY_EXPRESSION:
+      case CoreDslPackage.PREFIX_EXPRESSION:
       {
-        UnaryExpression unaryExpression = (UnaryExpression)theEObject;
-        T result = caseUnaryExpression(unaryExpression);
-        if (result == null) result = caseCastExpression(unaryExpression);
-        if (result == null) result = caseUnaryOperator(unaryExpression);
-        if (result == null) result = caseExpression(unaryExpression);
+        PrefixExpression prefixExpression = (PrefixExpression)theEObject;
+        T result = casePrefixExpression(prefixExpression);
+        if (result == null) result = caseCastExpression(prefixExpression);
+        if (result == null) result = caseUnaryOperator(prefixExpression);
+        if (result == null) result = caseExpression(prefixExpression);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -509,7 +509,7 @@ public class CoreDslSwitch<T> extends Switch<T>
       {
         PostfixExpression postfixExpression = (PostfixExpression)theEObject;
         T result = casePostfixExpression(postfixExpression);
-        if (result == null) result = caseUnaryExpression(postfixExpression);
+        if (result == null) result = casePrefixExpression(postfixExpression);
         if (result == null) result = caseCastExpression(postfixExpression);
         if (result == null) result = caseUnaryOperator(postfixExpression);
         if (result == null) result = caseExpression(postfixExpression);
@@ -528,7 +528,7 @@ public class CoreDslSwitch<T> extends Switch<T>
         PrimaryExpression primaryExpression = (PrimaryExpression)theEObject;
         T result = casePrimaryExpression(primaryExpression);
         if (result == null) result = casePostfixExpression(primaryExpression);
-        if (result == null) result = caseUnaryExpression(primaryExpression);
+        if (result == null) result = casePrefixExpression(primaryExpression);
         if (result == null) result = caseCastExpression(primaryExpression);
         if (result == null) result = caseUnaryOperator(primaryExpression);
         if (result == null) result = caseExpression(primaryExpression);
@@ -655,19 +655,11 @@ public class CoreDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case CoreDslPackage.LOGICAL_EXPR:
+      case CoreDslPackage.INFIX_EXPRESSION:
       {
-        LogicalExpr logicalExpr = (LogicalExpr)theEObject;
-        T result = caseLogicalExpr(logicalExpr);
-        if (result == null) result = caseExpression(logicalExpr);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case CoreDslPackage.ARITHMETIC_EXPRESSION:
-      {
-        ArithmeticExpression arithmeticExpression = (ArithmeticExpression)theEObject;
-        T result = caseArithmeticExpression(arithmeticExpression);
-        if (result == null) result = caseExpression(arithmeticExpression);
+        InfixExpression infixExpression = (InfixExpression)theEObject;
+        T result = caseInfixExpression(infixExpression);
+        if (result == null) result = caseExpression(infixExpression);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1508,17 +1500,17 @@ public class CoreDslSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Unary Expression</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Prefix Expression</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Unary Expression</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Prefix Expression</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseUnaryExpression(UnaryExpression object)
+  public T casePrefixExpression(PrefixExpression object)
   {
     return null;
   }
@@ -1828,33 +1820,17 @@ public class CoreDslSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Logical Expr</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Infix Expression</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Logical Expr</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Infix Expression</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseLogicalExpr(LogicalExpr object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Arithmetic Expression</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Arithmetic Expression</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseArithmeticExpression(ArithmeticExpression object)
+  public T caseInfixExpression(InfixExpression object)
   {
     return null;
   }

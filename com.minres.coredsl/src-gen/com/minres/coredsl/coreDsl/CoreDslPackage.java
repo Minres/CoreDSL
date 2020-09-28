@@ -2173,14 +2173,14 @@ public interface CoreDslPackage extends EPackage
   int CAST_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
 
   /**
-   * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.UnaryExpressionImpl <em>Unary Expression</em>}' class.
+   * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.PrefixExpressionImpl <em>Prefix Expression</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see com.minres.coredsl.coreDsl.impl.UnaryExpressionImpl
-   * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getUnaryExpression()
+   * @see com.minres.coredsl.coreDsl.impl.PrefixExpressionImpl
+   * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getPrefixExpression()
    * @generated
    */
-  int UNARY_EXPRESSION = 52;
+  int PREFIX_EXPRESSION = 52;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -2189,7 +2189,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int UNARY_EXPRESSION__LEFT = EXPRESSION__LEFT;
+  int PREFIX_EXPRESSION__LEFT = EXPRESSION__LEFT;
 
   /**
    * The feature id for the '<em><b>Right</b></em>' containment reference.
@@ -2198,7 +2198,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int UNARY_EXPRESSION__RIGHT = EXPRESSION__RIGHT;
+  int PREFIX_EXPRESSION__RIGHT = EXPRESSION__RIGHT;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -2207,7 +2207,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int UNARY_EXPRESSION__TYPE = EXPRESSION_FEATURE_COUNT + 0;
+  int PREFIX_EXPRESSION__TYPE = EXPRESSION_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Op</b></em>' attribute.
@@ -2216,16 +2216,16 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int UNARY_EXPRESSION__OP = EXPRESSION_FEATURE_COUNT + 1;
+  int PREFIX_EXPRESSION__OP = EXPRESSION_FEATURE_COUNT + 1;
 
   /**
-   * The number of structural features of the '<em>Unary Expression</em>' class.
+   * The number of structural features of the '<em>Prefix Expression</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int UNARY_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
+  int PREFIX_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.UnaryOperatorImpl <em>Unary Operator</em>}' class.
@@ -2272,7 +2272,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int POSTFIX_EXPRESSION__LEFT = UNARY_EXPRESSION__LEFT;
+  int POSTFIX_EXPRESSION__LEFT = PREFIX_EXPRESSION__LEFT;
 
   /**
    * The feature id for the '<em><b>Right</b></em>' containment reference.
@@ -2281,7 +2281,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int POSTFIX_EXPRESSION__RIGHT = UNARY_EXPRESSION__RIGHT;
+  int POSTFIX_EXPRESSION__RIGHT = PREFIX_EXPRESSION__RIGHT;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -2290,7 +2290,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int POSTFIX_EXPRESSION__TYPE = UNARY_EXPRESSION__TYPE;
+  int POSTFIX_EXPRESSION__TYPE = PREFIX_EXPRESSION__TYPE;
 
   /**
    * The feature id for the '<em><b>Op</b></em>' attribute.
@@ -2299,7 +2299,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int POSTFIX_EXPRESSION__OP = UNARY_EXPRESSION__OP;
+  int POSTFIX_EXPRESSION__OP = PREFIX_EXPRESSION__OP;
 
   /**
    * The feature id for the '<em><b>Ops</b></em>' containment reference list.
@@ -2308,7 +2308,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int POSTFIX_EXPRESSION__OPS = UNARY_EXPRESSION_FEATURE_COUNT + 0;
+  int POSTFIX_EXPRESSION__OPS = PREFIX_EXPRESSION_FEATURE_COUNT + 0;
 
   /**
    * The number of structural features of the '<em>Postfix Expression</em>' class.
@@ -2317,7 +2317,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int POSTFIX_EXPRESSION_FEATURE_COUNT = UNARY_EXPRESSION_FEATURE_COUNT + 1;
+  int POSTFIX_EXPRESSION_FEATURE_COUNT = PREFIX_EXPRESSION_FEATURE_COUNT + 1;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.PostfixOperatorImpl <em>Postfix Operator</em>}' class.
@@ -2902,13 +2902,22 @@ public interface CoreDslPackage extends EPackage
   int ASSIGNMENT_EXPRESSION__RIGHT = EXPRESSION__RIGHT;
 
   /**
-   * The feature id for the '<em><b>Op</b></em>' attribute.
+   * The feature id for the '<em><b>Assignment</b></em>' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ASSIGNMENT_EXPRESSION__OP = EXPRESSION_FEATURE_COUNT + 0;
+  int ASSIGNMENT_EXPRESSION__ASSIGNMENT = EXPRESSION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Rights</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ASSIGNMENT_EXPRESSION__RIGHTS = EXPRESSION_FEATURE_COUNT + 1;
 
   /**
    * The number of structural features of the '<em>Assignment Expression</em>' class.
@@ -2917,7 +2926,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ASSIGNMENT_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+  int ASSIGNMENT_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.ConditionalExpressionImpl <em>Conditional Expression</em>}' class.
@@ -2966,14 +2975,14 @@ public interface CoreDslPackage extends EPackage
   int CONDITIONAL_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
 
   /**
-   * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.LogicalExprImpl <em>Logical Expr</em>}' class.
+   * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.InfixExpressionImpl <em>Infix Expression</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see com.minres.coredsl.coreDsl.impl.LogicalExprImpl
-   * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getLogicalExpr()
+   * @see com.minres.coredsl.coreDsl.impl.InfixExpressionImpl
+   * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getInfixExpression()
    * @generated
    */
-  int LOGICAL_EXPR = 72;
+  int INFIX_EXPRESSION = 72;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -2982,7 +2991,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int LOGICAL_EXPR__LEFT = EXPRESSION__LEFT;
+  int INFIX_EXPRESSION__LEFT = EXPRESSION__LEFT;
 
   /**
    * The feature id for the '<em><b>Right</b></em>' containment reference.
@@ -2991,7 +3000,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int LOGICAL_EXPR__RIGHT = EXPRESSION__RIGHT;
+  int INFIX_EXPRESSION__RIGHT = EXPRESSION__RIGHT;
 
   /**
    * The feature id for the '<em><b>Op</b></em>' attribute.
@@ -3000,62 +3009,16 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int LOGICAL_EXPR__OP = EXPRESSION_FEATURE_COUNT + 0;
+  int INFIX_EXPRESSION__OP = EXPRESSION_FEATURE_COUNT + 0;
 
   /**
-   * The number of structural features of the '<em>Logical Expr</em>' class.
+   * The number of structural features of the '<em>Infix Expression</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int LOGICAL_EXPR_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
-
-  /**
-   * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.ArithmeticExpressionImpl <em>Arithmetic Expression</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see com.minres.coredsl.coreDsl.impl.ArithmeticExpressionImpl
-   * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getArithmeticExpression()
-   * @generated
-   */
-  int ARITHMETIC_EXPRESSION = 73;
-
-  /**
-   * The feature id for the '<em><b>Left</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ARITHMETIC_EXPRESSION__LEFT = EXPRESSION__LEFT;
-
-  /**
-   * The feature id for the '<em><b>Right</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ARITHMETIC_EXPRESSION__RIGHT = EXPRESSION__RIGHT;
-
-  /**
-   * The feature id for the '<em><b>Op</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ARITHMETIC_EXPRESSION__OP = EXPRESSION_FEATURE_COUNT + 0;
-
-  /**
-   * The number of structural features of the '<em>Arithmetic Expression</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ARITHMETIC_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+  int INFIX_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.DataTypes <em>Data Types</em>}' enum.
@@ -3065,7 +3028,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getDataTypes()
    * @generated
    */
-  int DATA_TYPES = 74;
+  int DATA_TYPES = 73;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.TypeQualifier <em>Type Qualifier</em>}' enum.
@@ -3075,7 +3038,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getTypeQualifier()
    * @generated
    */
-  int TYPE_QUALIFIER = 75;
+  int TYPE_QUALIFIER = 74;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.StorageClassSpecifier <em>Storage Class Specifier</em>}' enum.
@@ -3085,7 +3048,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getStorageClassSpecifier()
    * @generated
    */
-  int STORAGE_CLASS_SPECIFIER = 76;
+  int STORAGE_CLASS_SPECIFIER = 75;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.Attribute <em>Attribute</em>}' enum.
@@ -3095,7 +3058,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getAttribute()
    * @generated
    */
-  int ATTRIBUTE = 77;
+  int ATTRIBUTE = 76;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.InstrAttribute <em>Instr Attribute</em>}' enum.
@@ -3105,7 +3068,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getInstrAttribute()
    * @generated
    */
-  int INSTR_ATTRIBUTE = 78;
+  int INSTR_ATTRIBUTE = 77;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.StructOrUnion <em>Struct Or Union</em>}' enum.
@@ -3115,7 +3078,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getStructOrUnion()
    * @generated
    */
-  int STRUCT_OR_UNION = 79;
+  int STRUCT_OR_UNION = 78;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.BitfieldDataType <em>Bitfield Data Type</em>}' enum.
@@ -3125,7 +3088,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getBitfieldDataType()
    * @generated
    */
-  int BITFIELD_DATA_TYPE = 80;
+  int BITFIELD_DATA_TYPE = 79;
 
 
   /**
@@ -4595,14 +4558,14 @@ public interface CoreDslPackage extends EPackage
   EReference getCastExpression_Type();
 
   /**
-   * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.UnaryExpression <em>Unary Expression</em>}'.
+   * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.PrefixExpression <em>Prefix Expression</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Unary Expression</em>'.
-   * @see com.minres.coredsl.coreDsl.UnaryExpression
+   * @return the meta object for class '<em>Prefix Expression</em>'.
+   * @see com.minres.coredsl.coreDsl.PrefixExpression
    * @generated
    */
-  EClass getUnaryExpression();
+  EClass getPrefixExpression();
 
   /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.UnaryOperator <em>Unary Operator</em>}'.
@@ -5016,15 +4979,26 @@ public interface CoreDslPackage extends EPackage
   EClass getAssignmentExpression();
 
   /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.AssignmentExpression#getOp <em>Op</em>}'.
+   * Returns the meta object for the attribute list '{@link com.minres.coredsl.coreDsl.AssignmentExpression#getAssignment <em>Assignment</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Op</em>'.
-   * @see com.minres.coredsl.coreDsl.AssignmentExpression#getOp()
+   * @return the meta object for the attribute list '<em>Assignment</em>'.
+   * @see com.minres.coredsl.coreDsl.AssignmentExpression#getAssignment()
    * @see #getAssignmentExpression()
    * @generated
    */
-  EAttribute getAssignmentExpression_Op();
+  EAttribute getAssignmentExpression_Assignment();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link com.minres.coredsl.coreDsl.AssignmentExpression#getRights <em>Rights</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Rights</em>'.
+   * @see com.minres.coredsl.coreDsl.AssignmentExpression#getRights()
+   * @see #getAssignmentExpression()
+   * @generated
+   */
+  EReference getAssignmentExpression_Rights();
 
   /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.ConditionalExpression <em>Conditional Expression</em>}'.
@@ -5048,46 +5022,25 @@ public interface CoreDslPackage extends EPackage
   EReference getConditionalExpression_Cond();
 
   /**
-   * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.LogicalExpr <em>Logical Expr</em>}'.
+   * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.InfixExpression <em>Infix Expression</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Logical Expr</em>'.
-   * @see com.minres.coredsl.coreDsl.LogicalExpr
+   * @return the meta object for class '<em>Infix Expression</em>'.
+   * @see com.minres.coredsl.coreDsl.InfixExpression
    * @generated
    */
-  EClass getLogicalExpr();
+  EClass getInfixExpression();
 
   /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.LogicalExpr#getOp <em>Op</em>}'.
+   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.InfixExpression#getOp <em>Op</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Op</em>'.
-   * @see com.minres.coredsl.coreDsl.LogicalExpr#getOp()
-   * @see #getLogicalExpr()
+   * @see com.minres.coredsl.coreDsl.InfixExpression#getOp()
+   * @see #getInfixExpression()
    * @generated
    */
-  EAttribute getLogicalExpr_Op();
-
-  /**
-   * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.ArithmeticExpression <em>Arithmetic Expression</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Arithmetic Expression</em>'.
-   * @see com.minres.coredsl.coreDsl.ArithmeticExpression
-   * @generated
-   */
-  EClass getArithmeticExpression();
-
-  /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.ArithmeticExpression#getOp <em>Op</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Op</em>'.
-   * @see com.minres.coredsl.coreDsl.ArithmeticExpression#getOp()
-   * @see #getArithmeticExpression()
-   * @generated
-   */
-  EAttribute getArithmeticExpression_Op();
+  EAttribute getInfixExpression_Op();
 
   /**
    * Returns the meta object for enum '{@link com.minres.coredsl.coreDsl.DataTypes <em>Data Types</em>}'.
@@ -6391,14 +6344,14 @@ public interface CoreDslPackage extends EPackage
     EReference CAST_EXPRESSION__TYPE = eINSTANCE.getCastExpression_Type();
 
     /**
-     * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.UnaryExpressionImpl <em>Unary Expression</em>}' class.
+     * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.PrefixExpressionImpl <em>Prefix Expression</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see com.minres.coredsl.coreDsl.impl.UnaryExpressionImpl
-     * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getUnaryExpression()
+     * @see com.minres.coredsl.coreDsl.impl.PrefixExpressionImpl
+     * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getPrefixExpression()
      * @generated
      */
-    EClass UNARY_EXPRESSION = eINSTANCE.getUnaryExpression();
+    EClass PREFIX_EXPRESSION = eINSTANCE.getPrefixExpression();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.UnaryOperatorImpl <em>Unary Operator</em>}' class.
@@ -6749,12 +6702,20 @@ public interface CoreDslPackage extends EPackage
     EClass ASSIGNMENT_EXPRESSION = eINSTANCE.getAssignmentExpression();
 
     /**
-     * The meta object literal for the '<em><b>Op</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Assignment</b></em>' attribute list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute ASSIGNMENT_EXPRESSION__OP = eINSTANCE.getAssignmentExpression_Op();
+    EAttribute ASSIGNMENT_EXPRESSION__ASSIGNMENT = eINSTANCE.getAssignmentExpression_Assignment();
+
+    /**
+     * The meta object literal for the '<em><b>Rights</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ASSIGNMENT_EXPRESSION__RIGHTS = eINSTANCE.getAssignmentExpression_Rights();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.ConditionalExpressionImpl <em>Conditional Expression</em>}' class.
@@ -6775,14 +6736,14 @@ public interface CoreDslPackage extends EPackage
     EReference CONDITIONAL_EXPRESSION__COND = eINSTANCE.getConditionalExpression_Cond();
 
     /**
-     * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.LogicalExprImpl <em>Logical Expr</em>}' class.
+     * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.InfixExpressionImpl <em>Infix Expression</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see com.minres.coredsl.coreDsl.impl.LogicalExprImpl
-     * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getLogicalExpr()
+     * @see com.minres.coredsl.coreDsl.impl.InfixExpressionImpl
+     * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getInfixExpression()
      * @generated
      */
-    EClass LOGICAL_EXPR = eINSTANCE.getLogicalExpr();
+    EClass INFIX_EXPRESSION = eINSTANCE.getInfixExpression();
 
     /**
      * The meta object literal for the '<em><b>Op</b></em>' attribute feature.
@@ -6790,25 +6751,7 @@ public interface CoreDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute LOGICAL_EXPR__OP = eINSTANCE.getLogicalExpr_Op();
-
-    /**
-     * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.ArithmeticExpressionImpl <em>Arithmetic Expression</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see com.minres.coredsl.coreDsl.impl.ArithmeticExpressionImpl
-     * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getArithmeticExpression()
-     * @generated
-     */
-    EClass ARITHMETIC_EXPRESSION = eINSTANCE.getArithmeticExpression();
-
-    /**
-     * The meta object literal for the '<em><b>Op</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ARITHMETIC_EXPRESSION__OP = eINSTANCE.getArithmeticExpression_Op();
+    EAttribute INFIX_EXPRESSION__OP = eINSTANCE.getInfixExpression_Op();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.DataTypes <em>Data Types</em>}' enum.

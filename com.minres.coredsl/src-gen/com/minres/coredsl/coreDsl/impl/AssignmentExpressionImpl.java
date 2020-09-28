@@ -5,12 +5,20 @@ package com.minres.coredsl.coreDsl.impl;
 
 import com.minres.coredsl.coreDsl.AssignmentExpression;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
+import com.minres.coredsl.coreDsl.Expression;
 
-import org.eclipse.emf.common.notify.Notification;
+import java.util.Collection;
+
+import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EDataTypeEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -20,7 +28,8 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.AssignmentExpressionImpl#getOp <em>Op</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.AssignmentExpressionImpl#getAssignment <em>Assignment</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.AssignmentExpressionImpl#getRights <em>Rights</em>}</li>
  * </ul>
  *
  * @generated
@@ -28,24 +37,24 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 public class AssignmentExpressionImpl extends ExpressionImpl implements AssignmentExpression
 {
   /**
-   * The default value of the '{@link #getOp() <em>Op</em>}' attribute.
+   * The cached value of the '{@link #getAssignment() <em>Assignment</em>}' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getOp()
+   * @see #getAssignment()
    * @generated
    * @ordered
    */
-  protected static final String OP_EDEFAULT = null;
+  protected EList<String> assignment;
 
   /**
-   * The cached value of the '{@link #getOp() <em>Op</em>}' attribute.
+   * The cached value of the '{@link #getRights() <em>Rights</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getOp()
+   * @see #getRights()
    * @generated
    * @ordered
    */
-  protected String op = OP_EDEFAULT;
+  protected EList<Expression> rights;
 
   /**
    * <!-- begin-user-doc -->
@@ -74,9 +83,13 @@ public class AssignmentExpressionImpl extends ExpressionImpl implements Assignme
    * @generated
    */
   @Override
-  public String getOp()
+  public EList<String> getAssignment()
   {
-    return op;
+    if (assignment == null)
+    {
+      assignment = new EDataTypeEList<String>(String.class, this, CoreDslPackage.ASSIGNMENT_EXPRESSION__ASSIGNMENT);
+    }
+    return assignment;
   }
 
   /**
@@ -85,12 +98,29 @@ public class AssignmentExpressionImpl extends ExpressionImpl implements Assignme
    * @generated
    */
   @Override
-  public void setOp(String newOp)
+  public EList<Expression> getRights()
   {
-    String oldOp = op;
-    op = newOp;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.ASSIGNMENT_EXPRESSION__OP, oldOp, op));
+    if (rights == null)
+    {
+      rights = new EObjectContainmentEList<Expression>(Expression.class, this, CoreDslPackage.ASSIGNMENT_EXPRESSION__RIGHTS);
+    }
+    return rights;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case CoreDslPackage.ASSIGNMENT_EXPRESSION__RIGHTS:
+        return ((InternalEList<?>)getRights()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
   }
 
   /**
@@ -103,8 +133,10 @@ public class AssignmentExpressionImpl extends ExpressionImpl implements Assignme
   {
     switch (featureID)
     {
-      case CoreDslPackage.ASSIGNMENT_EXPRESSION__OP:
-        return getOp();
+      case CoreDslPackage.ASSIGNMENT_EXPRESSION__ASSIGNMENT:
+        return getAssignment();
+      case CoreDslPackage.ASSIGNMENT_EXPRESSION__RIGHTS:
+        return getRights();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -114,13 +146,19 @@ public class AssignmentExpressionImpl extends ExpressionImpl implements Assignme
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case CoreDslPackage.ASSIGNMENT_EXPRESSION__OP:
-        setOp((String)newValue);
+      case CoreDslPackage.ASSIGNMENT_EXPRESSION__ASSIGNMENT:
+        getAssignment().clear();
+        getAssignment().addAll((Collection<? extends String>)newValue);
+        return;
+      case CoreDslPackage.ASSIGNMENT_EXPRESSION__RIGHTS:
+        getRights().clear();
+        getRights().addAll((Collection<? extends Expression>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -136,8 +174,11 @@ public class AssignmentExpressionImpl extends ExpressionImpl implements Assignme
   {
     switch (featureID)
     {
-      case CoreDslPackage.ASSIGNMENT_EXPRESSION__OP:
-        setOp(OP_EDEFAULT);
+      case CoreDslPackage.ASSIGNMENT_EXPRESSION__ASSIGNMENT:
+        getAssignment().clear();
+        return;
+      case CoreDslPackage.ASSIGNMENT_EXPRESSION__RIGHTS:
+        getRights().clear();
         return;
     }
     super.eUnset(featureID);
@@ -153,8 +194,10 @@ public class AssignmentExpressionImpl extends ExpressionImpl implements Assignme
   {
     switch (featureID)
     {
-      case CoreDslPackage.ASSIGNMENT_EXPRESSION__OP:
-        return OP_EDEFAULT == null ? op != null : !OP_EDEFAULT.equals(op);
+      case CoreDslPackage.ASSIGNMENT_EXPRESSION__ASSIGNMENT:
+        return assignment != null && !assignment.isEmpty();
+      case CoreDslPackage.ASSIGNMENT_EXPRESSION__RIGHTS:
+        return rights != null && !rights.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -170,8 +213,8 @@ public class AssignmentExpressionImpl extends ExpressionImpl implements Assignme
     if (eIsProxy()) return super.toString();
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (op: ");
-    result.append(op);
+    result.append(" (assignment: ");
+    result.append(assignment);
     result.append(')');
     return result.toString();
   }

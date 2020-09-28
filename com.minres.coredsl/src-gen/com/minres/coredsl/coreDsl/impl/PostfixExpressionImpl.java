@@ -32,7 +32,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class PostfixExpressionImpl extends UnaryExpressionImpl implements PostfixExpression
+public class PostfixExpressionImpl extends PrefixExpressionImpl implements PostfixExpression
 {
   /**
    * The cached value of the '{@link #getOps() <em>Ops</em>}' containment reference list.

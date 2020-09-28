@@ -6,7 +6,7 @@ package com.minres.coredsl.coreDsl.impl;
 import com.minres.coredsl.coreDsl.CastExpression;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.DataTypeSpecifier;
-import com.minres.coredsl.coreDsl.UnaryExpression;
+import com.minres.coredsl.coreDsl.PrefixExpression;
 import com.minres.coredsl.coreDsl.UnaryOperator;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -19,19 +19,19 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Unary Expression</b></em>'.
+ * An implementation of the model object '<em><b>Prefix Expression</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.UnaryExpressionImpl#getType <em>Type</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.UnaryExpressionImpl#getOp <em>Op</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.PrefixExpressionImpl#getType <em>Type</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.PrefixExpressionImpl#getOp <em>Op</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpression
+public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpression
 {
   /**
    * The cached value of the '{@link #getType() <em>Type</em>}' containment reference.
@@ -68,7 +68,7 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
    * <!-- end-user-doc -->
    * @generated
    */
-  protected UnaryExpressionImpl()
+  protected PrefixExpressionImpl()
   {
     super();
   }
@@ -81,7 +81,7 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
   @Override
   protected EClass eStaticClass()
   {
-    return CoreDslPackage.Literals.UNARY_EXPRESSION;
+    return CoreDslPackage.Literals.PREFIX_EXPRESSION;
   }
 
   /**
@@ -106,7 +106,7 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
     type = newType;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CoreDslPackage.UNARY_EXPRESSION__TYPE, oldType, newType);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CoreDslPackage.PREFIX_EXPRESSION__TYPE, oldType, newType);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -124,14 +124,14 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
     {
       NotificationChain msgs = null;
       if (type != null)
-        msgs = ((InternalEObject)type).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.UNARY_EXPRESSION__TYPE, null, msgs);
+        msgs = ((InternalEObject)type).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.PREFIX_EXPRESSION__TYPE, null, msgs);
       if (newType != null)
-        msgs = ((InternalEObject)newType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.UNARY_EXPRESSION__TYPE, null, msgs);
+        msgs = ((InternalEObject)newType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.PREFIX_EXPRESSION__TYPE, null, msgs);
       msgs = basicSetType(newType, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.UNARY_EXPRESSION__TYPE, newType, newType));
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.PREFIX_EXPRESSION__TYPE, newType, newType));
   }
 
   /**
@@ -156,7 +156,7 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
     String oldOp = op;
     op = newOp;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.UNARY_EXPRESSION__OP, oldOp, op));
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.PREFIX_EXPRESSION__OP, oldOp, op));
   }
 
   /**
@@ -169,7 +169,7 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
   {
     switch (featureID)
     {
-      case CoreDslPackage.UNARY_EXPRESSION__TYPE:
+      case CoreDslPackage.PREFIX_EXPRESSION__TYPE:
         return basicSetType(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -185,9 +185,9 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
   {
     switch (featureID)
     {
-      case CoreDslPackage.UNARY_EXPRESSION__TYPE:
+      case CoreDslPackage.PREFIX_EXPRESSION__TYPE:
         return getType();
-      case CoreDslPackage.UNARY_EXPRESSION__OP:
+      case CoreDslPackage.PREFIX_EXPRESSION__OP:
         return getOp();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -203,10 +203,10 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
   {
     switch (featureID)
     {
-      case CoreDslPackage.UNARY_EXPRESSION__TYPE:
+      case CoreDslPackage.PREFIX_EXPRESSION__TYPE:
         setType((DataTypeSpecifier)newValue);
         return;
-      case CoreDslPackage.UNARY_EXPRESSION__OP:
+      case CoreDslPackage.PREFIX_EXPRESSION__OP:
         setOp((String)newValue);
         return;
     }
@@ -223,10 +223,10 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
   {
     switch (featureID)
     {
-      case CoreDslPackage.UNARY_EXPRESSION__TYPE:
+      case CoreDslPackage.PREFIX_EXPRESSION__TYPE:
         setType((DataTypeSpecifier)null);
         return;
-      case CoreDslPackage.UNARY_EXPRESSION__OP:
+      case CoreDslPackage.PREFIX_EXPRESSION__OP:
         setOp(OP_EDEFAULT);
         return;
     }
@@ -243,9 +243,9 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
   {
     switch (featureID)
     {
-      case CoreDslPackage.UNARY_EXPRESSION__TYPE:
+      case CoreDslPackage.PREFIX_EXPRESSION__TYPE:
         return type != null;
-      case CoreDslPackage.UNARY_EXPRESSION__OP:
+      case CoreDslPackage.PREFIX_EXPRESSION__OP:
         return OP_EDEFAULT == null ? op != null : !OP_EDEFAULT.equals(op);
     }
     return super.eIsSet(featureID);
@@ -263,7 +263,7 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
     {
       switch (derivedFeatureID)
       {
-        case CoreDslPackage.UNARY_EXPRESSION__TYPE: return CoreDslPackage.CAST_EXPRESSION__TYPE;
+        case CoreDslPackage.PREFIX_EXPRESSION__TYPE: return CoreDslPackage.CAST_EXPRESSION__TYPE;
         default: return -1;
       }
     }
@@ -271,7 +271,7 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
     {
       switch (derivedFeatureID)
       {
-        case CoreDslPackage.UNARY_EXPRESSION__OP: return CoreDslPackage.UNARY_OPERATOR__OP;
+        case CoreDslPackage.PREFIX_EXPRESSION__OP: return CoreDslPackage.UNARY_OPERATOR__OP;
         default: return -1;
       }
     }
@@ -290,7 +290,7 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
     {
       switch (baseFeatureID)
       {
-        case CoreDslPackage.CAST_EXPRESSION__TYPE: return CoreDslPackage.UNARY_EXPRESSION__TYPE;
+        case CoreDslPackage.CAST_EXPRESSION__TYPE: return CoreDslPackage.PREFIX_EXPRESSION__TYPE;
         default: return -1;
       }
     }
@@ -298,7 +298,7 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
     {
       switch (baseFeatureID)
       {
-        case CoreDslPackage.UNARY_OPERATOR__OP: return CoreDslPackage.UNARY_EXPRESSION__OP;
+        case CoreDslPackage.UNARY_OPERATOR__OP: return CoreDslPackage.PREFIX_EXPRESSION__OP;
         default: return -1;
       }
     }
@@ -322,4 +322,4 @@ public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpressi
     return result.toString();
   }
 
-} //UnaryExpressionImpl
+} //PrefixExpressionImpl

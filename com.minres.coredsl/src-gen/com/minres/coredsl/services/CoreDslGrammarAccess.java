@@ -696,36 +696,36 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cLeftSquareBracketKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cLeftAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cLeftNATURALTerminalRuleCall_1_0 = (RuleCall)cLeftAssignment_1.eContents().get(0);
+		private final RuleCall cLeftINTEGERTerminalRuleCall_1_0 = (RuleCall)cLeftAssignment_1.eContents().get(0);
 		private final Keyword cColonKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		private final Assignment cRightAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cRightNATURALTerminalRuleCall_3_0 = (RuleCall)cRightAssignment_3.eContents().get(0);
+		private final RuleCall cRightINTEGERTerminalRuleCall_3_0 = (RuleCall)cRightAssignment_3.eContents().get(0);
 		private final Keyword cRightSquareBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		
 		//RangeSpec:
-		//	'[' left=NATURAL ':' right=NATURAL ']';
+		//	'[' left=INTEGER ':' right=INTEGER ']';
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'[' left=NATURAL ':' right=NATURAL ']'
+		//'[' left=INTEGER ':' right=INTEGER ']'
 		public Group getGroup() { return cGroup; }
 		
 		//'['
 		public Keyword getLeftSquareBracketKeyword_0() { return cLeftSquareBracketKeyword_0; }
 		
-		//left=NATURAL
+		//left=INTEGER
 		public Assignment getLeftAssignment_1() { return cLeftAssignment_1; }
 		
-		//NATURAL
-		public RuleCall getLeftNATURALTerminalRuleCall_1_0() { return cLeftNATURALTerminalRuleCall_1_0; }
+		//INTEGER
+		public RuleCall getLeftINTEGERTerminalRuleCall_1_0() { return cLeftINTEGERTerminalRuleCall_1_0; }
 		
 		//':'
 		public Keyword getColonKeyword_2() { return cColonKeyword_2; }
 		
-		//right=NATURAL
+		//right=INTEGER
 		public Assignment getRightAssignment_3() { return cRightAssignment_3; }
 		
-		//NATURAL
-		public RuleCall getRightNATURALTerminalRuleCall_3_0() { return cRightNATURALTerminalRuleCall_3_0; }
+		//INTEGER
+		public RuleCall getRightINTEGERTerminalRuleCall_3_0() { return cRightINTEGERTerminalRuleCall_3_0; }
 		
 		//']'
 		public Keyword getRightSquareBracketKeyword_4() { return cRightSquareBracketKeyword_4; }
@@ -1784,24 +1784,24 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.BitSizeValue");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final Assignment cValAssignment_0 = (Assignment)cAlternatives.eContents().get(0);
-		private final RuleCall cValNATURALTerminalRuleCall_0_0 = (RuleCall)cValAssignment_0.eContents().get(0);
+		private final RuleCall cValINTEGERTerminalRuleCall_0_0 = (RuleCall)cValAssignment_0.eContents().get(0);
 		private final Assignment cConstantAssignment_1 = (Assignment)cAlternatives.eContents().get(1);
 		private final CrossReference cConstantConstantCrossReference_1_0 = (CrossReference)cConstantAssignment_1.eContents().get(0);
 		private final RuleCall cConstantConstantIDTerminalRuleCall_1_0_1 = (RuleCall)cConstantConstantCrossReference_1_0.eContents().get(1);
 		
 		//BitSizeValue:
-		//	val+=NATURAL
+		//	val+=INTEGER
 		//	| constant+=[Constant];
 		@Override public ParserRule getRule() { return rule; }
 		
-		//val+=NATURAL | constant+=[Constant]
+		//val+=INTEGER | constant+=[Constant]
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
-		//val+=NATURAL
+		//val+=INTEGER
 		public Assignment getValAssignment_0() { return cValAssignment_0; }
 		
-		//NATURAL
-		public RuleCall getValNATURALTerminalRuleCall_0_0() { return cValNATURALTerminalRuleCall_0_0; }
+		//INTEGER
+		public RuleCall getValINTEGERTerminalRuleCall_0_0() { return cValINTEGERTerminalRuleCall_0_0; }
 		
 		//constant+=[Constant]
 		public Assignment getConstantAssignment_1() { return cConstantAssignment_1; }
@@ -2508,83 +2508,88 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	public class AssignmentExpressionElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.AssignmentExpression");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final RuleCall cUnaryExpressionParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
+		private final RuleCall cPrefixExpressionParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
 		private final Action cAssignmentExpressionLeftAction_1 = (Action)cGroup.eContents().get(1);
-		private final Assignment cOpAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final Alternatives cOpAlternatives_2_0 = (Alternatives)cOpAssignment_2.eContents().get(0);
-		private final Keyword cOpEqualsSignKeyword_2_0_0 = (Keyword)cOpAlternatives_2_0.eContents().get(0);
-		private final Keyword cOpAsteriskEqualsSignKeyword_2_0_1 = (Keyword)cOpAlternatives_2_0.eContents().get(1);
-		private final Keyword cOpSolidusEqualsSignKeyword_2_0_2 = (Keyword)cOpAlternatives_2_0.eContents().get(2);
-		private final Keyword cOpPercentSignEqualsSignKeyword_2_0_3 = (Keyword)cOpAlternatives_2_0.eContents().get(3);
-		private final Keyword cOpPlusSignEqualsSignKeyword_2_0_4 = (Keyword)cOpAlternatives_2_0.eContents().get(4);
-		private final Keyword cOpHyphenMinusEqualsSignKeyword_2_0_5 = (Keyword)cOpAlternatives_2_0.eContents().get(5);
-		private final Keyword cOpLessThanSignLessThanSignEqualsSignKeyword_2_0_6 = (Keyword)cOpAlternatives_2_0.eContents().get(6);
-		private final Keyword cOpGreaterThanSignGreaterThanSignEqualsSignKeyword_2_0_7 = (Keyword)cOpAlternatives_2_0.eContents().get(7);
-		private final Keyword cOpAmpersandEqualsSignKeyword_2_0_8 = (Keyword)cOpAlternatives_2_0.eContents().get(8);
-		private final Keyword cOpCircumflexAccentEqualsSignKeyword_2_0_9 = (Keyword)cOpAlternatives_2_0.eContents().get(9);
-		private final Keyword cOpVerticalLineEqualsSignKeyword_2_0_10 = (Keyword)cOpAlternatives_2_0.eContents().get(10);
-		private final Assignment cRightAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cRightConditionalExpressionParserRuleCall_3_0 = (RuleCall)cRightAssignment_3.eContents().get(0);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Assignment cAssignmentAssignment_2_0 = (Assignment)cGroup_2.eContents().get(0);
+		private final Alternatives cAssignmentAlternatives_2_0_0 = (Alternatives)cAssignmentAssignment_2_0.eContents().get(0);
+		private final Keyword cAssignmentEqualsSignKeyword_2_0_0_0 = (Keyword)cAssignmentAlternatives_2_0_0.eContents().get(0);
+		private final Keyword cAssignmentAsteriskEqualsSignKeyword_2_0_0_1 = (Keyword)cAssignmentAlternatives_2_0_0.eContents().get(1);
+		private final Keyword cAssignmentSolidusEqualsSignKeyword_2_0_0_2 = (Keyword)cAssignmentAlternatives_2_0_0.eContents().get(2);
+		private final Keyword cAssignmentPercentSignEqualsSignKeyword_2_0_0_3 = (Keyword)cAssignmentAlternatives_2_0_0.eContents().get(3);
+		private final Keyword cAssignmentPlusSignEqualsSignKeyword_2_0_0_4 = (Keyword)cAssignmentAlternatives_2_0_0.eContents().get(4);
+		private final Keyword cAssignmentHyphenMinusEqualsSignKeyword_2_0_0_5 = (Keyword)cAssignmentAlternatives_2_0_0.eContents().get(5);
+		private final Keyword cAssignmentLessThanSignLessThanSignEqualsSignKeyword_2_0_0_6 = (Keyword)cAssignmentAlternatives_2_0_0.eContents().get(6);
+		private final Keyword cAssignmentGreaterThanSignGreaterThanSignEqualsSignKeyword_2_0_0_7 = (Keyword)cAssignmentAlternatives_2_0_0.eContents().get(7);
+		private final Keyword cAssignmentAmpersandEqualsSignKeyword_2_0_0_8 = (Keyword)cAssignmentAlternatives_2_0_0.eContents().get(8);
+		private final Keyword cAssignmentCircumflexAccentEqualsSignKeyword_2_0_0_9 = (Keyword)cAssignmentAlternatives_2_0_0.eContents().get(9);
+		private final Keyword cAssignmentVerticalLineEqualsSignKeyword_2_0_0_10 = (Keyword)cAssignmentAlternatives_2_0_0.eContents().get(10);
+		private final Assignment cRightsAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cRightsConditionalExpressionParserRuleCall_2_1_0 = (RuleCall)cRightsAssignment_2_1.eContents().get(0);
 		
 		//AssignmentExpression Expression:
-		//	UnaryExpression {AssignmentExpression.left=current} op=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&='
-		//	| '^=' | '|=') right=ConditionalExpression;
+		//	PrefixExpression {AssignmentExpression.left=current} (assignment+=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' |
+		//	'>>=' | '&=' | '^=' | '|=') rights+=ConditionalExpression)+;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//UnaryExpression {AssignmentExpression.left=current} op=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' |
-		//'^=' | '|=') right=ConditionalExpression
+		//PrefixExpression {AssignmentExpression.left=current} (assignment+=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' |
+		//'>>=' | '&=' | '^=' | '|=') rights+=ConditionalExpression)+
 		public Group getGroup() { return cGroup; }
 		
-		//UnaryExpression
-		public RuleCall getUnaryExpressionParserRuleCall_0() { return cUnaryExpressionParserRuleCall_0; }
+		//PrefixExpression
+		public RuleCall getPrefixExpressionParserRuleCall_0() { return cPrefixExpressionParserRuleCall_0; }
 		
 		//{AssignmentExpression.left=current}
 		public Action getAssignmentExpressionLeftAction_1() { return cAssignmentExpressionLeftAction_1; }
 		
-		//op=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=')
-		public Assignment getOpAssignment_2() { return cOpAssignment_2; }
+		//(assignment+=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=')
+		//rights+=ConditionalExpression)+
+		public Group getGroup_2() { return cGroup_2; }
+		
+		//assignment+=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=')
+		public Assignment getAssignmentAssignment_2_0() { return cAssignmentAssignment_2_0; }
 		
 		//('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=')
-		public Alternatives getOpAlternatives_2_0() { return cOpAlternatives_2_0; }
+		public Alternatives getAssignmentAlternatives_2_0_0() { return cAssignmentAlternatives_2_0_0; }
 		
 		//'='
-		public Keyword getOpEqualsSignKeyword_2_0_0() { return cOpEqualsSignKeyword_2_0_0; }
+		public Keyword getAssignmentEqualsSignKeyword_2_0_0_0() { return cAssignmentEqualsSignKeyword_2_0_0_0; }
 		
 		//'*='
-		public Keyword getOpAsteriskEqualsSignKeyword_2_0_1() { return cOpAsteriskEqualsSignKeyword_2_0_1; }
+		public Keyword getAssignmentAsteriskEqualsSignKeyword_2_0_0_1() { return cAssignmentAsteriskEqualsSignKeyword_2_0_0_1; }
 		
 		//'/='
-		public Keyword getOpSolidusEqualsSignKeyword_2_0_2() { return cOpSolidusEqualsSignKeyword_2_0_2; }
+		public Keyword getAssignmentSolidusEqualsSignKeyword_2_0_0_2() { return cAssignmentSolidusEqualsSignKeyword_2_0_0_2; }
 		
 		//'%='
-		public Keyword getOpPercentSignEqualsSignKeyword_2_0_3() { return cOpPercentSignEqualsSignKeyword_2_0_3; }
+		public Keyword getAssignmentPercentSignEqualsSignKeyword_2_0_0_3() { return cAssignmentPercentSignEqualsSignKeyword_2_0_0_3; }
 		
 		//'+='
-		public Keyword getOpPlusSignEqualsSignKeyword_2_0_4() { return cOpPlusSignEqualsSignKeyword_2_0_4; }
+		public Keyword getAssignmentPlusSignEqualsSignKeyword_2_0_0_4() { return cAssignmentPlusSignEqualsSignKeyword_2_0_0_4; }
 		
 		//'-='
-		public Keyword getOpHyphenMinusEqualsSignKeyword_2_0_5() { return cOpHyphenMinusEqualsSignKeyword_2_0_5; }
+		public Keyword getAssignmentHyphenMinusEqualsSignKeyword_2_0_0_5() { return cAssignmentHyphenMinusEqualsSignKeyword_2_0_0_5; }
 		
 		//'<<='
-		public Keyword getOpLessThanSignLessThanSignEqualsSignKeyword_2_0_6() { return cOpLessThanSignLessThanSignEqualsSignKeyword_2_0_6; }
+		public Keyword getAssignmentLessThanSignLessThanSignEqualsSignKeyword_2_0_0_6() { return cAssignmentLessThanSignLessThanSignEqualsSignKeyword_2_0_0_6; }
 		
 		//'>>='
-		public Keyword getOpGreaterThanSignGreaterThanSignEqualsSignKeyword_2_0_7() { return cOpGreaterThanSignGreaterThanSignEqualsSignKeyword_2_0_7; }
+		public Keyword getAssignmentGreaterThanSignGreaterThanSignEqualsSignKeyword_2_0_0_7() { return cAssignmentGreaterThanSignGreaterThanSignEqualsSignKeyword_2_0_0_7; }
 		
 		//'&='
-		public Keyword getOpAmpersandEqualsSignKeyword_2_0_8() { return cOpAmpersandEqualsSignKeyword_2_0_8; }
+		public Keyword getAssignmentAmpersandEqualsSignKeyword_2_0_0_8() { return cAssignmentAmpersandEqualsSignKeyword_2_0_0_8; }
 		
 		//'^='
-		public Keyword getOpCircumflexAccentEqualsSignKeyword_2_0_9() { return cOpCircumflexAccentEqualsSignKeyword_2_0_9; }
+		public Keyword getAssignmentCircumflexAccentEqualsSignKeyword_2_0_0_9() { return cAssignmentCircumflexAccentEqualsSignKeyword_2_0_0_9; }
 		
 		//'|='
-		public Keyword getOpVerticalLineEqualsSignKeyword_2_0_10() { return cOpVerticalLineEqualsSignKeyword_2_0_10; }
+		public Keyword getAssignmentVerticalLineEqualsSignKeyword_2_0_0_10() { return cAssignmentVerticalLineEqualsSignKeyword_2_0_0_10; }
 		
-		//right=ConditionalExpression
-		public Assignment getRightAssignment_3() { return cRightAssignment_3; }
+		//rights+=ConditionalExpression
+		public Assignment getRightsAssignment_2_1() { return cRightsAssignment_2_1; }
 		
 		//ConditionalExpression
-		public RuleCall getRightConditionalExpressionParserRuleCall_3_0() { return cRightConditionalExpressionParserRuleCall_3_0; }
+		public RuleCall getRightsConditionalExpressionParserRuleCall_2_1_0() { return cRightsConditionalExpressionParserRuleCall_2_1_0; }
 	}
 	public class ConditionalExpressionElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.ConditionalExpression");
@@ -2640,27 +2645,27 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final RuleCall cLogicalAndExpressionParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Action cLogicalExprLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
+		private final Action cInfixExpressionLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
 		private final Assignment cOpAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
 		private final Keyword cOpVerticalLineVerticalLineKeyword_1_1_0 = (Keyword)cOpAssignment_1_1.eContents().get(0);
 		private final Assignment cRightAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
 		private final RuleCall cRightLogicalOrExpressionParserRuleCall_1_2_0 = (RuleCall)cRightAssignment_1_2.eContents().get(0);
 		
 		//LogicalOrExpression Expression:
-		//	LogicalAndExpression ({LogicalExpr.left=current} op='||' right=LogicalOrExpression)?;
+		//	LogicalAndExpression ({InfixExpression.left=current} op='||' right=LogicalOrExpression)?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//LogicalAndExpression ({LogicalExpr.left=current} op='||' right=LogicalOrExpression)?
+		//LogicalAndExpression ({InfixExpression.left=current} op='||' right=LogicalOrExpression)?
 		public Group getGroup() { return cGroup; }
 		
 		//LogicalAndExpression
 		public RuleCall getLogicalAndExpressionParserRuleCall_0() { return cLogicalAndExpressionParserRuleCall_0; }
 		
-		//({LogicalExpr.left=current} op='||' right=LogicalOrExpression)?
+		//({InfixExpression.left=current} op='||' right=LogicalOrExpression)?
 		public Group getGroup_1() { return cGroup_1; }
 		
-		//{LogicalExpr.left=current}
-		public Action getLogicalExprLeftAction_1_0() { return cLogicalExprLeftAction_1_0; }
+		//{InfixExpression.left=current}
+		public Action getInfixExpressionLeftAction_1_0() { return cInfixExpressionLeftAction_1_0; }
 		
 		//op='||'
 		public Assignment getOpAssignment_1_1() { return cOpAssignment_1_1; }
@@ -2679,27 +2684,27 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final RuleCall cInclusiveOrExpressionParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Action cLogicalExprLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
+		private final Action cInfixExpressionLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
 		private final Assignment cOpAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
 		private final Keyword cOpAmpersandAmpersandKeyword_1_1_0 = (Keyword)cOpAssignment_1_1.eContents().get(0);
 		private final Assignment cRightAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
 		private final RuleCall cRightLogicalAndExpressionParserRuleCall_1_2_0 = (RuleCall)cRightAssignment_1_2.eContents().get(0);
 		
 		//LogicalAndExpression Expression:
-		//	InclusiveOrExpression ({LogicalExpr.left=current} op='&&' right=LogicalAndExpression)?;
+		//	InclusiveOrExpression ({InfixExpression.left=current} op='&&' right=LogicalAndExpression)?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//InclusiveOrExpression ({LogicalExpr.left=current} op='&&' right=LogicalAndExpression)?
+		//InclusiveOrExpression ({InfixExpression.left=current} op='&&' right=LogicalAndExpression)?
 		public Group getGroup() { return cGroup; }
 		
 		//InclusiveOrExpression
 		public RuleCall getInclusiveOrExpressionParserRuleCall_0() { return cInclusiveOrExpressionParserRuleCall_0; }
 		
-		//({LogicalExpr.left=current} op='&&' right=LogicalAndExpression)?
+		//({InfixExpression.left=current} op='&&' right=LogicalAndExpression)?
 		public Group getGroup_1() { return cGroup_1; }
 		
-		//{LogicalExpr.left=current}
-		public Action getLogicalExprLeftAction_1_0() { return cLogicalExprLeftAction_1_0; }
+		//{InfixExpression.left=current}
+		public Action getInfixExpressionLeftAction_1_0() { return cInfixExpressionLeftAction_1_0; }
 		
 		//op='&&'
 		public Assignment getOpAssignment_1_1() { return cOpAssignment_1_1; }
@@ -2718,27 +2723,27 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final RuleCall cExclusiveOrExpressionParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Action cLogicalExprLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
+		private final Action cInfixExpressionLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
 		private final Assignment cOpAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
 		private final Keyword cOpVerticalLineKeyword_1_1_0 = (Keyword)cOpAssignment_1_1.eContents().get(0);
 		private final Assignment cRightAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
 		private final RuleCall cRightInclusiveOrExpressionParserRuleCall_1_2_0 = (RuleCall)cRightAssignment_1_2.eContents().get(0);
 		
 		//InclusiveOrExpression Expression:
-		//	ExclusiveOrExpression ({LogicalExpr.left=current} op='|' right=InclusiveOrExpression)?;
+		//	ExclusiveOrExpression ({InfixExpression.left=current} op='|' right=InclusiveOrExpression)?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//ExclusiveOrExpression ({LogicalExpr.left=current} op='|' right=InclusiveOrExpression)?
+		//ExclusiveOrExpression ({InfixExpression.left=current} op='|' right=InclusiveOrExpression)?
 		public Group getGroup() { return cGroup; }
 		
 		//ExclusiveOrExpression
 		public RuleCall getExclusiveOrExpressionParserRuleCall_0() { return cExclusiveOrExpressionParserRuleCall_0; }
 		
-		//({LogicalExpr.left=current} op='|' right=InclusiveOrExpression)?
+		//({InfixExpression.left=current} op='|' right=InclusiveOrExpression)?
 		public Group getGroup_1() { return cGroup_1; }
 		
-		//{LogicalExpr.left=current}
-		public Action getLogicalExprLeftAction_1_0() { return cLogicalExprLeftAction_1_0; }
+		//{InfixExpression.left=current}
+		public Action getInfixExpressionLeftAction_1_0() { return cInfixExpressionLeftAction_1_0; }
 		
 		//op='|'
 		public Assignment getOpAssignment_1_1() { return cOpAssignment_1_1; }
@@ -2757,27 +2762,27 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final RuleCall cAndExpressionParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Action cLogicalExprLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
+		private final Action cInfixExpressionLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
 		private final Assignment cOpAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
 		private final Keyword cOpCircumflexAccentKeyword_1_1_0 = (Keyword)cOpAssignment_1_1.eContents().get(0);
 		private final Assignment cRightAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
 		private final RuleCall cRightExclusiveOrExpressionParserRuleCall_1_2_0 = (RuleCall)cRightAssignment_1_2.eContents().get(0);
 		
 		//ExclusiveOrExpression Expression:
-		//	AndExpression ({LogicalExpr.left=current} op='^' right=ExclusiveOrExpression)?;
+		//	AndExpression ({InfixExpression.left=current} op='^' right=ExclusiveOrExpression)?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//AndExpression ({LogicalExpr.left=current} op='^' right=ExclusiveOrExpression)?
+		//AndExpression ({InfixExpression.left=current} op='^' right=ExclusiveOrExpression)?
 		public Group getGroup() { return cGroup; }
 		
 		//AndExpression
 		public RuleCall getAndExpressionParserRuleCall_0() { return cAndExpressionParserRuleCall_0; }
 		
-		//({LogicalExpr.left=current} op='^' right=ExclusiveOrExpression)?
+		//({InfixExpression.left=current} op='^' right=ExclusiveOrExpression)?
 		public Group getGroup_1() { return cGroup_1; }
 		
-		//{LogicalExpr.left=current}
-		public Action getLogicalExprLeftAction_1_0() { return cLogicalExprLeftAction_1_0; }
+		//{InfixExpression.left=current}
+		public Action getInfixExpressionLeftAction_1_0() { return cInfixExpressionLeftAction_1_0; }
 		
 		//op='^'
 		public Assignment getOpAssignment_1_1() { return cOpAssignment_1_1; }
@@ -2796,27 +2801,27 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final RuleCall cEqualityExpressionParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Action cLogicalExprLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
+		private final Action cInfixExpressionLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
 		private final Assignment cOpAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
 		private final Keyword cOpAmpersandKeyword_1_1_0 = (Keyword)cOpAssignment_1_1.eContents().get(0);
 		private final Assignment cRightAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
 		private final RuleCall cRightAndExpressionParserRuleCall_1_2_0 = (RuleCall)cRightAssignment_1_2.eContents().get(0);
 		
 		//AndExpression Expression:
-		//	EqualityExpression ({LogicalExpr.left=current} op='&' right=AndExpression)?;
+		//	EqualityExpression ({InfixExpression.left=current} op='&' right=AndExpression)?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//EqualityExpression ({LogicalExpr.left=current} op='&' right=AndExpression)?
+		//EqualityExpression ({InfixExpression.left=current} op='&' right=AndExpression)?
 		public Group getGroup() { return cGroup; }
 		
 		//EqualityExpression
 		public RuleCall getEqualityExpressionParserRuleCall_0() { return cEqualityExpressionParserRuleCall_0; }
 		
-		//({LogicalExpr.left=current} op='&' right=AndExpression)?
+		//({InfixExpression.left=current} op='&' right=AndExpression)?
 		public Group getGroup_1() { return cGroup_1; }
 		
-		//{LogicalExpr.left=current}
-		public Action getLogicalExprLeftAction_1_0() { return cLogicalExprLeftAction_1_0; }
+		//{InfixExpression.left=current}
+		public Action getInfixExpressionLeftAction_1_0() { return cInfixExpressionLeftAction_1_0; }
 		
 		//op='&'
 		public Assignment getOpAssignment_1_1() { return cOpAssignment_1_1; }
@@ -2835,7 +2840,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final RuleCall cRelationalExpressionParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Action cLogicalExprLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
+		private final Action cInfixExpressionLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
 		private final Assignment cOpAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
 		private final Alternatives cOpAlternatives_1_1_0 = (Alternatives)cOpAssignment_1_1.eContents().get(0);
 		private final Keyword cOpEqualsSignEqualsSignKeyword_1_1_0_0 = (Keyword)cOpAlternatives_1_1_0.eContents().get(0);
@@ -2844,20 +2849,20 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cRightEqualityExpressionParserRuleCall_1_2_0 = (RuleCall)cRightAssignment_1_2.eContents().get(0);
 		
 		//EqualityExpression Expression:
-		//	RelationalExpression ({LogicalExpr.left=current} op=('==' | '!=') right=EqualityExpression)?;
+		//	RelationalExpression ({InfixExpression.left=current} op=('==' | '!=') right=EqualityExpression)?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//RelationalExpression ({LogicalExpr.left=current} op=('==' | '!=') right=EqualityExpression)?
+		//RelationalExpression ({InfixExpression.left=current} op=('==' | '!=') right=EqualityExpression)?
 		public Group getGroup() { return cGroup; }
 		
 		//RelationalExpression
 		public RuleCall getRelationalExpressionParserRuleCall_0() { return cRelationalExpressionParserRuleCall_0; }
 		
-		//({LogicalExpr.left=current} op=('==' | '!=') right=EqualityExpression)?
+		//({InfixExpression.left=current} op=('==' | '!=') right=EqualityExpression)?
 		public Group getGroup_1() { return cGroup_1; }
 		
-		//{LogicalExpr.left=current}
-		public Action getLogicalExprLeftAction_1_0() { return cLogicalExprLeftAction_1_0; }
+		//{InfixExpression.left=current}
+		public Action getInfixExpressionLeftAction_1_0() { return cInfixExpressionLeftAction_1_0; }
 		
 		//op=('==' | '!=')
 		public Assignment getOpAssignment_1_1() { return cOpAssignment_1_1; }
@@ -2882,7 +2887,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final RuleCall cShiftExpressionParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Action cLogicalExprLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
+		private final Action cInfixExpressionLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
 		private final Assignment cOpAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
 		private final Alternatives cOpAlternatives_1_1_0 = (Alternatives)cOpAssignment_1_1.eContents().get(0);
 		private final Keyword cOpLessThanSignKeyword_1_1_0_0 = (Keyword)cOpAlternatives_1_1_0.eContents().get(0);
@@ -2893,20 +2898,20 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cRightRelationalExpressionParserRuleCall_1_2_0 = (RuleCall)cRightAssignment_1_2.eContents().get(0);
 		
 		//RelationalExpression Expression:
-		//	ShiftExpression ({LogicalExpr.left=current} op=('<' | '>' | '<=' | '>=') right=RelationalExpression)?;
+		//	ShiftExpression ({InfixExpression.left=current} op=('<' | '>' | '<=' | '>=') right=RelationalExpression)?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//ShiftExpression ({LogicalExpr.left=current} op=('<' | '>' | '<=' | '>=') right=RelationalExpression)?
+		//ShiftExpression ({InfixExpression.left=current} op=('<' | '>' | '<=' | '>=') right=RelationalExpression)?
 		public Group getGroup() { return cGroup; }
 		
 		//ShiftExpression
 		public RuleCall getShiftExpressionParserRuleCall_0() { return cShiftExpressionParserRuleCall_0; }
 		
-		//({LogicalExpr.left=current} op=('<' | '>' | '<=' | '>=') right=RelationalExpression)?
+		//({InfixExpression.left=current} op=('<' | '>' | '<=' | '>=') right=RelationalExpression)?
 		public Group getGroup_1() { return cGroup_1; }
 		
-		//{LogicalExpr.left=current}
-		public Action getLogicalExprLeftAction_1_0() { return cLogicalExprLeftAction_1_0; }
+		//{InfixExpression.left=current}
+		public Action getInfixExpressionLeftAction_1_0() { return cInfixExpressionLeftAction_1_0; }
 		
 		//op=('<' | '>' | '<=' | '>=')
 		public Assignment getOpAssignment_1_1() { return cOpAssignment_1_1; }
@@ -2937,7 +2942,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final RuleCall cAdditiveExpressionParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Action cArithmeticExpressionLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
+		private final Action cInfixExpressionLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
 		private final Assignment cOpAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
 		private final Alternatives cOpAlternatives_1_1_0 = (Alternatives)cOpAssignment_1_1.eContents().get(0);
 		private final Keyword cOpLessThanSignLessThanSignKeyword_1_1_0_0 = (Keyword)cOpAlternatives_1_1_0.eContents().get(0);
@@ -2946,20 +2951,20 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cRightShiftExpressionParserRuleCall_1_2_0 = (RuleCall)cRightAssignment_1_2.eContents().get(0);
 		
 		//ShiftExpression Expression:
-		//	AdditiveExpression ({ArithmeticExpression.left=current} op=('<<' | '>>') right=ShiftExpression)?;
+		//	AdditiveExpression ({InfixExpression.left=current} op=('<<' | '>>') right=ShiftExpression)?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//AdditiveExpression ({ArithmeticExpression.left=current} op=('<<' | '>>') right=ShiftExpression)?
+		//AdditiveExpression ({InfixExpression.left=current} op=('<<' | '>>') right=ShiftExpression)?
 		public Group getGroup() { return cGroup; }
 		
 		//AdditiveExpression
 		public RuleCall getAdditiveExpressionParserRuleCall_0() { return cAdditiveExpressionParserRuleCall_0; }
 		
-		//({ArithmeticExpression.left=current} op=('<<' | '>>') right=ShiftExpression)?
+		//({InfixExpression.left=current} op=('<<' | '>>') right=ShiftExpression)?
 		public Group getGroup_1() { return cGroup_1; }
 		
-		//{ArithmeticExpression.left=current}
-		public Action getArithmeticExpressionLeftAction_1_0() { return cArithmeticExpressionLeftAction_1_0; }
+		//{InfixExpression.left=current}
+		public Action getInfixExpressionLeftAction_1_0() { return cInfixExpressionLeftAction_1_0; }
 		
 		//op=('<<' | '>>')
 		public Assignment getOpAssignment_1_1() { return cOpAssignment_1_1; }
@@ -2984,7 +2989,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final RuleCall cMultiplicativeExpressionParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Action cArithmeticExpressionLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
+		private final Action cInfixExpressionLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
 		private final Assignment cOpAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
 		private final Alternatives cOpAlternatives_1_1_0 = (Alternatives)cOpAssignment_1_1.eContents().get(0);
 		private final Keyword cOpPlusSignKeyword_1_1_0_0 = (Keyword)cOpAlternatives_1_1_0.eContents().get(0);
@@ -2993,20 +2998,20 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cRightAdditiveExpressionParserRuleCall_1_2_0 = (RuleCall)cRightAssignment_1_2.eContents().get(0);
 		
 		//AdditiveExpression Expression:
-		//	MultiplicativeExpression ({ArithmeticExpression.left=current} op=('+' | '-') right=AdditiveExpression)?;
+		//	MultiplicativeExpression ({InfixExpression.left=current} op=('+' | '-') right=AdditiveExpression)?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//MultiplicativeExpression ({ArithmeticExpression.left=current} op=('+' | '-') right=AdditiveExpression)?
+		//MultiplicativeExpression ({InfixExpression.left=current} op=('+' | '-') right=AdditiveExpression)?
 		public Group getGroup() { return cGroup; }
 		
 		//MultiplicativeExpression
 		public RuleCall getMultiplicativeExpressionParserRuleCall_0() { return cMultiplicativeExpressionParserRuleCall_0; }
 		
-		//({ArithmeticExpression.left=current} op=('+' | '-') right=AdditiveExpression)?
+		//({InfixExpression.left=current} op=('+' | '-') right=AdditiveExpression)?
 		public Group getGroup_1() { return cGroup_1; }
 		
-		//{ArithmeticExpression.left=current}
-		public Action getArithmeticExpressionLeftAction_1_0() { return cArithmeticExpressionLeftAction_1_0; }
+		//{InfixExpression.left=current}
+		public Action getInfixExpressionLeftAction_1_0() { return cInfixExpressionLeftAction_1_0; }
 		
 		//op=('+' | '-')
 		public Assignment getOpAssignment_1_1() { return cOpAssignment_1_1; }
@@ -3031,7 +3036,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final RuleCall cCastExpressionParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Action cArithmeticExpressionLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
+		private final Action cInfixExpressionLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
 		private final Assignment cOpAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
 		private final Alternatives cOpAlternatives_1_1_0 = (Alternatives)cOpAssignment_1_1.eContents().get(0);
 		private final Keyword cOpAsteriskKeyword_1_1_0_0 = (Keyword)cOpAlternatives_1_1_0.eContents().get(0);
@@ -3041,20 +3046,20 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cRightMultiplicativeExpressionParserRuleCall_1_2_0 = (RuleCall)cRightAssignment_1_2.eContents().get(0);
 		
 		//MultiplicativeExpression Expression:
-		//	CastExpression ({ArithmeticExpression.left=current} op=('*' | '/' | '%') right=MultiplicativeExpression)?;
+		//	CastExpression ({InfixExpression.left=current} op=('*' | '/' | '%') right=MultiplicativeExpression)?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//CastExpression ({ArithmeticExpression.left=current} op=('*' | '/' | '%') right=MultiplicativeExpression)?
+		//CastExpression ({InfixExpression.left=current} op=('*' | '/' | '%') right=MultiplicativeExpression)?
 		public Group getGroup() { return cGroup; }
 		
 		//CastExpression
 		public RuleCall getCastExpressionParserRuleCall_0() { return cCastExpressionParserRuleCall_0; }
 		
-		//({ArithmeticExpression.left=current} op=('*' | '/' | '%') right=MultiplicativeExpression)?
+		//({InfixExpression.left=current} op=('*' | '/' | '%') right=MultiplicativeExpression)?
 		public Group getGroup_1() { return cGroup_1; }
 		
-		//{ArithmeticExpression.left=current}
-		public Action getArithmeticExpressionLeftAction_1_0() { return cArithmeticExpressionLeftAction_1_0; }
+		//{InfixExpression.left=current}
+		public Action getInfixExpressionLeftAction_1_0() { return cInfixExpressionLeftAction_1_0; }
 		
 		//op=('*' | '/' | '%')
 		public Assignment getOpAssignment_1_1() { return cOpAssignment_1_1; }
@@ -3080,7 +3085,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	public class CastExpressionElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.CastExpression");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
-		private final RuleCall cUnaryExpressionParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cPrefixExpressionParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
 		private final Group cGroup_1 = (Group)cAlternatives.eContents().get(1);
 		private final Keyword cLeftParenthesisKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
 		private final Assignment cTypeAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
@@ -3090,15 +3095,15 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cLeftCastExpressionParserRuleCall_1_3_0 = (RuleCall)cLeftAssignment_1_3.eContents().get(0);
 		
 		//CastExpression:
-		//	UnaryExpression
+		//	PrefixExpression
 		//	| '(' type=DataTypeSpecifier ')' left=CastExpression;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//UnaryExpression | '(' type=DataTypeSpecifier ')' left=CastExpression
+		//PrefixExpression | '(' type=DataTypeSpecifier ')' left=CastExpression
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
-		//UnaryExpression
-		public RuleCall getUnaryExpressionParserRuleCall_0() { return cUnaryExpressionParserRuleCall_0; }
+		//PrefixExpression
+		public RuleCall getPrefixExpressionParserRuleCall_0() { return cPrefixExpressionParserRuleCall_0; }
 		
 		//'(' type=DataTypeSpecifier ')' left=CastExpression
 		public Group getGroup_1() { return cGroup_1; }
@@ -3121,20 +3126,20 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//CastExpression
 		public RuleCall getLeftCastExpressionParserRuleCall_1_3_0() { return cLeftCastExpressionParserRuleCall_1_3_0; }
 	}
-	public class UnaryExpressionElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.UnaryExpression");
+	public class PrefixExpressionElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.PrefixExpression");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final RuleCall cPostfixExpressionParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
 		private final Group cGroup_1 = (Group)cAlternatives.eContents().get(1);
 		private final Assignment cOpAssignment_1_0 = (Assignment)cGroup_1.eContents().get(0);
 		private final Keyword cOpPlusSignPlusSignKeyword_1_0_0 = (Keyword)cOpAssignment_1_0.eContents().get(0);
 		private final Assignment cLeftAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cLeftUnaryExpressionParserRuleCall_1_1_0 = (RuleCall)cLeftAssignment_1_1.eContents().get(0);
+		private final RuleCall cLeftPrefixExpressionParserRuleCall_1_1_0 = (RuleCall)cLeftAssignment_1_1.eContents().get(0);
 		private final Group cGroup_2 = (Group)cAlternatives.eContents().get(2);
 		private final Assignment cOpAssignment_2_0 = (Assignment)cGroup_2.eContents().get(0);
 		private final Keyword cOpHyphenMinusHyphenMinusKeyword_2_0_0 = (Keyword)cOpAssignment_2_0.eContents().get(0);
 		private final Assignment cLeftAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final RuleCall cLeftUnaryExpressionParserRuleCall_2_1_0 = (RuleCall)cLeftAssignment_2_1.eContents().get(0);
+		private final RuleCall cLeftPrefixExpressionParserRuleCall_2_1_0 = (RuleCall)cLeftAssignment_2_1.eContents().get(0);
 		private final Group cGroup_3 = (Group)cAlternatives.eContents().get(3);
 		private final RuleCall cUnaryOperatorParserRuleCall_3_0 = (RuleCall)cGroup_3.eContents().get(0);
 		private final Assignment cLeftAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
@@ -3150,24 +3155,24 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cTypeDataTypeSpecifierParserRuleCall_4_2_1_0 = (RuleCall)cTypeAssignment_4_2_1.eContents().get(0);
 		private final Keyword cRightParenthesisKeyword_4_3 = (Keyword)cGroup_4.eContents().get(3);
 		
-		//UnaryExpression:
+		//PrefixExpression:
 		//	PostfixExpression
-		//	| op='++' left=UnaryExpression
-		//	| op='--' left=UnaryExpression
+		//	| op='++' left=PrefixExpression
+		//	| op='--' left=PrefixExpression
 		//	| UnaryOperator left=CastExpression
 		//	| op='sizeof' '(' (left=PostfixExpression | type=DataTypeSpecifier) ')'
 		//	//    |   op='_Alignof' '(' type=TypeSpecifier ')'
 		//;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//PostfixExpression | op='++' left=UnaryExpression | op='--' left=UnaryExpression | UnaryOperator left=CastExpression |
+		//PostfixExpression | op='++' left=PrefixExpression | op='--' left=PrefixExpression | UnaryOperator left=CastExpression |
 		//op='sizeof' '(' (left=PostfixExpression | type=DataTypeSpecifier) ')'
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//PostfixExpression
 		public RuleCall getPostfixExpressionParserRuleCall_0() { return cPostfixExpressionParserRuleCall_0; }
 		
-		//op='++' left=UnaryExpression
+		//op='++' left=PrefixExpression
 		public Group getGroup_1() { return cGroup_1; }
 		
 		//op='++'
@@ -3176,13 +3181,13 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'++'
 		public Keyword getOpPlusSignPlusSignKeyword_1_0_0() { return cOpPlusSignPlusSignKeyword_1_0_0; }
 		
-		//left=UnaryExpression
+		//left=PrefixExpression
 		public Assignment getLeftAssignment_1_1() { return cLeftAssignment_1_1; }
 		
-		//UnaryExpression
-		public RuleCall getLeftUnaryExpressionParserRuleCall_1_1_0() { return cLeftUnaryExpressionParserRuleCall_1_1_0; }
+		//PrefixExpression
+		public RuleCall getLeftPrefixExpressionParserRuleCall_1_1_0() { return cLeftPrefixExpressionParserRuleCall_1_1_0; }
 		
-		//op='--' left=UnaryExpression
+		//op='--' left=PrefixExpression
 		public Group getGroup_2() { return cGroup_2; }
 		
 		//op='--'
@@ -3191,11 +3196,11 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'--'
 		public Keyword getOpHyphenMinusHyphenMinusKeyword_2_0_0() { return cOpHyphenMinusHyphenMinusKeyword_2_0_0; }
 		
-		//left=UnaryExpression
+		//left=PrefixExpression
 		public Assignment getLeftAssignment_2_1() { return cLeftAssignment_2_1; }
 		
-		//UnaryExpression
-		public RuleCall getLeftUnaryExpressionParserRuleCall_2_1_0() { return cLeftUnaryExpressionParserRuleCall_2_1_0; }
+		//PrefixExpression
+		public RuleCall getLeftPrefixExpressionParserRuleCall_2_1_0() { return cLeftPrefixExpressionParserRuleCall_2_1_0; }
 		
 		//UnaryOperator left=CastExpression
 		public Group getGroup_3() { return cGroup_3; }
@@ -3658,21 +3663,21 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.IntegerConstant");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cValAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cValNATURALTerminalRuleCall_0_0 = (RuleCall)cValAssignment_0.eContents().get(0);
+		private final RuleCall cValINTEGERTerminalRuleCall_0_0 = (RuleCall)cValAssignment_0.eContents().get(0);
 		private final RuleCall cIntegerSuffixParserRuleCall_1 = (RuleCall)cGroup.eContents().get(1);
 		
 		//IntegerConstant:
-		//	val=NATURAL IntegerSuffix?;
+		//	val=INTEGER IntegerSuffix?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//val=NATURAL IntegerSuffix?
+		//val=INTEGER IntegerSuffix?
 		public Group getGroup() { return cGroup; }
 		
-		//val=NATURAL
+		//val=INTEGER
 		public Assignment getValAssignment_0() { return cValAssignment_0; }
 		
-		//NATURAL
-		public RuleCall getValNATURALTerminalRuleCall_0_0() { return cValNATURALTerminalRuleCall_0_0; }
+		//INTEGER
+		public RuleCall getValINTEGERTerminalRuleCall_0_0() { return cValINTEGERTerminalRuleCall_0_0; }
 		
 		//IntegerSuffix?
 		public RuleCall getIntegerSuffixParserRuleCall_1() { return cIntegerSuffixParserRuleCall_1; }
@@ -4326,7 +4331,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final AdditiveExpressionElements pAdditiveExpression;
 	private final MultiplicativeExpressionElements pMultiplicativeExpression;
 	private final CastExpressionElements pCastExpression;
-	private final UnaryExpressionElements pUnaryExpression;
+	private final PrefixExpressionElements pPrefixExpression;
 	private final UnaryOperatorElements pUnaryOperator;
 	private final PostfixExpressionElements pPostfixExpression;
 	private final PostfixOperatorElements pPostfixOperator;
@@ -4355,11 +4360,12 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final TerminalRule tBVAL;
 	private final TerminalRule tBOOLEAN;
 	private final TerminalRule tFLOAT;
-	private final TerminalRule tNATURAL;
+	private final TerminalRule tINTEGER;
 	private final TerminalRule tBINARYCONSTANT;
 	private final TerminalRule tOCTALCONSTANT;
 	private final TerminalRule tDECIMALCONSTANT;
 	private final TerminalRule tHEXADECIMALCONSTANT;
+	private final TerminalRule tVLOGCONSTANT;
 	private final TerminalRule tCHARCONST;
 	private final TerminalRule tINT;
 	private final TerminalRule tID;
@@ -4438,7 +4444,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.pAdditiveExpression = new AdditiveExpressionElements();
 		this.pMultiplicativeExpression = new MultiplicativeExpressionElements();
 		this.pCastExpression = new CastExpressionElements();
-		this.pUnaryExpression = new UnaryExpressionElements();
+		this.pPrefixExpression = new PrefixExpressionElements();
 		this.pUnaryOperator = new UnaryOperatorElements();
 		this.pPostfixExpression = new PostfixExpressionElements();
 		this.pPostfixOperator = new PostfixOperatorElements();
@@ -4467,11 +4473,12 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.tBVAL = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.BVAL");
 		this.tBOOLEAN = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.BOOLEAN");
 		this.tFLOAT = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.FLOAT");
-		this.tNATURAL = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.NATURAL");
+		this.tINTEGER = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.INTEGER");
 		this.tBINARYCONSTANT = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.BINARYCONSTANT");
 		this.tOCTALCONSTANT = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.OCTALCONSTANT");
 		this.tDECIMALCONSTANT = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.DECIMALCONSTANT");
 		this.tHEXADECIMALCONSTANT = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.HEXADECIMALCONSTANT");
+		this.tVLOGCONSTANT = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.VLOGCONSTANT");
 		this.tCHARCONST = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.CHARCONST");
 		this.tINT = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.INT");
 		this.tID = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.ID");
@@ -4616,7 +4623,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//RangeSpec:
-	//	'[' left=NATURAL ':' right=NATURAL ']';
+	//	'[' left=INTEGER ':' right=INTEGER ']';
 	public RangeSpecElements getRangeSpecAccess() {
 		return pRangeSpec;
 	}
@@ -4890,7 +4897,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//BitSizeValue:
-	//	val+=NATURAL
+	//	val+=INTEGER
 	//	| constant+=[Constant];
 	public BitSizeValueElements getBitSizeValueAccess() {
 		return pBitSizeValue;
@@ -5077,8 +5084,8 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//AssignmentExpression Expression:
-	//	UnaryExpression {AssignmentExpression.left=current} op=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&='
-	//	| '^=' | '|=') right=ConditionalExpression;
+	//	PrefixExpression {AssignmentExpression.left=current} (assignment+=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' |
+	//	'>>=' | '&=' | '^=' | '|=') rights+=ConditionalExpression)+;
 	public AssignmentExpressionElements getAssignmentExpressionAccess() {
 		return pAssignmentExpression;
 	}
@@ -5099,7 +5106,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//LogicalOrExpression Expression:
-	//	LogicalAndExpression ({LogicalExpr.left=current} op='||' right=LogicalOrExpression)?;
+	//	LogicalAndExpression ({InfixExpression.left=current} op='||' right=LogicalOrExpression)?;
 	public LogicalOrExpressionElements getLogicalOrExpressionAccess() {
 		return pLogicalOrExpression;
 	}
@@ -5109,7 +5116,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//LogicalAndExpression Expression:
-	//	InclusiveOrExpression ({LogicalExpr.left=current} op='&&' right=LogicalAndExpression)?;
+	//	InclusiveOrExpression ({InfixExpression.left=current} op='&&' right=LogicalAndExpression)?;
 	public LogicalAndExpressionElements getLogicalAndExpressionAccess() {
 		return pLogicalAndExpression;
 	}
@@ -5119,7 +5126,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//InclusiveOrExpression Expression:
-	//	ExclusiveOrExpression ({LogicalExpr.left=current} op='|' right=InclusiveOrExpression)?;
+	//	ExclusiveOrExpression ({InfixExpression.left=current} op='|' right=InclusiveOrExpression)?;
 	public InclusiveOrExpressionElements getInclusiveOrExpressionAccess() {
 		return pInclusiveOrExpression;
 	}
@@ -5129,7 +5136,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//ExclusiveOrExpression Expression:
-	//	AndExpression ({LogicalExpr.left=current} op='^' right=ExclusiveOrExpression)?;
+	//	AndExpression ({InfixExpression.left=current} op='^' right=ExclusiveOrExpression)?;
 	public ExclusiveOrExpressionElements getExclusiveOrExpressionAccess() {
 		return pExclusiveOrExpression;
 	}
@@ -5139,7 +5146,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//AndExpression Expression:
-	//	EqualityExpression ({LogicalExpr.left=current} op='&' right=AndExpression)?;
+	//	EqualityExpression ({InfixExpression.left=current} op='&' right=AndExpression)?;
 	public AndExpressionElements getAndExpressionAccess() {
 		return pAndExpression;
 	}
@@ -5149,7 +5156,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//EqualityExpression Expression:
-	//	RelationalExpression ({LogicalExpr.left=current} op=('==' | '!=') right=EqualityExpression)?;
+	//	RelationalExpression ({InfixExpression.left=current} op=('==' | '!=') right=EqualityExpression)?;
 	public EqualityExpressionElements getEqualityExpressionAccess() {
 		return pEqualityExpression;
 	}
@@ -5159,7 +5166,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//RelationalExpression Expression:
-	//	ShiftExpression ({LogicalExpr.left=current} op=('<' | '>' | '<=' | '>=') right=RelationalExpression)?;
+	//	ShiftExpression ({InfixExpression.left=current} op=('<' | '>' | '<=' | '>=') right=RelationalExpression)?;
 	public RelationalExpressionElements getRelationalExpressionAccess() {
 		return pRelationalExpression;
 	}
@@ -5169,7 +5176,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//ShiftExpression Expression:
-	//	AdditiveExpression ({ArithmeticExpression.left=current} op=('<<' | '>>') right=ShiftExpression)?;
+	//	AdditiveExpression ({InfixExpression.left=current} op=('<<' | '>>') right=ShiftExpression)?;
 	public ShiftExpressionElements getShiftExpressionAccess() {
 		return pShiftExpression;
 	}
@@ -5179,7 +5186,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//AdditiveExpression Expression:
-	//	MultiplicativeExpression ({ArithmeticExpression.left=current} op=('+' | '-') right=AdditiveExpression)?;
+	//	MultiplicativeExpression ({InfixExpression.left=current} op=('+' | '-') right=AdditiveExpression)?;
 	public AdditiveExpressionElements getAdditiveExpressionAccess() {
 		return pAdditiveExpression;
 	}
@@ -5189,7 +5196,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//MultiplicativeExpression Expression:
-	//	CastExpression ({ArithmeticExpression.left=current} op=('*' | '/' | '%') right=MultiplicativeExpression)?;
+	//	CastExpression ({InfixExpression.left=current} op=('*' | '/' | '%') right=MultiplicativeExpression)?;
 	public MultiplicativeExpressionElements getMultiplicativeExpressionAccess() {
 		return pMultiplicativeExpression;
 	}
@@ -5199,7 +5206,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//CastExpression:
-	//	UnaryExpression
+	//	PrefixExpression
 	//	| '(' type=DataTypeSpecifier ')' left=CastExpression;
 	public CastExpressionElements getCastExpressionAccess() {
 		return pCastExpression;
@@ -5209,20 +5216,20 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getCastExpressionAccess().getRule();
 	}
 	
-	//UnaryExpression:
+	//PrefixExpression:
 	//	PostfixExpression
-	//	| op='++' left=UnaryExpression
-	//	| op='--' left=UnaryExpression
+	//	| op='++' left=PrefixExpression
+	//	| op='--' left=PrefixExpression
 	//	| UnaryOperator left=CastExpression
 	//	| op='sizeof' '(' (left=PostfixExpression | type=DataTypeSpecifier) ')'
 	//	//    |   op='_Alignof' '(' type=TypeSpecifier ')'
 	//;
-	public UnaryExpressionElements getUnaryExpressionAccess() {
-		return pUnaryExpression;
+	public PrefixExpressionElements getPrefixExpressionAccess() {
+		return pPrefixExpression;
 	}
 	
-	public ParserRule getUnaryExpressionRule() {
-		return getUnaryExpressionAccess().getRule();
+	public ParserRule getPrefixExpressionRule() {
+		return getPrefixExpressionAccess().getRule();
 	}
 	
 	//fragment UnaryOperator:
@@ -5326,7 +5333,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//IntegerConstant:
-	//	val=NATURAL IntegerSuffix?;
+	//	val=INTEGER IntegerSuffix?;
 	public IntegerConstantElements getIntegerConstantAccess() {
 		return pIntegerConstant;
 	}
@@ -5512,10 +5519,10 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return tFLOAT;
 	}
 	
-	//terminal NATURAL returns ecore::EBigInteger:
-	//	DECIMALCONSTANT | BINARYCONSTANT | HEXADECIMALCONSTANT | OCTALCONSTANT;
-	public TerminalRule getNATURALRule() {
-		return tNATURAL;
+	//terminal INTEGER returns ecore::EBigInteger:
+	//	DECIMALCONSTANT | BINARYCONSTANT | HEXADECIMALCONSTANT | OCTALCONSTANT | VLOGCONSTANT;
+	public TerminalRule getINTEGERRule() {
+		return tINTEGER;
 	}
 	
 	//terminal fragment BINARYCONSTANT:
@@ -5540,6 +5547,12 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//	('0x' | '0X') ('0'..'9' | 'a'..'f' | 'A'..'F') ('_'? ('0'..'9' | 'a'..'f' | 'A'..'F'))*;
 	public TerminalRule getHEXADECIMALCONSTANTRule() {
 		return tHEXADECIMALCONSTANT;
+	}
+	
+	//terminal fragment VLOGCONSTANT:
+	//	'0'..'9'+ "'" ('b' '01'+ | 'o' '0'..'7'+ | 'd' '0'..'9'+ | 'h' ('0'..'9' | 'a'..'f' | 'A'..'F')+);
+	public TerminalRule getVLOGCONSTANTRule() {
+		return tVLOGCONSTANT;
 	}
 	
 	//terminal CHARCONST:

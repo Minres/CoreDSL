@@ -492,13 +492,13 @@ public interface CoreDslFactory extends EFactory
   CastExpression createCastExpression();
 
   /**
-   * Returns a new object of class '<em>Unary Expression</em>'.
+   * Returns a new object of class '<em>Prefix Expression</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Unary Expression</em>'.
+   * @return a new object of class '<em>Prefix Expression</em>'.
    * @generated
    */
-  UnaryExpression createUnaryExpression();
+  PrefixExpression createPrefixExpression();
 
   /**
    * Returns a new object of class '<em>Unary Operator</em>'.
@@ -672,22 +672,13 @@ public interface CoreDslFactory extends EFactory
   ConditionalExpression createConditionalExpression();
 
   /**
-   * Returns a new object of class '<em>Logical Expr</em>'.
+   * Returns a new object of class '<em>Infix Expression</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Logical Expr</em>'.
+   * @return a new object of class '<em>Infix Expression</em>'.
    * @generated
    */
-  LogicalExpr createLogicalExpr();
-
-  /**
-   * Returns a new object of class '<em>Arithmetic Expression</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Arithmetic Expression</em>'.
-   * @generated
-   */
-  ArithmeticExpression createArithmeticExpression();
+  InfixExpression createInfixExpression();
 
   /**
    * Returns the package supported by this factory.

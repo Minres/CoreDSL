@@ -118,7 +118,7 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
       case CoreDslPackage.DIRECT_ABSTRACT_DECLARATOR: return createDirectAbstractDeclarator();
       case CoreDslPackage.EXPRESSION: return createExpression();
       case CoreDslPackage.CAST_EXPRESSION: return createCastExpression();
-      case CoreDslPackage.UNARY_EXPRESSION: return createUnaryExpression();
+      case CoreDslPackage.PREFIX_EXPRESSION: return createPrefixExpression();
       case CoreDslPackage.UNARY_OPERATOR: return createUnaryOperator();
       case CoreDslPackage.POSTFIX_EXPRESSION: return createPostfixExpression();
       case CoreDslPackage.POSTFIX_OPERATOR: return createPostfixOperator();
@@ -138,8 +138,7 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
       case CoreDslPackage.CHARACTER_CONSTANT: return createCharacterConstant();
       case CoreDslPackage.ASSIGNMENT_EXPRESSION: return createAssignmentExpression();
       case CoreDslPackage.CONDITIONAL_EXPRESSION: return createConditionalExpression();
-      case CoreDslPackage.LOGICAL_EXPR: return createLogicalExpr();
-      case CoreDslPackage.ARITHMETIC_EXPRESSION: return createArithmeticExpression();
+      case CoreDslPackage.INFIX_EXPRESSION: return createInfixExpression();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -833,10 +832,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public UnaryExpression createUnaryExpression()
+  public PrefixExpression createPrefixExpression()
   {
-    UnaryExpressionImpl unaryExpression = new UnaryExpressionImpl();
-    return unaryExpression;
+    PrefixExpressionImpl prefixExpression = new PrefixExpressionImpl();
+    return prefixExpression;
   }
 
   /**
@@ -1073,22 +1072,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public LogicalExpr createLogicalExpr()
+  public InfixExpression createInfixExpression()
   {
-    LogicalExprImpl logicalExpr = new LogicalExprImpl();
-    return logicalExpr;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public ArithmeticExpression createArithmeticExpression()
-  {
-    ArithmeticExpressionImpl arithmeticExpression = new ArithmeticExpressionImpl();
-    return arithmeticExpression;
+    InfixExpressionImpl infixExpression = new InfixExpressionImpl();
+    return infixExpression;
   }
 
   /**

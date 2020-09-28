@@ -3,6 +3,7 @@
  */
 package com.minres.coredsl.coreDsl;
 
+import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -13,7 +14,8 @@ package com.minres.coredsl.coreDsl;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.AssignmentExpression#getOp <em>Op</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.AssignmentExpression#getAssignment <em>Assignment</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.AssignmentExpression#getRights <em>Rights</em>}</li>
  * </ul>
  *
  * @see com.minres.coredsl.coreDsl.CoreDslPackage#getAssignmentExpression()
@@ -23,25 +25,27 @@ package com.minres.coredsl.coreDsl;
 public interface AssignmentExpression extends Expression
 {
   /**
-   * Returns the value of the '<em><b>Op</b></em>' attribute.
+   * Returns the value of the '<em><b>Assignment</b></em>' attribute list.
+   * The list contents are of type {@link java.lang.String}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Op</em>' attribute.
-   * @see #setOp(String)
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getAssignmentExpression_Op()
-   * @model
+   * @return the value of the '<em>Assignment</em>' attribute list.
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getAssignmentExpression_Assignment()
+   * @model unique="false"
    * @generated
    */
-  String getOp();
+  EList<String> getAssignment();
 
   /**
-   * Sets the value of the '{@link com.minres.coredsl.coreDsl.AssignmentExpression#getOp <em>Op</em>}' attribute.
+   * Returns the value of the '<em><b>Rights</b></em>' containment reference list.
+   * The list contents are of type {@link com.minres.coredsl.coreDsl.Expression}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Op</em>' attribute.
-   * @see #getOp()
+   * @return the value of the '<em>Rights</em>' containment reference list.
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getAssignmentExpression_Rights()
+   * @model containment="true"
    * @generated
    */
-  void setOp(String value);
+  EList<Expression> getRights();
 
 } // AssignmentExpression

@@ -180,9 +180,9 @@ ruleBitField:
 // Rule RangeSpec
 ruleRangeSpec:
 	'['
-	RULE_NATURAL
+	RULE_INTEGER
 	':'
-	RULE_NATURAL
+	RULE_INTEGER
 	']'
 ;
 
@@ -473,7 +473,7 @@ ruleBitSizeSpecifier:
 // Rule BitSizeValue
 ruleBitSizeValue:
 	(
-		RULE_NATURAL
+		RULE_INTEGER
 		    |
 		RULE_ID
 	)
@@ -659,31 +659,33 @@ ruleExpression:
 
 // Rule AssignmentExpression
 ruleAssignmentExpression:
-	ruleUnaryExpression
+	rulePrefixExpression
 	(
-		'='
-		    |
-		'*='
-		    |
-		'/='
-		    |
-		'%='
-		    |
-		'+='
-		    |
-		'-='
-		    |
-		'<<='
-		    |
-		'>>='
-		    |
-		'&='
-		    |
-		'^='
-		    |
-		'|='
-	)
-	ruleConditionalExpression
+		(
+			'='
+			    |
+			'*='
+			    |
+			'/='
+			    |
+			'%='
+			    |
+			'+='
+			    |
+			'-='
+			    |
+			'<<='
+			    |
+			'>>='
+			    |
+			'&='
+			    |
+			'^='
+			    |
+			'|='
+		)
+		ruleConditionalExpression
+	)+
 ;
 
 // Rule ConditionalExpression
@@ -816,7 +818,7 @@ ruleMultiplicativeExpression:
 // Rule CastExpression
 ruleCastExpression:
 	(
-		ruleUnaryExpression
+		rulePrefixExpression
 		    |
 		'('
 		ruleDataTypeSpecifier
@@ -825,16 +827,16 @@ ruleCastExpression:
 	)
 ;
 
-// Rule UnaryExpression
-ruleUnaryExpression:
+// Rule PrefixExpression
+rulePrefixExpression:
 	(
 		rulePostfixExpression
 		    |
 		'++'
-		ruleUnaryExpression
+		rulePrefixExpression
 		    |
 		'--'
-		ruleUnaryExpression
+		rulePrefixExpression
 		    |
 		ruleUnaryOperator
 		ruleCastExpression
@@ -963,7 +965,7 @@ ruleConstant:
 
 // Rule IntegerConstant
 ruleIntegerConstant:
-	RULE_NATURAL
+	RULE_INTEGER
 	ruleIntegerSuffix?
 ;
 
@@ -1144,7 +1146,7 @@ RULE_BOOLEAN : ('true'|'false');
 
 RULE_FLOAT : ('0'..'9')+ '.' ('0'..'9')* (('e'|'E') ('+'|'-')? ('0'..'9')+)?;
 
-RULE_NATURAL : (RULE_DECIMALCONSTANT|RULE_BINARYCONSTANT|RULE_HEXADECIMALCONSTANT|RULE_OCTALCONSTANT);
+RULE_INTEGER : (RULE_DECIMALCONSTANT|RULE_BINARYCONSTANT|RULE_HEXADECIMALCONSTANT|RULE_OCTALCONSTANT|RULE_VLOGCONSTANT);
 
 fragment RULE_BINARYCONSTANT : ('0b'|'0B') '0'..'1' ('_'? '0'..'1')*;
 
@@ -1153,6 +1155,8 @@ fragment RULE_OCTALCONSTANT : '0' '_'? '0'..'7' ('_'? '0'..'7')*;
 fragment RULE_DECIMALCONSTANT : ('0'|'1'..'9' ('_'? '0'..'9')*);
 
 fragment RULE_HEXADECIMALCONSTANT : ('0x'|'0X') ('0'..'9'|'a'..'f'|'A'..'F') ('_'? ('0'..'9'|'a'..'f'|'A'..'F'))*;
+
+fragment RULE_VLOGCONSTANT : ('0'..'9')+ '\'' ('b' '01'+|'o' ('0'..'7')+|'d' ('0'..'9')+|'h' ('0'..'9'|'a'..'f'|'A'..'F')+);
 
 RULE_CHARCONST : '\'' ('\\' .|~(('\\'|'\'')))* '\'';
 

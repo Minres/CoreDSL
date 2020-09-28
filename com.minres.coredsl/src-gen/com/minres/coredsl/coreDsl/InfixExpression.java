@@ -6,21 +6,21 @@ package com.minres.coredsl.coreDsl;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Arithmetic Expression</b></em>'.
+ * A representation of the model object '<em><b>Infix Expression</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.ArithmeticExpression#getOp <em>Op</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.InfixExpression#getOp <em>Op</em>}</li>
  * </ul>
  *
- * @see com.minres.coredsl.coreDsl.CoreDslPackage#getArithmeticExpression()
+ * @see com.minres.coredsl.coreDsl.CoreDslPackage#getInfixExpression()
  * @model
  * @generated
  */
-public interface ArithmeticExpression extends Expression
+public interface InfixExpression extends Expression
 {
   /**
    * Returns the value of the '<em><b>Op</b></em>' attribute.
@@ -28,14 +28,14 @@ public interface ArithmeticExpression extends Expression
    * <!-- end-user-doc -->
    * @return the value of the '<em>Op</em>' attribute.
    * @see #setOp(String)
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getArithmeticExpression_Op()
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getInfixExpression_Op()
    * @model
    * @generated
    */
   String getOp();
 
   /**
-   * Sets the value of the '{@link com.minres.coredsl.coreDsl.ArithmeticExpression#getOp <em>Op</em>}' attribute.
+   * Sets the value of the '{@link com.minres.coredsl.coreDsl.InfixExpression#getOp <em>Op</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Op</em>' attribute.
@@ -44,4 +44,4 @@ public interface ArithmeticExpression extends Expression
    */
   void setOp(String value);
 
-} // ArithmeticExpression
+} // InfixExpression

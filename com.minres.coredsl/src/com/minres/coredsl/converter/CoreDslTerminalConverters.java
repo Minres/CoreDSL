@@ -10,11 +10,19 @@ import com.google.inject.Inject;
 
 public class CoreDslTerminalConverters extends DefaultTerminalConverters {
         @Inject
-        private NATURALValueConverter binaryValueConverter;
+        private INTEGERValueConverter intValueConverter;
         
-        @ValueConverter(rule = "NATURAL")
-        public IValueConverter<BigInteger> NATURAL() {
-                return binaryValueConverter;
+        @Inject
+        private BOOLEANValueConverter boolValueConverter;
+
+        @ValueConverter(rule = "INTEGER")
+        public IValueConverter<BigInteger> INTEGER() {
+                return intValueConverter;
+        }
+
+        @ValueConverter(rule = "BOOLEAN")
+        public IValueConverter<Boolean> BOOLEAN() {
+                return boolValueConverter;
         }
 
 }

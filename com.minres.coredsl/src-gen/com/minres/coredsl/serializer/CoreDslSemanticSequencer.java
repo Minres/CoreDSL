@@ -4,7 +4,6 @@
 package com.minres.coredsl.serializer;
 
 import com.google.inject.Inject;
-import com.minres.coredsl.coreDsl.ArithmeticExpression;
 import com.minres.coredsl.coreDsl.AssignmentExpression;
 import com.minres.coredsl.coreDsl.BitField;
 import com.minres.coredsl.coreDsl.BitSizeSpecifier;
@@ -31,6 +30,7 @@ import com.minres.coredsl.coreDsl.FloatingConstant;
 import com.minres.coredsl.coreDsl.FunctionDefinition;
 import com.minres.coredsl.coreDsl.IfStatement;
 import com.minres.coredsl.coreDsl.Import;
+import com.minres.coredsl.coreDsl.InfixExpression;
 import com.minres.coredsl.coreDsl.InitDeclarator;
 import com.minres.coredsl.coreDsl.Initializer;
 import com.minres.coredsl.coreDsl.Instruction;
@@ -39,11 +39,11 @@ import com.minres.coredsl.coreDsl.IntegerConstant;
 import com.minres.coredsl.coreDsl.IterationStatement;
 import com.minres.coredsl.coreDsl.JumpStatement;
 import com.minres.coredsl.coreDsl.LabeledStatement;
-import com.minres.coredsl.coreDsl.LogicalExpr;
 import com.minres.coredsl.coreDsl.ParameterDeclaration;
 import com.minres.coredsl.coreDsl.PodSpecifier;
 import com.minres.coredsl.coreDsl.PostfixExpression;
 import com.minres.coredsl.coreDsl.PostfixOperator;
+import com.minres.coredsl.coreDsl.PrefixExpression;
 import com.minres.coredsl.coreDsl.PrimaryExpression;
 import com.minres.coredsl.coreDsl.RangeSpec;
 import com.minres.coredsl.coreDsl.StringLiteral;
@@ -54,7 +54,6 @@ import com.minres.coredsl.coreDsl.SwitchStatement;
 import com.minres.coredsl.coreDsl.TypeOrVarDeclaration;
 import com.minres.coredsl.coreDsl.TypedefDeclaration;
 import com.minres.coredsl.coreDsl.TypedefRef;
-import com.minres.coredsl.coreDsl.UnaryExpression;
 import com.minres.coredsl.services.CoreDslGrammarAccess;
 import java.util.Set;
 import org.eclipse.emf.ecore.EObject;
@@ -81,39 +80,6 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 		Set<Parameter> parameters = context.getEnabledBooleanParameters();
 		if (epackage == CoreDslPackage.eINSTANCE)
 			switch (semanticObject.eClass().getClassifierID()) {
-			case CoreDslPackage.ARITHMETIC_EXPRESSION:
-				if (action == grammarAccess.getShiftExpressionAccess().getArithmeticExpressionLeftAction_1_0()
-						|| rule == grammarAccess.getAdditiveExpressionRule()) {
-					sequence_AdditiveExpression_MultiplicativeExpression(context, (ArithmeticExpression) semanticObject); 
-					return; 
-				}
-				else if (rule == grammarAccess.getConditionalExpressionRule()
-						|| action == grammarAccess.getConditionalExpressionAccess().getConditionalExpressionCondAction_1_0()
-						|| rule == grammarAccess.getLogicalOrExpressionRule()
-						|| action == grammarAccess.getLogicalOrExpressionAccess().getLogicalExprLeftAction_1_0()
-						|| rule == grammarAccess.getLogicalAndExpressionRule()
-						|| action == grammarAccess.getLogicalAndExpressionAccess().getLogicalExprLeftAction_1_0()
-						|| rule == grammarAccess.getInclusiveOrExpressionRule()
-						|| action == grammarAccess.getInclusiveOrExpressionAccess().getLogicalExprLeftAction_1_0()
-						|| rule == grammarAccess.getExclusiveOrExpressionRule()
-						|| action == grammarAccess.getExclusiveOrExpressionAccess().getLogicalExprLeftAction_1_0()
-						|| rule == grammarAccess.getAndExpressionRule()
-						|| action == grammarAccess.getAndExpressionAccess().getLogicalExprLeftAction_1_0()
-						|| rule == grammarAccess.getEqualityExpressionRule()
-						|| action == grammarAccess.getEqualityExpressionAccess().getLogicalExprLeftAction_1_0()
-						|| rule == grammarAccess.getRelationalExpressionRule()
-						|| action == grammarAccess.getRelationalExpressionAccess().getLogicalExprLeftAction_1_0()
-						|| rule == grammarAccess.getShiftExpressionRule()
-						|| rule == grammarAccess.getConstantExpressionRule()) {
-					sequence_AdditiveExpression_MultiplicativeExpression_ShiftExpression(context, (ArithmeticExpression) semanticObject); 
-					return; 
-				}
-				else if (action == grammarAccess.getAdditiveExpressionAccess().getArithmeticExpressionLeftAction_1_0()
-						|| rule == grammarAccess.getMultiplicativeExpressionRule()) {
-					sequence_MultiplicativeExpression(context, (ArithmeticExpression) semanticObject); 
-					return; 
-				}
-				else break;
 			case CoreDslPackage.ASSIGNMENT_EXPRESSION:
 				sequence_AssignmentExpression(context, (AssignmentExpression) semanticObject); 
 				return; 
@@ -197,6 +163,60 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 			case CoreDslPackage.IMPORT:
 				sequence_Import(context, (Import) semanticObject); 
 				return; 
+			case CoreDslPackage.INFIX_EXPRESSION:
+				if (rule == grammarAccess.getConditionalExpressionRule()
+						|| action == grammarAccess.getConditionalExpressionAccess().getConditionalExpressionCondAction_1_0()
+						|| rule == grammarAccess.getLogicalOrExpressionRule()
+						|| rule == grammarAccess.getConstantExpressionRule()) {
+					sequence_AdditiveExpression_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_LogicalOrExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(context, (InfixExpression) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getLogicalOrExpressionAccess().getInfixExpressionLeftAction_1_0()
+						|| rule == grammarAccess.getLogicalAndExpressionRule()) {
+					sequence_AdditiveExpression_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(context, (InfixExpression) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getLogicalAndExpressionAccess().getInfixExpressionLeftAction_1_0()
+						|| rule == grammarAccess.getInclusiveOrExpressionRule()) {
+					sequence_AdditiveExpression_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(context, (InfixExpression) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getInclusiveOrExpressionAccess().getInfixExpressionLeftAction_1_0()
+						|| rule == grammarAccess.getExclusiveOrExpressionRule()) {
+					sequence_AdditiveExpression_AndExpression_EqualityExpression_ExclusiveOrExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(context, (InfixExpression) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getExclusiveOrExpressionAccess().getInfixExpressionLeftAction_1_0()
+						|| rule == grammarAccess.getAndExpressionRule()) {
+					sequence_AdditiveExpression_AndExpression_EqualityExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(context, (InfixExpression) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getAndExpressionAccess().getInfixExpressionLeftAction_1_0()
+						|| rule == grammarAccess.getEqualityExpressionRule()) {
+					sequence_AdditiveExpression_EqualityExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(context, (InfixExpression) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getShiftExpressionAccess().getInfixExpressionLeftAction_1_0()
+						|| rule == grammarAccess.getAdditiveExpressionRule()) {
+					sequence_AdditiveExpression_MultiplicativeExpression(context, (InfixExpression) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getEqualityExpressionAccess().getInfixExpressionLeftAction_1_0()
+						|| rule == grammarAccess.getRelationalExpressionRule()) {
+					sequence_AdditiveExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(context, (InfixExpression) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getRelationalExpressionAccess().getInfixExpressionLeftAction_1_0()
+						|| rule == grammarAccess.getShiftExpressionRule()) {
+					sequence_AdditiveExpression_MultiplicativeExpression_ShiftExpression(context, (InfixExpression) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getAdditiveExpressionAccess().getInfixExpressionLeftAction_1_0()
+						|| rule == grammarAccess.getMultiplicativeExpressionRule()) {
+					sequence_MultiplicativeExpression(context, (InfixExpression) semanticObject); 
+					return; 
+				}
+				else break;
 			case CoreDslPackage.INIT_DECLARATOR:
 				sequence_InitDeclarator(context, (InitDeclarator) semanticObject); 
 				return; 
@@ -221,45 +241,6 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 			case CoreDslPackage.LABELED_STATEMENT:
 				sequence_LabeledStatement(context, (LabeledStatement) semanticObject); 
 				return; 
-			case CoreDslPackage.LOGICAL_EXPR:
-				if (rule == grammarAccess.getConditionalExpressionRule()
-						|| action == grammarAccess.getConditionalExpressionAccess().getConditionalExpressionCondAction_1_0()
-						|| rule == grammarAccess.getLogicalOrExpressionRule()
-						|| rule == grammarAccess.getConstantExpressionRule()) {
-					sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_LogicalOrExpression_RelationalExpression(context, (LogicalExpr) semanticObject); 
-					return; 
-				}
-				else if (action == grammarAccess.getLogicalOrExpressionAccess().getLogicalExprLeftAction_1_0()
-						|| rule == grammarAccess.getLogicalAndExpressionRule()) {
-					sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_RelationalExpression(context, (LogicalExpr) semanticObject); 
-					return; 
-				}
-				else if (action == grammarAccess.getLogicalAndExpressionAccess().getLogicalExprLeftAction_1_0()
-						|| rule == grammarAccess.getInclusiveOrExpressionRule()) {
-					sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_RelationalExpression(context, (LogicalExpr) semanticObject); 
-					return; 
-				}
-				else if (action == grammarAccess.getInclusiveOrExpressionAccess().getLogicalExprLeftAction_1_0()
-						|| rule == grammarAccess.getExclusiveOrExpressionRule()) {
-					sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_RelationalExpression(context, (LogicalExpr) semanticObject); 
-					return; 
-				}
-				else if (action == grammarAccess.getExclusiveOrExpressionAccess().getLogicalExprLeftAction_1_0()
-						|| rule == grammarAccess.getAndExpressionRule()) {
-					sequence_AndExpression_EqualityExpression_RelationalExpression(context, (LogicalExpr) semanticObject); 
-					return; 
-				}
-				else if (action == grammarAccess.getAndExpressionAccess().getLogicalExprLeftAction_1_0()
-						|| rule == grammarAccess.getEqualityExpressionRule()) {
-					sequence_EqualityExpression_RelationalExpression(context, (LogicalExpr) semanticObject); 
-					return; 
-				}
-				else if (action == grammarAccess.getEqualityExpressionAccess().getLogicalExprLeftAction_1_0()
-						|| rule == grammarAccess.getRelationalExpressionRule()) {
-					sequence_RelationalExpression(context, (LogicalExpr) semanticObject); 
-					return; 
-				}
-				else break;
 			case CoreDslPackage.PARAMETER_DECLARATION:
 				sequence_ParameterDeclaration(context, (ParameterDeclaration) semanticObject); 
 				return; 
@@ -271,6 +252,9 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				return; 
 			case CoreDslPackage.POSTFIX_OPERATOR:
 				sequence_PostfixOperator(context, (PostfixOperator) semanticObject); 
+				return; 
+			case CoreDslPackage.PREFIX_EXPRESSION:
+				sequence_PrefixExpression_UnaryOperator(context, (PrefixExpression) semanticObject); 
 				return; 
 			case CoreDslPackage.PRIMARY_EXPRESSION:
 				sequence_PrimaryExpression(context, (PrimaryExpression) semanticObject); 
@@ -302,9 +286,6 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 			case CoreDslPackage.TYPEDEF_REF:
 				sequence_TypedefRef(context, (TypedefRef) semanticObject); 
 				return; 
-			case CoreDslPackage.UNARY_EXPRESSION:
-				sequence_UnaryExpression_UnaryOperator(context, (UnaryExpression) semanticObject); 
-				return; 
 			}
 		if (errorAcceptor != null)
 			errorAcceptor.accept(diagnosticProvider.createInvalidContextOrTypeDiagnostic(semanticObject, context));
@@ -312,146 +293,182 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     ShiftExpression.ArithmeticExpression_1_0 returns ArithmeticExpression
-	 *     AdditiveExpression returns ArithmeticExpression
+	 *     ConditionalExpression returns InfixExpression
+	 *     ConditionalExpression.ConditionalExpression_1_0 returns InfixExpression
+	 *     LogicalOrExpression returns InfixExpression
+	 *     ConstantExpression returns InfixExpression
 	 *
 	 * Constraint:
 	 *     (
-	 *         (left=AdditiveExpression_ArithmeticExpression_1_0 (op='+' | op='-') right=AdditiveExpression) | 
-	 *         (left=MultiplicativeExpression_ArithmeticExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
+	 *         (left=LogicalOrExpression_InfixExpression_1_0 op='||' right=LogicalOrExpression) | 
+	 *         (left=LogicalAndExpression_InfixExpression_1_0 op='&&' right=LogicalAndExpression) | 
+	 *         (left=InclusiveOrExpression_InfixExpression_1_0 op='|' right=InclusiveOrExpression) | 
+	 *         (left=ExclusiveOrExpression_InfixExpression_1_0 op='^' right=ExclusiveOrExpression) | 
+	 *         (left=AndExpression_InfixExpression_1_0 op='&' right=AndExpression) | 
+	 *         (left=EqualityExpression_InfixExpression_1_0 (op='==' | op='!=') right=EqualityExpression) | 
+	 *         (left=RelationalExpression_InfixExpression_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression) | 
+	 *         (left=ShiftExpression_InfixExpression_1_0 (op='<<' | op='>>') right=ShiftExpression) | 
+	 *         (left=AdditiveExpression_InfixExpression_1_0 (op='+' | op='-') right=AdditiveExpression) | 
+	 *         (left=MultiplicativeExpression_InfixExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
 	 *     )
 	 */
-	protected void sequence_AdditiveExpression_MultiplicativeExpression(ISerializationContext context, ArithmeticExpression semanticObject) {
+	protected void sequence_AdditiveExpression_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_LogicalOrExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(ISerializationContext context, InfixExpression semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
 	/**
 	 * Contexts:
-	 *     ConditionalExpression returns ArithmeticExpression
-	 *     ConditionalExpression.ConditionalExpression_1_0 returns ArithmeticExpression
-	 *     LogicalOrExpression returns ArithmeticExpression
-	 *     LogicalOrExpression.LogicalExpr_1_0 returns ArithmeticExpression
-	 *     LogicalAndExpression returns ArithmeticExpression
-	 *     LogicalAndExpression.LogicalExpr_1_0 returns ArithmeticExpression
-	 *     InclusiveOrExpression returns ArithmeticExpression
-	 *     InclusiveOrExpression.LogicalExpr_1_0 returns ArithmeticExpression
-	 *     ExclusiveOrExpression returns ArithmeticExpression
-	 *     ExclusiveOrExpression.LogicalExpr_1_0 returns ArithmeticExpression
-	 *     AndExpression returns ArithmeticExpression
-	 *     AndExpression.LogicalExpr_1_0 returns ArithmeticExpression
-	 *     EqualityExpression returns ArithmeticExpression
-	 *     EqualityExpression.LogicalExpr_1_0 returns ArithmeticExpression
-	 *     RelationalExpression returns ArithmeticExpression
-	 *     RelationalExpression.LogicalExpr_1_0 returns ArithmeticExpression
-	 *     ShiftExpression returns ArithmeticExpression
-	 *     ConstantExpression returns ArithmeticExpression
+	 *     LogicalOrExpression.InfixExpression_1_0 returns InfixExpression
+	 *     LogicalAndExpression returns InfixExpression
 	 *
 	 * Constraint:
 	 *     (
-	 *         (left=ShiftExpression_ArithmeticExpression_1_0 (op='<<' | op='>>') right=ShiftExpression) | 
-	 *         (left=AdditiveExpression_ArithmeticExpression_1_0 (op='+' | op='-') right=AdditiveExpression) | 
-	 *         (left=MultiplicativeExpression_ArithmeticExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
+	 *         (left=LogicalAndExpression_InfixExpression_1_0 op='&&' right=LogicalAndExpression) | 
+	 *         (left=InclusiveOrExpression_InfixExpression_1_0 op='|' right=InclusiveOrExpression) | 
+	 *         (left=ExclusiveOrExpression_InfixExpression_1_0 op='^' right=ExclusiveOrExpression) | 
+	 *         (left=AndExpression_InfixExpression_1_0 op='&' right=AndExpression) | 
+	 *         (left=EqualityExpression_InfixExpression_1_0 (op='==' | op='!=') right=EqualityExpression) | 
+	 *         (left=RelationalExpression_InfixExpression_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression) | 
+	 *         (left=ShiftExpression_InfixExpression_1_0 (op='<<' | op='>>') right=ShiftExpression) | 
+	 *         (left=AdditiveExpression_InfixExpression_1_0 (op='+' | op='-') right=AdditiveExpression) | 
+	 *         (left=MultiplicativeExpression_InfixExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
 	 *     )
 	 */
-	protected void sequence_AdditiveExpression_MultiplicativeExpression_ShiftExpression(ISerializationContext context, ArithmeticExpression semanticObject) {
+	protected void sequence_AdditiveExpression_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(ISerializationContext context, InfixExpression semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
 	/**
 	 * Contexts:
-	 *     ConditionalExpression returns LogicalExpr
-	 *     ConditionalExpression.ConditionalExpression_1_0 returns LogicalExpr
-	 *     LogicalOrExpression returns LogicalExpr
-	 *     ConstantExpression returns LogicalExpr
+	 *     LogicalAndExpression.InfixExpression_1_0 returns InfixExpression
+	 *     InclusiveOrExpression returns InfixExpression
 	 *
 	 * Constraint:
 	 *     (
-	 *         (left=LogicalOrExpression_LogicalExpr_1_0 op='||' right=LogicalOrExpression) | 
-	 *         (left=LogicalAndExpression_LogicalExpr_1_0 op='&&' right=LogicalAndExpression) | 
-	 *         (left=InclusiveOrExpression_LogicalExpr_1_0 op='|' right=InclusiveOrExpression) | 
-	 *         (left=ExclusiveOrExpression_LogicalExpr_1_0 op='^' right=ExclusiveOrExpression) | 
-	 *         (left=AndExpression_LogicalExpr_1_0 op='&' right=AndExpression) | 
-	 *         (left=EqualityExpression_LogicalExpr_1_0 (op='==' | op='!=') right=EqualityExpression) | 
-	 *         (left=RelationalExpression_LogicalExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression)
+	 *         (left=InclusiveOrExpression_InfixExpression_1_0 op='|' right=InclusiveOrExpression) | 
+	 *         (left=ExclusiveOrExpression_InfixExpression_1_0 op='^' right=ExclusiveOrExpression) | 
+	 *         (left=AndExpression_InfixExpression_1_0 op='&' right=AndExpression) | 
+	 *         (left=EqualityExpression_InfixExpression_1_0 (op='==' | op='!=') right=EqualityExpression) | 
+	 *         (left=RelationalExpression_InfixExpression_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression) | 
+	 *         (left=ShiftExpression_InfixExpression_1_0 (op='<<' | op='>>') right=ShiftExpression) | 
+	 *         (left=AdditiveExpression_InfixExpression_1_0 (op='+' | op='-') right=AdditiveExpression) | 
+	 *         (left=MultiplicativeExpression_InfixExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
 	 *     )
 	 */
-	protected void sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_LogicalOrExpression_RelationalExpression(ISerializationContext context, LogicalExpr semanticObject) {
+	protected void sequence_AdditiveExpression_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(ISerializationContext context, InfixExpression semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
 	/**
 	 * Contexts:
-	 *     LogicalOrExpression.LogicalExpr_1_0 returns LogicalExpr
-	 *     LogicalAndExpression returns LogicalExpr
+	 *     InclusiveOrExpression.InfixExpression_1_0 returns InfixExpression
+	 *     ExclusiveOrExpression returns InfixExpression
 	 *
 	 * Constraint:
 	 *     (
-	 *         (left=LogicalAndExpression_LogicalExpr_1_0 op='&&' right=LogicalAndExpression) | 
-	 *         (left=InclusiveOrExpression_LogicalExpr_1_0 op='|' right=InclusiveOrExpression) | 
-	 *         (left=ExclusiveOrExpression_LogicalExpr_1_0 op='^' right=ExclusiveOrExpression) | 
-	 *         (left=AndExpression_LogicalExpr_1_0 op='&' right=AndExpression) | 
-	 *         (left=EqualityExpression_LogicalExpr_1_0 (op='==' | op='!=') right=EqualityExpression) | 
-	 *         (left=RelationalExpression_LogicalExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression)
+	 *         (left=ExclusiveOrExpression_InfixExpression_1_0 op='^' right=ExclusiveOrExpression) | 
+	 *         (left=AndExpression_InfixExpression_1_0 op='&' right=AndExpression) | 
+	 *         (left=EqualityExpression_InfixExpression_1_0 (op='==' | op='!=') right=EqualityExpression) | 
+	 *         (left=RelationalExpression_InfixExpression_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression) | 
+	 *         (left=ShiftExpression_InfixExpression_1_0 (op='<<' | op='>>') right=ShiftExpression) | 
+	 *         (left=AdditiveExpression_InfixExpression_1_0 (op='+' | op='-') right=AdditiveExpression) | 
+	 *         (left=MultiplicativeExpression_InfixExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
 	 *     )
 	 */
-	protected void sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_RelationalExpression(ISerializationContext context, LogicalExpr semanticObject) {
+	protected void sequence_AdditiveExpression_AndExpression_EqualityExpression_ExclusiveOrExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(ISerializationContext context, InfixExpression semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
 	/**
 	 * Contexts:
-	 *     LogicalAndExpression.LogicalExpr_1_0 returns LogicalExpr
-	 *     InclusiveOrExpression returns LogicalExpr
+	 *     ExclusiveOrExpression.InfixExpression_1_0 returns InfixExpression
+	 *     AndExpression returns InfixExpression
 	 *
 	 * Constraint:
 	 *     (
-	 *         (left=InclusiveOrExpression_LogicalExpr_1_0 op='|' right=InclusiveOrExpression) | 
-	 *         (left=ExclusiveOrExpression_LogicalExpr_1_0 op='^' right=ExclusiveOrExpression) | 
-	 *         (left=AndExpression_LogicalExpr_1_0 op='&' right=AndExpression) | 
-	 *         (left=EqualityExpression_LogicalExpr_1_0 (op='==' | op='!=') right=EqualityExpression) | 
-	 *         (left=RelationalExpression_LogicalExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression)
+	 *         (left=AndExpression_InfixExpression_1_0 op='&' right=AndExpression) | 
+	 *         (left=EqualityExpression_InfixExpression_1_0 (op='==' | op='!=') right=EqualityExpression) | 
+	 *         (left=RelationalExpression_InfixExpression_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression) | 
+	 *         (left=ShiftExpression_InfixExpression_1_0 (op='<<' | op='>>') right=ShiftExpression) | 
+	 *         (left=AdditiveExpression_InfixExpression_1_0 (op='+' | op='-') right=AdditiveExpression) | 
+	 *         (left=MultiplicativeExpression_InfixExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
 	 *     )
 	 */
-	protected void sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_RelationalExpression(ISerializationContext context, LogicalExpr semanticObject) {
+	protected void sequence_AdditiveExpression_AndExpression_EqualityExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(ISerializationContext context, InfixExpression semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
 	/**
 	 * Contexts:
-	 *     InclusiveOrExpression.LogicalExpr_1_0 returns LogicalExpr
-	 *     ExclusiveOrExpression returns LogicalExpr
+	 *     AndExpression.InfixExpression_1_0 returns InfixExpression
+	 *     EqualityExpression returns InfixExpression
 	 *
 	 * Constraint:
 	 *     (
-	 *         (left=ExclusiveOrExpression_LogicalExpr_1_0 op='^' right=ExclusiveOrExpression) | 
-	 *         (left=AndExpression_LogicalExpr_1_0 op='&' right=AndExpression) | 
-	 *         (left=EqualityExpression_LogicalExpr_1_0 (op='==' | op='!=') right=EqualityExpression) | 
-	 *         (left=RelationalExpression_LogicalExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression)
+	 *         (left=EqualityExpression_InfixExpression_1_0 (op='==' | op='!=') right=EqualityExpression) | 
+	 *         (left=RelationalExpression_InfixExpression_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression) | 
+	 *         (left=ShiftExpression_InfixExpression_1_0 (op='<<' | op='>>') right=ShiftExpression) | 
+	 *         (left=AdditiveExpression_InfixExpression_1_0 (op='+' | op='-') right=AdditiveExpression) | 
+	 *         (left=MultiplicativeExpression_InfixExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
 	 *     )
 	 */
-	protected void sequence_AndExpression_EqualityExpression_ExclusiveOrExpression_RelationalExpression(ISerializationContext context, LogicalExpr semanticObject) {
+	protected void sequence_AdditiveExpression_EqualityExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(ISerializationContext context, InfixExpression semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
 	/**
 	 * Contexts:
-	 *     ExclusiveOrExpression.LogicalExpr_1_0 returns LogicalExpr
-	 *     AndExpression returns LogicalExpr
+	 *     ShiftExpression.InfixExpression_1_0 returns InfixExpression
+	 *     AdditiveExpression returns InfixExpression
 	 *
 	 * Constraint:
 	 *     (
-	 *         (left=AndExpression_LogicalExpr_1_0 op='&' right=AndExpression) | 
-	 *         (left=EqualityExpression_LogicalExpr_1_0 (op='==' | op='!=') right=EqualityExpression) | 
-	 *         (left=RelationalExpression_LogicalExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression)
+	 *         (left=AdditiveExpression_InfixExpression_1_0 (op='+' | op='-') right=AdditiveExpression) | 
+	 *         (left=MultiplicativeExpression_InfixExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
 	 *     )
 	 */
-	protected void sequence_AndExpression_EqualityExpression_RelationalExpression(ISerializationContext context, LogicalExpr semanticObject) {
+	protected void sequence_AdditiveExpression_MultiplicativeExpression(ISerializationContext context, InfixExpression semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     EqualityExpression.InfixExpression_1_0 returns InfixExpression
+	 *     RelationalExpression returns InfixExpression
+	 *
+	 * Constraint:
+	 *     (
+	 *         (left=RelationalExpression_InfixExpression_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression) | 
+	 *         (left=ShiftExpression_InfixExpression_1_0 (op='<<' | op='>>') right=ShiftExpression) | 
+	 *         (left=AdditiveExpression_InfixExpression_1_0 (op='+' | op='-') right=AdditiveExpression) | 
+	 *         (left=MultiplicativeExpression_InfixExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
+	 *     )
+	 */
+	protected void sequence_AdditiveExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(ISerializationContext context, InfixExpression semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     RelationalExpression.InfixExpression_1_0 returns InfixExpression
+	 *     ShiftExpression returns InfixExpression
+	 *
+	 * Constraint:
+	 *     (
+	 *         (left=ShiftExpression_InfixExpression_1_0 (op='<<' | op='>>') right=ShiftExpression) | 
+	 *         (left=AdditiveExpression_InfixExpression_1_0 (op='+' | op='-') right=AdditiveExpression) | 
+	 *         (left=MultiplicativeExpression_InfixExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
+	 *     )
+	 */
+	protected void sequence_AdditiveExpression_MultiplicativeExpression_ShiftExpression(ISerializationContext context, InfixExpression semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -466,19 +483,21 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     (
 	 *         left=AssignmentExpression_AssignmentExpression_1 
 	 *         (
-	 *             op='=' | 
-	 *             op='*=' | 
-	 *             op='/=' | 
-	 *             op='%=' | 
-	 *             op='+=' | 
-	 *             op='-=' | 
-	 *             op='<<=' | 
-	 *             op='>>=' | 
-	 *             op='&=' | 
-	 *             op='^=' | 
-	 *             op='|='
-	 *         ) 
-	 *         right=ConditionalExpression
+	 *             (
+	 *                 assignment+='=' | 
+	 *                 assignment+='*=' | 
+	 *                 assignment+='/=' | 
+	 *                 assignment+='%=' | 
+	 *                 assignment+='+=' | 
+	 *                 assignment+='-=' | 
+	 *                 assignment+='<<=' | 
+	 *                 assignment+='>>=' | 
+	 *                 assignment+='&=' | 
+	 *                 assignment+='^=' | 
+	 *                 assignment+='|='
+	 *             ) 
+	 *             rights+=ConditionalExpression
+	 *         )+
 	 *     )
 	 */
 	protected void sequence_AssignmentExpression(ISerializationContext context, AssignmentExpression semanticObject) {
@@ -550,7 +569,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     BitSizeValue returns BitSizeValue
 	 *
 	 * Constraint:
-	 *     (val+=NATURAL | constant+=[Constant|ID])
+	 *     (val+=INTEGER | constant+=[Constant|ID])
 	 */
 	protected void sequence_BitSizeValue(ISerializationContext context, BitSizeValue semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -601,25 +620,25 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     ConditionalExpression returns CastExpression
 	 *     ConditionalExpression.ConditionalExpression_1_0 returns CastExpression
 	 *     LogicalOrExpression returns CastExpression
-	 *     LogicalOrExpression.LogicalExpr_1_0 returns CastExpression
+	 *     LogicalOrExpression.InfixExpression_1_0 returns CastExpression
 	 *     LogicalAndExpression returns CastExpression
-	 *     LogicalAndExpression.LogicalExpr_1_0 returns CastExpression
+	 *     LogicalAndExpression.InfixExpression_1_0 returns CastExpression
 	 *     InclusiveOrExpression returns CastExpression
-	 *     InclusiveOrExpression.LogicalExpr_1_0 returns CastExpression
+	 *     InclusiveOrExpression.InfixExpression_1_0 returns CastExpression
 	 *     ExclusiveOrExpression returns CastExpression
-	 *     ExclusiveOrExpression.LogicalExpr_1_0 returns CastExpression
+	 *     ExclusiveOrExpression.InfixExpression_1_0 returns CastExpression
 	 *     AndExpression returns CastExpression
-	 *     AndExpression.LogicalExpr_1_0 returns CastExpression
+	 *     AndExpression.InfixExpression_1_0 returns CastExpression
 	 *     EqualityExpression returns CastExpression
-	 *     EqualityExpression.LogicalExpr_1_0 returns CastExpression
+	 *     EqualityExpression.InfixExpression_1_0 returns CastExpression
 	 *     RelationalExpression returns CastExpression
-	 *     RelationalExpression.LogicalExpr_1_0 returns CastExpression
+	 *     RelationalExpression.InfixExpression_1_0 returns CastExpression
 	 *     ShiftExpression returns CastExpression
-	 *     ShiftExpression.ArithmeticExpression_1_0 returns CastExpression
+	 *     ShiftExpression.InfixExpression_1_0 returns CastExpression
 	 *     AdditiveExpression returns CastExpression
-	 *     AdditiveExpression.ArithmeticExpression_1_0 returns CastExpression
+	 *     AdditiveExpression.InfixExpression_1_0 returns CastExpression
 	 *     MultiplicativeExpression returns CastExpression
-	 *     MultiplicativeExpression.ArithmeticExpression_1_0 returns CastExpression
+	 *     MultiplicativeExpression.InfixExpression_1_0 returns CastExpression
 	 *     CastExpression returns CastExpression
 	 *     ConstantExpression returns CastExpression
 	 *
@@ -838,22 +857,6 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     AndExpression.LogicalExpr_1_0 returns LogicalExpr
-	 *     EqualityExpression returns LogicalExpr
-	 *
-	 * Constraint:
-	 *     (
-	 *         (left=EqualityExpression_LogicalExpr_1_0 (op='==' | op='!=') right=EqualityExpression) | 
-	 *         (left=RelationalExpression_LogicalExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression)
-	 *     )
-	 */
-	protected void sequence_EqualityExpression_RelationalExpression(ISerializationContext context, LogicalExpr semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
 	 *     Statement returns ExpressionStatement
 	 *     BlockItem returns ExpressionStatement
 	 *     ExpressionStatement returns ExpressionStatement
@@ -1041,7 +1044,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *
 	 * Constraint:
 	 *     (
-	 *         val=NATURAL 
+	 *         val=INTEGER 
 	 *         (unsigned?='u' | unsigned?='U')? 
 	 *         (
 	 *             (long?='l' | long?='L' | longlong?='ll' | longlong?='LL') 
@@ -1083,13 +1086,13 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     AdditiveExpression.ArithmeticExpression_1_0 returns ArithmeticExpression
-	 *     MultiplicativeExpression returns ArithmeticExpression
+	 *     AdditiveExpression.InfixExpression_1_0 returns InfixExpression
+	 *     MultiplicativeExpression returns InfixExpression
 	 *
 	 * Constraint:
-	 *     (left=MultiplicativeExpression_ArithmeticExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
+	 *     (left=MultiplicativeExpression_InfixExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
 	 */
-	protected void sequence_MultiplicativeExpression(ISerializationContext context, ArithmeticExpression semanticObject) {
+	protected void sequence_MultiplicativeExpression(ISerializationContext context, InfixExpression semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -1126,27 +1129,27 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     ConditionalExpression returns PostfixExpression
 	 *     ConditionalExpression.ConditionalExpression_1_0 returns PostfixExpression
 	 *     LogicalOrExpression returns PostfixExpression
-	 *     LogicalOrExpression.LogicalExpr_1_0 returns PostfixExpression
+	 *     LogicalOrExpression.InfixExpression_1_0 returns PostfixExpression
 	 *     LogicalAndExpression returns PostfixExpression
-	 *     LogicalAndExpression.LogicalExpr_1_0 returns PostfixExpression
+	 *     LogicalAndExpression.InfixExpression_1_0 returns PostfixExpression
 	 *     InclusiveOrExpression returns PostfixExpression
-	 *     InclusiveOrExpression.LogicalExpr_1_0 returns PostfixExpression
+	 *     InclusiveOrExpression.InfixExpression_1_0 returns PostfixExpression
 	 *     ExclusiveOrExpression returns PostfixExpression
-	 *     ExclusiveOrExpression.LogicalExpr_1_0 returns PostfixExpression
+	 *     ExclusiveOrExpression.InfixExpression_1_0 returns PostfixExpression
 	 *     AndExpression returns PostfixExpression
-	 *     AndExpression.LogicalExpr_1_0 returns PostfixExpression
+	 *     AndExpression.InfixExpression_1_0 returns PostfixExpression
 	 *     EqualityExpression returns PostfixExpression
-	 *     EqualityExpression.LogicalExpr_1_0 returns PostfixExpression
+	 *     EqualityExpression.InfixExpression_1_0 returns PostfixExpression
 	 *     RelationalExpression returns PostfixExpression
-	 *     RelationalExpression.LogicalExpr_1_0 returns PostfixExpression
+	 *     RelationalExpression.InfixExpression_1_0 returns PostfixExpression
 	 *     ShiftExpression returns PostfixExpression
-	 *     ShiftExpression.ArithmeticExpression_1_0 returns PostfixExpression
+	 *     ShiftExpression.InfixExpression_1_0 returns PostfixExpression
 	 *     AdditiveExpression returns PostfixExpression
-	 *     AdditiveExpression.ArithmeticExpression_1_0 returns PostfixExpression
+	 *     AdditiveExpression.InfixExpression_1_0 returns PostfixExpression
 	 *     MultiplicativeExpression returns PostfixExpression
-	 *     MultiplicativeExpression.ArithmeticExpression_1_0 returns PostfixExpression
+	 *     MultiplicativeExpression.InfixExpression_1_0 returns PostfixExpression
 	 *     CastExpression returns PostfixExpression
-	 *     UnaryExpression returns PostfixExpression
+	 *     PrefixExpression returns PostfixExpression
 	 *     PostfixExpression returns PostfixExpression
 	 *     PostfixExpression.PostfixExpression_1_0 returns PostfixExpression
 	 *     ConstantExpression returns PostfixExpression
@@ -1180,31 +1183,83 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
+	 *     AssignmentExpression.AssignmentExpression_1 returns PrefixExpression
+	 *     ConditionalExpression returns PrefixExpression
+	 *     ConditionalExpression.ConditionalExpression_1_0 returns PrefixExpression
+	 *     LogicalOrExpression returns PrefixExpression
+	 *     LogicalOrExpression.InfixExpression_1_0 returns PrefixExpression
+	 *     LogicalAndExpression returns PrefixExpression
+	 *     LogicalAndExpression.InfixExpression_1_0 returns PrefixExpression
+	 *     InclusiveOrExpression returns PrefixExpression
+	 *     InclusiveOrExpression.InfixExpression_1_0 returns PrefixExpression
+	 *     ExclusiveOrExpression returns PrefixExpression
+	 *     ExclusiveOrExpression.InfixExpression_1_0 returns PrefixExpression
+	 *     AndExpression returns PrefixExpression
+	 *     AndExpression.InfixExpression_1_0 returns PrefixExpression
+	 *     EqualityExpression returns PrefixExpression
+	 *     EqualityExpression.InfixExpression_1_0 returns PrefixExpression
+	 *     RelationalExpression returns PrefixExpression
+	 *     RelationalExpression.InfixExpression_1_0 returns PrefixExpression
+	 *     ShiftExpression returns PrefixExpression
+	 *     ShiftExpression.InfixExpression_1_0 returns PrefixExpression
+	 *     AdditiveExpression returns PrefixExpression
+	 *     AdditiveExpression.InfixExpression_1_0 returns PrefixExpression
+	 *     MultiplicativeExpression returns PrefixExpression
+	 *     MultiplicativeExpression.InfixExpression_1_0 returns PrefixExpression
+	 *     CastExpression returns PrefixExpression
+	 *     PrefixExpression returns PrefixExpression
+	 *     ConstantExpression returns PrefixExpression
+	 *
+	 * Constraint:
+	 *     (
+	 *         (op='++' left=PrefixExpression) | 
+	 *         (op='--' left=PrefixExpression) | 
+	 *         (op='sizeof' (left=PostfixExpression | type=DataTypeSpecifier)) | 
+	 *         (
+	 *             (
+	 *                 op='&' | 
+	 *                 op='*' | 
+	 *                 op='+' | 
+	 *                 op='-' | 
+	 *                 op='~' | 
+	 *                 op='!'
+	 *             ) 
+	 *             left=CastExpression
+	 *         )
+	 *     )
+	 */
+	protected void sequence_PrefixExpression_UnaryOperator(ISerializationContext context, PrefixExpression semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
 	 *     AssignmentExpression.AssignmentExpression_1 returns PrimaryExpression
 	 *     ConditionalExpression returns PrimaryExpression
 	 *     ConditionalExpression.ConditionalExpression_1_0 returns PrimaryExpression
 	 *     LogicalOrExpression returns PrimaryExpression
-	 *     LogicalOrExpression.LogicalExpr_1_0 returns PrimaryExpression
+	 *     LogicalOrExpression.InfixExpression_1_0 returns PrimaryExpression
 	 *     LogicalAndExpression returns PrimaryExpression
-	 *     LogicalAndExpression.LogicalExpr_1_0 returns PrimaryExpression
+	 *     LogicalAndExpression.InfixExpression_1_0 returns PrimaryExpression
 	 *     InclusiveOrExpression returns PrimaryExpression
-	 *     InclusiveOrExpression.LogicalExpr_1_0 returns PrimaryExpression
+	 *     InclusiveOrExpression.InfixExpression_1_0 returns PrimaryExpression
 	 *     ExclusiveOrExpression returns PrimaryExpression
-	 *     ExclusiveOrExpression.LogicalExpr_1_0 returns PrimaryExpression
+	 *     ExclusiveOrExpression.InfixExpression_1_0 returns PrimaryExpression
 	 *     AndExpression returns PrimaryExpression
-	 *     AndExpression.LogicalExpr_1_0 returns PrimaryExpression
+	 *     AndExpression.InfixExpression_1_0 returns PrimaryExpression
 	 *     EqualityExpression returns PrimaryExpression
-	 *     EqualityExpression.LogicalExpr_1_0 returns PrimaryExpression
+	 *     EqualityExpression.InfixExpression_1_0 returns PrimaryExpression
 	 *     RelationalExpression returns PrimaryExpression
-	 *     RelationalExpression.LogicalExpr_1_0 returns PrimaryExpression
+	 *     RelationalExpression.InfixExpression_1_0 returns PrimaryExpression
 	 *     ShiftExpression returns PrimaryExpression
-	 *     ShiftExpression.ArithmeticExpression_1_0 returns PrimaryExpression
+	 *     ShiftExpression.InfixExpression_1_0 returns PrimaryExpression
 	 *     AdditiveExpression returns PrimaryExpression
-	 *     AdditiveExpression.ArithmeticExpression_1_0 returns PrimaryExpression
+	 *     AdditiveExpression.InfixExpression_1_0 returns PrimaryExpression
 	 *     MultiplicativeExpression returns PrimaryExpression
-	 *     MultiplicativeExpression.ArithmeticExpression_1_0 returns PrimaryExpression
+	 *     MultiplicativeExpression.InfixExpression_1_0 returns PrimaryExpression
 	 *     CastExpression returns PrimaryExpression
-	 *     UnaryExpression returns PrimaryExpression
+	 *     PrefixExpression returns PrimaryExpression
 	 *     PostfixExpression returns PrimaryExpression
 	 *     PostfixExpression.PostfixExpression_1_0 returns PrimaryExpression
 	 *     PrimaryExpression returns PrimaryExpression
@@ -1223,7 +1278,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     RangeSpec returns RangeSpec
 	 *
 	 * Constraint:
-	 *     (left=NATURAL right=NATURAL)
+	 *     (left=INTEGER right=INTEGER)
 	 */
 	protected void sequence_RangeSpec(ISerializationContext context, RangeSpec semanticObject) {
 		if (errorAcceptor != null) {
@@ -1233,22 +1288,9 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.RANGE_SPEC__RIGHT));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getRangeSpecAccess().getLeftNATURALTerminalRuleCall_1_0(), semanticObject.getLeft());
-		feeder.accept(grammarAccess.getRangeSpecAccess().getRightNATURALTerminalRuleCall_3_0(), semanticObject.getRight());
+		feeder.accept(grammarAccess.getRangeSpecAccess().getLeftINTEGERTerminalRuleCall_1_0(), semanticObject.getLeft());
+		feeder.accept(grammarAccess.getRangeSpecAccess().getRightINTEGERTerminalRuleCall_3_0(), semanticObject.getRight());
 		feeder.finish();
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     EqualityExpression.LogicalExpr_1_0 returns LogicalExpr
-	 *     RelationalExpression returns LogicalExpr
-	 *
-	 * Constraint:
-	 *     (left=RelationalExpression_LogicalExpr_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression)
-	 */
-	protected void sequence_RelationalExpression(ISerializationContext context, LogicalExpr semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
@@ -1321,58 +1363,6 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
 		feeder.accept(grammarAccess.getTypedefRefAccess().getRefDirectDeclaratorIDTerminalRuleCall_0_1(), semanticObject.eGet(CoreDslPackage.Literals.TYPEDEF_REF__REF, false));
 		feeder.finish();
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     AssignmentExpression.AssignmentExpression_1 returns UnaryExpression
-	 *     ConditionalExpression returns UnaryExpression
-	 *     ConditionalExpression.ConditionalExpression_1_0 returns UnaryExpression
-	 *     LogicalOrExpression returns UnaryExpression
-	 *     LogicalOrExpression.LogicalExpr_1_0 returns UnaryExpression
-	 *     LogicalAndExpression returns UnaryExpression
-	 *     LogicalAndExpression.LogicalExpr_1_0 returns UnaryExpression
-	 *     InclusiveOrExpression returns UnaryExpression
-	 *     InclusiveOrExpression.LogicalExpr_1_0 returns UnaryExpression
-	 *     ExclusiveOrExpression returns UnaryExpression
-	 *     ExclusiveOrExpression.LogicalExpr_1_0 returns UnaryExpression
-	 *     AndExpression returns UnaryExpression
-	 *     AndExpression.LogicalExpr_1_0 returns UnaryExpression
-	 *     EqualityExpression returns UnaryExpression
-	 *     EqualityExpression.LogicalExpr_1_0 returns UnaryExpression
-	 *     RelationalExpression returns UnaryExpression
-	 *     RelationalExpression.LogicalExpr_1_0 returns UnaryExpression
-	 *     ShiftExpression returns UnaryExpression
-	 *     ShiftExpression.ArithmeticExpression_1_0 returns UnaryExpression
-	 *     AdditiveExpression returns UnaryExpression
-	 *     AdditiveExpression.ArithmeticExpression_1_0 returns UnaryExpression
-	 *     MultiplicativeExpression returns UnaryExpression
-	 *     MultiplicativeExpression.ArithmeticExpression_1_0 returns UnaryExpression
-	 *     CastExpression returns UnaryExpression
-	 *     UnaryExpression returns UnaryExpression
-	 *     ConstantExpression returns UnaryExpression
-	 *
-	 * Constraint:
-	 *     (
-	 *         (op='++' left=UnaryExpression) | 
-	 *         (op='--' left=UnaryExpression) | 
-	 *         (op='sizeof' (left=PostfixExpression | type=DataTypeSpecifier)) | 
-	 *         (
-	 *             (
-	 *                 op='&' | 
-	 *                 op='*' | 
-	 *                 op='+' | 
-	 *                 op='-' | 
-	 *                 op='~' | 
-	 *                 op='!'
-	 *             ) 
-	 *             left=CastExpression
-	 *         )
-	 *     )
-	 */
-	protected void sequence_UnaryExpression_UnaryOperator(ISerializationContext context, UnaryExpression semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	

@@ -228,7 +228,7 @@
     <genClasses ecoreClass="CoreDsl.ecore#//CastExpression">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//CastExpression/type"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//UnaryExpression"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//PrefixExpression"/>
     <genClasses ecoreClass="CoreDsl.ecore#//UnaryOperator">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//UnaryOperator/op"/>
     </genClasses>
@@ -283,16 +283,14 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//CharacterConstant/enc"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//AssignmentExpression">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//AssignmentExpression/op"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//AssignmentExpression/assignment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//AssignmentExpression/rights"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//ConditionalExpression">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//ConditionalExpression/cond"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//LogicalExpr">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//LogicalExpr/op"/>
-    </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//ArithmeticExpression">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//ArithmeticExpression/op"/>
+    <genClasses ecoreClass="CoreDsl.ecore#//InfixExpression">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//InfixExpression/op"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

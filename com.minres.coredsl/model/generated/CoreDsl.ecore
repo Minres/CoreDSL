@@ -252,11 +252,11 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//DataTypeSpecifier"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="UnaryExpression" eSuperTypes="#//Expression #//CastExpression #//UnaryOperator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="PrefixExpression" eSuperTypes="#//Expression #//CastExpression #//UnaryOperator"/>
   <eClassifiers xsi:type="ecore:EClass" name="UnaryOperator">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PostfixExpression" eSuperTypes="#//UnaryExpression">
+  <eClassifiers xsi:type="ecore:EClass" name="PostfixExpression" eSuperTypes="#//PrefixExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="ops" upperBound="-1" eType="#//PostfixOperator"
         containment="true"/>
   </eClassifiers>
@@ -351,16 +351,16 @@
     <eLiterals name="SIGNED" value="1" literal="s"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AssignmentExpression" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="assignment" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rights" upperBound="-1"
+        eType="#//Expression" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConditionalExpression" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="cond" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="LogicalExpr" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ArithmeticExpression" eSuperTypes="#//Expression">
+  <eClassifiers xsi:type="ecore:EClass" name="InfixExpression" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
 </ecore:EPackage>
