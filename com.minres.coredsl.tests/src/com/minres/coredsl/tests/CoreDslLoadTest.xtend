@@ -12,8 +12,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
+import static extension com.google.common.io.CharStreams.*
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.InstructionSet
+import java.io.FileReader
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
@@ -24,63 +26,14 @@ class CoreDslLoadTest {
 
 	@Test
 	def void loadSimpleModel() {
-		val input = '''
-InstructionSet RV32I {
-    constants {
-        unsigned int XLEN, FLEN;
-        unsigned CSR_SIZE = 4096;
-        unsigned REG_FILE_SIZE=32;
-    }
-    address_spaces {
-        char MEM[1<<XLEN];
-        unsigned CSR[CSR_SIZE];
-    }            
-    registers { 
-    	[[is_pc]] unsigned int PC ;
-    	int X[REG_FILE_SIZE];
-    } 
-    instructions { 
-        ADDI {
-            encoding: imm[11:0] | rs1[4:0] | b000 | rd[4:0] | b0010011;
-            behavior: {
-                X[rd] = X[rs1] + (int)imm;
-            }
-        }
-        SLTI {
-            encoding: imm[11:0] | rs1[4:0] | b010 | rd[4:0] | b0010011;
-            behavior: {
-                X[rd] = X[rs1] < (int)imm? 1 : 0;
-            }
-        }
-        SLTIU {
-            encoding: imm[11:0] | rs1[4:0] | b011 | rd[4:0] | b0010011;
-            behavior: {
-                X[rd] = X[rs1] < (unsigned int)imm? 1 : 0;
-            }
-        }
-        SW {
-            encoding: imm[11:5] | rs2[4:0] | rs1[4:0] | b010 | imm[4:0] | b0100011;
-            behavior: {
-                int offset = X[rs1] + (int)imm;
-                MEM[offset] = X[rs2];
-            }
-        }
-        JAL[[no_cont]] {
-            encoding:imm[20:20]s | imm[10:1]s | imm[11:11]s | imm[19:12]s | rd[4:0] | b1101111;
-            behavior: {
-            if(rd!=0) X[rd] = (unsigned)PC;
-                PC = PC+(signed)imm;
-            }
-        }
-    }
-}
-		'''
+		val input = new FileReader('inputs/isa_1.core_desc').readLines.join('\n')
 		val content = parseHelper.parse(input)
 		assertEquals(1, content.definitions.size)
 		val resource = content.eResource
 		EcoreUtil.resolveAll(resource);
 		assertEquals(0, resource.errors.size)
 		assertEquals(0, resource.warnings.size)
+		
 		
 		val InstructionSet result = content.definitions.get(0) as InstructionSet
 		assertNotNull(result)
@@ -114,60 +67,7 @@ InstructionSet RV32I {
 
 	@Test
 	def void loadSqrt() {
-		val input = '''
-InstructionSet Vec2D {
-    registers{
-        union ISAXRegFile {
-            double doublePrec;  // for a double precision entry
-            struct vector2d {
-	            float x_coord;
-	            float y_coord;
-			} vector2d;
-        } ISAXRegFile[32];
-       	struct simd{
-       		unsigned a1;
-       		unsigned a1;
-       		unsigned a3;
-       		unsigned a4;
-       	};
-       	typedef struct simd simd_t;
-       	simd_t reg[32];
-    }
-	functions{
-	    double sqrt(float x) {
-	        const double precision = 0.00001;
-	        double result = 1;
-	        double check = 1 - x;
-	        if (check < 0)
-	            check = -check;
-	        while (check >= precision) {
-	            result = (x / result + result) / 2.0;
-	            check = result * result - x;
-	            if (check < 0)
-	                check = -check;
-	        }
-	        return result;
-	    }
-	}
-	instructions{
-		VectorL{
-		    encoding: b10101 | rd[4:0] | rs1[4:0];
-		    args_disass:"{name(rd)}, {name(rs1)}";
-            behavior: {
-			    float xc = ISAXRegFile[rs1].vector2d.x_coord;
-			    float yc = ISAXRegFile[rs1].vector2d.y_coord;
-			    double result;
-			    double sqdist = xc*xc + yc*yc;
-			    if(sqdist==0 || sqdist[30:23]==0xff)
-			        result = 0; // avoid special cases
-			    else
-			        result = sqrt(sqdist);
-			    ISAXRegFile[rd].doublePrec = result;
-		    }
-	    }
-	}
-}
-		'''
+		val input = new FileReader('inputs/sqrt.core_desc').readLines.join('\n')
 		val content = parseHelper.parse(input)
 		assertEquals(1, content.definitions.size)
 		val resource = content.eResource
@@ -182,54 +82,7 @@ InstructionSet Vec2D {
 	
 	@Test
 	def void loadSine(){
-		val input = '''
-InstructionSet RISCVROB {
-    constants {
-        unsigned int NR_JOINTS = 8;
-        unsigned int REGF_DEPTH = 8;
-    }
-    registers{
-        double JointsRegF[REGF_DEPTH][NR_JOINTS]; //8 joints and 8 regs in RegFile
-    }
-    functions {
-        double sin(double angle) {
-            const unsigned int NR_ITERATIONS = 17;
-            const double ARCTAN[NR_ITERATIONS] = { 45,26.565,14.0362,7.125,3.576, 1.78991,0.895,0.447, 0.2238,0.1119,0.0559,0.0279,0.013988,0.006994, 0.003497,0.001749,0.000874};
-            double sin  = 0;
-            double cos  = 0.607238280;
-            int    sign = 1;
-            double pow  = 1;
-            double tcos, tsin;
-            for (int i = 0; i < NR_ITERATIONS; i++) {
-                if (angle >= 0)
-                    sign = 1;
-                else
-                    sign = -1;
-                tcos  = cos - sign * sin * pow;
-                tsin  = sin + sign * cos * pow;
-                angle = angle - sign * ARCTAN[i];
-                pow  *= 0.5;
-                cos   = tcos;
-                sin   = tsin;
-            }
-            return sin;
-       }
-    }
-    instructions {
-        SIMDSIN {  
-            encoding: b10101 | rd[4:0] | rs1[4:0] ;
-            args_disass:"{name(rd)}, {name(rs1)}"; 
-            behavior: {
-	            unsigned int i;
-	            // given sufficient hardware area, the HLS tool can unroll this and perform SIMD processing of up to NR_JOINTS computations in parallel
-	            // if constrained to smaller hardware area, the HLS tool will unroll only partially or even perform the computation sequentially
-	            for (i=0;i<NR_JOINTS;i++) // 8 joints
-	                JointsRegF[rd][i] = sin(JointsRegF[rs1][i]);
-            }
-        } // other instructions...
-    }
-}
-		'''
+		val input = new FileReader('inputs/sine.core_desc').readLines.join('\n')
 		val content = parseHelper.parse(input)
 		assertEquals(1, content.definitions.size)
 		val resource = content.eResource

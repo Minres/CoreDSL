@@ -8,8 +8,8 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 				{token: "string", regex: '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'},
 				{token: "string", regex: "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"},
 				{token: "constant.numeric", regex: "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"},
-				{token: "lparen", regex: "[\\[({]"},
-				{token: "rparen", regex: "[\\])}]"},
+				{token: "lparen", regex: "[({]"},
+				{token: "rparen", regex: "[)}]"},
 				{token: "keyword", regex: "\\b(?:" + keywords + ")\\b"}
 			],
 			"comment": [

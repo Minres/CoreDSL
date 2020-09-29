@@ -7,7 +7,7 @@ import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.DirectDeclarator;
 import com.minres.coredsl.coreDsl.Expression;
 import com.minres.coredsl.coreDsl.IntegerConstant;
-import com.minres.coredsl.coreDsl.TypeQualifier;
+import com.minres.coredsl.coreDsl.VariableRef;
 
 import java.util.Collection;
 
@@ -21,7 +21,8 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.emf.ecore.util.EDataTypeEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -31,16 +32,36 @@ import org.eclipse.emf.ecore.util.EDataTypeEList;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.DirectDeclaratorImpl#getName <em>Name</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.DirectDeclaratorImpl#getIndex <em>Index</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.DirectDeclaratorImpl#getLeft <em>Left</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.DirectDeclaratorImpl#getQualifiers <em>Qualifiers</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.DirectDeclaratorImpl#getExpr <em>Expr</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.DirectDeclaratorImpl#getSize <em>Size</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class DirectDeclaratorImpl extends VariableRefImpl implements DirectDeclarator
+public class DirectDeclaratorImpl extends ParameterListImpl implements DirectDeclarator
 {
+  /**
+   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getName()
+   * @generated
+   * @ordered
+   */
+  protected static final String NAME_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getName()
+   * @generated
+   * @ordered
+   */
+  protected String name = NAME_EDEFAULT;
+
   /**
    * The cached value of the '{@link #getIndex() <em>Index</em>}' containment reference.
    * <!-- begin-user-doc -->
@@ -62,24 +83,14 @@ public class DirectDeclaratorImpl extends VariableRefImpl implements DirectDecla
   protected DirectDeclarator left;
 
   /**
-   * The cached value of the '{@link #getQualifiers() <em>Qualifiers</em>}' attribute list.
+   * The cached value of the '{@link #getSize() <em>Size</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getQualifiers()
+   * @see #getSize()
    * @generated
    * @ordered
    */
-  protected EList<TypeQualifier> qualifiers;
-
-  /**
-   * The cached value of the '{@link #getExpr() <em>Expr</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getExpr()
-   * @generated
-   * @ordered
-   */
-  protected Expression expr;
+  protected EList<Expression> size;
 
   /**
    * <!-- begin-user-doc -->
@@ -100,6 +111,31 @@ public class DirectDeclaratorImpl extends VariableRefImpl implements DirectDecla
   protected EClass eStaticClass()
   {
     return CoreDslPackage.Literals.DIRECT_DECLARATOR;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String getName()
+  {
+    return name;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setName(String newName)
+  {
+    String oldName = name;
+    name = newName;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.DIRECT_DECLARATOR__NAME, oldName, name));
   }
 
   /**
@@ -208,63 +244,13 @@ public class DirectDeclaratorImpl extends VariableRefImpl implements DirectDecla
    * @generated
    */
   @Override
-  public EList<TypeQualifier> getQualifiers()
+  public EList<Expression> getSize()
   {
-    if (qualifiers == null)
+    if (size == null)
     {
-      qualifiers = new EDataTypeEList<TypeQualifier>(TypeQualifier.class, this, CoreDslPackage.DIRECT_DECLARATOR__QUALIFIERS);
+      size = new EObjectContainmentEList<Expression>(Expression.class, this, CoreDslPackage.DIRECT_DECLARATOR__SIZE);
     }
-    return qualifiers;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Expression getExpr()
-  {
-    return expr;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetExpr(Expression newExpr, NotificationChain msgs)
-  {
-    Expression oldExpr = expr;
-    expr = newExpr;
-    if (eNotificationRequired())
-    {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CoreDslPackage.DIRECT_DECLARATOR__EXPR, oldExpr, newExpr);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setExpr(Expression newExpr)
-  {
-    if (newExpr != expr)
-    {
-      NotificationChain msgs = null;
-      if (expr != null)
-        msgs = ((InternalEObject)expr).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.DIRECT_DECLARATOR__EXPR, null, msgs);
-      if (newExpr != null)
-        msgs = ((InternalEObject)newExpr).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.DIRECT_DECLARATOR__EXPR, null, msgs);
-      msgs = basicSetExpr(newExpr, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.DIRECT_DECLARATOR__EXPR, newExpr, newExpr));
+    return size;
   }
 
   /**
@@ -281,8 +267,8 @@ public class DirectDeclaratorImpl extends VariableRefImpl implements DirectDecla
         return basicSetIndex(null, msgs);
       case CoreDslPackage.DIRECT_DECLARATOR__LEFT:
         return basicSetLeft(null, msgs);
-      case CoreDslPackage.DIRECT_DECLARATOR__EXPR:
-        return basicSetExpr(null, msgs);
+      case CoreDslPackage.DIRECT_DECLARATOR__SIZE:
+        return ((InternalEList<?>)getSize()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -297,14 +283,14 @@ public class DirectDeclaratorImpl extends VariableRefImpl implements DirectDecla
   {
     switch (featureID)
     {
+      case CoreDslPackage.DIRECT_DECLARATOR__NAME:
+        return getName();
       case CoreDslPackage.DIRECT_DECLARATOR__INDEX:
         return getIndex();
       case CoreDslPackage.DIRECT_DECLARATOR__LEFT:
         return getLeft();
-      case CoreDslPackage.DIRECT_DECLARATOR__QUALIFIERS:
-        return getQualifiers();
-      case CoreDslPackage.DIRECT_DECLARATOR__EXPR:
-        return getExpr();
+      case CoreDslPackage.DIRECT_DECLARATOR__SIZE:
+        return getSize();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -320,18 +306,18 @@ public class DirectDeclaratorImpl extends VariableRefImpl implements DirectDecla
   {
     switch (featureID)
     {
+      case CoreDslPackage.DIRECT_DECLARATOR__NAME:
+        setName((String)newValue);
+        return;
       case CoreDslPackage.DIRECT_DECLARATOR__INDEX:
         setIndex((IntegerConstant)newValue);
         return;
       case CoreDslPackage.DIRECT_DECLARATOR__LEFT:
         setLeft((DirectDeclarator)newValue);
         return;
-      case CoreDslPackage.DIRECT_DECLARATOR__QUALIFIERS:
-        getQualifiers().clear();
-        getQualifiers().addAll((Collection<? extends TypeQualifier>)newValue);
-        return;
-      case CoreDslPackage.DIRECT_DECLARATOR__EXPR:
-        setExpr((Expression)newValue);
+      case CoreDslPackage.DIRECT_DECLARATOR__SIZE:
+        getSize().clear();
+        getSize().addAll((Collection<? extends Expression>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -347,17 +333,17 @@ public class DirectDeclaratorImpl extends VariableRefImpl implements DirectDecla
   {
     switch (featureID)
     {
+      case CoreDslPackage.DIRECT_DECLARATOR__NAME:
+        setName(NAME_EDEFAULT);
+        return;
       case CoreDslPackage.DIRECT_DECLARATOR__INDEX:
         setIndex((IntegerConstant)null);
         return;
       case CoreDslPackage.DIRECT_DECLARATOR__LEFT:
         setLeft((DirectDeclarator)null);
         return;
-      case CoreDslPackage.DIRECT_DECLARATOR__QUALIFIERS:
-        getQualifiers().clear();
-        return;
-      case CoreDslPackage.DIRECT_DECLARATOR__EXPR:
-        setExpr((Expression)null);
+      case CoreDslPackage.DIRECT_DECLARATOR__SIZE:
+        getSize().clear();
         return;
     }
     super.eUnset(featureID);
@@ -373,16 +359,54 @@ public class DirectDeclaratorImpl extends VariableRefImpl implements DirectDecla
   {
     switch (featureID)
     {
+      case CoreDslPackage.DIRECT_DECLARATOR__NAME:
+        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case CoreDslPackage.DIRECT_DECLARATOR__INDEX:
         return index != null;
       case CoreDslPackage.DIRECT_DECLARATOR__LEFT:
         return left != null;
-      case CoreDslPackage.DIRECT_DECLARATOR__QUALIFIERS:
-        return qualifiers != null && !qualifiers.isEmpty();
-      case CoreDslPackage.DIRECT_DECLARATOR__EXPR:
-        return expr != null;
+      case CoreDslPackage.DIRECT_DECLARATOR__SIZE:
+        return size != null && !size.isEmpty();
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
+  {
+    if (baseClass == VariableRef.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case CoreDslPackage.DIRECT_DECLARATOR__NAME: return CoreDslPackage.VARIABLE_REF__NAME;
+        default: return -1;
+      }
+    }
+    return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
+  {
+    if (baseClass == VariableRef.class)
+    {
+      switch (baseFeatureID)
+      {
+        case CoreDslPackage.VARIABLE_REF__NAME: return CoreDslPackage.DIRECT_DECLARATOR__NAME;
+        default: return -1;
+      }
+    }
+    return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
   /**
@@ -396,8 +420,8 @@ public class DirectDeclaratorImpl extends VariableRefImpl implements DirectDecla
     if (eIsProxy()) return super.toString();
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (qualifiers: ");
-    result.append(qualifiers);
+    result.append(" (name: ");
+    result.append(name);
     result.append(')');
     return result.toString();
   }

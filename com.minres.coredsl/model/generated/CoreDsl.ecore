@@ -207,16 +207,15 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="initializer" eType="#//Initializer"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DirectDeclarator" eSuperTypes="#//VariableRef">
+  <eClassifiers xsi:type="ecore:EClass" name="DirectDeclarator" eSuperTypes="#//ParameterList #//VariableRef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="index" eType="#//IntegerConstant"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//DirectDeclarator"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="qualifiers" unique="false"
-        upperBound="-1" eType="#//TypeQualifier"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expr" eType="#//Expression"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="size" upperBound="-1" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EmptyExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="Initializer" eSuperTypes="#//InitializerList">
     <eStructuralFeatures xsi:type="ecore:EReference" name="expr" eType="#//Expression"
         containment="true"/>
@@ -243,7 +242,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="expr" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Expression">
+  <eClassifiers xsi:type="ecore:EClass" name="Expression" eSuperTypes="#//EmptyExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//Expression"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//Expression"

@@ -31,6 +31,7 @@ import com.minres.coredsl.coreDsl.DesignatedInitializer;
 import com.minres.coredsl.coreDsl.Designator;
 import com.minres.coredsl.coreDsl.DirectAbstractDeclarator;
 import com.minres.coredsl.coreDsl.DirectDeclarator;
+import com.minres.coredsl.coreDsl.EmptyExpression;
 import com.minres.coredsl.coreDsl.Encoding;
 import com.minres.coredsl.coreDsl.EncodingPrefix;
 import com.minres.coredsl.coreDsl.EnumSpecifier;
@@ -408,6 +409,13 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   private EClass directDeclaratorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass emptyExpressionEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2028,9 +2036,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EAttribute getDirectDeclarator_Qualifiers()
+  public EReference getDirectDeclarator_Size()
   {
-    return (EAttribute)directDeclaratorEClass.getEStructuralFeatures().get(2);
+    return (EReference)directDeclaratorEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -2039,9 +2047,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EReference getDirectDeclarator_Expr()
+  public EClass getEmptyExpression()
   {
-    return (EReference)directDeclaratorEClass.getEStructuralFeatures().get(3);
+    return emptyExpressionEClass;
   }
 
   /**
@@ -3028,8 +3036,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     directDeclaratorEClass = createEClass(DIRECT_DECLARATOR);
     createEReference(directDeclaratorEClass, DIRECT_DECLARATOR__INDEX);
     createEReference(directDeclaratorEClass, DIRECT_DECLARATOR__LEFT);
-    createEAttribute(directDeclaratorEClass, DIRECT_DECLARATOR__QUALIFIERS);
-    createEReference(directDeclaratorEClass, DIRECT_DECLARATOR__EXPR);
+    createEReference(directDeclaratorEClass, DIRECT_DECLARATOR__SIZE);
+
+    emptyExpressionEClass = createEClass(EMPTY_EXPRESSION);
 
     initializerEClass = createEClass(INITIALIZER);
     createEReference(initializerEClass, INITIALIZER__EXPR);
@@ -3194,10 +3203,12 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     enumSpecifierEClass.getESuperTypes().add(this.getDataTypeSpecifier());
     enumSpecifierEClass.getESuperTypes().add(this.getEnumeratorList());
     structOrUnionSpecifierEClass.getESuperTypes().add(this.getDataTypeSpecifier());
+    directDeclaratorEClass.getESuperTypes().add(this.getParameterList());
     directDeclaratorEClass.getESuperTypes().add(this.getVariableRef());
     initializerEClass.getESuperTypes().add(this.getInitializerList());
     directAbstractDeclaratorEClass.getESuperTypes().add(this.getAbstractDeclarator());
     directAbstractDeclaratorEClass.getESuperTypes().add(this.getParameterList());
+    expressionEClass.getESuperTypes().add(this.getEmptyExpression());
     castExpressionEClass.getESuperTypes().add(this.getExpression());
     prefixExpressionEClass.getESuperTypes().add(this.getExpression());
     prefixExpressionEClass.getESuperTypes().add(this.getCastExpression());
@@ -3383,8 +3394,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     initEClass(directDeclaratorEClass, DirectDeclarator.class, "DirectDeclarator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getDirectDeclarator_Index(), this.getIntegerConstant(), null, "index", null, 0, 1, DirectDeclarator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getDirectDeclarator_Left(), this.getDirectDeclarator(), null, "left", null, 0, 1, DirectDeclarator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getDirectDeclarator_Qualifiers(), this.getTypeQualifier(), "qualifiers", null, 0, -1, DirectDeclarator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getDirectDeclarator_Expr(), this.getExpression(), null, "expr", null, 0, 1, DirectDeclarator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getDirectDeclarator_Size(), this.getExpression(), null, "size", null, 0, -1, DirectDeclarator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(emptyExpressionEClass, EmptyExpression.class, "EmptyExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(initializerEClass, Initializer.class, "Initializer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getInitializer_Expr(), this.getExpression(), null, "expr", null, 0, 1, Initializer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -23,7 +23,8 @@ public class CoreDslSyntacticSequencer extends AbstractSyntacticSequencer {
 
 	protected CoreDslGrammarAccess grammarAccess;
 	protected AbstractElementAlias match_BitField_ApostropheKeyword_2_0_q;
-	protected AbstractElementAlias match_DirectAbstractDeclarator___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3___or___LeftSquareBracketKeyword_1_1_RightSquareBracketKeyword_1_3__;
+	protected AbstractElementAlias match_DirectAbstractDeclarator___LEFT_BRTerminalRuleCall_1_1_RIGHT_BRTerminalRuleCall_1_3___or___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3__;
+	protected AbstractElementAlias match_Encoding_VerticalLineKeyword_1_0_a;
 	protected AbstractElementAlias match_EnumSpecifier_CommaKeyword_0_4_q;
 	protected AbstractElementAlias match_Initializer_CommaKeyword_1_2_q;
 	
@@ -31,16 +32,60 @@ public class CoreDslSyntacticSequencer extends AbstractSyntacticSequencer {
 	protected void init(IGrammarAccess access) {
 		grammarAccess = (CoreDslGrammarAccess) access;
 		match_BitField_ApostropheKeyword_2_0_q = new TokenAlias(false, true, grammarAccess.getBitFieldAccess().getApostropheKeyword_2_0());
-		match_DirectAbstractDeclarator___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3___or___LeftSquareBracketKeyword_1_1_RightSquareBracketKeyword_1_3__ = new AlternativeAlias(false, false, new GroupAlias(false, false, new TokenAlias(false, false, grammarAccess.getDirectAbstractDeclaratorAccess().getLeftParenthesisKeyword_0_1()), new TokenAlias(false, false, grammarAccess.getDirectAbstractDeclaratorAccess().getRightParenthesisKeyword_0_3())), new GroupAlias(false, false, new TokenAlias(false, false, grammarAccess.getDirectAbstractDeclaratorAccess().getLeftSquareBracketKeyword_1_1()), new TokenAlias(false, false, grammarAccess.getDirectAbstractDeclaratorAccess().getRightSquareBracketKeyword_1_3())));
+		match_DirectAbstractDeclarator___LEFT_BRTerminalRuleCall_1_1_RIGHT_BRTerminalRuleCall_1_3___or___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3__ = new AlternativeAlias(false, false, new GroupAlias(false, false, new TokenAlias(false, false, grammarAccess.getDirectAbstractDeclaratorAccess().getLEFT_BRTerminalRuleCall_1_1()), new TokenAlias(false, false, grammarAccess.getDirectAbstractDeclaratorAccess().getRIGHT_BRTerminalRuleCall_1_3())), new GroupAlias(false, false, new TokenAlias(false, false, grammarAccess.getDirectAbstractDeclaratorAccess().getLeftParenthesisKeyword_0_1()), new TokenAlias(false, false, grammarAccess.getDirectAbstractDeclaratorAccess().getRightParenthesisKeyword_0_3())));
+		match_Encoding_VerticalLineKeyword_1_0_a = new TokenAlias(true, true, grammarAccess.getEncodingAccess().getVerticalLineKeyword_1_0());
 		match_EnumSpecifier_CommaKeyword_0_4_q = new TokenAlias(false, true, grammarAccess.getEnumSpecifierAccess().getCommaKeyword_0_4());
 		match_Initializer_CommaKeyword_1_2_q = new TokenAlias(false, true, grammarAccess.getInitializerAccess().getCommaKeyword_1_2());
 	}
 	
 	@Override
 	protected String getUnassignedRuleCallToken(EObject semanticObject, RuleCall ruleCall, INode node) {
+		if (ruleCall.getRule() == grammarAccess.getDoubleLeftBracketRule())
+			return getDoubleLeftBracketToken(semanticObject, ruleCall, node);
+		else if (ruleCall.getRule() == grammarAccess.getDoubleRightBracketRule())
+			return getDoubleRightBracketToken(semanticObject, ruleCall, node);
+		else if (ruleCall.getRule() == grammarAccess.getLEFT_BRRule())
+			return getLEFT_BRToken(semanticObject, ruleCall, node);
+		else if (ruleCall.getRule() == grammarAccess.getRIGHT_BRRule())
+			return getRIGHT_BRToken(semanticObject, ruleCall, node);
 		return "";
 	}
 	
+	/**
+	 * DoubleLeftBracket hidden(WS, ML_COMMENT, SL_COMMENT): LEFT_BR LEFT_BR;
+	 */
+	protected String getDoubleLeftBracketToken(EObject semanticObject, RuleCall ruleCall, INode node) {
+		if (node != null)
+			return getTokenText(node);
+		return "[";
+	}
+	
+	/**
+	 * DoubleRightBracket hidden(WS, ML_COMMENT, SL_COMMENT): RIGHT_BR RIGHT_BR;
+	 */
+	protected String getDoubleRightBracketToken(EObject semanticObject, RuleCall ruleCall, INode node) {
+		if (node != null)
+			return getTokenText(node);
+		return "]";
+	}
+	
+	/**
+	 * terminal LEFT_BR: '[';
+	 */
+	protected String getLEFT_BRToken(EObject semanticObject, RuleCall ruleCall, INode node) {
+		if (node != null)
+			return getTokenText(node);
+		return "[";
+	}
+	
+	/**
+	 * terminal RIGHT_BR: ']';
+	 */
+	protected String getRIGHT_BRToken(EObject semanticObject, RuleCall ruleCall, INode node) {
+		if (node != null)
+			return getTokenText(node);
+		return "]";
+	}
 	
 	@Override
 	protected void emitUnassignedTokens(EObject semanticObject, ISynTransition transition, INode fromNode, INode toNode) {
@@ -50,8 +95,10 @@ public class CoreDslSyntacticSequencer extends AbstractSyntacticSequencer {
 			List<INode> syntaxNodes = getNodesFor(transitionNodes, syntax);
 			if (match_BitField_ApostropheKeyword_2_0_q.equals(syntax))
 				emit_BitField_ApostropheKeyword_2_0_q(semanticObject, getLastNavigableState(), syntaxNodes);
-			else if (match_DirectAbstractDeclarator___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3___or___LeftSquareBracketKeyword_1_1_RightSquareBracketKeyword_1_3__.equals(syntax))
-				emit_DirectAbstractDeclarator___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3___or___LeftSquareBracketKeyword_1_1_RightSquareBracketKeyword_1_3__(semanticObject, getLastNavigableState(), syntaxNodes);
+			else if (match_DirectAbstractDeclarator___LEFT_BRTerminalRuleCall_1_1_RIGHT_BRTerminalRuleCall_1_3___or___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3__.equals(syntax))
+				emit_DirectAbstractDeclarator___LEFT_BRTerminalRuleCall_1_1_RIGHT_BRTerminalRuleCall_1_3___or___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3__(semanticObject, getLastNavigableState(), syntaxNodes);
+			else if (match_Encoding_VerticalLineKeyword_1_0_a.equals(syntax))
+				emit_Encoding_VerticalLineKeyword_1_0_a(semanticObject, getLastNavigableState(), syntaxNodes);
 			else if (match_EnumSpecifier_CommaKeyword_0_4_q.equals(syntax))
 				emit_EnumSpecifier_CommaKeyword_0_4_q(semanticObject, getLastNavigableState(), syntaxNodes);
 			else if (match_Initializer_CommaKeyword_1_2_q.equals(syntax))
@@ -73,12 +120,24 @@ public class CoreDslSyntacticSequencer extends AbstractSyntacticSequencer {
 	
 	/**
 	 * Ambiguous syntax:
-	 *     ('(' ')') | ('[' ']')
+	 *     ('(' ')') | (LEFT_BR RIGHT_BR)
 	 *
 	 * This ambiguous syntax occurs at:
 	 *     (rule start) (ambiguity) (rule start)
 	 */
-	protected void emit_DirectAbstractDeclarator___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3___or___LeftSquareBracketKeyword_1_1_RightSquareBracketKeyword_1_3__(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
+	protected void emit_DirectAbstractDeclarator___LEFT_BRTerminalRuleCall_1_1_RIGHT_BRTerminalRuleCall_1_3___or___LeftParenthesisKeyword_0_1_RightParenthesisKeyword_0_3__(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
+		acceptNodes(transition, nodes);
+	}
+	
+	/**
+	 * Ambiguous syntax:
+	 *     '|'*
+	 *
+	 * This ambiguous syntax occurs at:
+	 *     fields+=Field (ambiguity) '::' fields+=Field
+	 *     fields+=Field (ambiguity) (rule end)
+	 */
+	protected void emit_Encoding_VerticalLineKeyword_1_0_a(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
 		acceptNodes(transition, nodes);
 	}
 	

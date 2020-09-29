@@ -424,7 +424,15 @@ public class CoreDslSwitch<T> extends Switch<T>
       {
         DirectDeclarator directDeclarator = (DirectDeclarator)theEObject;
         T result = caseDirectDeclarator(directDeclarator);
+        if (result == null) result = caseParameterList(directDeclarator);
         if (result == null) result = caseVariableRef(directDeclarator);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case CoreDslPackage.EMPTY_EXPRESSION:
+      {
+        EmptyExpression emptyExpression = (EmptyExpression)theEObject;
+        T result = caseEmptyExpression(emptyExpression);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -477,6 +485,7 @@ public class CoreDslSwitch<T> extends Switch<T>
       {
         Expression expression = (Expression)theEObject;
         T result = caseExpression(expression);
+        if (result == null) result = caseEmptyExpression(expression);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -485,6 +494,7 @@ public class CoreDslSwitch<T> extends Switch<T>
         CastExpression castExpression = (CastExpression)theEObject;
         T result = caseCastExpression(castExpression);
         if (result == null) result = caseExpression(castExpression);
+        if (result == null) result = caseEmptyExpression(castExpression);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -495,6 +505,7 @@ public class CoreDslSwitch<T> extends Switch<T>
         if (result == null) result = caseCastExpression(prefixExpression);
         if (result == null) result = caseUnaryOperator(prefixExpression);
         if (result == null) result = caseExpression(prefixExpression);
+        if (result == null) result = caseEmptyExpression(prefixExpression);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -513,6 +524,7 @@ public class CoreDslSwitch<T> extends Switch<T>
         if (result == null) result = caseCastExpression(postfixExpression);
         if (result == null) result = caseUnaryOperator(postfixExpression);
         if (result == null) result = caseExpression(postfixExpression);
+        if (result == null) result = caseEmptyExpression(postfixExpression);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -532,6 +544,7 @@ public class CoreDslSwitch<T> extends Switch<T>
         if (result == null) result = caseCastExpression(primaryExpression);
         if (result == null) result = caseUnaryOperator(primaryExpression);
         if (result == null) result = caseExpression(primaryExpression);
+        if (result == null) result = caseEmptyExpression(primaryExpression);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -644,6 +657,7 @@ public class CoreDslSwitch<T> extends Switch<T>
         AssignmentExpression assignmentExpression = (AssignmentExpression)theEObject;
         T result = caseAssignmentExpression(assignmentExpression);
         if (result == null) result = caseExpression(assignmentExpression);
+        if (result == null) result = caseEmptyExpression(assignmentExpression);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -652,6 +666,7 @@ public class CoreDslSwitch<T> extends Switch<T>
         ConditionalExpression conditionalExpression = (ConditionalExpression)theEObject;
         T result = caseConditionalExpression(conditionalExpression);
         if (result == null) result = caseExpression(conditionalExpression);
+        if (result == null) result = caseEmptyExpression(conditionalExpression);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -660,6 +675,7 @@ public class CoreDslSwitch<T> extends Switch<T>
         InfixExpression infixExpression = (InfixExpression)theEObject;
         T result = caseInfixExpression(infixExpression);
         if (result == null) result = caseExpression(infixExpression);
+        if (result == null) result = caseEmptyExpression(infixExpression);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1367,6 +1383,22 @@ public class CoreDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseDirectDeclarator(DirectDeclarator object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Empty Expression</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Empty Expression</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseEmptyExpression(EmptyExpression object)
   {
     return null;
   }

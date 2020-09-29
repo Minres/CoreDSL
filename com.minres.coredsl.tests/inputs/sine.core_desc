@@ -2,6 +2,11 @@ InstructionSet RISCVROB {
     constants {
         unsigned int NR_JOINTS = 8;
         unsigned int REGF_DEPTH = 8;
+        typedef unsigned char      uint8_t;
+        typedef unsigned short     uint16_t;
+        typedef unsigned int       uint32_t;
+        typedef unsigned long      uint64_t;
+        typedef unsigned long long uint128_t;
     }
     registers{
         double JointsRegF[REGF_DEPTH][NR_JOINTS]; //8 joints and 8 regs in RegFile

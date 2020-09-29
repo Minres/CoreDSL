@@ -16,15 +16,14 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.DirectDeclarator#getIndex <em>Index</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.DirectDeclarator#getLeft <em>Left</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.DirectDeclarator#getQualifiers <em>Qualifiers</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.DirectDeclarator#getExpr <em>Expr</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.DirectDeclarator#getSize <em>Size</em>}</li>
  * </ul>
  *
  * @see com.minres.coredsl.coreDsl.CoreDslPackage#getDirectDeclarator()
  * @model
  * @generated
  */
-public interface DirectDeclarator extends VariableRef
+public interface DirectDeclarator extends ParameterList, VariableRef
 {
   /**
    * Returns the value of the '<em><b>Index</b></em>' containment reference.
@@ -71,39 +70,15 @@ public interface DirectDeclarator extends VariableRef
   void setLeft(DirectDeclarator value);
 
   /**
-   * Returns the value of the '<em><b>Qualifiers</b></em>' attribute list.
-   * The list contents are of type {@link com.minres.coredsl.coreDsl.TypeQualifier}.
-   * The literals are from the enumeration {@link com.minres.coredsl.coreDsl.TypeQualifier}.
+   * Returns the value of the '<em><b>Size</b></em>' containment reference list.
+   * The list contents are of type {@link com.minres.coredsl.coreDsl.Expression}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Qualifiers</em>' attribute list.
-   * @see com.minres.coredsl.coreDsl.TypeQualifier
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getDirectDeclarator_Qualifiers()
-   * @model unique="false"
-   * @generated
-   */
-  EList<TypeQualifier> getQualifiers();
-
-  /**
-   * Returns the value of the '<em><b>Expr</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Expr</em>' containment reference.
-   * @see #setExpr(Expression)
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getDirectDeclarator_Expr()
+   * @return the value of the '<em>Size</em>' containment reference list.
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getDirectDeclarator_Size()
    * @model containment="true"
    * @generated
    */
-  Expression getExpr();
-
-  /**
-   * Sets the value of the '{@link com.minres.coredsl.coreDsl.DirectDeclarator#getExpr <em>Expr</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Expr</em>' containment reference.
-   * @see #getExpr()
-   * @generated
-   */
-  void setExpr(Expression value);
+  EList<Expression> getSize();
 
 } // DirectDeclarator

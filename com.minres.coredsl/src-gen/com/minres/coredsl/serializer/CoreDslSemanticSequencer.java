@@ -81,8 +81,19 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 		if (epackage == CoreDslPackage.eINSTANCE)
 			switch (semanticObject.eClass().getClassifierID()) {
 			case CoreDslPackage.ASSIGNMENT_EXPRESSION:
-				sequence_AssignmentExpression(context, (AssignmentExpression) semanticObject); 
-				return; 
+				if (rule == grammarAccess.getAssignmentExpression2Rule()
+						|| action == grammarAccess.getAssignmentExpression2Access().getAssignmentExpressionLeftAction_1_0()) {
+					sequence_AssignmentExpression2(context, (AssignmentExpression) semanticObject); 
+					return; 
+				}
+				else if (rule == grammarAccess.getExpressionRule()
+						|| action == grammarAccess.getExpressionAccess().getExpressionLeftAction_1_0()
+						|| rule == grammarAccess.getAssignmentExpressionRule()
+						|| action == grammarAccess.getAssignmentExpressionAccess().getAssignmentExpressionLeftAction_1_0()) {
+					sequence_AssignmentExpression(context, (AssignmentExpression) semanticObject); 
+					return; 
+				}
+				else break;
 			case CoreDslPackage.BIT_FIELD:
 				sequence_BitField(context, (BitField) semanticObject); 
 				return; 
@@ -126,13 +137,14 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				sequence_DirectAbstractDeclarator_ParameterList(context, (DirectAbstractDeclarator) semanticObject); 
 				return; 
 			case CoreDslPackage.DIRECT_DECLARATOR:
-				if (rule == grammarAccess.getDirectDeclaratorRule()
-						|| rule == grammarAccess.getVariableRefRule()) {
-					sequence_DirectDeclarator(context, (DirectDeclarator) semanticObject); 
+				if (action == grammarAccess.getDirectDeclaratorAccess().getDirectDeclaratorLeftAction_2_0_0()
+						|| action == grammarAccess.getDirectDeclaratorAccess().getDirectDeclaratorLeftAction_2_1_0()) {
+					sequence_DirectDeclarator_DirectDeclarator_2_0_0_DirectDeclarator_2_1_0(context, (DirectDeclarator) semanticObject); 
 					return; 
 				}
-				else if (action == grammarAccess.getDirectDeclaratorAccess().getDirectDeclaratorLeftAction_2_0()) {
-					sequence_DirectDeclarator_DirectDeclarator_2_0(context, (DirectDeclarator) semanticObject); 
+				else if (rule == grammarAccess.getDirectDeclaratorRule()
+						|| rule == grammarAccess.getVariableRefRule()) {
+					sequence_DirectDeclarator_ParameterList(context, (DirectDeclarator) semanticObject); 
 					return; 
 				}
 				else break;
@@ -146,8 +158,15 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				sequence_Enumerator(context, (Enumerator) semanticObject); 
 				return; 
 			case CoreDslPackage.EXPRESSION:
-				sequence_Expression(context, (Expression) semanticObject); 
-				return; 
+				if (rule == grammarAccess.getEmptyExpressionRule()) {
+					sequence_EmptyExpression(context, (Expression) semanticObject); 
+					return; 
+				}
+				else if (rule == grammarAccess.getExpressionRule()) {
+					sequence_Expression(context, (Expression) semanticObject); 
+					return; 
+				}
+				else break;
 			case CoreDslPackage.EXPRESSION_STATEMENT:
 				sequence_ExpressionStatement(context, (ExpressionStatement) semanticObject); 
 				return; 
@@ -166,8 +185,13 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 			case CoreDslPackage.INFIX_EXPRESSION:
 				if (rule == grammarAccess.getConditionalExpressionRule()
 						|| action == grammarAccess.getConditionalExpressionAccess().getConditionalExpressionCondAction_1_0()
-						|| rule == grammarAccess.getLogicalOrExpressionRule()
+						|| rule == grammarAccess.getConcatenationExpressionRule()
 						|| rule == grammarAccess.getConstantExpressionRule()) {
+					sequence_AdditiveExpression_AndExpression_ConcatenationExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_LogicalOrExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(context, (InfixExpression) semanticObject); 
+					return; 
+				}
+				else if (action == grammarAccess.getConcatenationExpressionAccess().getInfixExpressionLeftAction_1_0()
+						|| rule == grammarAccess.getLogicalOrExpressionRule()) {
 					sequence_AdditiveExpression_AndExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_LogicalOrExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(context, (InfixExpression) semanticObject); 
 					return; 
 				}
@@ -295,8 +319,33 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * Contexts:
 	 *     ConditionalExpression returns InfixExpression
 	 *     ConditionalExpression.ConditionalExpression_1_0 returns InfixExpression
-	 *     LogicalOrExpression returns InfixExpression
+	 *     ConcatenationExpression returns InfixExpression
 	 *     ConstantExpression returns InfixExpression
+	 *
+	 * Constraint:
+	 *     (
+	 *         (left=ConcatenationExpression_InfixExpression_1_0 op='::' right=ConcatenationExpression) | 
+	 *         (left=LogicalOrExpression_InfixExpression_1_0 op='||' right=LogicalOrExpression) | 
+	 *         (left=LogicalAndExpression_InfixExpression_1_0 op='&&' right=LogicalAndExpression) | 
+	 *         (left=InclusiveOrExpression_InfixExpression_1_0 op='|' right=InclusiveOrExpression) | 
+	 *         (left=ExclusiveOrExpression_InfixExpression_1_0 op='^' right=ExclusiveOrExpression) | 
+	 *         (left=AndExpression_InfixExpression_1_0 op='&' right=AndExpression) | 
+	 *         (left=EqualityExpression_InfixExpression_1_0 (op='==' | op='!=') right=EqualityExpression) | 
+	 *         (left=RelationalExpression_InfixExpression_1_0 (op='<' | op='>' | op='<=' | op='>=') right=RelationalExpression) | 
+	 *         (left=ShiftExpression_InfixExpression_1_0 (op='<<' | op='>>') right=ShiftExpression) | 
+	 *         (left=AdditiveExpression_InfixExpression_1_0 (op='+' | op='-') right=AdditiveExpression) | 
+	 *         (left=MultiplicativeExpression_InfixExpression_1_0 (op='*' | op='/' | op='%') right=MultiplicativeExpression)
+	 *     )
+	 */
+	protected void sequence_AdditiveExpression_AndExpression_ConcatenationExpression_EqualityExpression_ExclusiveOrExpression_InclusiveOrExpression_LogicalAndExpression_LogicalOrExpression_MultiplicativeExpression_RelationalExpression_ShiftExpression(ISerializationContext context, InfixExpression semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     ConcatenationExpression.InfixExpression_1_0 returns InfixExpression
+	 *     LogicalOrExpression returns InfixExpression
 	 *
 	 * Constraint:
 	 *     (
@@ -475,29 +524,57 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     Expression returns AssignmentExpression
-	 *     Expression.Expression_1_0 returns AssignmentExpression
-	 *     AssignmentExpression returns AssignmentExpression
+	 *     AssignmentExpression2 returns AssignmentExpression
+	 *     AssignmentExpression2.AssignmentExpression_1_0 returns AssignmentExpression
 	 *
 	 * Constraint:
 	 *     (
-	 *         left=AssignmentExpression_AssignmentExpression_1 
+	 *         left=AssignmentExpression2_AssignmentExpression_1_0 
 	 *         (
-	 *             (
-	 *                 assignment+='=' | 
-	 *                 assignment+='*=' | 
-	 *                 assignment+='/=' | 
-	 *                 assignment+='%=' | 
-	 *                 assignment+='+=' | 
-	 *                 assignment+='-=' | 
-	 *                 assignment+='<<=' | 
-	 *                 assignment+='>>=' | 
-	 *                 assignment+='&=' | 
-	 *                 assignment+='^=' | 
-	 *                 assignment+='|='
-	 *             ) 
-	 *             rights+=ConditionalExpression
-	 *         )+
+	 *             assignment+='=' | 
+	 *             assignment+='*=' | 
+	 *             assignment+='/=' | 
+	 *             assignment+='%=' | 
+	 *             assignment+='+=' | 
+	 *             assignment+='-=' | 
+	 *             assignment+='<<=' | 
+	 *             assignment+='>>=' | 
+	 *             assignment+='&=' | 
+	 *             assignment+='^=' | 
+	 *             assignment+='|='
+	 *         ) 
+	 *         rights+=ConditionalExpression
+	 *     )
+	 */
+	protected void sequence_AssignmentExpression2(ISerializationContext context, AssignmentExpression semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Expression returns AssignmentExpression
+	 *     Expression.Expression_1_0 returns AssignmentExpression
+	 *     AssignmentExpression returns AssignmentExpression
+	 *     AssignmentExpression.AssignmentExpression_1_0 returns AssignmentExpression
+	 *
+	 * Constraint:
+	 *     (
+	 *         left=AssignmentExpression_AssignmentExpression_1_0 
+	 *         (
+	 *             assignment+='=' | 
+	 *             assignment+='*=' | 
+	 *             assignment+='/=' | 
+	 *             assignment+='%=' | 
+	 *             assignment+='+=' | 
+	 *             assignment+='-=' | 
+	 *             assignment+='<<=' | 
+	 *             assignment+='>>=' | 
+	 *             assignment+='&=' | 
+	 *             assignment+='^=' | 
+	 *             assignment+='|='
+	 *         ) 
+	 *         rights+=ConditionalExpression
 	 *     )
 	 */
 	protected void sequence_AssignmentExpression(ISerializationContext context, AssignmentExpression semanticObject) {
@@ -584,16 +661,10 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     VariableRef returns BitValue
 	 *
 	 * Constraint:
-	 *     name=BVAL
+	 *     (name=BVAL | name=VLOGVAL)
 	 */
 	protected void sequence_BitValue(ISerializationContext context, BitValue semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.VARIABLE_REF__NAME) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.VARIABLE_REF__NAME));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getBitValueAccess().getNameBVALTerminalRuleCall_0(), semanticObject.getName());
-		feeder.finish();
+		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
@@ -620,6 +691,8 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 * Contexts:
 	 *     ConditionalExpression returns CastExpression
 	 *     ConditionalExpression.ConditionalExpression_1_0 returns CastExpression
+	 *     ConcatenationExpression returns CastExpression
+	 *     ConcatenationExpression.InfixExpression_1_0 returns CastExpression
 	 *     LogicalOrExpression returns CastExpression
 	 *     LogicalOrExpression.InfixExpression_1_0 returns CastExpression
 	 *     LogicalAndExpression returns CastExpression
@@ -783,25 +856,42 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     DirectDeclarator returns DirectDeclarator
-	 *     VariableRef returns DirectDeclarator
+	 *     DirectDeclarator.DirectDeclarator_2_0_0 returns DirectDeclarator
+	 *     DirectDeclarator.DirectDeclarator_2_1_0 returns DirectDeclarator
 	 *
 	 * Constraint:
-	 *     ((name=ID index=IntegerConstant?) | (left=DirectDeclarator_DirectDeclarator_2_0 qualifiers+=TypeQualifier? expr=ConditionalExpression?))
+	 *     (name=ID index=IntegerConstant?)
 	 */
-	protected void sequence_DirectDeclarator(ISerializationContext context, DirectDeclarator semanticObject) {
+	protected void sequence_DirectDeclarator_DirectDeclarator_2_0_0_DirectDeclarator_2_1_0(ISerializationContext context, DirectDeclarator semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
 	/**
 	 * Contexts:
-	 *     DirectDeclarator.DirectDeclarator_2_0 returns DirectDeclarator
+	 *     DirectDeclarator returns DirectDeclarator
+	 *     VariableRef returns DirectDeclarator
 	 *
 	 * Constraint:
-	 *     (name=ID index=IntegerConstant?)
+	 *     (
+	 *         (name=ID index=IntegerConstant?) | 
+	 *         (left=DirectDeclarator_DirectDeclarator_2_0_0 size+=ConditionalExpression+) | 
+	 *         (left=DirectDeclarator_DirectDeclarator_2_1_0 params+=ParameterDeclaration parameters+=ParameterDeclaration*)
+	 *     )
 	 */
-	protected void sequence_DirectDeclarator_DirectDeclarator_2_0(ISerializationContext context, DirectDeclarator semanticObject) {
+	protected void sequence_DirectDeclarator_ParameterList(ISerializationContext context, DirectDeclarator semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     EmptyExpression returns Expression
+	 *
+	 * Constraint:
+	 *     {Expression}
+	 */
+	protected void sequence_EmptyExpression(ISerializationContext context, Expression semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -863,7 +953,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     ExpressionStatement returns ExpressionStatement
 	 *
 	 * Constraint:
-	 *     expr=AssignmentExpression?
+	 *     expr=AssignmentExpression2?
 	 */
 	protected void sequence_ExpressionStatement(ISerializationContext context, ExpressionStatement semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -916,7 +1006,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         (type='do' stmt=Statement cond=ConditionalExpression) | 
 	 *         (
 	 *             type='for' 
-	 *             (startDecl=Declaration | startExpr=Expression)? 
+	 *             (startDecl=Declaration | startExpr=AssignmentExpression2)? 
 	 *             endExpr=ConditionalExpression? 
 	 *             (loopExprs+=AssignmentExpression loopExprs+=AssignmentExpression*)? 
 	 *             stmt=Statement
@@ -1129,9 +1219,15 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     AssignmentExpression.AssignmentExpression_1 returns PostfixExpression
+	 *     Expression returns PostfixExpression
+	 *     Expression.Expression_1_0 returns PostfixExpression
+	 *     AssignmentExpression returns PostfixExpression
+	 *     AssignmentExpression.AssignmentExpression_1_0 returns PostfixExpression
+	 *     AssignmentExpression2.AssignmentExpression_1_0 returns PostfixExpression
 	 *     ConditionalExpression returns PostfixExpression
 	 *     ConditionalExpression.ConditionalExpression_1_0 returns PostfixExpression
+	 *     ConcatenationExpression returns PostfixExpression
+	 *     ConcatenationExpression.InfixExpression_1_0 returns PostfixExpression
 	 *     LogicalOrExpression returns PostfixExpression
 	 *     LogicalOrExpression.InfixExpression_1_0 returns PostfixExpression
 	 *     LogicalAndExpression returns PostfixExpression
@@ -1172,7 +1268,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *
 	 * Constraint:
 	 *     (
-	 *         (op='[' args+=ConditionalExpression args+=ConditionalExpression?) | 
+	 *         (op=LEFT_BR args+=ConditionalExpression args+=ConditionalExpression?) | 
 	 *         (op='(' (args+=ConditionalExpression args+=ConditionalExpression*)?) | 
 	 *         (op='.' member=[DirectDeclarator|ID]) | 
 	 *         (op='->' member=[DirectDeclarator|ID]) | 
@@ -1187,9 +1283,15 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     AssignmentExpression.AssignmentExpression_1 returns PrefixExpression
+	 *     Expression returns PrefixExpression
+	 *     Expression.Expression_1_0 returns PrefixExpression
+	 *     AssignmentExpression returns PrefixExpression
+	 *     AssignmentExpression.AssignmentExpression_1_0 returns PrefixExpression
+	 *     AssignmentExpression2.AssignmentExpression_1_0 returns PrefixExpression
 	 *     ConditionalExpression returns PrefixExpression
 	 *     ConditionalExpression.ConditionalExpression_1_0 returns PrefixExpression
+	 *     ConcatenationExpression returns PrefixExpression
+	 *     ConcatenationExpression.InfixExpression_1_0 returns PrefixExpression
 	 *     LogicalOrExpression returns PrefixExpression
 	 *     LogicalOrExpression.InfixExpression_1_0 returns PrefixExpression
 	 *     LogicalAndExpression returns PrefixExpression
@@ -1239,9 +1341,15 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     AssignmentExpression.AssignmentExpression_1 returns PrimaryExpression
+	 *     Expression returns PrimaryExpression
+	 *     Expression.Expression_1_0 returns PrimaryExpression
+	 *     AssignmentExpression returns PrimaryExpression
+	 *     AssignmentExpression.AssignmentExpression_1_0 returns PrimaryExpression
+	 *     AssignmentExpression2.AssignmentExpression_1_0 returns PrimaryExpression
 	 *     ConditionalExpression returns PrimaryExpression
 	 *     ConditionalExpression.ConditionalExpression_1_0 returns PrimaryExpression
+	 *     ConcatenationExpression returns PrimaryExpression
+	 *     ConcatenationExpression.InfixExpression_1_0 returns PrimaryExpression
 	 *     LogicalOrExpression returns PrimaryExpression
 	 *     LogicalOrExpression.InfixExpression_1_0 returns PrimaryExpression
 	 *     LogicalAndExpression returns PrimaryExpression

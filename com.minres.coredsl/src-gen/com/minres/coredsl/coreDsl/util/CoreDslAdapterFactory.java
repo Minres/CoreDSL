@@ -296,6 +296,11 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
         return createDirectDeclaratorAdapter();
       }
       @Override
+      public Adapter caseEmptyExpression(EmptyExpression object)
+      {
+        return createEmptyExpressionAdapter();
+      }
+      @Override
       public Adapter caseInitializer(Initializer object)
       {
         return createInitializerAdapter();
@@ -1118,6 +1123,21 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createDirectDeclaratorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.EmptyExpression <em>Empty Expression</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.EmptyExpression
+   * @generated
+   */
+  public Adapter createEmptyExpressionAdapter()
   {
     return null;
   }

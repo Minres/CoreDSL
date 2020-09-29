@@ -110,6 +110,7 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
       case CoreDslPackage.STRUCT_DECLARATION_SPECIFIER: return createStructDeclarationSpecifier();
       case CoreDslPackage.INIT_DECLARATOR: return createInitDeclarator();
       case CoreDslPackage.DIRECT_DECLARATOR: return createDirectDeclarator();
+      case CoreDslPackage.EMPTY_EXPRESSION: return createEmptyExpression();
       case CoreDslPackage.INITIALIZER: return createInitializer();
       case CoreDslPackage.INITIALIZER_LIST: return createInitializerList();
       case CoreDslPackage.DESIGNATED_INITIALIZER: return createDesignatedInitializer();
@@ -728,6 +729,18 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
   {
     DirectDeclaratorImpl directDeclarator = new DirectDeclaratorImpl();
     return directDeclarator;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EmptyExpression createEmptyExpression()
+  {
+    EmptyExpressionImpl emptyExpression = new EmptyExpressionImpl();
+    return emptyExpression;
   }
 
   /**

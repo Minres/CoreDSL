@@ -200,9 +200,9 @@
     <genClasses ecoreClass="CoreDsl.ecore#//DirectDeclarator">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DirectDeclarator/index"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DirectDeclarator/left"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//DirectDeclarator/qualifiers"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DirectDeclarator/expr"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DirectDeclarator/size"/>
     </genClasses>
+    <genClasses ecoreClass="CoreDsl.ecore#//EmptyExpression"/>
     <genClasses ecoreClass="CoreDsl.ecore#//Initializer">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//Initializer/expr"/>
     </genClasses>

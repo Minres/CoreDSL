@@ -3,7 +3,6 @@
  */
 package com.minres.coredsl.coreDsl;
 
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -22,7 +21,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Expression extends EObject
+public interface Expression extends EmptyExpression
 {
   /**
    * Returns the value of the '<em><b>Left</b></em>' containment reference.

@@ -119,13 +119,13 @@ ruleCoreDef:
 ruleInstruction:
 	RULE_ID
 	(
-		'[['
+		ruleDoubleLeftBracket
 		ruleInstrAttribute
 		(
 			','
 			ruleInstrAttribute
 		)*
-		']]'
+		ruleDoubleRightBracket
 	)?
 	'{'
 	'encoding'
@@ -149,6 +149,8 @@ ruleEncoding:
 	ruleField
 	(
 		'|'
+		    |
+		'::'
 		ruleField
 	)*
 ;
@@ -164,7 +166,10 @@ ruleField:
 
 // Rule BitValue
 ruleBitValue:
-	RULE_BVAL
+	(
+		RULE_BVAL
+		    |RULE_VLOGVAL
+	)
 ;
 
 // Rule BitField
@@ -179,11 +184,11 @@ ruleBitField:
 
 // Rule RangeSpec
 ruleRangeSpec:
-	'['
+	RULE_LEFT_BR
 	RULE_INTEGER
 	':'
 	RULE_INTEGER
-	']'
+	RULE_RIGHT_BR
 ;
 
 // Rule FunctionDefinition
@@ -265,7 +270,7 @@ ruleBlockItem:
 
 // Rule ExpressionStatement
 ruleExpressionStatement:
-	ruleAssignmentExpression
+	ruleAssignmentExpression2
 	?
 	';'
 ;
@@ -336,7 +341,7 @@ ruleForCondition:
 	(
 		ruleDeclaration
 		    |
-		ruleExpression
+		ruleAssignmentExpression2
 		?
 		';'
 	)
@@ -417,13 +422,13 @@ ruleDeclarationSpecifier:
 
 // Rule AttributeList
 ruleAttributeList:
-	'[['
+	ruleDoubleLeftBracket
 	ruleAttribute
 	(
 		','
 		ruleAttribute
 	)*
-	']]'
+	ruleDoubleRightBracket
 ;
 
 // Rule TypeSpecifier
@@ -570,12 +575,15 @@ ruleDirectDeclarator:
 		ruleIntegerConstant
 	)?
 	(
-		'['
-		ruleTypeQualifier
-		?
-		ruleConditionalExpression
-		?
-		']'
+		(
+			RULE_LEFT_BR
+			ruleConditionalExpression
+			RULE_RIGHT_BR
+		)+
+		    |
+		'('
+		ruleParameterList
+		')'
 	)?
 ;
 
@@ -617,9 +625,9 @@ ruleDesignatedInitializer:
 // Rule Designator
 ruleDesignator:
 	(
-		'['
+		RULE_LEFT_BR
 		ruleConstantExpression
-		']'
+		RULE_RIGHT_BR
 		    |
 		'.'
 		RULE_ID
@@ -643,24 +651,46 @@ ruleDirectAbstractDeclarator:
 		)
 		')'
 		    |
-		'['
+		RULE_LEFT_BR
 		ruleConstantExpression
 		?
-		']'
+		RULE_RIGHT_BR
 	)
-;
-
-// Rule Expression
-ruleExpression:
-	ruleAssignmentExpression
-	(
-		','
-		ruleAssignmentExpression
-	)?
 ;
 
 // Rule AssignmentExpression
 ruleAssignmentExpression:
+	rulePrefixExpression
+	(
+		(
+			'='
+			    |
+			'*='
+			    |
+			'/='
+			    |
+			'%='
+			    |
+			'+='
+			    |
+			'-='
+			    |
+			'<<='
+			    |
+			'>>='
+			    |
+			'&='
+			    |
+			'^='
+			    |
+			'|='
+		)
+		ruleConditionalExpression
+	)*
+;
+
+// Rule AssignmentExpression2
+ruleAssignmentExpression2:
 	rulePrefixExpression
 	(
 		(
@@ -692,12 +722,21 @@ ruleAssignmentExpression:
 
 // Rule ConditionalExpression
 ruleConditionalExpression:
-	ruleLogicalOrExpression
+	ruleConcatenationExpression
 	(
 		'?'
 		ruleConditionalExpression
 		':'
 		ruleConditionalExpression
+	)?
+;
+
+// Rule ConcatenationExpression
+ruleConcatenationExpression:
+	ruleLogicalOrExpression
+	(
+		'::'
+		ruleConcatenationExpression
 	)?
 ;
 
@@ -882,13 +921,13 @@ rulePostfixExpression:
 // Rule PostfixOperator
 rulePostfixOperator:
 	(
-		'['
+		RULE_LEFT_BR
 		ruleConditionalExpression
 		(
 			':'
 			ruleConditionalExpression
 		)?
-		']'
+		RULE_RIGHT_BR
 		    |
 		'('
 		(
@@ -1055,6 +1094,18 @@ ruleCharacterConstant:
 	)
 ;
 
+// Rule DoubleLeftBracket
+ruleDoubleLeftBracket:
+	RULE_LEFT_BR
+	RULE_LEFT_BR
+;
+
+// Rule DoubleRightBracket
+ruleDoubleRightBracket:
+	RULE_RIGHT_BR
+	RULE_RIGHT_BR
+;
+
 // Rule DataTypes
 ruleDataTypes:
 	(
@@ -1142,36 +1193,42 @@ ruleBitfieldDataType:
 	)
 ;
 
+RULE_LEFT_BR : '[';
+
+RULE_RIGHT_BR : ']';
+
 RULE_BVAL : 'b' ('0'..'9')+;
+
+RULE_VLOGVAL : RULE_VLOGINT;
 
 RULE_BOOLEAN : ('true'|'false');
 
 RULE_FLOAT : ('0'..'9')+ '.' ('0'..'9')* (('e'|'E') ('+'|'-')? ('0'..'9')+)?;
 
-RULE_INTEGER : (RULE_DECIMALCONSTANT|RULE_BINARYCONSTANT|RULE_HEXADECIMALCONSTANT|RULE_OCTALCONSTANT|RULE_VLOGCONSTANT);
+RULE_INTEGER : (RULE_DECIMALINT|RULE_BINARYINT|RULE_HEXADECIMALINT|RULE_OCTALINT|RULE_VLOGINT);
 
-fragment RULE_BINARYCONSTANT : ('0b'|'0B') '0'..'1' ('_'? '0'..'1')*;
+fragment RULE_BINARYINT : ('0b'|'0B') '0'..'1' ('_'? '0'..'1')*;
 
-fragment RULE_OCTALCONSTANT : '0' '_'? '0'..'7' ('_'? '0'..'7')*;
+fragment RULE_OCTALINT : '0' '_'? '0'..'7' ('_'? '0'..'7')*;
 
-fragment RULE_DECIMALCONSTANT : ('0'|'1'..'9' ('_'? '0'..'9')*);
+fragment RULE_DECIMALINT : ('0'|'1'..'9' ('_'? '0'..'9')*);
 
-fragment RULE_HEXADECIMALCONSTANT : ('0x'|'0X') ('0'..'9'|'a'..'f'|'A'..'F') ('_'? ('0'..'9'|'a'..'f'|'A'..'F'))*;
+fragment RULE_HEXADECIMALINT : ('0x'|'0X') ('0'..'9'|'a'..'f'|'A'..'F') ('_'? ('0'..'9'|'a'..'f'|'A'..'F'))*;
 
-fragment RULE_VLOGCONSTANT : ('0'..'9')+ '\'' ('b' '01'+|'o' ('0'..'7')+|'d' ('0'..'9')+|'h' ('0'..'9'|'a'..'f'|'A'..'F')+);
+fragment RULE_VLOGINT : ('0'..'9')+ '\'' ('b' '01'+|'o' ('0'..'7')+|'d' ('0'..'9')+|'h' ('0'..'9'|'a'..'f'|'A'..'F')+);
 
 RULE_CHARCONST : '\'' ('\\' .|~(('\\'|'\'')))* '\'';
 
-RULE_INT : 'this one has been deactivated';
+RULE_INT : '~this one has been deactivated';
 
 RULE_ID : '^'? ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 
 RULE_STRING : '"' ('\\' .|~(('\\'|'"')))* '"';
+
+RULE_ANY_OTHER : '~xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
 
 RULE_ML_COMMENT : '/*' ( options {greedy=false;} : . )*'*/' {skip();};
 
 RULE_SL_COMMENT : '//' ~(('\n'|'\r'))* ('\r'? '\n')? {skip();};
 
 RULE_WS : (' '|'\t'|'\r'|'\n')+ {skip();};
-
-RULE_ANY_OTHER : .;

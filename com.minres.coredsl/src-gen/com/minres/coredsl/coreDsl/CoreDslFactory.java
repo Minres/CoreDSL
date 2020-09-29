@@ -420,6 +420,15 @@ public interface CoreDslFactory extends EFactory
   DirectDeclarator createDirectDeclarator();
 
   /**
+   * Returns a new object of class '<em>Empty Expression</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Empty Expression</em>'.
+   * @generated
+   */
+  EmptyExpression createEmptyExpression();
+
+  /**
    * Returns a new object of class '<em>Initializer</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

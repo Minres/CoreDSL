@@ -37,13 +37,13 @@ CoreDef:
 ;
 
 Instruction:
-	name=ID ('[[' attributes+=InstrAttribute (',' attributes+=InstrAttribute)* ']]' )? '{' 
+	name=ID (DoubleLeftBracket attributes+=InstrAttribute (',' attributes+=InstrAttribute)* DoubleRightBracket )? '{' 
 		('encoding' ':' encoding=Encoding ';') ('args_disass' ':' disass=STRING ';')? ('behavior' ':' behavior=CompoundStatement)
 	'}'
 ;
 
 Encoding
-	:	fields+=Field ('|' fields+=Field)*
+	:	fields+=Field ('|'|'::' fields+=Field)*
 	;
 
 Field
@@ -52,7 +52,7 @@ Field
 	;
 
 BitValue
-	: 	name=BVAL
+	: 	name=(BVAL|VLOGVAL)
 	;
 
 BitField
@@ -60,7 +60,7 @@ BitField
 	;
 
 RangeSpec
-	:	'[' left=INTEGER ':' right=INTEGER ']'
+	:	LEFT_BR left=INTEGER ':' right=INTEGER RIGHT_BR
 	;
 
 FunctionDefinition
@@ -101,7 +101,7 @@ BlockItem
     ;
 
 ExpressionStatement
-    :   {ExpressionStatement} expr=AssignmentExpression? ';'
+    :   {ExpressionStatement} expr=AssignmentExpression2? ';'
     ;
 
 SelectionStatement
@@ -122,7 +122,7 @@ IterationStatement
     ;
 
 fragment ForCondition
-	:   (startDecl=Declaration | startExpr=Expression? ';') endExpr=ConditionalExpression? ';'  (loopExprs+=AssignmentExpression (',' loopExprs+=AssignmentExpression)*)?
+	:   (startDecl=Declaration | startExpr=AssignmentExpression2? ';') endExpr=ConditionalExpression? ';'  (loopExprs+=AssignmentExpression (',' loopExprs+=AssignmentExpression)*)?
 	;
 
 JumpStatement
@@ -154,7 +154,7 @@ fragment DeclarationSpecifier
     |   AttributeList
     ;
 
-fragment AttributeList:	'[[' attrs+=Attribute (',' attrs+=Attribute)* ']]';
+fragment AttributeList:	DoubleLeftBracket attrs+=Attribute (',' attrs+=Attribute)* DoubleRightBracket;
 
 TypeSpecifier
 	:	DataTypeSpecifier
@@ -216,12 +216,14 @@ InitDeclarator
 
 DirectDeclarator
     :   name=ID ( ':' index=IntegerConstant)? 
-    	(  	{DirectDeclarator.left=current} '[' (qualifiers+=TypeQualifier)? expr=ConditionalExpression? ']'
+    	(  	{DirectDeclarator.left=current} (LEFT_BR size+=ConditionalExpression RIGHT_BR)+    		
 //    	|   {DirectDeclarator.left=current} '[' (qualifiers+=TypeQualifier)? '*' ']'
-//    	|   {DirectDeclarator.left=current} '(' ParameterList ')'
+    	|   {DirectDeclarator.left=current} '(' ParameterList ')'
     	)?
     ;
     
+EmptyExpression: {Expression};
+
 Initializer
     :   expr=ConditionalExpression
     |   '{' InitializerList ','? '}'
@@ -234,7 +236,7 @@ DesignatedInitializer
 	;
 
 Designator
-    :   '[' idx=ConstantExpression ']'
+    :   LEFT_BR idx=ConstantExpression RIGHT_BR
     |   '.' prop=ID
     ;
 
@@ -258,7 +260,7 @@ AbstractDeclarator
  
 DirectAbstractDeclarator 
     :   {DirectAbstractDeclarator} '(' (declarator=AbstractDeclarator? | ParameterList) ')'
-    |	{DirectAbstractDeclarator} '[' expr=ConstantExpression? ']'
+    |	{DirectAbstractDeclarator} LEFT_BR expr=ConstantExpression? RIGHT_BR
     ;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -267,14 +269,22 @@ Expression
     :   AssignmentExpression ({Expression.left=current} ',' right=AssignmentExpression)?
     ;
 
-AssignmentExpression returns Expression
-    :   PrefixExpression {AssignmentExpression.left=current} (assignment+=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=') rights+=ConditionalExpression)+
+AssignmentExpression returns Expression // this is right associative
+    :   PrefixExpression ({AssignmentExpression.left=current} assignment+=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=') rights+=ConditionalExpression)*
+    ;
+
+AssignmentExpression2 returns Expression
+    :   PrefixExpression ({AssignmentExpression.left=current} assignment+=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=') rights+=ConditionalExpression)+
     ;
 
 ConditionalExpression returns Expression
-    :   LogicalOrExpression ({ConditionalExpression.cond=current} '?' left=ConditionalExpression ':' right=ConditionalExpression)?
+    :   ConcatenationExpression ({ConditionalExpression.cond=current} '?' left=ConditionalExpression ':' right=ConditionalExpression)?
     ;
 
+ConcatenationExpression returns Expression // right associative rule
+    :   LogicalOrExpression ({InfixExpression.left=current} op='::' right=ConcatenationExpression)?
+    ;
+    
 LogicalOrExpression returns Expression
     :   LogicalAndExpression ({InfixExpression.left=current} op='||' right=LogicalOrExpression)?
     ;
@@ -336,7 +346,7 @@ PostfixExpression
     ;
 
 PostfixOperator
-	:  	op='[' args+=ConditionalExpression (':' args+=ConditionalExpression)? ']'
+	:  	op=LEFT_BR args+=ConditionalExpression (':' args+=ConditionalExpression)? RIGHT_BR
 	|  	op='(' (args+=ConditionalExpression (',' args+=ConditionalExpression)*)?')' //function call
 	|   op='.' member=[DirectDeclarator]  //member=PostfixExpression
 	|   op='->' member=[DirectDeclarator] //member=PostfixExpression
@@ -406,6 +416,12 @@ CharacterConstant
     |   enc="u" val=CHARCONST
     |   enc="U" val=CHARCONST
     ;
+
+// the follwoing 2 rules are needed so that XText does not generate a terminal symbol '[[' and '&&'
+// which is always eaten by the Lexer so that a[b[3]] is not recognized
+DoubleLeftBracket hidden(WS, ML_COMMENT, SL_COMMENT): LEFT_BR LEFT_BR;
+DoubleRightBracket hidden(WS, ML_COMMENT, SL_COMMENT): RIGHT_BR RIGHT_BR;
+
 ///////////////////////////////////////////////////////////////////////////////
 
 enum DataTypes
@@ -427,32 +443,42 @@ enum StructOrUnion:   STRUCT='struct'|UNION='union';
 
 enum BitfieldDataType:	UNSIGNED="u" | SIGNED="s"; //| FLOAT="f" | DOUBLE="d" | QUAD="q" | BOOLEAN='b';
 
+terminal LEFT_BR: '[';
+
+terminal RIGHT_BR: ']';
+
 terminal BVAL : 'b'('0'..'9')+;
+
+terminal VLOGVAL: VLOGINT;
 
 terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false' ;
 
 terminal FLOAT returns ecore::EBigDecimal:  (('0'..'9')+ '.' ('0'..'9')*) (('e' | 'E') ('+' | '-')? ('0'..'9')+)?;
 
-terminal INTEGER returns ecore::EBigInteger: (DECIMALCONSTANT) | (BINARYCONSTANT) | (HEXADECIMALCONSTANT) | (OCTALCONSTANT) | (VLOGCONSTANT);
+terminal INTEGER returns ecore::EBigInteger: (DECIMALINT) | (BINARYINT) | (HEXADECIMALINT) | (OCTALINT) | (VLOGINT);
 
-terminal fragment BINARYCONSTANT:	('0b' | '0B') '0'..'1' (('_')? '0'..'1')*;
+terminal fragment BINARYINT:	('0b' | '0B') '0'..'1' (('_')? '0'..'1')*;
 
-terminal fragment OCTALCONSTANT:   '0' ('_')? '0'..'7' (('_')? '0'..'7')*;
+terminal fragment OCTALINT:   '0' ('_')? '0'..'7' (('_')? '0'..'7')*;
 
-terminal fragment DECIMALCONSTANT:   '0' | '1'..'9' (('_')? '0'..'9')*;
+terminal fragment DECIMALINT:   '0' | '1'..'9' (('_')? '0'..'9')*;
 
-terminal fragment HEXADECIMALCONSTANT:   ('0x'|'0X') ('0'..'9'|'a'..'f'|'A'..'F')  (('_')? ('0'..'9'|'a'..'f'|'A'..'F'))*;
+terminal fragment HEXADECIMALINT:   ('0x'|'0X') ('0'..'9'|'a'..'f'|'A'..'F')  (('_')? ('0'..'9'|'a'..'f'|'A'..'F'))*;
 
-terminal fragment VLOGCONSTANT: ('0'..'9')+ "'" ('b' ('01')+ | 'o' ('0'..'7')+ | 'd' ('0'..'9')+ | 'h' ('0'..'9'|'a'..'f'|'A'..'F')+); 
+terminal fragment VLOGINT: ('0'..'9')+ "'" ('b' ('01')+ | 'o' ('0'..'7')+ | 'd' ('0'..'9')+ | 'h' ('0'..'9'|'a'..'f'|'A'..'F')+); 
 
 terminal CHARCONST: "'" ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|"'") )* "'";
 
 @Override 
-terminal INT returns ecore::EInt: 'this one has been deactivated';
+terminal INT returns ecore::EInt: '~this one has been deactivated';
     
 @Override 
 terminal ID : '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
     
 @Override
 terminal STRING	:	'"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';
+
+@Override
+terminal ANY_OTHER: '~xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+
  
