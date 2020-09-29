@@ -26,15 +26,13 @@ import org.eclipse.emf.ecore.EObject;
 public interface AttributeList extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Attrs</b></em>' attribute list.
+   * Returns the value of the '<em><b>Attrs</b></em>' containment reference list.
    * The list contents are of type {@link com.minres.coredsl.coreDsl.Attribute}.
-   * The literals are from the enumeration {@link com.minres.coredsl.coreDsl.Attribute}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Attrs</em>' attribute list.
-   * @see com.minres.coredsl.coreDsl.Attribute
+   * @return the value of the '<em>Attrs</em>' containment reference list.
    * @see com.minres.coredsl.coreDsl.CoreDslPackage#getAttributeList_Attrs()
-   * @model unique="false"
+   * @model containment="true"
    * @generated
    */
   EList<Attribute> getAttrs();

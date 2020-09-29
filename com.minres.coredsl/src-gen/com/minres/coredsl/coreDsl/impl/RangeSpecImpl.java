@@ -4,13 +4,14 @@
 package com.minres.coredsl.coreDsl.impl;
 
 import com.minres.coredsl.coreDsl.CoreDslPackage;
+import com.minres.coredsl.coreDsl.IntegerConstant;
 import com.minres.coredsl.coreDsl.RangeSpec;
 
-import java.math.BigInteger;
-
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
@@ -32,44 +33,24 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 public class RangeSpecImpl extends MinimalEObjectImpl.Container implements RangeSpec
 {
   /**
-   * The default value of the '{@link #getLeft() <em>Left</em>}' attribute.
+   * The cached value of the '{@link #getLeft() <em>Left</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getLeft()
    * @generated
    * @ordered
    */
-  protected static final BigInteger LEFT_EDEFAULT = null;
+  protected IntegerConstant left;
 
   /**
-   * The cached value of the '{@link #getLeft() <em>Left</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getLeft()
-   * @generated
-   * @ordered
-   */
-  protected BigInteger left = LEFT_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getRight() <em>Right</em>}' attribute.
+   * The cached value of the '{@link #getRight() <em>Right</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getRight()
    * @generated
    * @ordered
    */
-  protected static final BigInteger RIGHT_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getRight() <em>Right</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getRight()
-   * @generated
-   * @ordered
-   */
-  protected BigInteger right = RIGHT_EDEFAULT;
+  protected IntegerConstant right;
 
   /**
    * <!-- begin-user-doc -->
@@ -98,7 +79,7 @@ public class RangeSpecImpl extends MinimalEObjectImpl.Container implements Range
    * @generated
    */
   @Override
-  public BigInteger getLeft()
+  public IntegerConstant getLeft()
   {
     return left;
   }
@@ -108,13 +89,16 @@ public class RangeSpecImpl extends MinimalEObjectImpl.Container implements Range
    * <!-- end-user-doc -->
    * @generated
    */
-  @Override
-  public void setLeft(BigInteger newLeft)
+  public NotificationChain basicSetLeft(IntegerConstant newLeft, NotificationChain msgs)
   {
-    BigInteger oldLeft = left;
+    IntegerConstant oldLeft = left;
     left = newLeft;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.RANGE_SPEC__LEFT, oldLeft, left));
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CoreDslPackage.RANGE_SPEC__LEFT, oldLeft, newLeft);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
   }
 
   /**
@@ -123,7 +107,29 @@ public class RangeSpecImpl extends MinimalEObjectImpl.Container implements Range
    * @generated
    */
   @Override
-  public BigInteger getRight()
+  public void setLeft(IntegerConstant newLeft)
+  {
+    if (newLeft != left)
+    {
+      NotificationChain msgs = null;
+      if (left != null)
+        msgs = ((InternalEObject)left).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.RANGE_SPEC__LEFT, null, msgs);
+      if (newLeft != null)
+        msgs = ((InternalEObject)newLeft).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.RANGE_SPEC__LEFT, null, msgs);
+      msgs = basicSetLeft(newLeft, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.RANGE_SPEC__LEFT, newLeft, newLeft));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public IntegerConstant getRight()
   {
     return right;
   }
@@ -133,13 +139,56 @@ public class RangeSpecImpl extends MinimalEObjectImpl.Container implements Range
    * <!-- end-user-doc -->
    * @generated
    */
-  @Override
-  public void setRight(BigInteger newRight)
+  public NotificationChain basicSetRight(IntegerConstant newRight, NotificationChain msgs)
   {
-    BigInteger oldRight = right;
+    IntegerConstant oldRight = right;
     right = newRight;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.RANGE_SPEC__RIGHT, oldRight, right));
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CoreDslPackage.RANGE_SPEC__RIGHT, oldRight, newRight);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setRight(IntegerConstant newRight)
+  {
+    if (newRight != right)
+    {
+      NotificationChain msgs = null;
+      if (right != null)
+        msgs = ((InternalEObject)right).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.RANGE_SPEC__RIGHT, null, msgs);
+      if (newRight != null)
+        msgs = ((InternalEObject)newRight).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.RANGE_SPEC__RIGHT, null, msgs);
+      msgs = basicSetRight(newRight, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.RANGE_SPEC__RIGHT, newRight, newRight));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case CoreDslPackage.RANGE_SPEC__LEFT:
+        return basicSetLeft(null, msgs);
+      case CoreDslPackage.RANGE_SPEC__RIGHT:
+        return basicSetRight(null, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
   }
 
   /**
@@ -171,10 +220,10 @@ public class RangeSpecImpl extends MinimalEObjectImpl.Container implements Range
     switch (featureID)
     {
       case CoreDslPackage.RANGE_SPEC__LEFT:
-        setLeft((BigInteger)newValue);
+        setLeft((IntegerConstant)newValue);
         return;
       case CoreDslPackage.RANGE_SPEC__RIGHT:
-        setRight((BigInteger)newValue);
+        setRight((IntegerConstant)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -191,10 +240,10 @@ public class RangeSpecImpl extends MinimalEObjectImpl.Container implements Range
     switch (featureID)
     {
       case CoreDslPackage.RANGE_SPEC__LEFT:
-        setLeft(LEFT_EDEFAULT);
+        setLeft((IntegerConstant)null);
         return;
       case CoreDslPackage.RANGE_SPEC__RIGHT:
-        setRight(RIGHT_EDEFAULT);
+        setRight((IntegerConstant)null);
         return;
     }
     super.eUnset(featureID);
@@ -211,30 +260,11 @@ public class RangeSpecImpl extends MinimalEObjectImpl.Container implements Range
     switch (featureID)
     {
       case CoreDslPackage.RANGE_SPEC__LEFT:
-        return LEFT_EDEFAULT == null ? left != null : !LEFT_EDEFAULT.equals(left);
+        return left != null;
       case CoreDslPackage.RANGE_SPEC__RIGHT:
-        return RIGHT_EDEFAULT == null ? right != null : !RIGHT_EDEFAULT.equals(right);
+        return right != null;
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
-
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (left: ");
-    result.append(left);
-    result.append(", right: ");
-    result.append(right);
-    result.append(')');
-    return result.toString();
   }
 
 } //RangeSpecImpl

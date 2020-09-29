@@ -52,7 +52,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrVarDeclaration
 {
   /**
-   * The cached value of the '{@link #getAttrs() <em>Attrs</em>}' attribute list.
+   * The cached value of the '{@link #getAttrs() <em>Attrs</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getAttrs()
@@ -162,7 +162,7 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
   {
     if (attrs == null)
     {
-      attrs = new EDataTypeEList<Attribute>(Attribute.class, this, CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS);
+      attrs = new EObjectContainmentEList<Attribute>(Attribute.class, this, CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS);
     }
     return attrs;
   }
@@ -347,6 +347,8 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
   {
     switch (featureID)
     {
+      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS:
+        return ((InternalEList<?>)getAttrs()).basicRemove(otherEnd, msgs);
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__TYPE:
         return basicSetType(null, msgs);
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__SIZE:
@@ -555,9 +557,7 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
     if (eIsProxy()) return super.toString();
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (attrs: ");
-    result.append(attrs);
-    result.append(", storage: ");
+    result.append(" (storage: ");
     result.append(storage);
     result.append(", qualifiers: ");
     result.append(qualifiers);

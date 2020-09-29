@@ -52,8 +52,10 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//BitfieldDataType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RangeSpec">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="left" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="right" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//IntegerConstant"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//IntegerConstant"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionDefinition" eSuperTypes="#//ParameterList #//VariableRef">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="extern" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
@@ -126,6 +128,10 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="expr" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SpawnStatement" eSuperTypes="#//Statement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stmt" eType="#//Statement"
+        containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Declaration" eSuperTypes="#//BlockItem"/>
   <eClassifiers xsi:type="ecore:EClass" name="TypeOrVarDeclaration" eSuperTypes="#//Declaration #//DeclarationSpecifier #//AttributeList">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//TypeSpecifier"
@@ -149,12 +155,17 @@
         upperBound="-1" eType="#//TypeQualifier"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AttributeList">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="attrs" unique="false" upperBound="-1"
-        eType="#//Attribute"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attrs" upperBound="-1"
+        eType="#//Attribute" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Attribute">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//StatementAttribute"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="val" eType="#//Expression"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TypeSpecifier"/>
   <eClassifiers xsi:type="ecore:EClass" name="DataTypeSpecifier" eSuperTypes="#//TypeSpecifier"/>
-  <eClassifiers xsi:type="ecore:EClass" name="TypedefRef" eSuperTypes="#//TypeSpecifier">
+  <eClassifiers xsi:type="ecore:EClass" name="TypedefRef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="ref" eType="#//DirectDeclarator"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PodSpecifier" eSuperTypes="#//DataTypeSpecifier">
@@ -166,8 +177,8 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BitSizeValue">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" unique="false" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="val" upperBound="-1" eType="#//IntegerConstant"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="constant" unique="false"
         upperBound="-1" eType="#//Constant"/>
   </eClassifiers>
@@ -283,28 +294,19 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="prefix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Constant"/>
-  <eClassifiers xsi:type="ecore:EClass" name="IntegerConstant" eSuperTypes="#//Constant #//IntegerSuffix #//UnsignedSuffix #//LongSuffix #//LongLongSuffix">
+  <eClassifiers xsi:type="ecore:EClass" name="IntegerConstant" eSuperTypes="#//Constant">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unsigned" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="long" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="longlong" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FloatingConstant" eSuperTypes="#//Constant #//FloatingSuffix">
+  <eClassifiers xsi:type="ecore:EClass" name="FloatingConstant" eSuperTypes="#//Constant">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="f" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="l" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BoolConstant" eSuperTypes="#//Constant">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IntegerSuffix" eSuperTypes="#//UnsignedSuffix #//LongSuffix #//LongLongSuffix"/>
-  <eClassifiers xsi:type="ecore:EClass" name="UnsignedSuffix">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unsigned" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="LongSuffix">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="long" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="LongLongSuffix">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="longlong" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FloatingSuffix">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="f" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="l" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="CharacterConstant" eSuperTypes="#//Constant">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -320,8 +322,7 @@
     <eLiterals name="UNSIGNED" value="6" literal="unsigned"/>
     <eLiterals name="FLOAT" value="7" literal="float"/>
     <eLiterals name="DOUBLE" value="8" literal="double"/>
-    <eLiterals name="FRAC" value="9" literal="frac"/>
-    <eLiterals name="ACCUM" value="10" literal="accum"/>
+    <eLiterals name="VOID" value="9" literal="void"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="TypeQualifier">
     <eLiterals name="CONST" literal="const"/>
@@ -331,10 +332,11 @@
     <eLiterals name="EXTERN" literal="extern"/>
     <eLiterals name="STATIC" value="1" literal="static"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="Attribute">
+  <eClassifiers xsi:type="ecore:EEnum" name="StatementAttribute">
     <eLiterals name="NONE" literal="NONE"/>
     <eLiterals name="IS_PC" value="1" literal="is_pc"/>
     <eLiterals name="DEL" value="2" literal="delete"/>
+    <eLiterals name="IS_INTERLOCK_FOR" value="3" literal="is_interlock_for"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="InstrAttribute">
     <eLiterals name="NONE" literal="NONE"/>

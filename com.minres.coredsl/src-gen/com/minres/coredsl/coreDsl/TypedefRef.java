@@ -3,6 +3,7 @@
  */
 package com.minres.coredsl.coreDsl;
 
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -20,7 +21,7 @@ package com.minres.coredsl.coreDsl;
  * @model
  * @generated
  */
-public interface TypedefRef extends TypeSpecifier
+public interface TypedefRef extends EObject
 {
   /**
    * Returns the value of the '<em><b>Ref</b></em>' reference.

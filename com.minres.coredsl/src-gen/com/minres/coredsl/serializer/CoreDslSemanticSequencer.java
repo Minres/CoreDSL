@@ -5,6 +5,7 @@ package com.minres.coredsl.serializer;
 
 import com.google.inject.Inject;
 import com.minres.coredsl.coreDsl.AssignmentExpression;
+import com.minres.coredsl.coreDsl.Attribute;
 import com.minres.coredsl.coreDsl.BitField;
 import com.minres.coredsl.coreDsl.BitSizeSpecifier;
 import com.minres.coredsl.coreDsl.BitSizeValue;
@@ -46,6 +47,7 @@ import com.minres.coredsl.coreDsl.PostfixOperator;
 import com.minres.coredsl.coreDsl.PrefixExpression;
 import com.minres.coredsl.coreDsl.PrimaryExpression;
 import com.minres.coredsl.coreDsl.RangeSpec;
+import com.minres.coredsl.coreDsl.SpawnStatement;
 import com.minres.coredsl.coreDsl.StringLiteral;
 import com.minres.coredsl.coreDsl.StructDeclaration;
 import com.minres.coredsl.coreDsl.StructDeclarationSpecifier;
@@ -94,6 +96,9 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 					return; 
 				}
 				else break;
+			case CoreDslPackage.ATTRIBUTE:
+				sequence_Attribute(context, (Attribute) semanticObject); 
+				return; 
 			case CoreDslPackage.BIT_FIELD:
 				sequence_BitField(context, (BitField) semanticObject); 
 				return; 
@@ -171,7 +176,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				sequence_ExpressionStatement(context, (ExpressionStatement) semanticObject); 
 				return; 
 			case CoreDslPackage.FLOATING_CONSTANT:
-				sequence_FloatingConstant_FloatingSuffix(context, (FloatingConstant) semanticObject); 
+				sequence_FloatingConstant(context, (FloatingConstant) semanticObject); 
 				return; 
 			case CoreDslPackage.FUNCTION_DEFINITION:
 				sequence_FunctionDefinition_ParameterList(context, (FunctionDefinition) semanticObject); 
@@ -254,7 +259,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				sequence_InstructionSet(context, (InstructionSet) semanticObject); 
 				return; 
 			case CoreDslPackage.INTEGER_CONSTANT:
-				sequence_IntegerConstant_LongLongSuffix_LongSuffix_UnsignedSuffix(context, (IntegerConstant) semanticObject); 
+				sequence_IntegerConstant(context, (IntegerConstant) semanticObject); 
 				return; 
 			case CoreDslPackage.ITERATION_STATEMENT:
 				sequence_ForCondition_IterationStatement(context, (IterationStatement) semanticObject); 
@@ -285,6 +290,9 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				return; 
 			case CoreDslPackage.RANGE_SPEC:
 				sequence_RangeSpec(context, (RangeSpec) semanticObject); 
+				return; 
+			case CoreDslPackage.SPAWN_STATEMENT:
+				sequence_SpawnStatement(context, (SpawnStatement) semanticObject); 
 				return; 
 			case CoreDslPackage.STRING_LITERAL:
 				sequence_EncodingPrefix_StringLiteral(context, (StringLiteral) semanticObject); 
@@ -618,6 +626,18 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
+	 *     Attribute returns Attribute
+	 *
+	 * Constraint:
+	 *     (type=StatementAttribute val=ConditionalExpression?)
+	 */
+	protected void sequence_Attribute(ISerializationContext context, Attribute semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
 	 *     Field returns BitField
 	 *     BitField returns BitField
 	 *     VariableRef returns BitField
@@ -647,7 +667,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     BitSizeValue returns BitSizeValue
 	 *
 	 * Constraint:
-	 *     (val+=INTEGER | constant+=[Constant|ID])
+	 *     (val+=IntegerConstant | constant+=[Constant|ID])
 	 */
 	protected void sequence_BitSizeValue(ISerializationContext context, BitSizeValue semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -953,7 +973,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     ExpressionStatement returns ExpressionStatement
 	 *
 	 * Constraint:
-	 *     expr=AssignmentExpression2?
+	 *     expr=AssignmentExpression?
 	 */
 	protected void sequence_ExpressionStatement(ISerializationContext context, ExpressionStatement semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -987,9 +1007,9 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     FloatingConstant returns FloatingConstant
 	 *
 	 * Constraint:
-	 *     (val=FLOAT (f?='f' | l?='l' | f?='F' | f?='L')?)
+	 *     (val=FLOAT (f?='f' | f?='F' | l?='l' | l?='L')?)
 	 */
-	protected void sequence_FloatingConstant_FloatingSuffix(ISerializationContext context, FloatingConstant semanticObject) {
+	protected void sequence_FloatingConstant(ISerializationContext context, FloatingConstant semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -1024,14 +1044,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     VariableRef returns FunctionDefinition
 	 *
 	 * Constraint:
-	 *     (
-	 *         extern?='extern'? 
-	 *         type=TypeSpecifier 
-	 *         name=ID 
-	 *         params+=ParameterDeclaration 
-	 *         parameters+=ParameterDeclaration* 
-	 *         statement=CompoundStatement
-	 *     )
+	 *     (extern?='extern'? type=TypeSpecifier name=ID (params+=ParameterDeclaration parameters+=ParameterDeclaration*)? statement=CompoundStatement?)
 	 */
 	protected void sequence_FunctionDefinition_ParameterList(ISerializationContext context, FunctionDefinition semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -1137,17 +1150,9 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     IntegerConstant returns IntegerConstant
 	 *
 	 * Constraint:
-	 *     (
-	 *         val=INTEGER 
-	 *         (unsigned?='u' | unsigned?='U')? 
-	 *         (
-	 *             (long?='l' | long?='L' | longlong?='ll' | longlong?='LL') 
-	 *             ((unsigned?='u' | unsigned?='U')? (long?='l' | long?='L' | longlong?='ll' | longlong?='LL'))* 
-	 *             (unsigned?='u' | unsigned?='U')?
-	 *         )?
-	 *     )
+	 *     (val=INTEGER (unsigned?='u' | unsigned?='U')? ((long?='l' | long?='L') (longlong?='l' | longlong?='L')?)?)
 	 */
-	protected void sequence_IntegerConstant_LongLongSuffix_LongSuffix_UnsignedSuffix(ISerializationContext context, IntegerConstant semanticObject) {
+	protected void sequence_IntegerConstant(ISerializationContext context, IntegerConstant semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -1390,7 +1395,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     RangeSpec returns RangeSpec
 	 *
 	 * Constraint:
-	 *     (left=INTEGER right=INTEGER)
+	 *     (left=IntegerConstant right=IntegerConstant)
 	 */
 	protected void sequence_RangeSpec(ISerializationContext context, RangeSpec semanticObject) {
 		if (errorAcceptor != null) {
@@ -1400,8 +1405,28 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.RANGE_SPEC__RIGHT));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getRangeSpecAccess().getLeftINTEGERTerminalRuleCall_1_0(), semanticObject.getLeft());
-		feeder.accept(grammarAccess.getRangeSpecAccess().getRightINTEGERTerminalRuleCall_3_0(), semanticObject.getRight());
+		feeder.accept(grammarAccess.getRangeSpecAccess().getLeftIntegerConstantParserRuleCall_1_0(), semanticObject.getLeft());
+		feeder.accept(grammarAccess.getRangeSpecAccess().getRightIntegerConstantParserRuleCall_3_0(), semanticObject.getRight());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Statement returns SpawnStatement
+	 *     BlockItem returns SpawnStatement
+	 *     SpawnStatement returns SpawnStatement
+	 *
+	 * Constraint:
+	 *     stmt=Statement
+	 */
+	protected void sequence_SpawnStatement(ISerializationContext context, SpawnStatement semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.SPAWN_STATEMENT__STMT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.SPAWN_STATEMENT__STMT));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getSpawnStatementAccess().getStmtStatementParserRuleCall_1_0(), semanticObject.getStmt());
 		feeder.finish();
 	}
 	
@@ -1461,7 +1486,6 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     TypeSpecifier returns TypedefRef
 	 *     TypedefRef returns TypedefRef
 	 *
 	 * Constraint:

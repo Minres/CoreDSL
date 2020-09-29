@@ -111,24 +111,14 @@ public enum DataTypes implements Enumerator
   DOUBLE(8, "DOUBLE", "double"),
 
   /**
-   * The '<em><b>FRAC</b></em>' literal object.
+   * The '<em><b>VOID</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #FRAC_VALUE
+   * @see #VOID_VALUE
    * @generated
    * @ordered
    */
-  FRAC(9, "FRAC", "frac"),
-
-  /**
-   * The '<em><b>ACCUM</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #ACCUM_VALUE
-   * @generated
-   * @ordered
-   */
-  ACCUM(10, "ACCUM", "accum");
+  VOID(9, "VOID", "void");
 
   /**
    * The '<em><b>BOOL</b></em>' literal value.
@@ -230,26 +220,15 @@ public enum DataTypes implements Enumerator
   public static final int DOUBLE_VALUE = 8;
 
   /**
-   * The '<em><b>FRAC</b></em>' literal value.
+   * The '<em><b>VOID</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #FRAC
-   * @model literal="frac"
+   * @see #VOID
+   * @model literal="void"
    * @generated
    * @ordered
    */
-  public static final int FRAC_VALUE = 9;
-
-  /**
-   * The '<em><b>ACCUM</b></em>' literal value.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #ACCUM
-   * @model literal="accum"
-   * @generated
-   * @ordered
-   */
-  public static final int ACCUM_VALUE = 10;
+  public static final int VOID_VALUE = 9;
 
   /**
    * An array of all the '<em><b>Data Types</b></em>' enumerators.
@@ -269,8 +248,7 @@ public enum DataTypes implements Enumerator
       UNSIGNED,
       FLOAT,
       DOUBLE,
-      FRAC,
-      ACCUM,
+      VOID,
     };
 
   /**
@@ -344,8 +322,7 @@ public enum DataTypes implements Enumerator
       case UNSIGNED_VALUE: return UNSIGNED;
       case FLOAT_VALUE: return FLOAT;
       case DOUBLE_VALUE: return DOUBLE;
-      case FRAC_VALUE: return FRAC;
-      case ACCUM_VALUE: return ACCUM;
+      case VOID_VALUE: return VOID;
     }
     return null;
   }

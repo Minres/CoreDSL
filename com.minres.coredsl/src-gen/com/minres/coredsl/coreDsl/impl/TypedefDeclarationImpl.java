@@ -49,7 +49,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class TypedefDeclarationImpl extends DeclarationImpl implements TypedefDeclaration
 {
   /**
-   * The cached value of the '{@link #getAttrs() <em>Attrs</em>}' attribute list.
+   * The cached value of the '{@link #getAttrs() <em>Attrs</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getAttrs()
@@ -129,7 +129,7 @@ public class TypedefDeclarationImpl extends DeclarationImpl implements TypedefDe
   {
     if (attrs == null)
     {
-      attrs = new EDataTypeEList<Attribute>(Attribute.class, this, CoreDslPackage.TYPEDEF_DECLARATION__ATTRS);
+      attrs = new EObjectContainmentEList<Attribute>(Attribute.class, this, CoreDslPackage.TYPEDEF_DECLARATION__ATTRS);
     }
     return attrs;
   }
@@ -239,6 +239,8 @@ public class TypedefDeclarationImpl extends DeclarationImpl implements TypedefDe
   {
     switch (featureID)
     {
+      case CoreDslPackage.TYPEDEF_DECLARATION__ATTRS:
+        return ((InternalEList<?>)getAttrs()).basicRemove(otherEnd, msgs);
       case CoreDslPackage.TYPEDEF_DECLARATION__TYPE:
         return basicSetType(null, msgs);
       case CoreDslPackage.TYPEDEF_DECLARATION__INIT:
@@ -425,9 +427,7 @@ public class TypedefDeclarationImpl extends DeclarationImpl implements TypedefDe
     if (eIsProxy()) return super.toString();
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (attrs: ");
-    result.append(attrs);
-    result.append(", storage: ");
+    result.append(" (storage: ");
     result.append(storage);
     result.append(", qualifiers: ");
     result.append(qualifiers);

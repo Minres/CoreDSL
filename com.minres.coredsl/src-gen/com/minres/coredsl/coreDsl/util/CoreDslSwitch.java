@@ -275,6 +275,15 @@ public class CoreDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case CoreDslPackage.SPAWN_STATEMENT:
+      {
+        SpawnStatement spawnStatement = (SpawnStatement)theEObject;
+        T result = caseSpawnStatement(spawnStatement);
+        if (result == null) result = caseStatement(spawnStatement);
+        if (result == null) result = caseBlockItem(spawnStatement);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case CoreDslPackage.DECLARATION:
       {
         Declaration declaration = (Declaration)theEObject;
@@ -320,6 +329,13 @@ public class CoreDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case CoreDslPackage.ATTRIBUTE:
+      {
+        Attribute attribute = (Attribute)theEObject;
+        T result = caseAttribute(attribute);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case CoreDslPackage.TYPE_SPECIFIER:
       {
         TypeSpecifier typeSpecifier = (TypeSpecifier)theEObject;
@@ -339,7 +355,6 @@ public class CoreDslSwitch<T> extends Switch<T>
       {
         TypedefRef typedefRef = (TypedefRef)theEObject;
         T result = caseTypedefRef(typedefRef);
-        if (result == null) result = caseTypeSpecifier(typedefRef);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -582,10 +597,6 @@ public class CoreDslSwitch<T> extends Switch<T>
         IntegerConstant integerConstant = (IntegerConstant)theEObject;
         T result = caseIntegerConstant(integerConstant);
         if (result == null) result = caseConstant(integerConstant);
-        if (result == null) result = caseIntegerSuffix(integerConstant);
-        if (result == null) result = caseUnsignedSuffix(integerConstant);
-        if (result == null) result = caseLongSuffix(integerConstant);
-        if (result == null) result = caseLongLongSuffix(integerConstant);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -594,7 +605,6 @@ public class CoreDslSwitch<T> extends Switch<T>
         FloatingConstant floatingConstant = (FloatingConstant)theEObject;
         T result = caseFloatingConstant(floatingConstant);
         if (result == null) result = caseConstant(floatingConstant);
-        if (result == null) result = caseFloatingSuffix(floatingConstant);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -603,44 +613,6 @@ public class CoreDslSwitch<T> extends Switch<T>
         BoolConstant boolConstant = (BoolConstant)theEObject;
         T result = caseBoolConstant(boolConstant);
         if (result == null) result = caseConstant(boolConstant);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case CoreDslPackage.INTEGER_SUFFIX:
-      {
-        IntegerSuffix integerSuffix = (IntegerSuffix)theEObject;
-        T result = caseIntegerSuffix(integerSuffix);
-        if (result == null) result = caseUnsignedSuffix(integerSuffix);
-        if (result == null) result = caseLongSuffix(integerSuffix);
-        if (result == null) result = caseLongLongSuffix(integerSuffix);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case CoreDslPackage.UNSIGNED_SUFFIX:
-      {
-        UnsignedSuffix unsignedSuffix = (UnsignedSuffix)theEObject;
-        T result = caseUnsignedSuffix(unsignedSuffix);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case CoreDslPackage.LONG_SUFFIX:
-      {
-        LongSuffix longSuffix = (LongSuffix)theEObject;
-        T result = caseLongSuffix(longSuffix);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case CoreDslPackage.LONG_LONG_SUFFIX:
-      {
-        LongLongSuffix longLongSuffix = (LongLongSuffix)theEObject;
-        T result = caseLongLongSuffix(longLongSuffix);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case CoreDslPackage.FLOATING_SUFFIX:
-      {
-        FloatingSuffix floatingSuffix = (FloatingSuffix)theEObject;
-        T result = caseFloatingSuffix(floatingSuffix);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1084,6 +1056,22 @@ public class CoreDslSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Spawn Statement</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Spawn Statement</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseSpawnStatement(SpawnStatement object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>Declaration</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1159,6 +1147,22 @@ public class CoreDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseAttributeList(AttributeList object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Attribute</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Attribute</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseAttribute(Attribute object)
   {
     return null;
   }
@@ -1719,86 +1723,6 @@ public class CoreDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseBoolConstant(BoolConstant object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Integer Suffix</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Integer Suffix</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseIntegerSuffix(IntegerSuffix object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Unsigned Suffix</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Unsigned Suffix</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseUnsignedSuffix(UnsignedSuffix object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Long Suffix</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Long Suffix</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseLongSuffix(LongSuffix object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Long Long Suffix</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Long Long Suffix</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseLongLongSuffix(LongLongSuffix object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Floating Suffix</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Floating Suffix</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseFloatingSuffix(FloatingSuffix object)
   {
     return null;
   }

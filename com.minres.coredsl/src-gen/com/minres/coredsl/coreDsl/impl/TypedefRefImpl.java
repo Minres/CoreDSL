@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -27,7 +28,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *
  * @generated
  */
-public class TypedefRefImpl extends TypeSpecifierImpl implements TypedefRef
+public class TypedefRefImpl extends MinimalEObjectImpl.Container implements TypedefRef
 {
   /**
    * The cached value of the '{@link #getRef() <em>Ref</em>}' reference.

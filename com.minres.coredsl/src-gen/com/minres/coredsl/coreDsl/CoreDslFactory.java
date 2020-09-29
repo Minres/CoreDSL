@@ -249,6 +249,15 @@ public interface CoreDslFactory extends EFactory
   JumpStatement createJumpStatement();
 
   /**
+   * Returns a new object of class '<em>Spawn Statement</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Spawn Statement</em>'.
+   * @generated
+   */
+  SpawnStatement createSpawnStatement();
+
+  /**
    * Returns a new object of class '<em>Declaration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -292,6 +301,15 @@ public interface CoreDslFactory extends EFactory
    * @generated
    */
   AttributeList createAttributeList();
+
+  /**
+   * Returns a new object of class '<em>Attribute</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Attribute</em>'.
+   * @generated
+   */
+  Attribute createAttribute();
 
   /**
    * Returns a new object of class '<em>Type Specifier</em>'.
@@ -607,51 +625,6 @@ public interface CoreDslFactory extends EFactory
    * @generated
    */
   BoolConstant createBoolConstant();
-
-  /**
-   * Returns a new object of class '<em>Integer Suffix</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Integer Suffix</em>'.
-   * @generated
-   */
-  IntegerSuffix createIntegerSuffix();
-
-  /**
-   * Returns a new object of class '<em>Unsigned Suffix</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Unsigned Suffix</em>'.
-   * @generated
-   */
-  UnsignedSuffix createUnsignedSuffix();
-
-  /**
-   * Returns a new object of class '<em>Long Suffix</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Long Suffix</em>'.
-   * @generated
-   */
-  LongSuffix createLongSuffix();
-
-  /**
-   * Returns a new object of class '<em>Long Long Suffix</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Long Long Suffix</em>'.
-   * @generated
-   */
-  LongLongSuffix createLongLongSuffix();
-
-  /**
-   * Returns a new object of class '<em>Floating Suffix</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Floating Suffix</em>'.
-   * @generated
-   */
-  FloatingSuffix createFloatingSuffix();
 
   /**
    * Returns a new object of class '<em>Character Constant</em>'.

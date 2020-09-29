@@ -201,6 +201,11 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
         return createJumpStatementAdapter();
       }
       @Override
+      public Adapter caseSpawnStatement(SpawnStatement object)
+      {
+        return createSpawnStatementAdapter();
+      }
+      @Override
       public Adapter caseDeclaration(Declaration object)
       {
         return createDeclarationAdapter();
@@ -224,6 +229,11 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseAttributeList(AttributeList object)
       {
         return createAttributeListAdapter();
+      }
+      @Override
+      public Adapter caseAttribute(Attribute object)
+      {
+        return createAttributeAdapter();
       }
       @Override
       public Adapter caseTypeSpecifier(TypeSpecifier object)
@@ -399,31 +409,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseBoolConstant(BoolConstant object)
       {
         return createBoolConstantAdapter();
-      }
-      @Override
-      public Adapter caseIntegerSuffix(IntegerSuffix object)
-      {
-        return createIntegerSuffixAdapter();
-      }
-      @Override
-      public Adapter caseUnsignedSuffix(UnsignedSuffix object)
-      {
-        return createUnsignedSuffixAdapter();
-      }
-      @Override
-      public Adapter caseLongSuffix(LongSuffix object)
-      {
-        return createLongSuffixAdapter();
-      }
-      @Override
-      public Adapter caseLongLongSuffix(LongLongSuffix object)
-      {
-        return createLongLongSuffixAdapter();
-      }
-      @Override
-      public Adapter caseFloatingSuffix(FloatingSuffix object)
-      {
-        return createFloatingSuffixAdapter();
       }
       @Override
       public Adapter caseCharacterConstant(CharacterConstant object)
@@ -843,6 +828,21 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.SpawnStatement <em>Spawn Statement</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.SpawnStatement
+   * @generated
+   */
+  public Adapter createSpawnStatementAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Declaration <em>Declaration</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -913,6 +913,21 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createAttributeListAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Attribute <em>Attribute</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see com.minres.coredsl.coreDsl.Attribute
+   * @generated
+   */
+  public Adapter createAttributeAdapter()
   {
     return null;
   }
@@ -1438,81 +1453,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createBoolConstantAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.IntegerSuffix <em>Integer Suffix</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.IntegerSuffix
-   * @generated
-   */
-  public Adapter createIntegerSuffixAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.UnsignedSuffix <em>Unsigned Suffix</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.UnsignedSuffix
-   * @generated
-   */
-  public Adapter createUnsignedSuffixAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.LongSuffix <em>Long Suffix</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.LongSuffix
-   * @generated
-   */
-  public Adapter createLongSuffixAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.LongLongSuffix <em>Long Long Suffix</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.LongLongSuffix
-   * @generated
-   */
-  public Adapter createLongLongSuffixAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.FloatingSuffix <em>Floating Suffix</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.FloatingSuffix
-   * @generated
-   */
-  public Adapter createFloatingSuffixAdapter()
   {
     return null;
   }

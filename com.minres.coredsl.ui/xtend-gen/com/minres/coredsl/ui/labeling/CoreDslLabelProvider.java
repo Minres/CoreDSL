@@ -6,8 +6,8 @@ package com.minres.coredsl.ui.labeling;
 import com.google.inject.Inject;
 import com.minres.coredsl.coreDsl.BitField;
 import com.minres.coredsl.coreDsl.Encoding;
+import com.minres.coredsl.coreDsl.IntegerConstant;
 import com.minres.coredsl.coreDsl.RangeSpec;
-import java.math.BigInteger;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
 
@@ -29,10 +29,10 @@ public class CoreDslLabelProvider extends DefaultEObjectLabelProvider {
     RangeSpec _bitRange = ele.getBitRange();
     boolean _tripleNotEquals = (_bitRange != null);
     if (_tripleNotEquals) {
-      BigInteger _left = ele.getBitRange().getLeft();
+      IntegerConstant _left = ele.getBitRange().getLeft();
       String _plus = ("[" + _left);
       String _plus_1 = (_plus + ":");
-      BigInteger _right = ele.getBitRange().getRight();
+      IntegerConstant _right = ele.getBitRange().getRight();
       String _plus_2 = (_plus_1 + _right);
       _xifexpression = (_plus_2 + "]");
     } else {

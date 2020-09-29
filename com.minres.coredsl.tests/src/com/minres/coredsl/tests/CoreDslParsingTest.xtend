@@ -93,4 +93,148 @@ class CoreDslParsingTest {
         assertEquals(0, resource.warnings.size)
     }
 
+    @Test
+    def void parseInstrSQRTFloatRegs() {
+        val input = '''
+            InstructionSet TestISA {
+                registers {
+                    float F_Ext[32];}
+                instructions { 
+                    vectorL {
+                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        args_disass:"{name(rd)}, {name(rs1)}";
+                        behavior: { 
+                        float xc = F_Ext[rs1];     
+                        float yc = F_Ext[rs1];
+                        float sqdist = xc*xc + yc*yc;
+                        //...SQRT(sqdist) computation
+                        }
+                    }
+                }
+            }
+        '''
+        val content = parseHelper.parse(input)
+        assertEquals(1, content.definitions.size)
+        val resource = content.eResource
+        EcoreUtil.resolveAll(resource);
+        assertEquals(0, resource.errors.size)
+        assertEquals(0, resource.warnings.size)
+    }
+
+    @Test
+    def void parseInstrSQRTUnionRegs() {
+        val input = '''
+            InstructionSet TestISA {
+                registers {
+                    union ISAXRegFile{
+                        double doublePrec;  // for a double precision entry
+                        struct vector2d {
+                            float x_coord;
+                            float y_coord;
+                        } vector2d;         // for a 2d vector entry
+                    } ISAXRegFile[32]; 
+                }
+                instructions { 
+                    vectorL {
+                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        args_disass:"{name(rd)}, {name(rs1)}";
+                        behavior: { 
+                            float xc = ISAXRegFile[rs1].vector2d.x_coord;
+                            float yc = ISAXRegFile[rs1].vector2d.y_coord;
+                            double result;
+                            double sqdist = xc*xc + yc*yc;
+                            if((sqdist==0) || (sqdist[30:23]==0xff))
+                                result = 0; // avoid special cases
+                            else
+                                result = 1;//sqrt(sqdist);  
+                            ISAXRegFile[rd].doublePrec = result;
+                        }
+                    }
+                }
+            }
+        '''
+        val content = parseHelper.parse(input)
+        assertEquals(1, content.definitions.size)
+        val resource = content.eResource
+        EcoreUtil.resolveAll(resource);
+        assertEquals(0, resource.errors.size)
+        assertEquals(0, resource.warnings.size)
+    }
+
+    @Test
+    def void parseInstrSpawn() {
+        val input = '''
+            InstructionSet TestISA {
+                registers {
+                    float Freg[32];
+                    [[is_interlock_for=Freg]] bool F_ready[32] ;  // use attribute to indicate purpose of F_ready
+                }
+                instructions {
+                    SIN {
+                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        args_disass:"#{name(rd)}, {name(rs1)}";   
+                        behavior: { 
+                            double theta = Freg[rs1];
+                            F_ready[rd] = false;            // synchronously mark result as unavailable
+                            spawn {                         // asynchronously do the following block
+                                    Freg[rd] = 0.01f;     // first perform the computation        
+                                    F_ready[rd] = true;     // afterwards mark the result as ready
+                            }
+                        }
+                    }
+                }
+            }
+        '''
+        val content = parseHelper.parse(input)
+        assertEquals(1, content.definitions.size)
+        val resource = content.eResource
+        EcoreUtil.resolveAll(resource);
+        assertEquals(0, resource.errors.size)
+        assertEquals(0, resource.warnings.size)
+    }
+
+    @Test
+    def void parseInstrZOL() {
+        val input = '''
+            InstructionSet TestISA {
+                registers {
+                	int PC;
+                	int X[32];
+                    unsigned int count, endpc, startpc;
+                }
+                functions {
+                    void doZOL(){      
+                        bool zolactive = true; 
+                        while (zolactive) {         // keep executing while condition is true
+                            if (PC == endpc) {      // evaluate loop body once per clock cycle
+                                if (count != 0) {
+                                    --count;
+                                    PC = startpc;   // jump to loop start
+                                } else
+                                    zolactive = false;  // iteration limit reached, stop execution
+                            }
+                        }
+                    }
+                }
+                instructions {
+                    LP_SETUPI {
+                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        args_disass:"{name(rs1)}, {name(rs2)}";
+                        behavior: {
+                            count   = X[rs1];
+                            endpc   = PC + 4 + X[rs2]<<2; // use PC relative addressing to save bits
+                            startpc = PC + 4; 
+                            spawn doZOL(); // Keep running after LPSETUPI ends
+                        }
+                    }
+                }
+            }
+        '''
+        val content = parseHelper.parse(input)
+        assertEquals(1, content.definitions.size)
+        val resource = content.eResource
+        EcoreUtil.resolveAll(resource);
+        assertEquals(0, resource.errors.size)
+        assertEquals(0, resource.warnings.size)
+    }
 }

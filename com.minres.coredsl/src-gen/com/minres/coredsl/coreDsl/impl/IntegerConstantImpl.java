@@ -5,10 +5,6 @@ package com.minres.coredsl.coreDsl.impl;
 
 import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.IntegerConstant;
-import com.minres.coredsl.coreDsl.IntegerSuffix;
-import com.minres.coredsl.coreDsl.LongLongSuffix;
-import com.minres.coredsl.coreDsl.LongSuffix;
-import com.minres.coredsl.coreDsl.UnsignedSuffix;
 
 import java.math.BigInteger;
 
@@ -26,16 +22,36 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.IntegerConstantImpl#getVal <em>Val</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.IntegerConstantImpl#isUnsigned <em>Unsigned</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.IntegerConstantImpl#isLong <em>Long</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.IntegerConstantImpl#isLonglong <em>Longlong</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.IntegerConstantImpl#getVal <em>Val</em>}</li>
  * </ul>
  *
  * @generated
  */
 public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
 {
+  /**
+   * The default value of the '{@link #getVal() <em>Val</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getVal()
+   * @generated
+   * @ordered
+   */
+  protected static final BigInteger VAL_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getVal() <em>Val</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getVal()
+   * @generated
+   * @ordered
+   */
+  protected BigInteger val = VAL_EDEFAULT;
+
   /**
    * The default value of the '{@link #isUnsigned() <em>Unsigned</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -97,26 +113,6 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
   protected boolean longlong = LONGLONG_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getVal() <em>Val</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getVal()
-   * @generated
-   * @ordered
-   */
-  protected static final BigInteger VAL_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getVal() <em>Val</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getVal()
-   * @generated
-   * @ordered
-   */
-  protected BigInteger val = VAL_EDEFAULT;
-
-  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -135,6 +131,31 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
   protected EClass eStaticClass()
   {
     return CoreDslPackage.Literals.INTEGER_CONSTANT;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public BigInteger getVal()
+  {
+    return val;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setVal(BigInteger newVal)
+  {
+    BigInteger oldVal = val;
+    val = newVal;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.INTEGER_CONSTANT__VAL, oldVal, val));
   }
 
   /**
@@ -218,43 +239,18 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
    * @generated
    */
   @Override
-  public BigInteger getVal()
-  {
-    return val;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setVal(BigInteger newVal)
-  {
-    BigInteger oldVal = val;
-    val = newVal;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.INTEGER_CONSTANT__VAL, oldVal, val));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
     switch (featureID)
     {
+      case CoreDslPackage.INTEGER_CONSTANT__VAL:
+        return getVal();
       case CoreDslPackage.INTEGER_CONSTANT__UNSIGNED:
         return isUnsigned();
       case CoreDslPackage.INTEGER_CONSTANT__LONG:
         return isLong();
       case CoreDslPackage.INTEGER_CONSTANT__LONGLONG:
         return isLonglong();
-      case CoreDslPackage.INTEGER_CONSTANT__VAL:
-        return getVal();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -269,6 +265,9 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
   {
     switch (featureID)
     {
+      case CoreDslPackage.INTEGER_CONSTANT__VAL:
+        setVal((BigInteger)newValue);
+        return;
       case CoreDslPackage.INTEGER_CONSTANT__UNSIGNED:
         setUnsigned((Boolean)newValue);
         return;
@@ -277,9 +276,6 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
         return;
       case CoreDslPackage.INTEGER_CONSTANT__LONGLONG:
         setLonglong((Boolean)newValue);
-        return;
-      case CoreDslPackage.INTEGER_CONSTANT__VAL:
-        setVal((BigInteger)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -295,6 +291,9 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
   {
     switch (featureID)
     {
+      case CoreDslPackage.INTEGER_CONSTANT__VAL:
+        setVal(VAL_EDEFAULT);
+        return;
       case CoreDslPackage.INTEGER_CONSTANT__UNSIGNED:
         setUnsigned(UNSIGNED_EDEFAULT);
         return;
@@ -303,9 +302,6 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
         return;
       case CoreDslPackage.INTEGER_CONSTANT__LONGLONG:
         setLonglong(LONGLONG_EDEFAULT);
-        return;
-      case CoreDslPackage.INTEGER_CONSTANT__VAL:
-        setVal(VAL_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -321,100 +317,16 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
   {
     switch (featureID)
     {
+      case CoreDslPackage.INTEGER_CONSTANT__VAL:
+        return VAL_EDEFAULT == null ? val != null : !VAL_EDEFAULT.equals(val);
       case CoreDslPackage.INTEGER_CONSTANT__UNSIGNED:
         return unsigned != UNSIGNED_EDEFAULT;
       case CoreDslPackage.INTEGER_CONSTANT__LONG:
         return long_ != LONG_EDEFAULT;
       case CoreDslPackage.INTEGER_CONSTANT__LONGLONG:
         return longlong != LONGLONG_EDEFAULT;
-      case CoreDslPackage.INTEGER_CONSTANT__VAL:
-        return VAL_EDEFAULT == null ? val != null : !VAL_EDEFAULT.equals(val);
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
-  {
-    if (baseClass == UnsignedSuffix.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case CoreDslPackage.INTEGER_CONSTANT__UNSIGNED: return CoreDslPackage.UNSIGNED_SUFFIX__UNSIGNED;
-        default: return -1;
-      }
-    }
-    if (baseClass == LongSuffix.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case CoreDslPackage.INTEGER_CONSTANT__LONG: return CoreDslPackage.LONG_SUFFIX__LONG;
-        default: return -1;
-      }
-    }
-    if (baseClass == LongLongSuffix.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case CoreDslPackage.INTEGER_CONSTANT__LONGLONG: return CoreDslPackage.LONG_LONG_SUFFIX__LONGLONG;
-        default: return -1;
-      }
-    }
-    if (baseClass == IntegerSuffix.class)
-    {
-      switch (derivedFeatureID)
-      {
-        default: return -1;
-      }
-    }
-    return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
-  {
-    if (baseClass == UnsignedSuffix.class)
-    {
-      switch (baseFeatureID)
-      {
-        case CoreDslPackage.UNSIGNED_SUFFIX__UNSIGNED: return CoreDslPackage.INTEGER_CONSTANT__UNSIGNED;
-        default: return -1;
-      }
-    }
-    if (baseClass == LongSuffix.class)
-    {
-      switch (baseFeatureID)
-      {
-        case CoreDslPackage.LONG_SUFFIX__LONG: return CoreDslPackage.INTEGER_CONSTANT__LONG;
-        default: return -1;
-      }
-    }
-    if (baseClass == LongLongSuffix.class)
-    {
-      switch (baseFeatureID)
-      {
-        case CoreDslPackage.LONG_LONG_SUFFIX__LONGLONG: return CoreDslPackage.INTEGER_CONSTANT__LONGLONG;
-        default: return -1;
-      }
-    }
-    if (baseClass == IntegerSuffix.class)
-    {
-      switch (baseFeatureID)
-      {
-        default: return -1;
-      }
-    }
-    return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
   /**
@@ -428,14 +340,14 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
     if (eIsProxy()) return super.toString();
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (unsigned: ");
+    result.append(" (val: ");
+    result.append(val);
+    result.append(", unsigned: ");
     result.append(unsigned);
     result.append(", long: ");
     result.append(long_);
     result.append(", longlong: ");
     result.append(longlong);
-    result.append(", val: ");
-    result.append(val);
     result.append(')');
     return result.toString();
   }

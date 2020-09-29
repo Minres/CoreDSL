@@ -15,13 +15,16 @@ import java.math.BigInteger;
  * </p>
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.IntegerConstant#getVal <em>Val</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.IntegerConstant#isUnsigned <em>Unsigned</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.IntegerConstant#isLong <em>Long</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.IntegerConstant#isLonglong <em>Longlong</em>}</li>
  * </ul>
  *
  * @see com.minres.coredsl.coreDsl.CoreDslPackage#getIntegerConstant()
  * @model
  * @generated
  */
-public interface IntegerConstant extends Constant, IntegerSuffix, UnsignedSuffix, LongSuffix, LongLongSuffix
+public interface IntegerConstant extends Constant
 {
   /**
    * Returns the value of the '<em><b>Val</b></em>' attribute.
@@ -44,5 +47,71 @@ public interface IntegerConstant extends Constant, IntegerSuffix, UnsignedSuffix
    * @generated
    */
   void setVal(BigInteger value);
+
+  /**
+   * Returns the value of the '<em><b>Unsigned</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Unsigned</em>' attribute.
+   * @see #setUnsigned(boolean)
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getIntegerConstant_Unsigned()
+   * @model
+   * @generated
+   */
+  boolean isUnsigned();
+
+  /**
+   * Sets the value of the '{@link com.minres.coredsl.coreDsl.IntegerConstant#isUnsigned <em>Unsigned</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Unsigned</em>' attribute.
+   * @see #isUnsigned()
+   * @generated
+   */
+  void setUnsigned(boolean value);
+
+  /**
+   * Returns the value of the '<em><b>Long</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Long</em>' attribute.
+   * @see #setLong(boolean)
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getIntegerConstant_Long()
+   * @model
+   * @generated
+   */
+  boolean isLong();
+
+  /**
+   * Sets the value of the '{@link com.minres.coredsl.coreDsl.IntegerConstant#isLong <em>Long</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Long</em>' attribute.
+   * @see #isLong()
+   * @generated
+   */
+  void setLong(boolean value);
+
+  /**
+   * Returns the value of the '<em><b>Longlong</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Longlong</em>' attribute.
+   * @see #setLonglong(boolean)
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getIntegerConstant_Longlong()
+   * @model
+   * @generated
+   */
+  boolean isLonglong();
+
+  /**
+   * Sets the value of the '{@link com.minres.coredsl.coreDsl.IntegerConstant#isLonglong <em>Longlong</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Longlong</em>' attribute.
+   * @see #isLonglong()
+   * @generated
+   */
+  void setLonglong(boolean value);
 
 } // IntegerConstant

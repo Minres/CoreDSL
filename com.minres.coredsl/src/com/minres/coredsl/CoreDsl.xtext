@@ -60,11 +60,11 @@ BitField
 	;
 
 RangeSpec
-	:	LEFT_BR left=INTEGER ':' right=INTEGER RIGHT_BR
+	:	LEFT_BR left=IntegerConstant ':' right=IntegerConstant RIGHT_BR
 	;
 
 FunctionDefinition
-	:   extern?='extern'? type=TypeSpecifier name=ID '(' ParameterList ')' statement=CompoundStatement
+	:   extern?='extern'? type=TypeSpecifier name=ID '(' ParameterList? ')' statement=CompoundStatement?
 	;
 
 fragment ParameterList: params+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*;
@@ -84,6 +84,7 @@ Statement
     |   SelectionStatement
     |   IterationStatement
     |   JumpStatement
+    |   SpawnStatement
     ;
 
 LabeledStatement
@@ -91,6 +92,7 @@ LabeledStatement
     |   'default' ':' stmt=Statement
     ;
 
+    
 CompoundStatement
     :   {CompoundStatement} '{' items+=BlockItem* '}'
     ;
@@ -101,7 +103,7 @@ BlockItem
     ;
 
 ExpressionStatement
-    :   {ExpressionStatement} expr=AssignmentExpression2? ';'
+    :   {ExpressionStatement} expr=AssignmentExpression? ';'
     ;
 
 SelectionStatement
@@ -131,22 +133,25 @@ JumpStatement
     |   type='return' expr=ConditionalExpression? ';'
     ;
 
+SpawnStatement
+    :   'spawn' stmt=Statement
+    ;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Declarations
 
 Declaration
 	:   TypeOrVarDeclaration
-	|   TypedefDeclaration
+//	|   TypedefDeclaration
 	;
 	
 TypeOrVarDeclaration
 	:	DeclarationSpecifier* type=TypeSpecifier size=BitSizeSpecifier? is_ptr?='*'? (init+=InitDeclarator (',' init+=InitDeclarator)*)? ';'
 	;
 	
-TypedefDeclaration
-	:	'typedef' DeclarationSpecifier* type=TypeSpecifier init+=InitDeclarator ';'
-	;
+//TypedefDeclaration
+//	:	'typedef' DeclarationSpecifier* type=TypeSpecifier init+=InitDeclarator ';'
+//	;
 	
 fragment DeclarationSpecifier
     :   storage+=StorageClassSpecifier
@@ -156,9 +161,13 @@ fragment DeclarationSpecifier
 
 fragment AttributeList:	DoubleLeftBracket attrs+=Attribute (',' attrs+=Attribute)* DoubleRightBracket;
 
+Attribute
+    :  	type=StatementAttribute ('=' val=ConditionalExpression)?
+    ;
+    
 TypeSpecifier
 	:	DataTypeSpecifier
-	|	TypedefRef
+//	|	TypedefRef
 	;
 
 DataTypeSpecifier
@@ -167,9 +176,9 @@ DataTypeSpecifier
 	|	EnumSpecifier
 	;
     
-TypedefRef
-	:	ref=[DirectDeclarator]
-	;
+//TypedefRef
+//	:	ref=[DirectDeclarator]
+//	;
     
 PodSpecifier
 	:	dataType+=DataTypes+
@@ -180,7 +189,7 @@ BitSizeSpecifier
 	;
 
 BitSizeValue
-	:	val+=INTEGER
+	:	val+=IntegerConstant
 	|	constant+=[Constant]
 	;
 
@@ -255,8 +264,7 @@ AbstractDeclarator
 	| direct_abstract_declarator '(' ')'
 	| direct_abstract_declarator '(' parameter_type_list ')'
 	;
- 
- */
+*/
  
 DirectAbstractDeclarator 
     :   {DirectAbstractDeclarator} '(' (declarator=AbstractDeclarator? | ParameterList) ')'
@@ -383,33 +391,18 @@ Constant
     |   BoolConstant
     ;
 
-IntegerConstant
-    :   val=INTEGER IntegerSuffix?
+IntegerConstant hidden(WS)
+    :   val=INTEGER unsigned?=('u'|'U')? (long?=('l'|'L') longlong?=('l'|'L')?)?
     ;
-    
-FloatingConstant
-    :  	val=FLOAT FloatingSuffix?
+
+FloatingConstant hidden(WS)
+    :  	val=FLOAT (f?=('f'|'F') | l?=('l'|'L'))?
     ;
     
 BoolConstant
     :   val=BOOLEAN
     ;
     
-fragment IntegerSuffix
-    :   UnsignedSuffix LongSuffix?
-    |   UnsignedSuffix LongLongSuffix
-    |   LongSuffix UnsignedSuffix?
-    |   LongLongSuffix UnsignedSuffix?
-    ;
-
-fragment UnsignedSuffix:   unsigned?=('u'|'U');
-
-fragment LongSuffix:   long?=('l'|'L');
-
-fragment LongLongSuffix:   longlong?=('ll' | 'LL');
-
-fragment FloatingSuffix:   f?='f' | l?='l' | f?='F' | f?='L';
-
 CharacterConstant
     :   val=CHARCONST
     |   enc="L" val=CHARCONST
@@ -427,15 +420,15 @@ DoubleRightBracket hidden(WS, ML_COMMENT, SL_COMMENT): RIGHT_BR RIGHT_BR;
 enum DataTypes
 	: BOOL='bool' | CHAR='char' | SHORT='short' | INT='int' | LONG='long'
 	| SIGNED='signed' | UNSIGNED='unsigned'
-	| FLOAT='float'	| DOUBLE='double'
-	| FRAC='frac' | ACCUM='accum'
+	| FLOAT='float'	| DOUBLE='double' | VOID='void'
+//	| FRAC='frac' | ACCUM='accum'
 	;
 
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';
 
 enum StorageClassSpecifier: EXTERN='extern' | STATIC='static';
 
-enum Attribute: NONE | IS_PC='is_pc'| DEL='delete';
+enum StatementAttribute: NONE | IS_PC='is_pc'| DEL='delete' | IS_INTERLOCK_FOR='is_interlock_for';
 	
 enum InstrAttribute: NONE | NO_CONT='no_cont' | COND='cond' | FLUSH='flush';
 
@@ -455,7 +448,7 @@ terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false' ;
 
 terminal FLOAT returns ecore::EBigDecimal:  (('0'..'9')+ '.' ('0'..'9')*) (('e' | 'E') ('+' | '-')? ('0'..'9')+)?;
 
-terminal INTEGER returns ecore::EBigInteger: (DECIMALINT) | (BINARYINT) | (HEXADECIMALINT) | (OCTALINT) | (VLOGINT);
+terminal INTEGER returns ecore::EBigInteger:  (BINARYINT) | (HEXADECIMALINT) | (OCTALINT) | (DECIMALINT);
 
 terminal fragment BINARYINT:	('0b' | '0B') '0'..'1' (('_')? '0'..'1')*;
 
@@ -478,7 +471,5 @@ terminal ID : '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 @Override
 terminal STRING	:	'"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';
 
-@Override
-terminal ANY_OTHER: '~xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
 
  

@@ -185,9 +185,9 @@ ruleBitField:
 // Rule RangeSpec
 ruleRangeSpec:
 	RULE_LEFT_BR
-	RULE_INTEGER
+	ruleIntegerConstant
 	':'
-	RULE_INTEGER
+	ruleIntegerConstant
 	RULE_RIGHT_BR
 ;
 
@@ -198,9 +198,10 @@ ruleFunctionDefinition:
 	ruleTypeSpecifier
 	RULE_ID
 	'('
-	ruleParameterList
+	ruleParameterList?
 	')'
 	ruleCompoundStatement
+	?
 ;
 
 // Rule ParameterList
@@ -234,6 +235,8 @@ ruleStatement:
 		ruleIterationStatement
 		    |
 		ruleJumpStatement
+		    |
+		ruleSpawnStatement
 	)
 ;
 
@@ -270,7 +273,7 @@ ruleBlockItem:
 
 // Rule ExpressionStatement
 ruleExpressionStatement:
-	ruleAssignmentExpression2
+	ruleAssignmentExpression
 	?
 	';'
 ;
@@ -373,6 +376,12 @@ ruleJumpStatement:
 	)
 ;
 
+// Rule SpawnStatement
+ruleSpawnStatement:
+	'spawn'
+	ruleStatement
+;
+
 // Rule Declaration
 ruleDeclaration:
 	(
@@ -431,13 +440,18 @@ ruleAttributeList:
 	ruleDoubleRightBracket
 ;
 
+// Rule Attribute
+ruleAttribute:
+	ruleStatementAttribute
+	(
+		'='
+		ruleConditionalExpression
+	)?
+;
+
 // Rule TypeSpecifier
 ruleTypeSpecifier:
-	(
-		ruleDataTypeSpecifier
-		    |
-		ruleTypedefRef
-	)
+	ruleDataTypeSpecifier
 ;
 
 // Rule DataTypeSpecifier
@@ -449,11 +463,6 @@ ruleDataTypeSpecifier:
 		    |
 		ruleEnumSpecifier
 	)
-;
-
-// Rule TypedefRef
-ruleTypedefRef:
-	RULE_ID
 ;
 
 // Rule PodSpecifier
@@ -480,7 +489,7 @@ ruleBitSizeSpecifier:
 // Rule BitSizeValue
 ruleBitSizeValue:
 	(
-		RULE_INTEGER
+		ruleIntegerConstant
 		    |
 		RULE_ID
 	)
@@ -1007,75 +1016,46 @@ ruleConstant:
 // Rule IntegerConstant
 ruleIntegerConstant:
 	RULE_INTEGER
-	ruleIntegerSuffix?
+	(
+		'u'
+		    |
+		'U'
+	)?
+	(
+		(
+			'l'
+			    |
+			'L'
+		)
+		(
+			'l'
+			    |
+			'L'
+		)?
+	)?
 ;
 
 // Rule FloatingConstant
 ruleFloatingConstant:
 	RULE_FLOAT
-	ruleFloatingSuffix?
+	(
+		(
+			'f'
+			    |
+			'F'
+		)
+		    |
+		(
+			'l'
+			    |
+			'L'
+		)
+	)?
 ;
 
 // Rule BoolConstant
 ruleBoolConstant:
 	RULE_BOOLEAN
-;
-
-// Rule IntegerSuffix
-ruleIntegerSuffix:
-	(
-		ruleUnsignedSuffix
-		ruleLongSuffix?
-		    |
-		ruleUnsignedSuffix
-		ruleLongLongSuffix
-		    |
-		ruleLongSuffix
-		ruleUnsignedSuffix?
-		    |
-		ruleLongLongSuffix
-		ruleUnsignedSuffix?
-	)
-;
-
-// Rule UnsignedSuffix
-ruleUnsignedSuffix:
-	(
-		'u'
-		    |
-		'U'
-	)
-;
-
-// Rule LongSuffix
-ruleLongSuffix:
-	(
-		'l'
-		    |
-		'L'
-	)
-;
-
-// Rule LongLongSuffix
-ruleLongLongSuffix:
-	(
-		'll'
-		    |
-		'LL'
-	)
-;
-
-// Rule FloatingSuffix
-ruleFloatingSuffix:
-	(
-		'f'
-		    |
-		'l'
-		    |
-		'F'
-		    |
-		'L'
-	)
 ;
 
 // Rule CharacterConstant
@@ -1127,9 +1107,7 @@ ruleDataTypes:
 		    |
 		'double'
 		    |
-		'frac'
-		    |
-		'accum'
+		'void'
 	)
 ;
 
@@ -1151,14 +1129,16 @@ ruleStorageClassSpecifier:
 	)
 ;
 
-// Rule Attribute
-ruleAttribute:
+// Rule StatementAttribute
+ruleStatementAttribute:
 	(
 		'NONE'
 		    |
 		'is_pc'
 		    |
 		'delete'
+		    |
+		'is_interlock_for'
 	)
 ;
 
@@ -1205,7 +1185,7 @@ RULE_BOOLEAN : ('true'|'false');
 
 RULE_FLOAT : ('0'..'9')+ '.' ('0'..'9')* (('e'|'E') ('+'|'-')? ('0'..'9')+)?;
 
-RULE_INTEGER : (RULE_DECIMALINT|RULE_BINARYINT|RULE_HEXADECIMALINT|RULE_OCTALINT|RULE_VLOGINT);
+RULE_INTEGER : (RULE_BINARYINT|RULE_HEXADECIMALINT|RULE_OCTALINT|RULE_DECIMALINT);
 
 fragment RULE_BINARYINT : ('0b'|'0B') '0'..'1' ('_'? '0'..'1')*;
 

@@ -41,7 +41,6 @@ import com.minres.coredsl.coreDsl.Expression;
 import com.minres.coredsl.coreDsl.ExpressionStatement;
 import com.minres.coredsl.coreDsl.Field;
 import com.minres.coredsl.coreDsl.FloatingConstant;
-import com.minres.coredsl.coreDsl.FloatingSuffix;
 import com.minres.coredsl.coreDsl.ForCondition;
 import com.minres.coredsl.coreDsl.FunctionDefinition;
 import com.minres.coredsl.coreDsl.IfStatement;
@@ -54,12 +53,9 @@ import com.minres.coredsl.coreDsl.InstrAttribute;
 import com.minres.coredsl.coreDsl.Instruction;
 import com.minres.coredsl.coreDsl.InstructionSet;
 import com.minres.coredsl.coreDsl.IntegerConstant;
-import com.minres.coredsl.coreDsl.IntegerSuffix;
 import com.minres.coredsl.coreDsl.IterationStatement;
 import com.minres.coredsl.coreDsl.JumpStatement;
 import com.minres.coredsl.coreDsl.LabeledStatement;
-import com.minres.coredsl.coreDsl.LongLongSuffix;
-import com.minres.coredsl.coreDsl.LongSuffix;
 import com.minres.coredsl.coreDsl.ParameterDeclaration;
 import com.minres.coredsl.coreDsl.ParameterList;
 import com.minres.coredsl.coreDsl.PodSpecifier;
@@ -69,7 +65,9 @@ import com.minres.coredsl.coreDsl.PrefixExpression;
 import com.minres.coredsl.coreDsl.PrimaryExpression;
 import com.minres.coredsl.coreDsl.RangeSpec;
 import com.minres.coredsl.coreDsl.SelectionStatement;
+import com.minres.coredsl.coreDsl.SpawnStatement;
 import com.minres.coredsl.coreDsl.Statement;
+import com.minres.coredsl.coreDsl.StatementAttribute;
 import com.minres.coredsl.coreDsl.StorageClassSpecifier;
 import com.minres.coredsl.coreDsl.StringLiteral;
 import com.minres.coredsl.coreDsl.StructDeclaration;
@@ -83,7 +81,6 @@ import com.minres.coredsl.coreDsl.TypeSpecifier;
 import com.minres.coredsl.coreDsl.TypedefDeclaration;
 import com.minres.coredsl.coreDsl.TypedefRef;
 import com.minres.coredsl.coreDsl.UnaryOperator;
-import com.minres.coredsl.coreDsl.UnsignedSuffix;
 import com.minres.coredsl.coreDsl.VariableRef;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -282,6 +279,13 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass spawnStatementEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass declarationEClass = null;
 
   /**
@@ -311,6 +315,13 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   private EClass attributeListEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass attributeEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -562,41 +573,6 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass integerSuffixEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass unsignedSuffixEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass longSuffixEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass longLongSuffixEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass floatingSuffixEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   private EClass characterConstantEClass = null;
 
   /**
@@ -646,7 +622,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EEnum attributeEEnum = null;
+  private EEnum statementAttributeEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1068,9 +1044,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EAttribute getRangeSpec_Left()
+  public EReference getRangeSpec_Left()
   {
-    return (EAttribute)rangeSpecEClass.getEStructuralFeatures().get(0);
+    return (EReference)rangeSpecEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1079,9 +1055,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EAttribute getRangeSpec_Right()
+  public EReference getRangeSpec_Right()
   {
-    return (EAttribute)rangeSpecEClass.getEStructuralFeatures().get(1);
+    return (EReference)rangeSpecEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -1508,6 +1484,28 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
+  public EClass getSpawnStatement()
+  {
+    return spawnStatementEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getSpawnStatement_Stmt()
+  {
+    return (EReference)spawnStatementEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getDeclaration()
   {
     return declarationEClass;
@@ -1651,9 +1649,42 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EAttribute getAttributeList_Attrs()
+  public EReference getAttributeList_Attrs()
   {
-    return (EAttribute)attributeListEClass.getEStructuralFeatures().get(0);
+    return (EReference)attributeListEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getAttribute()
+  {
+    return attributeEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getAttribute_Type()
+  {
+    return (EAttribute)attributeEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getAttribute_Val()
+  {
+    return (EReference)attributeEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -1761,9 +1792,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EAttribute getBitSizeValue_Val()
+  public EReference getBitSizeValue_Val()
   {
-    return (EAttribute)bitSizeValueEClass.getEStructuralFeatures().get(0);
+    return (EReference)bitSizeValueEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -2509,6 +2540,39 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
+  public EAttribute getIntegerConstant_Unsigned()
+  {
+    return (EAttribute)integerConstantEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getIntegerConstant_Long()
+  {
+    return (EAttribute)integerConstantEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getIntegerConstant_Longlong()
+  {
+    return (EAttribute)integerConstantEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getFloatingConstant()
   {
     return floatingConstantEClass;
@@ -2531,6 +2595,28 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
+  public EAttribute getFloatingConstant_F()
+  {
+    return (EAttribute)floatingConstantEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getFloatingConstant_L()
+  {
+    return (EAttribute)floatingConstantEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getBoolConstant()
   {
     return boolConstantEClass;
@@ -2545,116 +2631,6 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
   public EAttribute getBoolConstant_Val()
   {
     return (EAttribute)boolConstantEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EClass getIntegerSuffix()
-  {
-    return integerSuffixEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EClass getUnsignedSuffix()
-  {
-    return unsignedSuffixEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getUnsignedSuffix_Unsigned()
-  {
-    return (EAttribute)unsignedSuffixEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EClass getLongSuffix()
-  {
-    return longSuffixEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getLongSuffix_Long()
-  {
-    return (EAttribute)longSuffixEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EClass getLongLongSuffix()
-  {
-    return longLongSuffixEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getLongLongSuffix_Longlong()
-  {
-    return (EAttribute)longLongSuffixEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EClass getFloatingSuffix()
-  {
-    return floatingSuffixEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getFloatingSuffix_F()
-  {
-    return (EAttribute)floatingSuffixEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getFloatingSuffix_L()
-  {
-    return (EAttribute)floatingSuffixEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2806,9 +2782,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EEnum getAttribute()
+  public EEnum getStatementAttribute()
   {
-    return attributeEEnum;
+    return statementAttributeEEnum;
   }
 
   /**
@@ -2915,8 +2891,8 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     createEAttribute(bitFieldEClass, BIT_FIELD__TYPE);
 
     rangeSpecEClass = createEClass(RANGE_SPEC);
-    createEAttribute(rangeSpecEClass, RANGE_SPEC__LEFT);
-    createEAttribute(rangeSpecEClass, RANGE_SPEC__RIGHT);
+    createEReference(rangeSpecEClass, RANGE_SPEC__LEFT);
+    createEReference(rangeSpecEClass, RANGE_SPEC__RIGHT);
 
     functionDefinitionEClass = createEClass(FUNCTION_DEFINITION);
     createEAttribute(functionDefinitionEClass, FUNCTION_DEFINITION__EXTERN);
@@ -2970,6 +2946,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     createEAttribute(jumpStatementEClass, JUMP_STATEMENT__TYPE);
     createEReference(jumpStatementEClass, JUMP_STATEMENT__EXPR);
 
+    spawnStatementEClass = createEClass(SPAWN_STATEMENT);
+    createEReference(spawnStatementEClass, SPAWN_STATEMENT__STMT);
+
     declarationEClass = createEClass(DECLARATION);
 
     typeOrVarDeclarationEClass = createEClass(TYPE_OR_VAR_DECLARATION);
@@ -2987,7 +2966,11 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     createEAttribute(declarationSpecifierEClass, DECLARATION_SPECIFIER__QUALIFIERS);
 
     attributeListEClass = createEClass(ATTRIBUTE_LIST);
-    createEAttribute(attributeListEClass, ATTRIBUTE_LIST__ATTRS);
+    createEReference(attributeListEClass, ATTRIBUTE_LIST__ATTRS);
+
+    attributeEClass = createEClass(ATTRIBUTE);
+    createEAttribute(attributeEClass, ATTRIBUTE__TYPE);
+    createEReference(attributeEClass, ATTRIBUTE__VAL);
 
     typeSpecifierEClass = createEClass(TYPE_SPECIFIER);
 
@@ -3003,7 +2986,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     createEReference(bitSizeSpecifierEClass, BIT_SIZE_SPECIFIER__SIZE);
 
     bitSizeValueEClass = createEClass(BIT_SIZE_VALUE);
-    createEAttribute(bitSizeValueEClass, BIT_SIZE_VALUE__VAL);
+    createEReference(bitSizeValueEClass, BIT_SIZE_VALUE__VAL);
     createEReference(bitSizeValueEClass, BIT_SIZE_VALUE__CONSTANT);
 
     enumSpecifierEClass = createEClass(ENUM_SPECIFIER);
@@ -3098,27 +3081,17 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
 
     integerConstantEClass = createEClass(INTEGER_CONSTANT);
     createEAttribute(integerConstantEClass, INTEGER_CONSTANT__VAL);
+    createEAttribute(integerConstantEClass, INTEGER_CONSTANT__UNSIGNED);
+    createEAttribute(integerConstantEClass, INTEGER_CONSTANT__LONG);
+    createEAttribute(integerConstantEClass, INTEGER_CONSTANT__LONGLONG);
 
     floatingConstantEClass = createEClass(FLOATING_CONSTANT);
     createEAttribute(floatingConstantEClass, FLOATING_CONSTANT__VAL);
+    createEAttribute(floatingConstantEClass, FLOATING_CONSTANT__F);
+    createEAttribute(floatingConstantEClass, FLOATING_CONSTANT__L);
 
     boolConstantEClass = createEClass(BOOL_CONSTANT);
     createEAttribute(boolConstantEClass, BOOL_CONSTANT__VAL);
-
-    integerSuffixEClass = createEClass(INTEGER_SUFFIX);
-
-    unsignedSuffixEClass = createEClass(UNSIGNED_SUFFIX);
-    createEAttribute(unsignedSuffixEClass, UNSIGNED_SUFFIX__UNSIGNED);
-
-    longSuffixEClass = createEClass(LONG_SUFFIX);
-    createEAttribute(longSuffixEClass, LONG_SUFFIX__LONG);
-
-    longLongSuffixEClass = createEClass(LONG_LONG_SUFFIX);
-    createEAttribute(longLongSuffixEClass, LONG_LONG_SUFFIX__LONGLONG);
-
-    floatingSuffixEClass = createEClass(FLOATING_SUFFIX);
-    createEAttribute(floatingSuffixEClass, FLOATING_SUFFIX__F);
-    createEAttribute(floatingSuffixEClass, FLOATING_SUFFIX__L);
 
     characterConstantEClass = createEClass(CHARACTER_CONSTANT);
     createEAttribute(characterConstantEClass, CHARACTER_CONSTANT__VAL);
@@ -3138,7 +3111,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     dataTypesEEnum = createEEnum(DATA_TYPES);
     typeQualifierEEnum = createEEnum(TYPE_QUALIFIER);
     storageClassSpecifierEEnum = createEEnum(STORAGE_CLASS_SPECIFIER);
-    attributeEEnum = createEEnum(ATTRIBUTE);
+    statementAttributeEEnum = createEEnum(STATEMENT_ATTRIBUTE);
     instrAttributeEEnum = createEEnum(INSTR_ATTRIBUTE);
     structOrUnionEEnum = createEEnum(STRUCT_OR_UNION);
     bitfieldDataTypeEEnum = createEEnum(BITFIELD_DATA_TYPE);
@@ -3189,6 +3162,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     iterationStatementEClass.getESuperTypes().add(this.getStatement());
     iterationStatementEClass.getESuperTypes().add(this.getForCondition());
     jumpStatementEClass.getESuperTypes().add(this.getStatement());
+    spawnStatementEClass.getESuperTypes().add(this.getStatement());
     declarationEClass.getESuperTypes().add(this.getBlockItem());
     typeOrVarDeclarationEClass.getESuperTypes().add(this.getDeclaration());
     typeOrVarDeclarationEClass.getESuperTypes().add(this.getDeclarationSpecifier());
@@ -3198,7 +3172,6 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     typedefDeclarationEClass.getESuperTypes().add(this.getAttributeList());
     declarationSpecifierEClass.getESuperTypes().add(this.getAttributeList());
     dataTypeSpecifierEClass.getESuperTypes().add(this.getTypeSpecifier());
-    typedefRefEClass.getESuperTypes().add(this.getTypeSpecifier());
     podSpecifierEClass.getESuperTypes().add(this.getDataTypeSpecifier());
     enumSpecifierEClass.getESuperTypes().add(this.getDataTypeSpecifier());
     enumSpecifierEClass.getESuperTypes().add(this.getEnumeratorList());
@@ -3217,16 +3190,8 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     primaryExpressionEClass.getESuperTypes().add(this.getPostfixExpression());
     stringLiteralEClass.getESuperTypes().add(this.getEncodingPrefix());
     integerConstantEClass.getESuperTypes().add(this.getConstant());
-    integerConstantEClass.getESuperTypes().add(this.getIntegerSuffix());
-    integerConstantEClass.getESuperTypes().add(this.getUnsignedSuffix());
-    integerConstantEClass.getESuperTypes().add(this.getLongSuffix());
-    integerConstantEClass.getESuperTypes().add(this.getLongLongSuffix());
     floatingConstantEClass.getESuperTypes().add(this.getConstant());
-    floatingConstantEClass.getESuperTypes().add(this.getFloatingSuffix());
     boolConstantEClass.getESuperTypes().add(this.getConstant());
-    integerSuffixEClass.getESuperTypes().add(this.getUnsignedSuffix());
-    integerSuffixEClass.getESuperTypes().add(this.getLongSuffix());
-    integerSuffixEClass.getESuperTypes().add(this.getLongLongSuffix());
     characterConstantEClass.getESuperTypes().add(this.getConstant());
     assignmentExpressionEClass.getESuperTypes().add(this.getExpression());
     conditionalExpressionEClass.getESuperTypes().add(this.getExpression());
@@ -3273,8 +3238,8 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     initEAttribute(getBitField_Type(), this.getBitfieldDataType(), "type", null, 0, 1, BitField.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(rangeSpecEClass, RangeSpec.class, "RangeSpec", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getRangeSpec_Left(), ecorePackage.getEBigInteger(), "left", null, 0, 1, RangeSpec.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getRangeSpec_Right(), ecorePackage.getEBigInteger(), "right", null, 0, 1, RangeSpec.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getRangeSpec_Left(), this.getIntegerConstant(), null, "left", null, 0, 1, RangeSpec.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getRangeSpec_Right(), this.getIntegerConstant(), null, "right", null, 0, 1, RangeSpec.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(functionDefinitionEClass, FunctionDefinition.class, "FunctionDefinition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getFunctionDefinition_Extern(), ecorePackage.getEBoolean(), "extern", null, 0, 1, FunctionDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3328,6 +3293,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     initEAttribute(getJumpStatement_Type(), ecorePackage.getEString(), "type", null, 0, 1, JumpStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getJumpStatement_Expr(), this.getExpression(), null, "expr", null, 0, 1, JumpStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(spawnStatementEClass, SpawnStatement.class, "SpawnStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getSpawnStatement_Stmt(), this.getStatement(), null, "stmt", null, 0, 1, SpawnStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(declarationEClass, Declaration.class, "Declaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(typeOrVarDeclarationEClass, TypeOrVarDeclaration.class, "TypeOrVarDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3345,7 +3313,11 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     initEAttribute(getDeclarationSpecifier_Qualifiers(), this.getTypeQualifier(), "qualifiers", null, 0, -1, DeclarationSpecifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(attributeListEClass, AttributeList.class, "AttributeList", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getAttributeList_Attrs(), this.getAttribute(), "attrs", null, 0, -1, AttributeList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getAttributeList_Attrs(), this.getAttribute(), null, "attrs", null, 0, -1, AttributeList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(attributeEClass, Attribute.class, "Attribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getAttribute_Type(), this.getStatementAttribute(), "type", null, 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getAttribute_Val(), this.getExpression(), null, "val", null, 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(typeSpecifierEClass, TypeSpecifier.class, "TypeSpecifier", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -3361,7 +3333,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     initEReference(getBitSizeSpecifier_Size(), this.getBitSizeValue(), null, "size", null, 0, -1, BitSizeSpecifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(bitSizeValueEClass, BitSizeValue.class, "BitSizeValue", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getBitSizeValue_Val(), ecorePackage.getEBigInteger(), "val", null, 0, -1, BitSizeValue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBitSizeValue_Val(), this.getIntegerConstant(), null, "val", null, 0, -1, BitSizeValue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBitSizeValue_Constant(), this.getConstant(), null, "constant", null, 0, -1, BitSizeValue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(enumSpecifierEClass, EnumSpecifier.class, "EnumSpecifier", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3456,27 +3428,17 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
 
     initEClass(integerConstantEClass, IntegerConstant.class, "IntegerConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getIntegerConstant_Val(), ecorePackage.getEBigInteger(), "val", null, 0, 1, IntegerConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getIntegerConstant_Unsigned(), ecorePackage.getEBoolean(), "unsigned", null, 0, 1, IntegerConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getIntegerConstant_Long(), ecorePackage.getEBoolean(), "long", null, 0, 1, IntegerConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getIntegerConstant_Longlong(), ecorePackage.getEBoolean(), "longlong", null, 0, 1, IntegerConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(floatingConstantEClass, FloatingConstant.class, "FloatingConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getFloatingConstant_Val(), ecorePackage.getEBigDecimal(), "val", null, 0, 1, FloatingConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFloatingConstant_F(), ecorePackage.getEBoolean(), "f", null, 0, 1, FloatingConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFloatingConstant_L(), ecorePackage.getEBoolean(), "l", null, 0, 1, FloatingConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(boolConstantEClass, BoolConstant.class, "BoolConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getBoolConstant_Val(), ecorePackage.getEBoolean(), "val", null, 0, 1, BoolConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(integerSuffixEClass, IntegerSuffix.class, "IntegerSuffix", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    initEClass(unsignedSuffixEClass, UnsignedSuffix.class, "UnsignedSuffix", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getUnsignedSuffix_Unsigned(), ecorePackage.getEBoolean(), "unsigned", null, 0, 1, UnsignedSuffix.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(longSuffixEClass, LongSuffix.class, "LongSuffix", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getLongSuffix_Long(), ecorePackage.getEBoolean(), "long", null, 0, 1, LongSuffix.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(longLongSuffixEClass, LongLongSuffix.class, "LongLongSuffix", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getLongLongSuffix_Longlong(), ecorePackage.getEBoolean(), "longlong", null, 0, 1, LongLongSuffix.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(floatingSuffixEClass, FloatingSuffix.class, "FloatingSuffix", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getFloatingSuffix_F(), ecorePackage.getEBoolean(), "f", null, 0, 1, FloatingSuffix.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getFloatingSuffix_L(), ecorePackage.getEBoolean(), "l", null, 0, 1, FloatingSuffix.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(characterConstantEClass, CharacterConstant.class, "CharacterConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getCharacterConstant_Val(), ecorePackage.getEString(), "val", null, 0, 1, CharacterConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3503,8 +3465,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     addEEnumLiteral(dataTypesEEnum, DataTypes.UNSIGNED);
     addEEnumLiteral(dataTypesEEnum, DataTypes.FLOAT);
     addEEnumLiteral(dataTypesEEnum, DataTypes.DOUBLE);
-    addEEnumLiteral(dataTypesEEnum, DataTypes.FRAC);
-    addEEnumLiteral(dataTypesEEnum, DataTypes.ACCUM);
+    addEEnumLiteral(dataTypesEEnum, DataTypes.VOID);
 
     initEEnum(typeQualifierEEnum, TypeQualifier.class, "TypeQualifier");
     addEEnumLiteral(typeQualifierEEnum, TypeQualifier.CONST);
@@ -3514,10 +3475,11 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     addEEnumLiteral(storageClassSpecifierEEnum, StorageClassSpecifier.EXTERN);
     addEEnumLiteral(storageClassSpecifierEEnum, StorageClassSpecifier.STATIC);
 
-    initEEnum(attributeEEnum, Attribute.class, "Attribute");
-    addEEnumLiteral(attributeEEnum, Attribute.NONE);
-    addEEnumLiteral(attributeEEnum, Attribute.IS_PC);
-    addEEnumLiteral(attributeEEnum, Attribute.DEL);
+    initEEnum(statementAttributeEEnum, StatementAttribute.class, "StatementAttribute");
+    addEEnumLiteral(statementAttributeEEnum, StatementAttribute.NONE);
+    addEEnumLiteral(statementAttributeEEnum, StatementAttribute.IS_PC);
+    addEEnumLiteral(statementAttributeEEnum, StatementAttribute.DEL);
+    addEEnumLiteral(statementAttributeEEnum, StatementAttribute.IS_INTERLOCK_FOR);
 
     initEEnum(instrAttributeEEnum, InstrAttribute.class, "InstrAttribute");
     addEEnumLiteral(instrAttributeEEnum, InstrAttribute.NONE);

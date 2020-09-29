@@ -9,13 +9,17 @@ import com.minres.coredsl.coreDsl.CoreDslPackage;
 
 import java.util.Collection;
 
+import org.eclipse.emf.common.notify.NotificationChain;
+
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import org.eclipse.emf.ecore.util.EDataTypeEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -33,7 +37,7 @@ import org.eclipse.emf.ecore.util.EDataTypeEList;
 public class AttributeListImpl extends MinimalEObjectImpl.Container implements AttributeList
 {
   /**
-   * The cached value of the '{@link #getAttrs() <em>Attrs</em>}' attribute list.
+   * The cached value of the '{@link #getAttrs() <em>Attrs</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getAttrs()
@@ -73,9 +77,25 @@ public class AttributeListImpl extends MinimalEObjectImpl.Container implements A
   {
     if (attrs == null)
     {
-      attrs = new EDataTypeEList<Attribute>(Attribute.class, this, CoreDslPackage.ATTRIBUTE_LIST__ATTRS);
+      attrs = new EObjectContainmentEList<Attribute>(Attribute.class, this, CoreDslPackage.ATTRIBUTE_LIST__ATTRS);
     }
     return attrs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case CoreDslPackage.ATTRIBUTE_LIST__ATTRS:
+        return ((InternalEList<?>)getAttrs()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
   }
 
   /**
@@ -144,23 +164,6 @@ public class AttributeListImpl extends MinimalEObjectImpl.Container implements A
         return attrs != null && !attrs.isEmpty();
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
-
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (attrs: ");
-    result.append(attrs);
-    result.append(')');
-    return result.toString();
   }
 
 } //AttributeListImpl

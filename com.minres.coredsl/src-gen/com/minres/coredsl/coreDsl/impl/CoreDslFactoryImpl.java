@@ -91,11 +91,13 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
       case CoreDslPackage.ITERATION_STATEMENT: return createIterationStatement();
       case CoreDslPackage.FOR_CONDITION: return createForCondition();
       case CoreDslPackage.JUMP_STATEMENT: return createJumpStatement();
+      case CoreDslPackage.SPAWN_STATEMENT: return createSpawnStatement();
       case CoreDslPackage.DECLARATION: return createDeclaration();
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION: return createTypeOrVarDeclaration();
       case CoreDslPackage.TYPEDEF_DECLARATION: return createTypedefDeclaration();
       case CoreDslPackage.DECLARATION_SPECIFIER: return createDeclarationSpecifier();
       case CoreDslPackage.ATTRIBUTE_LIST: return createAttributeList();
+      case CoreDslPackage.ATTRIBUTE: return createAttribute();
       case CoreDslPackage.TYPE_SPECIFIER: return createTypeSpecifier();
       case CoreDslPackage.DATA_TYPE_SPECIFIER: return createDataTypeSpecifier();
       case CoreDslPackage.TYPEDEF_REF: return createTypedefRef();
@@ -131,11 +133,6 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
       case CoreDslPackage.INTEGER_CONSTANT: return createIntegerConstant();
       case CoreDslPackage.FLOATING_CONSTANT: return createFloatingConstant();
       case CoreDslPackage.BOOL_CONSTANT: return createBoolConstant();
-      case CoreDslPackage.INTEGER_SUFFIX: return createIntegerSuffix();
-      case CoreDslPackage.UNSIGNED_SUFFIX: return createUnsignedSuffix();
-      case CoreDslPackage.LONG_SUFFIX: return createLongSuffix();
-      case CoreDslPackage.LONG_LONG_SUFFIX: return createLongLongSuffix();
-      case CoreDslPackage.FLOATING_SUFFIX: return createFloatingSuffix();
       case CoreDslPackage.CHARACTER_CONSTANT: return createCharacterConstant();
       case CoreDslPackage.ASSIGNMENT_EXPRESSION: return createAssignmentExpression();
       case CoreDslPackage.CONDITIONAL_EXPRESSION: return createConditionalExpression();
@@ -161,8 +158,8 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
         return createTypeQualifierFromString(eDataType, initialValue);
       case CoreDslPackage.STORAGE_CLASS_SPECIFIER:
         return createStorageClassSpecifierFromString(eDataType, initialValue);
-      case CoreDslPackage.ATTRIBUTE:
-        return createAttributeFromString(eDataType, initialValue);
+      case CoreDslPackage.STATEMENT_ATTRIBUTE:
+        return createStatementAttributeFromString(eDataType, initialValue);
       case CoreDslPackage.INSTR_ATTRIBUTE:
         return createInstrAttributeFromString(eDataType, initialValue);
       case CoreDslPackage.STRUCT_OR_UNION:
@@ -190,8 +187,8 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
         return convertTypeQualifierToString(eDataType, instanceValue);
       case CoreDslPackage.STORAGE_CLASS_SPECIFIER:
         return convertStorageClassSpecifierToString(eDataType, instanceValue);
-      case CoreDslPackage.ATTRIBUTE:
-        return convertAttributeToString(eDataType, instanceValue);
+      case CoreDslPackage.STATEMENT_ATTRIBUTE:
+        return convertStatementAttributeToString(eDataType, instanceValue);
       case CoreDslPackage.INSTR_ATTRIBUTE:
         return convertInstrAttributeToString(eDataType, instanceValue);
       case CoreDslPackage.STRUCT_OR_UNION:
@@ -509,6 +506,18 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
+  public SpawnStatement createSpawnStatement()
+  {
+    SpawnStatementImpl spawnStatement = new SpawnStatementImpl();
+    return spawnStatement;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Declaration createDeclaration()
   {
     DeclarationImpl declaration = new DeclarationImpl();
@@ -561,6 +570,18 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
   {
     AttributeListImpl attributeList = new AttributeListImpl();
     return attributeList;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Attribute createAttribute()
+  {
+    AttributeImpl attribute = new AttributeImpl();
+    return attribute;
   }
 
   /**
@@ -989,66 +1010,6 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public IntegerSuffix createIntegerSuffix()
-  {
-    IntegerSuffixImpl integerSuffix = new IntegerSuffixImpl();
-    return integerSuffix;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public UnsignedSuffix createUnsignedSuffix()
-  {
-    UnsignedSuffixImpl unsignedSuffix = new UnsignedSuffixImpl();
-    return unsignedSuffix;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public LongSuffix createLongSuffix()
-  {
-    LongSuffixImpl longSuffix = new LongSuffixImpl();
-    return longSuffix;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public LongLongSuffix createLongLongSuffix()
-  {
-    LongLongSuffixImpl longLongSuffix = new LongLongSuffixImpl();
-    return longLongSuffix;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public FloatingSuffix createFloatingSuffix()
-  {
-    FloatingSuffixImpl floatingSuffix = new FloatingSuffixImpl();
-    return floatingSuffix;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public CharacterConstant createCharacterConstant()
   {
     CharacterConstantImpl characterConstant = new CharacterConstantImpl();
@@ -1162,9 +1123,9 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Attribute createAttributeFromString(EDataType eDataType, String initialValue)
+  public StatementAttribute createStatementAttributeFromString(EDataType eDataType, String initialValue)
   {
-    Attribute result = Attribute.get(initialValue);
+    StatementAttribute result = StatementAttribute.get(initialValue);
     if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
     return result;
   }
@@ -1174,7 +1135,7 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public String convertAttributeToString(EDataType eDataType, Object instanceValue)
+  public String convertStatementAttributeToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

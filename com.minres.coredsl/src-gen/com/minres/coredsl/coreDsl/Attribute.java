@@ -3,246 +3,72 @@
  */
 package com.minres.coredsl.coreDsl;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.eclipse.emf.common.util.Enumerator;
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the literals of the enumeration '<em><b>Attribute</b></em>',
- * and utility methods for working with them.
+ * A representation of the model object '<em><b>Attribute</b></em>'.
  * <!-- end-user-doc -->
+ *
+ * <p>
+ * The following features are supported:
+ * </p>
+ * <ul>
+ *   <li>{@link com.minres.coredsl.coreDsl.Attribute#getType <em>Type</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.Attribute#getVal <em>Val</em>}</li>
+ * </ul>
+ *
  * @see com.minres.coredsl.coreDsl.CoreDslPackage#getAttribute()
  * @model
  * @generated
  */
-public enum Attribute implements Enumerator
+public interface Attribute extends EObject
 {
   /**
-   * The '<em><b>NONE</b></em>' literal object.
+   * Returns the value of the '<em><b>Type</b></em>' attribute.
+   * The literals are from the enumeration {@link com.minres.coredsl.coreDsl.StatementAttribute}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #NONE_VALUE
-   * @generated
-   * @ordered
-   */
-  NONE(0, "NONE", "NONE"),
-
-  /**
-   * The '<em><b>IS PC</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #IS_PC_VALUE
-   * @generated
-   * @ordered
-   */
-  IS_PC(1, "IS_PC", "is_pc"),
-
-  /**
-   * The '<em><b>DEL</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #DEL_VALUE
-   * @generated
-   * @ordered
-   */
-  DEL(2, "DEL", "delete");
-
-  /**
-   * The '<em><b>NONE</b></em>' literal value.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #NONE
+   * @return the value of the '<em>Type</em>' attribute.
+   * @see com.minres.coredsl.coreDsl.StatementAttribute
+   * @see #setType(StatementAttribute)
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getAttribute_Type()
    * @model
    * @generated
-   * @ordered
    */
-  public static final int NONE_VALUE = 0;
+  StatementAttribute getType();
 
   /**
-   * The '<em><b>IS PC</b></em>' literal value.
+   * Sets the value of the '{@link com.minres.coredsl.coreDsl.Attribute#getType <em>Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #IS_PC
-   * @model literal="is_pc"
+   * @param value the new value of the '<em>Type</em>' attribute.
+   * @see com.minres.coredsl.coreDsl.StatementAttribute
+   * @see #getType()
    * @generated
-   * @ordered
    */
-  public static final int IS_PC_VALUE = 1;
+  void setType(StatementAttribute value);
 
   /**
-   * The '<em><b>DEL</b></em>' literal value.
+   * Returns the value of the '<em><b>Val</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #DEL
-   * @model literal="delete"
+   * @return the value of the '<em>Val</em>' containment reference.
+   * @see #setVal(Expression)
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getAttribute_Val()
+   * @model containment="true"
    * @generated
-   * @ordered
    */
-  public static final int DEL_VALUE = 2;
+  Expression getVal();
 
   /**
-   * An array of all the '<em><b>Attribute</b></em>' enumerators.
+   * Sets the value of the '{@link com.minres.coredsl.coreDsl.Attribute#getVal <em>Val</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Val</em>' containment reference.
+   * @see #getVal()
    * @generated
    */
-  private static final Attribute[] VALUES_ARRAY =
-    new Attribute[]
-    {
-      NONE,
-      IS_PC,
-      DEL,
-    };
+  void setVal(Expression value);
 
-  /**
-   * A public read-only list of all the '<em><b>Attribute</b></em>' enumerators.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public static final List<Attribute> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
-
-  /**
-   * Returns the '<em><b>Attribute</b></em>' literal with the specified literal value.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param literal the literal.
-   * @return the matching enumerator or <code>null</code>.
-   * @generated
-   */
-  public static Attribute get(String literal)
-  {
-    for (int i = 0; i < VALUES_ARRAY.length; ++i)
-    {
-      Attribute result = VALUES_ARRAY[i];
-      if (result.toString().equals(literal))
-      {
-        return result;
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Returns the '<em><b>Attribute</b></em>' literal with the specified name.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param name the name.
-   * @return the matching enumerator or <code>null</code>.
-   * @generated
-   */
-  public static Attribute getByName(String name)
-  {
-    for (int i = 0; i < VALUES_ARRAY.length; ++i)
-    {
-      Attribute result = VALUES_ARRAY[i];
-      if (result.getName().equals(name))
-      {
-        return result;
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Returns the '<em><b>Attribute</b></em>' literal with the specified integer value.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the integer value.
-   * @return the matching enumerator or <code>null</code>.
-   * @generated
-   */
-  public static Attribute get(int value)
-  {
-    switch (value)
-    {
-      case NONE_VALUE: return NONE;
-      case IS_PC_VALUE: return IS_PC;
-      case DEL_VALUE: return DEL;
-    }
-    return null;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private final int value;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private final String name;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private final String literal;
-
-  /**
-   * Only this class can construct instances.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private Attribute(int value, String name, String literal)
-  {
-    this.value = value;
-    this.name = name;
-    this.literal = literal;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public int getValue()
-  {
-    return value;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getName()
-  {
-    return name;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getLiteral()
-  {
-    return literal;
-  }
-
-  /**
-   * Returns the literal value of the enumerator, which is its string representation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    return literal;
-  }
-  
-} //Attribute
+} // Attribute

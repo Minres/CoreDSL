@@ -3,8 +3,6 @@
  */
 package com.minres.coredsl.coreDsl;
 
-import java.math.BigInteger;
-
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
@@ -29,16 +27,16 @@ import org.eclipse.emf.ecore.EObject;
 public interface BitSizeValue extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Val</b></em>' attribute list.
-   * The list contents are of type {@link java.math.BigInteger}.
+   * Returns the value of the '<em><b>Val</b></em>' containment reference list.
+   * The list contents are of type {@link com.minres.coredsl.coreDsl.IntegerConstant}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Val</em>' attribute list.
+   * @return the value of the '<em>Val</em>' containment reference list.
    * @see com.minres.coredsl.coreDsl.CoreDslPackage#getBitSizeValue_Val()
-   * @model unique="false"
+   * @model containment="true"
    * @generated
    */
-  EList<BigInteger> getVal();
+  EList<IntegerConstant> getVal();
 
   /**
    * Returns the value of the '<em><b>Constant</b></em>' reference list.

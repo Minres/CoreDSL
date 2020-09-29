@@ -6,19 +6,22 @@ package com.minres.coredsl.coreDsl.impl;
 import com.minres.coredsl.coreDsl.BitSizeValue;
 import com.minres.coredsl.coreDsl.Constant;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
-
-import java.math.BigInteger;
+import com.minres.coredsl.coreDsl.IntegerConstant;
 
 import java.util.Collection;
+
+import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import org.eclipse.emf.ecore.util.EDataTypeEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -37,14 +40,14 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 public class BitSizeValueImpl extends MinimalEObjectImpl.Container implements BitSizeValue
 {
   /**
-   * The cached value of the '{@link #getVal() <em>Val</em>}' attribute list.
+   * The cached value of the '{@link #getVal() <em>Val</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getVal()
    * @generated
    * @ordered
    */
-  protected EList<BigInteger> val;
+  protected EList<IntegerConstant> val;
 
   /**
    * The cached value of the '{@link #getConstant() <em>Constant</em>}' reference list.
@@ -83,11 +86,11 @@ public class BitSizeValueImpl extends MinimalEObjectImpl.Container implements Bi
    * @generated
    */
   @Override
-  public EList<BigInteger> getVal()
+  public EList<IntegerConstant> getVal()
   {
     if (val == null)
     {
-      val = new EDataTypeEList<BigInteger>(BigInteger.class, this, CoreDslPackage.BIT_SIZE_VALUE__VAL);
+      val = new EObjectContainmentEList<IntegerConstant>(IntegerConstant.class, this, CoreDslPackage.BIT_SIZE_VALUE__VAL);
     }
     return val;
   }
@@ -105,6 +108,22 @@ public class BitSizeValueImpl extends MinimalEObjectImpl.Container implements Bi
       constant = new EObjectResolvingEList<Constant>(Constant.class, this, CoreDslPackage.BIT_SIZE_VALUE__CONSTANT);
     }
     return constant;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case CoreDslPackage.BIT_SIZE_VALUE__VAL:
+        return ((InternalEList<?>)getVal()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
   }
 
   /**
@@ -138,7 +157,7 @@ public class BitSizeValueImpl extends MinimalEObjectImpl.Container implements Bi
     {
       case CoreDslPackage.BIT_SIZE_VALUE__VAL:
         getVal().clear();
-        getVal().addAll((Collection<? extends BigInteger>)newValue);
+        getVal().addAll((Collection<? extends IntegerConstant>)newValue);
         return;
       case CoreDslPackage.BIT_SIZE_VALUE__CONSTANT:
         getConstant().clear();
@@ -184,23 +203,6 @@ public class BitSizeValueImpl extends MinimalEObjectImpl.Container implements Bi
         return constant != null && !constant.isEmpty();
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
-
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (val: ");
-    result.append(val);
-    result.append(')');
-    return result.toString();
   }
 
 } //BitSizeValueImpl
