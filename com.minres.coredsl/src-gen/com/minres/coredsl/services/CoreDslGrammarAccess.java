@@ -475,19 +475,17 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Keyword cBehaviorKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
 		private final Keyword cColonKeyword_5_1 = (Keyword)cGroup_5.eContents().get(1);
 		private final Assignment cBehaviorAssignment_5_2 = (Assignment)cGroup_5.eContents().get(2);
-		private final RuleCall cBehaviorCompoundStatementParserRuleCall_5_2_0 = (RuleCall)cBehaviorAssignment_5_2.eContents().get(0);
+		private final RuleCall cBehaviorStatementParserRuleCall_5_2_0 = (RuleCall)cBehaviorAssignment_5_2.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		
 		//Instruction:
 		//	name=ID (DoubleLeftBracket attributes+=InstrAttribute (',' attributes+=InstrAttribute)* DoubleRightBracket)? '{'
-		//	('encoding' ':' encoding=Encoding ';') ('args_disass' ':' disass=STRING ';')? ('behavior' ':'
-		//	behavior=CompoundStatement)
+		//	('encoding' ':' encoding=Encoding ';') ('args_disass' ':' disass=STRING ';')? ('behavior' ':' behavior=Statement)
 		//	'}';
 		@Override public ParserRule getRule() { return rule; }
 		
 		//name=ID (DoubleLeftBracket attributes+=InstrAttribute (',' attributes+=InstrAttribute)* DoubleRightBracket)? '{'
-		//('encoding' ':' encoding=Encoding ';') ('args_disass' ':' disass=STRING ';')? ('behavior' ':'
-		//behavior=CompoundStatement) '}'
+		//('encoding' ':' encoding=Encoding ';') ('args_disass' ':' disass=STRING ';')? ('behavior' ':' behavior=Statement) '}'
 		public Group getGroup() { return cGroup; }
 		
 		//name=ID
@@ -562,7 +560,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//';'
 		public Keyword getSemicolonKeyword_4_3() { return cSemicolonKeyword_4_3; }
 		
-		//('behavior' ':' behavior=CompoundStatement)
+		//('behavior' ':' behavior=Statement)
 		public Group getGroup_5() { return cGroup_5; }
 		
 		//'behavior'
@@ -571,11 +569,11 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//':'
 		public Keyword getColonKeyword_5_1() { return cColonKeyword_5_1; }
 		
-		//behavior=CompoundStatement
+		//behavior=Statement
 		public Assignment getBehaviorAssignment_5_2() { return cBehaviorAssignment_5_2; }
 		
-		//CompoundStatement
-		public RuleCall getBehaviorCompoundStatementParserRuleCall_5_2_0() { return cBehaviorCompoundStatementParserRuleCall_5_2_0; }
+		//Statement
+		public RuleCall getBehaviorStatementParserRuleCall_5_2_0() { return cBehaviorStatementParserRuleCall_5_2_0; }
 		
 		//'}'
 		public Keyword getRightCurlyBracketKeyword_6() { return cRightCurlyBracketKeyword_6; }
@@ -4667,8 +4665,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	
 	//Instruction:
 	//	name=ID (DoubleLeftBracket attributes+=InstrAttribute (',' attributes+=InstrAttribute)* DoubleRightBracket)? '{'
-	//	('encoding' ':' encoding=Encoding ';') ('args_disass' ':' disass=STRING ';')? ('behavior' ':'
-	//	behavior=CompoundStatement)
+	//	('encoding' ':' encoding=Encoding ';') ('args_disass' ':' disass=STRING ';')? ('behavior' ':' behavior=Statement)
 	//	'}';
 	public InstructionElements getInstructionAccess() {
 		return pInstruction;

@@ -1115,7 +1115,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     Instruction returns Instruction
 	 *
 	 * Constraint:
-	 *     (name=ID (attributes+=InstrAttribute attributes+=InstrAttribute*)? encoding=Encoding disass=STRING? behavior=CompoundStatement)
+	 *     (name=ID (attributes+=InstrAttribute attributes+=InstrAttribute*)? encoding=Encoding disass=STRING? behavior=Statement)
 	 */
 	protected void sequence_Instruction(ISerializationContext context, Instruction semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);

@@ -140,7 +140,7 @@ ruleInstruction:
 	)?
 	'behavior'
 	':'
-	ruleCompoundStatement
+	ruleStatement
 	'}'
 ;
 

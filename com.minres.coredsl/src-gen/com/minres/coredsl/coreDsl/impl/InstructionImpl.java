@@ -3,11 +3,11 @@
  */
 package com.minres.coredsl.coreDsl.impl;
 
-import com.minres.coredsl.coreDsl.CompoundStatement;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.Encoding;
 import com.minres.coredsl.coreDsl.InstrAttribute;
 import com.minres.coredsl.coreDsl.Instruction;
+import com.minres.coredsl.coreDsl.Statement;
 
 import java.util.Collection;
 
@@ -111,7 +111,7 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
    * @generated
    * @ordered
    */
-  protected CompoundStatement behavior;
+  protected Statement behavior;
 
   /**
    * <!-- begin-user-doc -->
@@ -255,7 +255,7 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
    * @generated
    */
   @Override
-  public CompoundStatement getBehavior()
+  public Statement getBehavior()
   {
     return behavior;
   }
@@ -265,9 +265,9 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetBehavior(CompoundStatement newBehavior, NotificationChain msgs)
+  public NotificationChain basicSetBehavior(Statement newBehavior, NotificationChain msgs)
   {
-    CompoundStatement oldBehavior = behavior;
+    Statement oldBehavior = behavior;
     behavior = newBehavior;
     if (eNotificationRequired())
     {
@@ -283,7 +283,7 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
    * @generated
    */
   @Override
-  public void setBehavior(CompoundStatement newBehavior)
+  public void setBehavior(Statement newBehavior)
   {
     if (newBehavior != behavior)
     {
@@ -366,7 +366,7 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
         setDisass((String)newValue);
         return;
       case CoreDslPackage.INSTRUCTION__BEHAVIOR:
-        setBehavior((CompoundStatement)newValue);
+        setBehavior((Statement)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -395,7 +395,7 @@ public class InstructionImpl extends MinimalEObjectImpl.Container implements Ins
         setDisass(DISASS_EDEFAULT);
         return;
       case CoreDslPackage.INSTRUCTION__BEHAVIOR:
-        setBehavior((CompoundStatement)null);
+        setBehavior((Statement)null);
         return;
     }
     super.eUnset(featureID);

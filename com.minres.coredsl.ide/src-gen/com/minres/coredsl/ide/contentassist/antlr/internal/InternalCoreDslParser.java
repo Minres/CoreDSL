@@ -21998,7 +21998,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:6089:1: ( rule__Instruction__Group_5__1__Impl rule__Instruction__Group_5__2 )
             // InternalCoreDsl.g:6090:2: rule__Instruction__Group_5__1__Impl rule__Instruction__Group_5__2
             {
-            pushFollow(FOLLOW_13);
+            pushFollow(FOLLOW_29);
             rule__Instruction__Group_5__1__Impl();
 
             state._fsp--;
@@ -22161,7 +22161,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:6143:1: ( rule__Encoding__Group__0__Impl rule__Encoding__Group__1 )
             // InternalCoreDsl.g:6144:2: rule__Encoding__Group__0__Impl rule__Encoding__Group__1
             {
-            pushFollow(FOLLOW_29);
+            pushFollow(FOLLOW_30);
             rule__Encoding__Group__0__Impl();
 
             state._fsp--;
@@ -22304,7 +22304,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             	case 1 :
             	    // InternalCoreDsl.g:6184:3: rule__Encoding__Alternatives_1
             	    {
-            	    pushFollow(FOLLOW_30);
+            	    pushFollow(FOLLOW_31);
             	    rule__Encoding__Alternatives_1();
 
             	    state._fsp--;
@@ -22515,7 +22515,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:6251:1: ( rule__BitField__Group__0__Impl rule__BitField__Group__1 )
             // InternalCoreDsl.g:6252:2: rule__BitField__Group__0__Impl rule__BitField__Group__1
             {
-            pushFollow(FOLLOW_31);
+            pushFollow(FOLLOW_32);
             rule__BitField__Group__0__Impl();
 
             state._fsp--;
@@ -22604,7 +22604,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:6278:1: ( rule__BitField__Group__1__Impl rule__BitField__Group__2 )
             // InternalCoreDsl.g:6279:2: rule__BitField__Group__1__Impl rule__BitField__Group__2
             {
-            pushFollow(FOLLOW_32);
+            pushFollow(FOLLOW_33);
             rule__BitField__Group__1__Impl();
 
             state._fsp--;
@@ -22788,7 +22788,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:6332:1: ( rule__BitField__Group_2__0__Impl rule__BitField__Group_2__1 )
             // InternalCoreDsl.g:6333:2: rule__BitField__Group_2__0__Impl rule__BitField__Group_2__1
             {
-            pushFollow(FOLLOW_32);
+            pushFollow(FOLLOW_33);
             rule__BitField__Group_2__0__Impl();
 
             state._fsp--;
@@ -22968,7 +22968,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:6386:1: ( rule__RangeSpec__Group__0__Impl rule__RangeSpec__Group__1 )
             // InternalCoreDsl.g:6387:2: rule__RangeSpec__Group__0__Impl rule__RangeSpec__Group__1
             {
-            pushFollow(FOLLOW_33);
+            pushFollow(FOLLOW_34);
             rule__RangeSpec__Group__0__Impl();
 
             state._fsp--;
@@ -23136,7 +23136,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:6440:1: ( rule__RangeSpec__Group__2__Impl rule__RangeSpec__Group__3 )
             // InternalCoreDsl.g:6441:2: rule__RangeSpec__Group__2__Impl rule__RangeSpec__Group__3
             {
-            pushFollow(FOLLOW_33);
+            pushFollow(FOLLOW_34);
             rule__RangeSpec__Group__2__Impl();
 
             state._fsp--;
@@ -23215,7 +23215,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:6467:1: ( rule__RangeSpec__Group__3__Impl rule__RangeSpec__Group__4 )
             // InternalCoreDsl.g:6468:2: rule__RangeSpec__Group__3__Impl rule__RangeSpec__Group__4
             {
-            pushFollow(FOLLOW_34);
+            pushFollow(FOLLOW_35);
             rule__RangeSpec__Group__3__Impl();
 
             state._fsp--;
@@ -23567,7 +23567,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:6575:1: ( rule__FunctionDefinition__Group__2__Impl rule__FunctionDefinition__Group__3 )
             // InternalCoreDsl.g:6576:2: rule__FunctionDefinition__Group__2__Impl rule__FunctionDefinition__Group__3
             {
-            pushFollow(FOLLOW_35);
+            pushFollow(FOLLOW_36);
             rule__FunctionDefinition__Group__2__Impl();
 
             state._fsp--;
@@ -23656,7 +23656,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:6602:1: ( rule__FunctionDefinition__Group__3__Impl rule__FunctionDefinition__Group__4 )
             // InternalCoreDsl.g:6603:2: rule__FunctionDefinition__Group__3__Impl rule__FunctionDefinition__Group__4
             {
-            pushFollow(FOLLOW_36);
+            pushFollow(FOLLOW_37);
             rule__FunctionDefinition__Group__3__Impl();
 
             state._fsp--;
@@ -23735,7 +23735,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:6629:1: ( rule__FunctionDefinition__Group__4__Impl rule__FunctionDefinition__Group__5 )
             // InternalCoreDsl.g:6630:2: rule__FunctionDefinition__Group__4__Impl rule__FunctionDefinition__Group__5
             {
-            pushFollow(FOLLOW_36);
+            pushFollow(FOLLOW_37);
             rule__FunctionDefinition__Group__4__Impl();
 
             state._fsp--;
@@ -24363,7 +24363,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:6818:1: ( rule__ParameterDeclaration__Group__0__Impl rule__ParameterDeclaration__Group__1 )
             // InternalCoreDsl.g:6819:2: rule__ParameterDeclaration__Group__0__Impl rule__ParameterDeclaration__Group__1
             {
-            pushFollow(FOLLOW_37);
+            pushFollow(FOLLOW_38);
             rule__ParameterDeclaration__Group__0__Impl();
 
             state._fsp--;
@@ -24547,7 +24547,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:6872:1: ( rule__LabeledStatement__Group_0__0__Impl rule__LabeledStatement__Group_0__1 )
             // InternalCoreDsl.g:6873:2: rule__LabeledStatement__Group_0__0__Impl rule__LabeledStatement__Group_0__1
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__LabeledStatement__Group_0__0__Impl();
 
             state._fsp--;
@@ -24715,7 +24715,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:6926:1: ( rule__LabeledStatement__Group_0__2__Impl rule__LabeledStatement__Group_0__3 )
             // InternalCoreDsl.g:6927:2: rule__LabeledStatement__Group_0__2__Impl rule__LabeledStatement__Group_0__3
             {
-            pushFollow(FOLLOW_39);
+            pushFollow(FOLLOW_29);
             rule__LabeledStatement__Group_0__2__Impl();
 
             state._fsp--;
@@ -24957,7 +24957,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:7007:1: ( rule__LabeledStatement__Group_1__1__Impl rule__LabeledStatement__Group_1__2 )
             // InternalCoreDsl.g:7008:2: rule__LabeledStatement__Group_1__1__Impl rule__LabeledStatement__Group_1__2
             {
-            pushFollow(FOLLOW_39);
+            pushFollow(FOLLOW_29);
             rule__LabeledStatement__Group_1__1__Impl();
 
             state._fsp--;
@@ -25712,7 +25712,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:7250:1: ( rule__IfStatement__Group__0__Impl rule__IfStatement__Group__1 )
             // InternalCoreDsl.g:7251:2: rule__IfStatement__Group__0__Impl rule__IfStatement__Group__1
             {
-            pushFollow(FOLLOW_35);
+            pushFollow(FOLLOW_36);
             rule__IfStatement__Group__0__Impl();
 
             state._fsp--;
@@ -25791,7 +25791,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:7277:1: ( rule__IfStatement__Group__1__Impl rule__IfStatement__Group__2 )
             // InternalCoreDsl.g:7278:2: rule__IfStatement__Group__1__Impl rule__IfStatement__Group__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__IfStatement__Group__1__Impl();
 
             state._fsp--;
@@ -25959,7 +25959,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:7331:1: ( rule__IfStatement__Group__3__Impl rule__IfStatement__Group__4 )
             // InternalCoreDsl.g:7332:2: rule__IfStatement__Group__3__Impl rule__IfStatement__Group__4
             {
-            pushFollow(FOLLOW_39);
+            pushFollow(FOLLOW_29);
             rule__IfStatement__Group__3__Impl();
 
             state._fsp--;
@@ -26226,7 +26226,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:7412:1: ( rule__IfStatement__Group_5__0__Impl rule__IfStatement__Group_5__1 )
             // InternalCoreDsl.g:7413:2: rule__IfStatement__Group_5__0__Impl rule__IfStatement__Group_5__1
             {
-            pushFollow(FOLLOW_39);
+            pushFollow(FOLLOW_29);
             rule__IfStatement__Group_5__0__Impl();
 
             state._fsp--;
@@ -26395,7 +26395,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:7466:1: ( rule__SwitchStatement__Group__0__Impl rule__SwitchStatement__Group__1 )
             // InternalCoreDsl.g:7467:2: rule__SwitchStatement__Group__0__Impl rule__SwitchStatement__Group__1
             {
-            pushFollow(FOLLOW_35);
+            pushFollow(FOLLOW_36);
             rule__SwitchStatement__Group__0__Impl();
 
             state._fsp--;
@@ -26474,7 +26474,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:7493:1: ( rule__SwitchStatement__Group__1__Impl rule__SwitchStatement__Group__2 )
             // InternalCoreDsl.g:7494:2: rule__SwitchStatement__Group__1__Impl rule__SwitchStatement__Group__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__SwitchStatement__Group__1__Impl();
 
             state._fsp--;
@@ -26963,7 +26963,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:7655:1: ( rule__IterationStatement__Group_0__0__Impl rule__IterationStatement__Group_0__1 )
             // InternalCoreDsl.g:7656:2: rule__IterationStatement__Group_0__0__Impl rule__IterationStatement__Group_0__1
             {
-            pushFollow(FOLLOW_35);
+            pushFollow(FOLLOW_36);
             rule__IterationStatement__Group_0__0__Impl();
 
             state._fsp--;
@@ -27052,7 +27052,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:7682:1: ( rule__IterationStatement__Group_0__1__Impl rule__IterationStatement__Group_0__2 )
             // InternalCoreDsl.g:7683:2: rule__IterationStatement__Group_0__1__Impl rule__IterationStatement__Group_0__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__IterationStatement__Group_0__1__Impl();
 
             state._fsp--;
@@ -27220,7 +27220,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:7736:1: ( rule__IterationStatement__Group_0__3__Impl rule__IterationStatement__Group_0__4 )
             // InternalCoreDsl.g:7737:2: rule__IterationStatement__Group_0__3__Impl rule__IterationStatement__Group_0__4
             {
-            pushFollow(FOLLOW_39);
+            pushFollow(FOLLOW_29);
             rule__IterationStatement__Group_0__3__Impl();
 
             state._fsp--;
@@ -27383,7 +27383,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:7790:1: ( rule__IterationStatement__Group_1__0__Impl rule__IterationStatement__Group_1__1 )
             // InternalCoreDsl.g:7791:2: rule__IterationStatement__Group_1__0__Impl rule__IterationStatement__Group_1__1
             {
-            pushFollow(FOLLOW_39);
+            pushFollow(FOLLOW_29);
             rule__IterationStatement__Group_1__0__Impl();
 
             state._fsp--;
@@ -27561,7 +27561,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:7844:1: ( rule__IterationStatement__Group_1__2__Impl rule__IterationStatement__Group_1__3 )
             // InternalCoreDsl.g:7845:2: rule__IterationStatement__Group_1__2__Impl rule__IterationStatement__Group_1__3
             {
-            pushFollow(FOLLOW_35);
+            pushFollow(FOLLOW_36);
             rule__IterationStatement__Group_1__2__Impl();
 
             state._fsp--;
@@ -27640,7 +27640,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:7871:1: ( rule__IterationStatement__Group_1__3__Impl rule__IterationStatement__Group_1__4 )
             // InternalCoreDsl.g:7872:2: rule__IterationStatement__Group_1__3__Impl rule__IterationStatement__Group_1__4
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__IterationStatement__Group_1__3__Impl();
 
             state._fsp--;
@@ -27961,7 +27961,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:7979:1: ( rule__IterationStatement__Group_2__0__Impl rule__IterationStatement__Group_2__1 )
             // InternalCoreDsl.g:7980:2: rule__IterationStatement__Group_2__0__Impl rule__IterationStatement__Group_2__1
             {
-            pushFollow(FOLLOW_35);
+            pushFollow(FOLLOW_36);
             rule__IterationStatement__Group_2__0__Impl();
 
             state._fsp--;
@@ -28212,7 +28212,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:8060:1: ( rule__IterationStatement__Group_2__3__Impl rule__IterationStatement__Group_2__4 )
             // InternalCoreDsl.g:8061:2: rule__IterationStatement__Group_2__3__Impl rule__IterationStatement__Group_2__4
             {
-            pushFollow(FOLLOW_39);
+            pushFollow(FOLLOW_29);
             rule__IterationStatement__Group_2__3__Impl();
 
             state._fsp--;
@@ -28564,7 +28564,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:8168:1: ( rule__ForCondition__Group__2__Impl rule__ForCondition__Group__3 )
             // InternalCoreDsl.g:8169:2: rule__ForCondition__Group__2__Impl rule__ForCondition__Group__3
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__ForCondition__Group__2__Impl();
 
             state._fsp--;
@@ -29103,7 +29103,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:8330:1: ( rule__ForCondition__Group_3_1__0__Impl rule__ForCondition__Group_3_1__1 )
             // InternalCoreDsl.g:8331:2: rule__ForCondition__Group_3_1__0__Impl rule__ForCondition__Group_3_1__1
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__ForCondition__Group_3_1__0__Impl();
 
             state._fsp--;
@@ -29855,7 +29855,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:8573:1: ( rule__SpawnStatement__Group__0__Impl rule__SpawnStatement__Group__1 )
             // InternalCoreDsl.g:8574:2: rule__SpawnStatement__Group__0__Impl rule__SpawnStatement__Group__1
             {
-            pushFollow(FOLLOW_39);
+            pushFollow(FOLLOW_29);
             rule__SpawnStatement__Group__0__Impl();
 
             state._fsp--;
@@ -31292,7 +31292,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:9005:1: ( rule__Attribute__Group_2__0__Impl rule__Attribute__Group_2__1 )
             // InternalCoreDsl.g:9006:2: rule__Attribute__Group_2__0__Impl rule__Attribute__Group_2__1
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__Attribute__Group_2__0__Impl();
 
             state._fsp--;
@@ -33419,7 +33419,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:9680:1: ( rule__Enumerator__Group_1__1__Impl rule__Enumerator__Group_1__2 )
             // InternalCoreDsl.g:9681:2: rule__Enumerator__Group_1__1__Impl rule__Enumerator__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__Enumerator__Group_1__1__Impl();
 
             state._fsp--;
@@ -35471,7 +35471,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:10301:1: ( rule__DirectDeclarator__Group_1__0__Impl rule__DirectDeclarator__Group_1__1 )
             // InternalCoreDsl.g:10302:2: rule__DirectDeclarator__Group_1__0__Impl rule__DirectDeclarator__Group_1__1
             {
-            pushFollow(FOLLOW_33);
+            pushFollow(FOLLOW_34);
             rule__DirectDeclarator__Group_1__0__Impl();
 
             state._fsp--;
@@ -35634,7 +35634,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:10355:1: ( rule__DirectDeclarator__Group_2_0__0__Impl rule__DirectDeclarator__Group_2_0__1 )
             // InternalCoreDsl.g:10356:2: rule__DirectDeclarator__Group_2_0__0__Impl rule__DirectDeclarator__Group_2_0__1
             {
-            pushFollow(FOLLOW_31);
+            pushFollow(FOLLOW_32);
             rule__DirectDeclarator__Group_2_0__0__Impl();
 
             state._fsp--;
@@ -35850,7 +35850,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:10416:1: ( rule__DirectDeclarator__Group_2_0_1__0__Impl rule__DirectDeclarator__Group_2_0_1__1 )
             // InternalCoreDsl.g:10417:2: rule__DirectDeclarator__Group_2_0_1__0__Impl rule__DirectDeclarator__Group_2_0_1__1
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__DirectDeclarator__Group_2_0_1__0__Impl();
 
             state._fsp--;
@@ -35929,7 +35929,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:10443:1: ( rule__DirectDeclarator__Group_2_0_1__1__Impl rule__DirectDeclarator__Group_2_0_1__2 )
             // InternalCoreDsl.g:10444:2: rule__DirectDeclarator__Group_2_0_1__1__Impl rule__DirectDeclarator__Group_2_0_1__2
             {
-            pushFollow(FOLLOW_34);
+            pushFollow(FOLLOW_35);
             rule__DirectDeclarator__Group_2_0_1__1__Impl();
 
             state._fsp--;
@@ -37398,7 +37398,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:10909:1: ( rule__Designator__Group_0__0__Impl rule__Designator__Group_0__1 )
             // InternalCoreDsl.g:10910:2: rule__Designator__Group_0__0__Impl rule__Designator__Group_0__1
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__Designator__Group_0__0__Impl();
 
             state._fsp--;
@@ -37477,7 +37477,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:10936:1: ( rule__Designator__Group_0__1__Impl rule__Designator__Group_0__2 )
             // InternalCoreDsl.g:10937:2: rule__Designator__Group_0__1__Impl rule__Designator__Group_0__2
             {
-            pushFollow(FOLLOW_34);
+            pushFollow(FOLLOW_35);
             rule__Designator__Group_0__1__Impl();
 
             state._fsp--;
@@ -37803,7 +37803,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:11044:1: ( rule__DirectAbstractDeclarator__Group_0__0__Impl rule__DirectAbstractDeclarator__Group_0__1 )
             // InternalCoreDsl.g:11045:2: rule__DirectAbstractDeclarator__Group_0__0__Impl rule__DirectAbstractDeclarator__Group_0__1
             {
-            pushFollow(FOLLOW_35);
+            pushFollow(FOLLOW_36);
             rule__DirectAbstractDeclarator__Group_0__0__Impl();
 
             state._fsp--;
@@ -38124,7 +38124,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:11152:1: ( rule__DirectAbstractDeclarator__Group_1__0__Impl rule__DirectAbstractDeclarator__Group_1__1 )
             // InternalCoreDsl.g:11153:2: rule__DirectAbstractDeclarator__Group_1__0__Impl rule__DirectAbstractDeclarator__Group_1__1
             {
-            pushFollow(FOLLOW_37);
+            pushFollow(FOLLOW_38);
             rule__DirectAbstractDeclarator__Group_1__0__Impl();
 
             state._fsp--;
@@ -38720,7 +38720,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:11341:1: ( rule__AssignmentExpression__Group_1__1__Impl rule__AssignmentExpression__Group_1__2 )
             // InternalCoreDsl.g:11342:2: rule__AssignmentExpression__Group_1__1__Impl rule__AssignmentExpression__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__AssignmentExpression__Group_1__1__Impl();
 
             state._fsp--;
@@ -39186,7 +39186,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:11483:1: ( rule__AssignmentExpression2__Group_1__1__Impl rule__AssignmentExpression2__Group_1__2 )
             // InternalCoreDsl.g:11484:2: rule__AssignmentExpression2__Group_1__1__Impl rule__AssignmentExpression2__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__AssignmentExpression2__Group_1__1__Impl();
 
             state._fsp--;
@@ -39616,7 +39616,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:11618:1: ( rule__ConditionalExpression__Group_1__1__Impl rule__ConditionalExpression__Group_1__2 )
             // InternalCoreDsl.g:11619:2: rule__ConditionalExpression__Group_1__1__Impl rule__ConditionalExpression__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__ConditionalExpression__Group_1__1__Impl();
 
             state._fsp--;
@@ -39784,7 +39784,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:11672:1: ( rule__ConditionalExpression__Group_1__3__Impl rule__ConditionalExpression__Group_1__4 )
             // InternalCoreDsl.g:11673:2: rule__ConditionalExpression__Group_1__3__Impl rule__ConditionalExpression__Group_1__4
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__ConditionalExpression__Group_1__3__Impl();
 
             state._fsp--;
@@ -40204,7 +40204,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:11807:1: ( rule__ConcatenationExpression__Group_1__1__Impl rule__ConcatenationExpression__Group_1__2 )
             // InternalCoreDsl.g:11808:2: rule__ConcatenationExpression__Group_1__1__Impl rule__ConcatenationExpression__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__ConcatenationExpression__Group_1__1__Impl();
 
             state._fsp--;
@@ -40634,7 +40634,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:11942:1: ( rule__LogicalOrExpression__Group_1__1__Impl rule__LogicalOrExpression__Group_1__2 )
             // InternalCoreDsl.g:11943:2: rule__LogicalOrExpression__Group_1__1__Impl rule__LogicalOrExpression__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__LogicalOrExpression__Group_1__1__Impl();
 
             state._fsp--;
@@ -41064,7 +41064,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:12077:1: ( rule__LogicalAndExpression__Group_1__1__Impl rule__LogicalAndExpression__Group_1__2 )
             // InternalCoreDsl.g:12078:2: rule__LogicalAndExpression__Group_1__1__Impl rule__LogicalAndExpression__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__LogicalAndExpression__Group_1__1__Impl();
 
             state._fsp--;
@@ -41494,7 +41494,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:12212:1: ( rule__InclusiveOrExpression__Group_1__1__Impl rule__InclusiveOrExpression__Group_1__2 )
             // InternalCoreDsl.g:12213:2: rule__InclusiveOrExpression__Group_1__1__Impl rule__InclusiveOrExpression__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__InclusiveOrExpression__Group_1__1__Impl();
 
             state._fsp--;
@@ -41924,7 +41924,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:12347:1: ( rule__ExclusiveOrExpression__Group_1__1__Impl rule__ExclusiveOrExpression__Group_1__2 )
             // InternalCoreDsl.g:12348:2: rule__ExclusiveOrExpression__Group_1__1__Impl rule__ExclusiveOrExpression__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__ExclusiveOrExpression__Group_1__1__Impl();
 
             state._fsp--;
@@ -42354,7 +42354,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:12482:1: ( rule__AndExpression__Group_1__1__Impl rule__AndExpression__Group_1__2 )
             // InternalCoreDsl.g:12483:2: rule__AndExpression__Group_1__1__Impl rule__AndExpression__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__AndExpression__Group_1__1__Impl();
 
             state._fsp--;
@@ -42784,7 +42784,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:12617:1: ( rule__EqualityExpression__Group_1__1__Impl rule__EqualityExpression__Group_1__2 )
             // InternalCoreDsl.g:12618:2: rule__EqualityExpression__Group_1__1__Impl rule__EqualityExpression__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__EqualityExpression__Group_1__1__Impl();
 
             state._fsp--;
@@ -43214,7 +43214,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:12752:1: ( rule__RelationalExpression__Group_1__1__Impl rule__RelationalExpression__Group_1__2 )
             // InternalCoreDsl.g:12753:2: rule__RelationalExpression__Group_1__1__Impl rule__RelationalExpression__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__RelationalExpression__Group_1__1__Impl();
 
             state._fsp--;
@@ -43644,7 +43644,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:12887:1: ( rule__ShiftExpression__Group_1__1__Impl rule__ShiftExpression__Group_1__2 )
             // InternalCoreDsl.g:12888:2: rule__ShiftExpression__Group_1__1__Impl rule__ShiftExpression__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__ShiftExpression__Group_1__1__Impl();
 
             state._fsp--;
@@ -44074,7 +44074,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:13022:1: ( rule__AdditiveExpression__Group_1__1__Impl rule__AdditiveExpression__Group_1__2 )
             // InternalCoreDsl.g:13023:2: rule__AdditiveExpression__Group_1__1__Impl rule__AdditiveExpression__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__AdditiveExpression__Group_1__1__Impl();
 
             state._fsp--;
@@ -44504,7 +44504,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:13157:1: ( rule__MultiplicativeExpression__Group_1__1__Impl rule__MultiplicativeExpression__Group_1__2 )
             // InternalCoreDsl.g:13158:2: rule__MultiplicativeExpression__Group_1__1__Impl rule__MultiplicativeExpression__Group_1__2
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__MultiplicativeExpression__Group_1__1__Impl();
 
             state._fsp--;
@@ -44845,7 +44845,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:13265:1: ( rule__CastExpression__Group_1__2__Impl rule__CastExpression__Group_1__3 )
             // InternalCoreDsl.g:13266:2: rule__CastExpression__Group_1__2__Impl rule__CastExpression__Group_1__3
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__CastExpression__Group_1__2__Impl();
 
             state._fsp--;
@@ -45008,7 +45008,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:13319:1: ( rule__PrefixExpression__Group_1__0__Impl rule__PrefixExpression__Group_1__1 )
             // InternalCoreDsl.g:13320:2: rule__PrefixExpression__Group_1__0__Impl rule__PrefixExpression__Group_1__1
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__PrefixExpression__Group_1__0__Impl();
 
             state._fsp--;
@@ -45181,7 +45181,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:13373:1: ( rule__PrefixExpression__Group_2__0__Impl rule__PrefixExpression__Group_2__1 )
             // InternalCoreDsl.g:13374:2: rule__PrefixExpression__Group_2__0__Impl rule__PrefixExpression__Group_2__1
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__PrefixExpression__Group_2__0__Impl();
 
             state._fsp--;
@@ -45354,7 +45354,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:13427:1: ( rule__PrefixExpression__Group_3__0__Impl rule__PrefixExpression__Group_3__1 )
             // InternalCoreDsl.g:13428:2: rule__PrefixExpression__Group_3__0__Impl rule__PrefixExpression__Group_3__1
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__PrefixExpression__Group_3__0__Impl();
 
             state._fsp--;
@@ -45521,7 +45521,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:13481:1: ( rule__PrefixExpression__Group_4__0__Impl rule__PrefixExpression__Group_4__1 )
             // InternalCoreDsl.g:13482:2: rule__PrefixExpression__Group_4__0__Impl rule__PrefixExpression__Group_4__1
             {
-            pushFollow(FOLLOW_35);
+            pushFollow(FOLLOW_36);
             rule__PrefixExpression__Group_4__0__Impl();
 
             state._fsp--;
@@ -46200,7 +46200,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:13697:1: ( rule__PostfixOperator__Group_0__0__Impl rule__PostfixOperator__Group_0__1 )
             // InternalCoreDsl.g:13698:2: rule__PostfixOperator__Group_0__0__Impl rule__PostfixOperator__Group_0__1
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__PostfixOperator__Group_0__0__Impl();
 
             state._fsp--;
@@ -46552,7 +46552,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:13805:1: ( rule__PostfixOperator__Group_0_2__0__Impl rule__PostfixOperator__Group_0_2__1 )
             // InternalCoreDsl.g:13806:2: rule__PostfixOperator__Group_0_2__0__Impl rule__PostfixOperator__Group_0_2__1
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__PostfixOperator__Group_0_2__0__Impl();
 
             state._fsp--;
@@ -47169,7 +47169,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:13994:1: ( rule__PostfixOperator__Group_1_1_1__0__Impl rule__PostfixOperator__Group_1_1_1__1 )
             // InternalCoreDsl.g:13995:2: rule__PostfixOperator__Group_1_1_1__0__Impl rule__PostfixOperator__Group_1_1_1__1
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__PostfixOperator__Group_1_1_1__0__Impl();
 
             state._fsp--;
@@ -47678,7 +47678,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:14156:1: ( rule__PrimaryExpression__Group_3__0__Impl rule__PrimaryExpression__Group_3__1 )
             // InternalCoreDsl.g:14157:2: rule__PrimaryExpression__Group_3__0__Impl rule__PrimaryExpression__Group_3__1
             {
-            pushFollow(FOLLOW_38);
+            pushFollow(FOLLOW_39);
             rule__PrimaryExpression__Group_3__0__Impl();
 
             state._fsp--;
@@ -49275,7 +49275,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:14642:1: ( rule__DoubleLeftBracket__Group__0__Impl rule__DoubleLeftBracket__Group__1 )
             // InternalCoreDsl.g:14643:2: rule__DoubleLeftBracket__Group__0__Impl rule__DoubleLeftBracket__Group__1
             {
-            pushFollow(FOLLOW_31);
+            pushFollow(FOLLOW_32);
             rule__DoubleLeftBracket__Group__0__Impl();
 
             state._fsp--;
@@ -49428,7 +49428,7 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
             // InternalCoreDsl.g:14696:1: ( rule__DoubleRightBracket__Group__0__Impl rule__DoubleRightBracket__Group__1 )
             // InternalCoreDsl.g:14697:2: rule__DoubleRightBracket__Group__0__Impl rule__DoubleRightBracket__Group__1
             {
-            pushFollow(FOLLOW_34);
+            pushFollow(FOLLOW_35);
             rule__DoubleRightBracket__Group__0__Impl();
 
             state._fsp--;
@@ -50566,28 +50566,28 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Instruction__BehaviorAssignment_5_2"
-    // InternalCoreDsl.g:15088:1: rule__Instruction__BehaviorAssignment_5_2 : ( ruleCompoundStatement ) ;
+    // InternalCoreDsl.g:15088:1: rule__Instruction__BehaviorAssignment_5_2 : ( ruleStatement ) ;
     public final void rule__Instruction__BehaviorAssignment_5_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalCoreDsl.g:15092:1: ( ( ruleCompoundStatement ) )
-            // InternalCoreDsl.g:15093:2: ( ruleCompoundStatement )
+            // InternalCoreDsl.g:15092:1: ( ( ruleStatement ) )
+            // InternalCoreDsl.g:15093:2: ( ruleStatement )
             {
-            // InternalCoreDsl.g:15093:2: ( ruleCompoundStatement )
-            // InternalCoreDsl.g:15094:3: ruleCompoundStatement
+            // InternalCoreDsl.g:15093:2: ( ruleStatement )
+            // InternalCoreDsl.g:15094:3: ruleStatement
             {
             if ( state.backtracking==0 ) {
-               before(grammarAccess.getInstructionAccess().getBehaviorCompoundStatementParserRuleCall_5_2_0()); 
+               before(grammarAccess.getInstructionAccess().getBehaviorStatementParserRuleCall_5_2_0()); 
             }
             pushFollow(FOLLOW_2);
-            ruleCompoundStatement();
+            ruleStatement();
 
             state._fsp--;
             if (state.failed) return ;
             if ( state.backtracking==0 ) {
-               after(grammarAccess.getInstructionAccess().getBehaviorCompoundStatementParserRuleCall_5_2_0()); 
+               after(grammarAccess.getInstructionAccess().getBehaviorStatementParserRuleCall_5_2_0()); 
             }
 
             }
@@ -58445,17 +58445,17 @@ public class InternalCoreDslParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_26 = new BitSet(new long[]{0x0000000000000000L,0x0000000100000000L});
     public static final BitSet FOLLOW_27 = new BitSet(new long[]{0x0000000000000230L});
     public static final BitSet FOLLOW_28 = new BitSet(new long[]{0x0000000000000000L,0x0000000200000000L});
-    public static final BitSet FOLLOW_29 = new BitSet(new long[]{0x0000000001000000L,0x0000001000000000L});
-    public static final BitSet FOLLOW_30 = new BitSet(new long[]{0x0000000001000002L,0x0000001000000000L});
-    public static final BitSet FOLLOW_31 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_32 = new BitSet(new long[]{0x0020000000000000L,0x0000002000020000L});
-    public static final BitSet FOLLOW_33 = new BitSet(new long[]{0x0000000000000400L});
-    public static final BitSet FOLLOW_34 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_35 = new BitSet(new long[]{0x0000000000000000L,0x0000004000000000L});
-    public static final BitSet FOLLOW_36 = new BitSet(new long[]{0xF800000000000040L,0x00008080000181FFL});
-    public static final BitSet FOLLOW_37 = new BitSet(new long[]{0x0000000000000240L,0x0000004000000000L});
-    public static final BitSet FOLLOW_38 = new BitSet(new long[]{0x00FE700000003F00L,0x1C00004000000000L});
-    public static final BitSet FOLLOW_39 = new BitSet(new long[]{0x00FE700000003F00L,0x1C7C744200100000L});
+    public static final BitSet FOLLOW_29 = new BitSet(new long[]{0x00FE700000003F00L,0x1C7C744200100000L});
+    public static final BitSet FOLLOW_30 = new BitSet(new long[]{0x0000000001000000L,0x0000001000000000L});
+    public static final BitSet FOLLOW_31 = new BitSet(new long[]{0x0000000001000002L,0x0000001000000000L});
+    public static final BitSet FOLLOW_32 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_33 = new BitSet(new long[]{0x0020000000000000L,0x0000002000020000L});
+    public static final BitSet FOLLOW_34 = new BitSet(new long[]{0x0000000000000400L});
+    public static final BitSet FOLLOW_35 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_36 = new BitSet(new long[]{0x0000000000000000L,0x0000004000000000L});
+    public static final BitSet FOLLOW_37 = new BitSet(new long[]{0xF800000000000040L,0x00008080000181FFL});
+    public static final BitSet FOLLOW_38 = new BitSet(new long[]{0x0000000000000240L,0x0000004000000000L});
+    public static final BitSet FOLLOW_39 = new BitSet(new long[]{0x00FE700000003F00L,0x1C00004000000000L});
     public static final BitSet FOLLOW_40 = new BitSet(new long[]{0xF8FE700000003F40L,0x1C7CF442003181FFL});
     public static final BitSet FOLLOW_41 = new BitSet(new long[]{0xF8FE700000003F42L,0x1C7CF442001181FFL});
     public static final BitSet FOLLOW_42 = new BitSet(new long[]{0x00FE700000003F00L,0x1C00004200000000L});

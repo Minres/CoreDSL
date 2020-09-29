@@ -114,12 +114,12 @@ public interface Instruction extends EObject
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Behavior</em>' containment reference.
-   * @see #setBehavior(CompoundStatement)
+   * @see #setBehavior(Statement)
    * @see com.minres.coredsl.coreDsl.CoreDslPackage#getInstruction_Behavior()
    * @model containment="true"
    * @generated
    */
-  CompoundStatement getBehavior();
+  Statement getBehavior();
 
   /**
    * Sets the value of the '{@link com.minres.coredsl.coreDsl.Instruction#getBehavior <em>Behavior</em>}' containment reference.
@@ -129,6 +129,6 @@ public interface Instruction extends EObject
    * @see #getBehavior()
    * @generated
    */
-  void setBehavior(CompoundStatement value);
+  void setBehavior(Statement value);
 
 } // Instruction
