@@ -42,7 +42,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getAttrs <em>Attrs</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getType <em>Type</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getSize <em>Size</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#isIs_ptr <em>Is ptr</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getPtr <em>Ptr</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getInit <em>Init</em>}</li>
  * </ul>
  *
@@ -101,24 +101,24 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
   protected BitSizeSpecifier size;
 
   /**
-   * The default value of the '{@link #isIs_ptr() <em>Is ptr</em>}' attribute.
+   * The default value of the '{@link #getPtr() <em>Ptr</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isIs_ptr()
+   * @see #getPtr()
    * @generated
    * @ordered
    */
-  protected static final boolean IS_PTR_EDEFAULT = false;
+  protected static final String PTR_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #isIs_ptr() <em>Is ptr</em>}' attribute.
+   * The cached value of the '{@link #getPtr() <em>Ptr</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isIs_ptr()
+   * @see #getPtr()
    * @generated
    * @ordered
    */
-  protected boolean is_ptr = IS_PTR_EDEFAULT;
+  protected String ptr = PTR_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getInit() <em>Init</em>}' containment reference list.
@@ -302,9 +302,9 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
    * @generated
    */
   @Override
-  public boolean isIs_ptr()
+  public String getPtr()
   {
-    return is_ptr;
+    return ptr;
   }
 
   /**
@@ -313,12 +313,12 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
    * @generated
    */
   @Override
-  public void setIs_ptr(boolean newIs_ptr)
+  public void setPtr(String newPtr)
   {
-    boolean oldIs_ptr = is_ptr;
-    is_ptr = newIs_ptr;
+    String oldPtr = ptr;
+    ptr = newPtr;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.TYPE_OR_VAR_DECLARATION__IS_PTR, oldIs_ptr, is_ptr));
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.TYPE_OR_VAR_DECLARATION__PTR, oldPtr, ptr));
   }
 
   /**
@@ -378,8 +378,8 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
         return getType();
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__SIZE:
         return getSize();
-      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__IS_PTR:
-        return isIs_ptr();
+      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__PTR:
+        return getPtr();
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__INIT:
         return getInit();
     }
@@ -415,8 +415,8 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__SIZE:
         setSize((BitSizeSpecifier)newValue);
         return;
-      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__IS_PTR:
-        setIs_ptr((Boolean)newValue);
+      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__PTR:
+        setPtr((String)newValue);
         return;
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__INIT:
         getInit().clear();
@@ -451,8 +451,8 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__SIZE:
         setSize((BitSizeSpecifier)null);
         return;
-      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__IS_PTR:
-        setIs_ptr(IS_PTR_EDEFAULT);
+      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__PTR:
+        setPtr(PTR_EDEFAULT);
         return;
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__INIT:
         getInit().clear();
@@ -481,8 +481,8 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
         return type != null;
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__SIZE:
         return size != null;
-      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__IS_PTR:
-        return is_ptr != IS_PTR_EDEFAULT;
+      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__PTR:
+        return PTR_EDEFAULT == null ? ptr != null : !PTR_EDEFAULT.equals(ptr);
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__INIT:
         return init != null && !init.isEmpty();
     }
@@ -546,8 +546,8 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
     result.append(storage);
     result.append(", qualifiers: ");
     result.append(qualifiers);
-    result.append(", is_ptr: ");
-    result.append(is_ptr);
+    result.append(", ptr: ");
+    result.append(ptr);
     result.append(')');
     return result.toString();
   }

@@ -613,7 +613,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     BitSizeSpecifier returns BitSizeSpecifier
 	 *
 	 * Constraint:
-	 *     (size+=BitSizeValue (size+=BitSizeValue size+=BitSizeValue size+=BitSizeValue)?)
+	 *     (size+=PrimaryExpression (size+=PrimaryExpression size+=PrimaryExpression size+=PrimaryExpression)?)
 	 */
 	protected void sequence_BitSizeSpecifier(ISerializationContext context, BitSizeSpecifier semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -639,10 +639,16 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     VariableRef returns BitValue
 	 *
 	 * Constraint:
-	 *     (name=BVAL | name=VLOGVAL)
+	 *     name=BVAL
 	 */
 	protected void sequence_BitValue(ISerializationContext context, BitValue semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.VARIABLE_REF__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.VARIABLE_REF__NAME));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getBitValueAccess().getNameBVALTerminalRuleCall_0(), semanticObject.getName());
+		feeder.finish();
 	}
 	
 	
@@ -695,19 +701,10 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     ConstantExpression returns CastExpression
 	 *
 	 * Constraint:
-	 *     (type=DataTypeSpecifier left=CastExpression)
+	 *     (type=DataTypeSpecifier size=BitSizeSpecifier? left=CastExpression)
 	 */
 	protected void sequence_CastExpression(ISerializationContext context, CastExpression semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.CAST_EXPRESSION__TYPE) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.CAST_EXPRESSION__TYPE));
-			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.EXPRESSION__LEFT) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.EXPRESSION__LEFT));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getCastExpressionAccess().getTypeDataTypeSpecifierParserRuleCall_1_1_0(), semanticObject.getType());
-		feeder.accept(grammarAccess.getCastExpressionAccess().getLeftCastExpressionParserRuleCall_1_3_0(), semanticObject.getLeft());
-		feeder.finish();
+		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
@@ -794,7 +791,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         (storage+=StorageClassSpecifier | qualifiers+=TypeQualifier | attrs+=Attribute)* 
 	 *         type=TypeSpecifier 
 	 *         size=BitSizeSpecifier? 
-	 *         is_ptr?='*'? 
+	 *         (ptr='*' | ptr='&')? 
 	 *         (init+=InitDeclarator init+=InitDeclarator*)?
 	 *     )
 	 */
@@ -1022,7 +1019,11 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     VariableRef returns FunctionDefinition
 	 *
 	 * Constraint:
-	 *     (extern?='extern'? type=TypeSpecifier name=ID (params+=ParameterDeclaration parameters+=ParameterDeclaration*)? statement=CompoundStatement?)
+	 *     (
+	 *         (extern?='extern' type=TypeSpecifier name=ID (params+=ParameterDeclaration parameters+=ParameterDeclaration* statement=CompoundStatement?)?) | 
+	 *         (type=TypeSpecifier name=ID (params+=ParameterDeclaration parameters+=ParameterDeclaration* statement=CompoundStatement?)?) | 
+	 *         (type=TypeSpecifier name=ID statement=CompoundStatement?)
+	 *     )
 	 */
 	protected void sequence_FunctionDefinition_ParameterList(ISerializationContext context, FunctionDefinition semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -1102,7 +1103,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *         spaces+=Declaration* 
 	 *         regs+=Declaration* 
 	 *         func+=FunctionDefinition* 
-	 *         instr+=Instruction+
+	 *         instr+=Instruction*
 	 *     )
 	 */
 	protected void sequence_InstructionSet(ISerializationContext context, InstructionSet semanticObject) {
@@ -1115,7 +1116,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     Instruction returns Instruction
 	 *
 	 * Constraint:
-	 *     (name=ID (attributes+=InstrAttribute attributes+=InstrAttribute*)? encoding=Encoding disass=STRING? behavior=Statement)
+	 *     (name=ID attributes+=InstrAttribute* encoding=Encoding disass=STRING? behavior=Statement)
 	 */
 	protected void sequence_Instruction(ISerializationContext context, Instruction semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);

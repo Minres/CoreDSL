@@ -3,6 +3,7 @@
  */
 package com.minres.coredsl.coreDsl.impl;
 
+import com.minres.coredsl.coreDsl.BitSizeSpecifier;
 import com.minres.coredsl.coreDsl.CastExpression;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.DataTypeSpecifier;
@@ -24,6 +25,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * </p>
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.CastExpressionImpl#getType <em>Type</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.CastExpressionImpl#getSize <em>Size</em>}</li>
  * </ul>
  *
  * @generated
@@ -39,6 +41,16 @@ public class CastExpressionImpl extends ExpressionImpl implements CastExpression
    * @ordered
    */
   protected DataTypeSpecifier type;
+
+  /**
+   * The cached value of the '{@link #getSize() <em>Size</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSize()
+   * @generated
+   * @ordered
+   */
+  protected BitSizeSpecifier size;
 
   /**
    * <!-- begin-user-doc -->
@@ -117,12 +129,64 @@ public class CastExpressionImpl extends ExpressionImpl implements CastExpression
    * @generated
    */
   @Override
+  public BitSizeSpecifier getSize()
+  {
+    return size;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetSize(BitSizeSpecifier newSize, NotificationChain msgs)
+  {
+    BitSizeSpecifier oldSize = size;
+    size = newSize;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CoreDslPackage.CAST_EXPRESSION__SIZE, oldSize, newSize);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setSize(BitSizeSpecifier newSize)
+  {
+    if (newSize != size)
+    {
+      NotificationChain msgs = null;
+      if (size != null)
+        msgs = ((InternalEObject)size).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.CAST_EXPRESSION__SIZE, null, msgs);
+      if (newSize != null)
+        msgs = ((InternalEObject)newSize).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.CAST_EXPRESSION__SIZE, null, msgs);
+      msgs = basicSetSize(newSize, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.CAST_EXPRESSION__SIZE, newSize, newSize));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
     switch (featureID)
     {
       case CoreDslPackage.CAST_EXPRESSION__TYPE:
         return basicSetType(null, msgs);
+      case CoreDslPackage.CAST_EXPRESSION__SIZE:
+        return basicSetSize(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -139,6 +203,8 @@ public class CastExpressionImpl extends ExpressionImpl implements CastExpression
     {
       case CoreDslPackage.CAST_EXPRESSION__TYPE:
         return getType();
+      case CoreDslPackage.CAST_EXPRESSION__SIZE:
+        return getSize();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -155,6 +221,9 @@ public class CastExpressionImpl extends ExpressionImpl implements CastExpression
     {
       case CoreDslPackage.CAST_EXPRESSION__TYPE:
         setType((DataTypeSpecifier)newValue);
+        return;
+      case CoreDslPackage.CAST_EXPRESSION__SIZE:
+        setSize((BitSizeSpecifier)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -173,6 +242,9 @@ public class CastExpressionImpl extends ExpressionImpl implements CastExpression
       case CoreDslPackage.CAST_EXPRESSION__TYPE:
         setType((DataTypeSpecifier)null);
         return;
+      case CoreDslPackage.CAST_EXPRESSION__SIZE:
+        setSize((BitSizeSpecifier)null);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -189,6 +261,8 @@ public class CastExpressionImpl extends ExpressionImpl implements CastExpression
     {
       case CoreDslPackage.CAST_EXPRESSION__TYPE:
         return type != null;
+      case CoreDslPackage.CAST_EXPRESSION__SIZE:
+        return size != null;
     }
     return super.eIsSet(featureID);
   }

@@ -14,6 +14,7 @@ package com.minres.coredsl.coreDsl;
  * </p>
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.CastExpression#getType <em>Type</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.CastExpression#getSize <em>Size</em>}</li>
  * </ul>
  *
  * @see com.minres.coredsl.coreDsl.CoreDslPackage#getCastExpression()
@@ -43,5 +44,27 @@ public interface CastExpression extends Expression
    * @generated
    */
   void setType(DataTypeSpecifier value);
+
+  /**
+   * Returns the value of the '<em><b>Size</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Size</em>' containment reference.
+   * @see #setSize(BitSizeSpecifier)
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getCastExpression_Size()
+   * @model containment="true"
+   * @generated
+   */
+  BitSizeSpecifier getSize();
+
+  /**
+   * Sets the value of the '{@link com.minres.coredsl.coreDsl.CastExpression#getSize <em>Size</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Size</em>' containment reference.
+   * @see #getSize()
+   * @generated
+   */
+  void setSize(BitSizeSpecifier value);
 
 } // CastExpression

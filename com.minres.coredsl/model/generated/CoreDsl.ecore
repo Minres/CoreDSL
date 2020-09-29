@@ -138,7 +138,7 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="size" eType="#//BitSizeSpecifier"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="is_ptr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ptr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="init" upperBound="-1" eType="#//InitDeclarator"
         containment="true"/>
   </eClassifiers>
@@ -162,7 +162,7 @@
         upperBound="-1" eType="#//DataTypes"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BitSizeSpecifier">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="size" upperBound="-1" eType="#//BitSizeValue"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="size" upperBound="-1" eType="#//PrimaryExpression"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BitSizeValue">
@@ -253,6 +253,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="CastExpression" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//DataTypeSpecifier"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="size" eType="#//BitSizeSpecifier"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PrefixExpression" eSuperTypes="#//Expression #//CastExpression #//UnaryOperator"/>
   <eClassifiers xsi:type="ecore:EClass" name="UnaryOperator">
@@ -314,6 +316,7 @@
     <eLiterals name="FLOAT" value="7" literal="float"/>
     <eLiterals name="DOUBLE" value="8" literal="double"/>
     <eLiterals name="VOID" value="9" literal="void"/>
+    <eLiterals name="ALIAS" value="10" literal="alias"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="TypeQualifier">
     <eLiterals name="CONST" literal="const"/>

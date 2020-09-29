@@ -118,7 +118,17 @@ public enum DataTypes implements Enumerator
    * @generated
    * @ordered
    */
-  VOID(9, "VOID", "void");
+  VOID(9, "VOID", "void"),
+
+  /**
+   * The '<em><b>ALIAS</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #ALIAS_VALUE
+   * @generated
+   * @ordered
+   */
+  ALIAS(10, "ALIAS", "alias");
 
   /**
    * The '<em><b>BOOL</b></em>' literal value.
@@ -231,6 +241,17 @@ public enum DataTypes implements Enumerator
   public static final int VOID_VALUE = 9;
 
   /**
+   * The '<em><b>ALIAS</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #ALIAS
+   * @model literal="alias"
+   * @generated
+   * @ordered
+   */
+  public static final int ALIAS_VALUE = 10;
+
+  /**
    * An array of all the '<em><b>Data Types</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -249,6 +270,7 @@ public enum DataTypes implements Enumerator
       FLOAT,
       DOUBLE,
       VOID,
+      ALIAS,
     };
 
   /**
@@ -323,6 +345,7 @@ public enum DataTypes implements Enumerator
       case FLOAT_VALUE: return FLOAT;
       case DOUBLE_VALUE: return DOUBLE;
       case VOID_VALUE: return VOID;
+      case ALIAS_VALUE: return ALIAS;
     }
     return null;
   }

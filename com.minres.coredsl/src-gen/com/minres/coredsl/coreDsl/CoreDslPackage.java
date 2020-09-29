@@ -1267,13 +1267,13 @@ public interface CoreDslPackage extends EPackage
   int TYPE_OR_VAR_DECLARATION__SIZE = DECLARATION_FEATURE_COUNT + 4;
 
   /**
-   * The feature id for the '<em><b>Is ptr</b></em>' attribute.
+   * The feature id for the '<em><b>Ptr</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TYPE_OR_VAR_DECLARATION__IS_PTR = DECLARATION_FEATURE_COUNT + 5;
+  int TYPE_OR_VAR_DECLARATION__PTR = DECLARATION_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Init</b></em>' containment reference list.
@@ -2155,13 +2155,22 @@ public interface CoreDslPackage extends EPackage
   int CAST_EXPRESSION__TYPE = EXPRESSION_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Size</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CAST_EXPRESSION__SIZE = EXPRESSION_FEATURE_COUNT + 1;
+
+  /**
    * The number of structural features of the '<em>Cast Expression</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int CAST_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+  int CAST_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.PrefixExpressionImpl <em>Prefix Expression</em>}' class.
@@ -2201,13 +2210,22 @@ public interface CoreDslPackage extends EPackage
   int PREFIX_EXPRESSION__TYPE = EXPRESSION_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Size</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PREFIX_EXPRESSION__SIZE = EXPRESSION_FEATURE_COUNT + 1;
+
+  /**
    * The feature id for the '<em><b>Op</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PREFIX_EXPRESSION__OP = EXPRESSION_FEATURE_COUNT + 1;
+  int PREFIX_EXPRESSION__OP = EXPRESSION_FEATURE_COUNT + 2;
 
   /**
    * The number of structural features of the '<em>Prefix Expression</em>' class.
@@ -2216,7 +2234,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PREFIX_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
+  int PREFIX_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 3;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.UnaryOperatorImpl <em>Unary Operator</em>}' class.
@@ -2282,6 +2300,15 @@ public interface CoreDslPackage extends EPackage
    * @ordered
    */
   int POSTFIX_EXPRESSION__TYPE = PREFIX_EXPRESSION__TYPE;
+
+  /**
+   * The feature id for the '<em><b>Size</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int POSTFIX_EXPRESSION__SIZE = PREFIX_EXPRESSION__SIZE;
 
   /**
    * The feature id for the '<em><b>Op</b></em>' attribute.
@@ -2392,6 +2419,15 @@ public interface CoreDslPackage extends EPackage
    * @ordered
    */
   int PRIMARY_EXPRESSION__TYPE = POSTFIX_EXPRESSION__TYPE;
+
+  /**
+   * The feature id for the '<em><b>Size</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PRIMARY_EXPRESSION__SIZE = POSTFIX_EXPRESSION__SIZE;
 
   /**
    * The feature id for the '<em><b>Op</b></em>' attribute.
@@ -3724,15 +3760,15 @@ public interface CoreDslPackage extends EPackage
   EReference getTypeOrVarDeclaration_Size();
 
   /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration#isIs_ptr <em>Is ptr</em>}'.
+   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getPtr <em>Ptr</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Is ptr</em>'.
-   * @see com.minres.coredsl.coreDsl.TypeOrVarDeclaration#isIs_ptr()
+   * @return the meta object for the attribute '<em>Ptr</em>'.
+   * @see com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getPtr()
    * @see #getTypeOrVarDeclaration()
    * @generated
    */
-  EAttribute getTypeOrVarDeclaration_Is_ptr();
+  EAttribute getTypeOrVarDeclaration_Ptr();
 
   /**
    * Returns the meta object for the containment reference list '{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getInit <em>Init</em>}'.
@@ -4391,6 +4427,17 @@ public interface CoreDslPackage extends EPackage
    * @generated
    */
   EReference getCastExpression_Type();
+
+  /**
+   * Returns the meta object for the containment reference '{@link com.minres.coredsl.coreDsl.CastExpression#getSize <em>Size</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Size</em>'.
+   * @see com.minres.coredsl.coreDsl.CastExpression#getSize()
+   * @see #getCastExpression()
+   * @generated
+   */
+  EReference getCastExpression_Size();
 
   /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.PrefixExpression <em>Prefix Expression</em>}'.
@@ -5585,12 +5632,12 @@ public interface CoreDslPackage extends EPackage
     EReference TYPE_OR_VAR_DECLARATION__SIZE = eINSTANCE.getTypeOrVarDeclaration_Size();
 
     /**
-     * The meta object literal for the '<em><b>Is ptr</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Ptr</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute TYPE_OR_VAR_DECLARATION__IS_PTR = eINSTANCE.getTypeOrVarDeclaration_Is_ptr();
+    EAttribute TYPE_OR_VAR_DECLARATION__PTR = eINSTANCE.getTypeOrVarDeclaration_Ptr();
 
     /**
      * The meta object literal for the '<em><b>Init</b></em>' containment reference list feature.
@@ -6135,6 +6182,14 @@ public interface CoreDslPackage extends EPackage
      * @generated
      */
     EReference CAST_EXPRESSION__TYPE = eINSTANCE.getCastExpression_Type();
+
+    /**
+     * The meta object literal for the '<em><b>Size</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference CAST_EXPRESSION__SIZE = eINSTANCE.getCastExpression_Size();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.PrefixExpressionImpl <em>Prefix Expression</em>}' class.

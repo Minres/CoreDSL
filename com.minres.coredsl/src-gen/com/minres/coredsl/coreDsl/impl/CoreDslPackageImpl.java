@@ -1526,7 +1526,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EAttribute getTypeOrVarDeclaration_Is_ptr()
+  public EAttribute getTypeOrVarDeclaration_Ptr()
   {
     return (EAttribute)typeOrVarDeclarationEClass.getEStructuralFeatures().get(2);
   }
@@ -2219,6 +2219,17 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
+  public EReference getCastExpression_Size()
+  {
+    return (EReference)castExpressionEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getPrefixExpression()
   {
     return prefixExpressionEClass;
@@ -2875,7 +2886,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     typeOrVarDeclarationEClass = createEClass(TYPE_OR_VAR_DECLARATION);
     createEReference(typeOrVarDeclarationEClass, TYPE_OR_VAR_DECLARATION__TYPE);
     createEReference(typeOrVarDeclarationEClass, TYPE_OR_VAR_DECLARATION__SIZE);
-    createEAttribute(typeOrVarDeclarationEClass, TYPE_OR_VAR_DECLARATION__IS_PTR);
+    createEAttribute(typeOrVarDeclarationEClass, TYPE_OR_VAR_DECLARATION__PTR);
     createEReference(typeOrVarDeclarationEClass, TYPE_OR_VAR_DECLARATION__INIT);
 
     declarationSpecifierEClass = createEClass(DECLARATION_SPECIFIER);
@@ -2962,6 +2973,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
 
     castExpressionEClass = createEClass(CAST_EXPRESSION);
     createEReference(castExpressionEClass, CAST_EXPRESSION__TYPE);
+    createEReference(castExpressionEClass, CAST_EXPRESSION__SIZE);
 
     prefixExpressionEClass = createEClass(PREFIX_EXPRESSION);
 
@@ -3209,7 +3221,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     initEClass(typeOrVarDeclarationEClass, TypeOrVarDeclaration.class, "TypeOrVarDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getTypeOrVarDeclaration_Type(), this.getTypeSpecifier(), null, "type", null, 0, 1, TypeOrVarDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTypeOrVarDeclaration_Size(), this.getBitSizeSpecifier(), null, "size", null, 0, 1, TypeOrVarDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTypeOrVarDeclaration_Is_ptr(), ecorePackage.getEBoolean(), "is_ptr", null, 0, 1, TypeOrVarDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTypeOrVarDeclaration_Ptr(), ecorePackage.getEString(), "ptr", null, 0, 1, TypeOrVarDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTypeOrVarDeclaration_Init(), this.getInitDeclarator(), null, "init", null, 0, -1, TypeOrVarDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(declarationSpecifierEClass, DeclarationSpecifier.class, "DeclarationSpecifier", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3229,7 +3241,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     initEAttribute(getPodSpecifier_DataType(), this.getDataTypes(), "dataType", null, 0, -1, PodSpecifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(bitSizeSpecifierEClass, BitSizeSpecifier.class, "BitSizeSpecifier", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getBitSizeSpecifier_Size(), this.getBitSizeValue(), null, "size", null, 0, -1, BitSizeSpecifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBitSizeSpecifier_Size(), this.getPrimaryExpression(), null, "size", null, 0, -1, BitSizeSpecifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(bitSizeValueEClass, BitSizeValue.class, "BitSizeValue", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getBitSizeValue_Val(), this.getIntegerConstant(), null, "val", null, 0, -1, BitSizeValue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3296,6 +3308,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
 
     initEClass(castExpressionEClass, CastExpression.class, "CastExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getCastExpression_Type(), this.getDataTypeSpecifier(), null, "type", null, 0, 1, CastExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getCastExpression_Size(), this.getBitSizeSpecifier(), null, "size", null, 0, 1, CastExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(prefixExpressionEClass, PrefixExpression.class, "PrefixExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -3366,6 +3379,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     addEEnumLiteral(dataTypesEEnum, DataTypes.FLOAT);
     addEEnumLiteral(dataTypesEEnum, DataTypes.DOUBLE);
     addEEnumLiteral(dataTypesEEnum, DataTypes.VOID);
+    addEEnumLiteral(dataTypesEEnum, DataTypes.ALIAS);
 
     initEEnum(typeQualifierEEnum, TypeQualifier.class, "TypeQualifier");
     addEEnumLiteral(typeQualifierEEnum, TypeQualifier.CONST);

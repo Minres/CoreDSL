@@ -23,7 +23,7 @@ InstructionSet :
         ('address_spaces' '{' spaces+=Declaration+      '}')?
     	('registers'      '{' regs+=Declaration+        '}')?
     	('functions'      '{' func+=FunctionDefinition+ '}')?
-    	('instructions'   '{' (instr+=Instruction)+     '}')
+    	('instructions'   '{' (instr+=Instruction)+     '}')?
     '}'
 ;
 
@@ -37,13 +37,13 @@ CoreDef:
 ;
 
 Instruction:
-	name=ID (DoubleLeftBracket attributes+=InstrAttribute (',' attributes+=InstrAttribute)* DoubleRightBracket )? '{' 
+	name=ID (DoubleLeftBracket attributes+=InstrAttribute DoubleRightBracket )* '{' 
 		('encoding' ':' encoding=Encoding ';') ('args_disass' ':' disass=STRING ';')? ('behavior' ':' behavior=Statement)
 	'}'
 ;
 
 Encoding
-	:	fields+=Field ('|'|'::' fields+=Field)*
+	:	fields+=Field ('::' fields+=Field)*
 	;
 
 Field
@@ -52,7 +52,7 @@ Field
 	;
 
 BitValue
-	: 	name=(BVAL|VLOGVAL)
+	: 	name=BVAL
 	;
 
 BitField
@@ -64,7 +64,8 @@ RangeSpec
 	;
 
 FunctionDefinition
-	:   extern?='extern'? type=TypeSpecifier name=ID '(' ParameterList? ')' statement=CompoundStatement?
+	:   extern?='extern' type=TypeSpecifier name=ID '(' ParameterList? ')' ';'
+	|   type=TypeSpecifier name=ID '(' ParameterList? ')' statement=CompoundStatement
 	;
 
 fragment ParameterList: params+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*;
@@ -146,7 +147,7 @@ Declaration
 	;
 	
 TypeOrVarDeclaration
-	:	DeclarationSpecifier* type=TypeSpecifier size=BitSizeSpecifier? is_ptr?='*'? (init+=InitDeclarator (',' init+=InitDeclarator)*)? ';'
+	:	DeclarationSpecifier* type=TypeSpecifier size=BitSizeSpecifier? ptr=('*'|'&')? (init+=InitDeclarator (',' init+=InitDeclarator)*)? ';'
 	;
 	
 //TypedefDeclaration
@@ -183,7 +184,7 @@ PodSpecifier
 	;
 
 BitSizeSpecifier
-	:	'<' size+=BitSizeValue (',' size+=BitSizeValue ',' size+=BitSizeValue ',' size+=BitSizeValue)? '>'
+	:	'<' size+=PrimaryExpression (',' size+=PrimaryExpression ',' size+=PrimaryExpression ',' size+=PrimaryExpression)? '>'
 	;
 
 BitSizeValue
@@ -333,7 +334,7 @@ MultiplicativeExpression returns Expression
 
 CastExpression
     :   PrefixExpression
-    |	'(' type=DataTypeSpecifier ')' left=CastExpression
+    |	'(' type=DataTypeSpecifier size=BitSizeSpecifier? ')' left=CastExpression
     ;
 
 PrefixExpression
@@ -416,10 +417,11 @@ DoubleRightBracket hidden(WS, ML_COMMENT, SL_COMMENT): RIGHT_BR RIGHT_BR;
 ///////////////////////////////////////////////////////////////////////////////
 
 enum DataTypes
-	: BOOL='bool' | CHAR='char' | SHORT='short' | INT='int' | LONG='long'
-	| SIGNED='signed' | UNSIGNED='unsigned'
-	| FLOAT='float'	| DOUBLE='double' | VOID='void'
-//	| FRAC='frac' | ACCUM='accum'
+	: 	BOOL='bool' | CHAR='char' | SHORT='short' | INT='int' | LONG='long'
+	| 	SIGNED='signed' | UNSIGNED='unsigned'
+	|	FLOAT='float'	| DOUBLE='double' | VOID='void'
+	|	ALIAS='alias'
+//	| 	FRAC='frac' | ACCUM='accum'
 	;
 
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';

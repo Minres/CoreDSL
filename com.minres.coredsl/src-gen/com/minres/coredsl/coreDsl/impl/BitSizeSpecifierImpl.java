@@ -4,8 +4,8 @@
 package com.minres.coredsl.coreDsl.impl;
 
 import com.minres.coredsl.coreDsl.BitSizeSpecifier;
-import com.minres.coredsl.coreDsl.BitSizeValue;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
+import com.minres.coredsl.coreDsl.PrimaryExpression;
 
 import java.util.Collection;
 
@@ -44,7 +44,7 @@ public class BitSizeSpecifierImpl extends MinimalEObjectImpl.Container implement
    * @generated
    * @ordered
    */
-  protected EList<BitSizeValue> size;
+  protected EList<PrimaryExpression> size;
 
   /**
    * <!-- begin-user-doc -->
@@ -73,11 +73,11 @@ public class BitSizeSpecifierImpl extends MinimalEObjectImpl.Container implement
    * @generated
    */
   @Override
-  public EList<BitSizeValue> getSize()
+  public EList<PrimaryExpression> getSize()
   {
     if (size == null)
     {
-      size = new EObjectContainmentEList<BitSizeValue>(BitSizeValue.class, this, CoreDslPackage.BIT_SIZE_SPECIFIER__SIZE);
+      size = new EObjectContainmentEList<PrimaryExpression>(PrimaryExpression.class, this, CoreDslPackage.BIT_SIZE_SPECIFIER__SIZE);
     }
     return size;
   }
@@ -127,7 +127,7 @@ public class BitSizeSpecifierImpl extends MinimalEObjectImpl.Container implement
     {
       case CoreDslPackage.BIT_SIZE_SPECIFIER__SIZE:
         getSize().clear();
-        getSize().addAll((Collection<? extends BitSizeValue>)newValue);
+        getSize().addAll((Collection<? extends PrimaryExpression>)newValue);
         return;
     }
     super.eSet(featureID, newValue);

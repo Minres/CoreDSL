@@ -63,11 +63,13 @@ ruleInstructionSet:
 		+
 		'}'
 	)?
-	'instructions'
-	'{'
-	ruleInstruction
-	+
-	'}'
+	(
+		'instructions'
+		'{'
+		ruleInstruction
+		+
+		'}'
+	)?
 	'}'
 ;
 
@@ -121,12 +123,8 @@ ruleInstruction:
 	(
 		ruleDoubleLeftBracket
 		ruleInstrAttribute
-		(
-			','
-			ruleInstrAttribute
-		)*
 		ruleDoubleRightBracket
-	)?
+	)*
 	'{'
 	'encoding'
 	':'
@@ -148,8 +146,6 @@ ruleInstruction:
 ruleEncoding:
 	ruleField
 	(
-		'|'
-		    |
 		'::'
 		ruleField
 	)*
@@ -166,10 +162,7 @@ ruleField:
 
 // Rule BitValue
 ruleBitValue:
-	(
-		RULE_BVAL
-		    |RULE_VLOGVAL
-	)
+	RULE_BVAL
 ;
 
 // Rule BitField
@@ -193,15 +186,22 @@ ruleRangeSpec:
 
 // Rule FunctionDefinition
 ruleFunctionDefinition:
-	'extern'
-	?
-	ruleTypeSpecifier
-	RULE_ID
-	'('
-	ruleParameterList?
-	')'
-	ruleCompoundStatement
-	?
+	(
+		'extern'
+		ruleTypeSpecifier
+		RULE_ID
+		'('
+		ruleParameterList?
+		')'
+		';'
+		    |
+		ruleTypeSpecifier
+		RULE_ID
+		'('
+		ruleParameterList?
+		')'
+		ruleCompoundStatement
+	)
 ;
 
 // Rule ParameterList
@@ -393,8 +393,11 @@ ruleTypeOrVarDeclaration:
 	ruleTypeSpecifier
 	ruleBitSizeSpecifier
 	?
-	'*'
-	?
+	(
+		'*'
+		    |
+		'&'
+	)?
 	(
 		ruleInitDeclarator
 		(
@@ -452,25 +455,16 @@ rulePodSpecifier:
 // Rule BitSizeSpecifier
 ruleBitSizeSpecifier:
 	'<'
-	ruleBitSizeValue
+	rulePrimaryExpression
 	(
 		','
-		ruleBitSizeValue
+		rulePrimaryExpression
 		','
-		ruleBitSizeValue
+		rulePrimaryExpression
 		','
-		ruleBitSizeValue
+		rulePrimaryExpression
 	)?
 	'>'
-;
-
-// Rule BitSizeValue
-ruleBitSizeValue:
-	(
-		ruleIntegerConstant
-		    |
-		RULE_ID
-	)
 ;
 
 // Rule EnumSpecifier
@@ -852,6 +846,8 @@ ruleCastExpression:
 		    |
 		'('
 		ruleDataTypeSpecifier
+		ruleBitSizeSpecifier
+		?
 		')'
 		ruleCastExpression
 	)
@@ -1088,6 +1084,8 @@ ruleDataTypes:
 		'double'
 		    |
 		'void'
+		    |
+		'alias'
 	)
 ;
 

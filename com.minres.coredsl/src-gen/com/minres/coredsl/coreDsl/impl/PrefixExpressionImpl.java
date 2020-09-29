@@ -3,6 +3,7 @@
  */
 package com.minres.coredsl.coreDsl.impl;
 
+import com.minres.coredsl.coreDsl.BitSizeSpecifier;
 import com.minres.coredsl.coreDsl.CastExpression;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.DataTypeSpecifier;
@@ -26,6 +27,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * </p>
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.PrefixExpressionImpl#getType <em>Type</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.PrefixExpressionImpl#getSize <em>Size</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.PrefixExpressionImpl#getOp <em>Op</em>}</li>
  * </ul>
  *
@@ -42,6 +44,16 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
    * @ordered
    */
   protected DataTypeSpecifier type;
+
+  /**
+   * The cached value of the '{@link #getSize() <em>Size</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSize()
+   * @generated
+   * @ordered
+   */
+  protected BitSizeSpecifier size;
 
   /**
    * The default value of the '{@link #getOp() <em>Op</em>}' attribute.
@@ -140,6 +152,56 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
    * @generated
    */
   @Override
+  public BitSizeSpecifier getSize()
+  {
+    return size;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetSize(BitSizeSpecifier newSize, NotificationChain msgs)
+  {
+    BitSizeSpecifier oldSize = size;
+    size = newSize;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CoreDslPackage.PREFIX_EXPRESSION__SIZE, oldSize, newSize);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setSize(BitSizeSpecifier newSize)
+  {
+    if (newSize != size)
+    {
+      NotificationChain msgs = null;
+      if (size != null)
+        msgs = ((InternalEObject)size).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.PREFIX_EXPRESSION__SIZE, null, msgs);
+      if (newSize != null)
+        msgs = ((InternalEObject)newSize).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.PREFIX_EXPRESSION__SIZE, null, msgs);
+      msgs = basicSetSize(newSize, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.PREFIX_EXPRESSION__SIZE, newSize, newSize));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public String getOp()
   {
     return op;
@@ -171,6 +233,8 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
     {
       case CoreDslPackage.PREFIX_EXPRESSION__TYPE:
         return basicSetType(null, msgs);
+      case CoreDslPackage.PREFIX_EXPRESSION__SIZE:
+        return basicSetSize(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -187,6 +251,8 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
     {
       case CoreDslPackage.PREFIX_EXPRESSION__TYPE:
         return getType();
+      case CoreDslPackage.PREFIX_EXPRESSION__SIZE:
+        return getSize();
       case CoreDslPackage.PREFIX_EXPRESSION__OP:
         return getOp();
     }
@@ -205,6 +271,9 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
     {
       case CoreDslPackage.PREFIX_EXPRESSION__TYPE:
         setType((DataTypeSpecifier)newValue);
+        return;
+      case CoreDslPackage.PREFIX_EXPRESSION__SIZE:
+        setSize((BitSizeSpecifier)newValue);
         return;
       case CoreDslPackage.PREFIX_EXPRESSION__OP:
         setOp((String)newValue);
@@ -226,6 +295,9 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
       case CoreDslPackage.PREFIX_EXPRESSION__TYPE:
         setType((DataTypeSpecifier)null);
         return;
+      case CoreDslPackage.PREFIX_EXPRESSION__SIZE:
+        setSize((BitSizeSpecifier)null);
+        return;
       case CoreDslPackage.PREFIX_EXPRESSION__OP:
         setOp(OP_EDEFAULT);
         return;
@@ -245,6 +317,8 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
     {
       case CoreDslPackage.PREFIX_EXPRESSION__TYPE:
         return type != null;
+      case CoreDslPackage.PREFIX_EXPRESSION__SIZE:
+        return size != null;
       case CoreDslPackage.PREFIX_EXPRESSION__OP:
         return OP_EDEFAULT == null ? op != null : !OP_EDEFAULT.equals(op);
     }
@@ -264,6 +338,7 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
       switch (derivedFeatureID)
       {
         case CoreDslPackage.PREFIX_EXPRESSION__TYPE: return CoreDslPackage.CAST_EXPRESSION__TYPE;
+        case CoreDslPackage.PREFIX_EXPRESSION__SIZE: return CoreDslPackage.CAST_EXPRESSION__SIZE;
         default: return -1;
       }
     }
@@ -291,6 +366,7 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
       switch (baseFeatureID)
       {
         case CoreDslPackage.CAST_EXPRESSION__TYPE: return CoreDslPackage.PREFIX_EXPRESSION__TYPE;
+        case CoreDslPackage.CAST_EXPRESSION__SIZE: return CoreDslPackage.PREFIX_EXPRESSION__SIZE;
         default: return -1;
       }
     }

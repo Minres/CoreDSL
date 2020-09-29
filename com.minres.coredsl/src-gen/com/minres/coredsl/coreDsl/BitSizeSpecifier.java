@@ -27,7 +27,7 @@ public interface BitSizeSpecifier extends EObject
 {
   /**
    * Returns the value of the '<em><b>Size</b></em>' containment reference list.
-   * The list contents are of type {@link com.minres.coredsl.coreDsl.BitSizeValue}.
+   * The list contents are of type {@link com.minres.coredsl.coreDsl.PrimaryExpression}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Size</em>' containment reference list.
@@ -35,6 +35,6 @@ public interface BitSizeSpecifier extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<BitSizeValue> getSize();
+  EList<PrimaryExpression> getSize();
 
 } // BitSizeSpecifier

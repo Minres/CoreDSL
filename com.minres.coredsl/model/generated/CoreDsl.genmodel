@@ -17,6 +17,7 @@
       <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/FLOAT"/>
       <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/DOUBLE"/>
       <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/VOID"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DataTypes/ALIAS"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//TypeQualifier">
       <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//TypeQualifier/CONST"/>
@@ -143,7 +144,7 @@
     <genClasses ecoreClass="CoreDsl.ecore#//TypeOrVarDeclaration">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypeOrVarDeclaration/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypeOrVarDeclaration/size"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//TypeOrVarDeclaration/is_ptr"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//TypeOrVarDeclaration/ptr"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypeOrVarDeclaration/init"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//DeclarationSpecifier">
@@ -226,6 +227,7 @@
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//CastExpression">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//CastExpression/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//CastExpression/size"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//PrefixExpression"/>
     <genClasses ecoreClass="CoreDsl.ecore#//UnaryOperator">
