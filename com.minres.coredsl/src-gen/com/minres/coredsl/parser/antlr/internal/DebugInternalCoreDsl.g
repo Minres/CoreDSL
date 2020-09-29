@@ -384,11 +384,7 @@ ruleSpawnStatement:
 
 // Rule Declaration
 ruleDeclaration:
-	(
-		ruleTypeOrVarDeclaration
-		    |
-		ruleTypedefDeclaration
-	)
+	ruleTypeOrVarDeclaration
 ;
 
 // Rule TypeOrVarDeclaration
@@ -409,15 +405,6 @@ ruleTypeOrVarDeclaration:
 	';'
 ;
 
-// Rule TypedefDeclaration
-ruleTypedefDeclaration:
-	'typedef'
-	ruleDeclarationSpecifier*
-	ruleTypeSpecifier
-	ruleInitDeclarator
-	';'
-;
-
 // Rule DeclarationSpecifier
 ruleDeclarationSpecifier:
 	(
@@ -425,28 +412,19 @@ ruleDeclarationSpecifier:
 		    |
 		ruleTypeQualifier
 		    |
-		ruleAttributeList
-	)
-;
-
-// Rule AttributeList
-ruleAttributeList:
-	ruleDoubleLeftBracket
-	ruleAttribute
-	(
-		','
 		ruleAttribute
-	)*
-	ruleDoubleRightBracket
+	)
 ;
 
 // Rule Attribute
 ruleAttribute:
-	ruleStatementAttribute
+	ruleDoubleLeftBracket
+	ruleDeclarationAttribute
 	(
 		'='
 		ruleConditionalExpression
 	)?
+	ruleDoubleRightBracket
 ;
 
 // Rule TypeSpecifier
@@ -570,6 +548,8 @@ ruleStructDeclarationSpecifier:
 // Rule InitDeclarator
 ruleInitDeclarator:
 	ruleDirectDeclarator
+	ruleAttribute
+	*
 	(
 		'='
 		ruleInitializer
@@ -1129,14 +1109,12 @@ ruleStorageClassSpecifier:
 	)
 ;
 
-// Rule StatementAttribute
-ruleStatementAttribute:
+// Rule DeclarationAttribute
+ruleDeclarationAttribute:
 	(
 		'NONE'
 		    |
 		'is_pc'
-		    |
-		'delete'
 		    |
 		'is_interlock_for'
 	)
@@ -1205,10 +1183,10 @@ RULE_ID : '^'? ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 
 RULE_STRING : '"' ('\\' .|~(('\\'|'"')))* '"';
 
-RULE_ANY_OTHER : '~xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
-
 RULE_ML_COMMENT : '/*' ( options {greedy=false;} : . )*'*/' {skip();};
 
 RULE_SL_COMMENT : '//' ~(('\n'|'\r'))* ('\r'? '\n')? {skip();};
 
 RULE_WS : (' '|'\t'|'\r'|'\n')+ {skip();};
+
+RULE_ANY_OTHER : .;

@@ -133,7 +133,7 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Declaration" eSuperTypes="#//BlockItem"/>
-  <eClassifiers xsi:type="ecore:EClass" name="TypeOrVarDeclaration" eSuperTypes="#//Declaration #//DeclarationSpecifier #//AttributeList">
+  <eClassifiers xsi:type="ecore:EClass" name="TypeOrVarDeclaration" eSuperTypes="#//Declaration #//DeclarationSpecifier">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//TypeSpecifier"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="size" eType="#//BitSizeSpecifier"
@@ -142,32 +142,21 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="init" upperBound="-1" eType="#//InitDeclarator"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TypedefDeclaration" eSuperTypes="#//Declaration #//DeclarationSpecifier #//AttributeList">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//TypeSpecifier"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="init" upperBound="-1" eType="#//InitDeclarator"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DeclarationSpecifier" eSuperTypes="#//AttributeList">
+  <eClassifiers xsi:type="ecore:EClass" name="DeclarationSpecifier">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="storage" unique="false"
         upperBound="-1" eType="#//StorageClassSpecifier"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="qualifiers" unique="false"
         upperBound="-1" eType="#//TypeQualifier"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AttributeList">
     <eStructuralFeatures xsi:type="ecore:EReference" name="attrs" upperBound="-1"
         eType="#//Attribute" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Attribute">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//StatementAttribute"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//DeclarationAttribute"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="val" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TypeSpecifier"/>
   <eClassifiers xsi:type="ecore:EClass" name="DataTypeSpecifier" eSuperTypes="#//TypeSpecifier"/>
-  <eClassifiers xsi:type="ecore:EClass" name="TypedefRef">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="ref" eType="#//DirectDeclarator"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PodSpecifier" eSuperTypes="#//DataTypeSpecifier">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataType" unique="false"
         upperBound="-1" eType="#//DataTypes"/>
@@ -215,6 +204,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="InitDeclarator">
     <eStructuralFeatures xsi:type="ecore:EReference" name="declarator" eType="#//DirectDeclarator"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attrs" upperBound="-1"
+        eType="#//Attribute" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="initializer" eType="#//Initializer"
         containment="true"/>
   </eClassifiers>
@@ -332,11 +323,10 @@
     <eLiterals name="EXTERN" literal="extern"/>
     <eLiterals name="STATIC" value="1" literal="static"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="StatementAttribute">
+  <eClassifiers xsi:type="ecore:EEnum" name="DeclarationAttribute">
     <eLiterals name="NONE" literal="NONE"/>
     <eLiterals name="IS_PC" value="1" literal="is_pc"/>
-    <eLiterals name="DEL" value="2" literal="delete"/>
-    <eLiterals name="IS_INTERLOCK_FOR" value="3" literal="is_interlock_for"/>
+    <eLiterals name="IS_INTERLOCK_FOR" value="2" literal="is_interlock_for"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="InstrAttribute">
     <eLiterals name="NONE" literal="NONE"/>

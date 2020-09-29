@@ -26,11 +26,10 @@
       <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//StorageClassSpecifier/EXTERN"/>
       <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//StorageClassSpecifier/STATIC"/>
     </genEnums>
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//StatementAttribute">
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//StatementAttribute/NONE"/>
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//StatementAttribute/IS_PC"/>
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//StatementAttribute/DEL"/>
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//StatementAttribute/IS_INTERLOCK_FOR"/>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//DeclarationAttribute">
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DeclarationAttribute/NONE"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DeclarationAttribute/IS_PC"/>
+      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//DeclarationAttribute/IS_INTERLOCK_FOR"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//InstrAttribute">
       <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//InstrAttribute/NONE"/>
@@ -147,16 +146,10 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//TypeOrVarDeclaration/is_ptr"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypeOrVarDeclaration/init"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//TypedefDeclaration">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypedefDeclaration/type"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypedefDeclaration/init"/>
-    </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//DeclarationSpecifier">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//DeclarationSpecifier/storage"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//DeclarationSpecifier/qualifiers"/>
-    </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//AttributeList">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//AttributeList/attrs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DeclarationSpecifier/attrs"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//Attribute">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//Attribute/type"/>
@@ -164,9 +157,6 @@
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//TypeSpecifier"/>
     <genClasses ecoreClass="CoreDsl.ecore#//DataTypeSpecifier"/>
-    <genClasses ecoreClass="CoreDsl.ecore#//TypedefRef">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//TypedefRef/ref"/>
-    </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//PodSpecifier">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//PodSpecifier/dataType"/>
     </genClasses>
@@ -202,6 +192,7 @@
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//InitDeclarator">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//InitDeclarator/declarator"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//InitDeclarator/attrs"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//InitDeclarator/initializer"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//DirectDeclarator">

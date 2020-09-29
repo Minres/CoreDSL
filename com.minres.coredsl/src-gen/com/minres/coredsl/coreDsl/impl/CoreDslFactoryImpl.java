@@ -94,13 +94,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
       case CoreDslPackage.SPAWN_STATEMENT: return createSpawnStatement();
       case CoreDslPackage.DECLARATION: return createDeclaration();
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION: return createTypeOrVarDeclaration();
-      case CoreDslPackage.TYPEDEF_DECLARATION: return createTypedefDeclaration();
       case CoreDslPackage.DECLARATION_SPECIFIER: return createDeclarationSpecifier();
-      case CoreDslPackage.ATTRIBUTE_LIST: return createAttributeList();
       case CoreDslPackage.ATTRIBUTE: return createAttribute();
       case CoreDslPackage.TYPE_SPECIFIER: return createTypeSpecifier();
       case CoreDslPackage.DATA_TYPE_SPECIFIER: return createDataTypeSpecifier();
-      case CoreDslPackage.TYPEDEF_REF: return createTypedefRef();
       case CoreDslPackage.POD_SPECIFIER: return createPodSpecifier();
       case CoreDslPackage.BIT_SIZE_SPECIFIER: return createBitSizeSpecifier();
       case CoreDslPackage.BIT_SIZE_VALUE: return createBitSizeValue();
@@ -158,8 +155,8 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
         return createTypeQualifierFromString(eDataType, initialValue);
       case CoreDslPackage.STORAGE_CLASS_SPECIFIER:
         return createStorageClassSpecifierFromString(eDataType, initialValue);
-      case CoreDslPackage.STATEMENT_ATTRIBUTE:
-        return createStatementAttributeFromString(eDataType, initialValue);
+      case CoreDslPackage.DECLARATION_ATTRIBUTE:
+        return createDeclarationAttributeFromString(eDataType, initialValue);
       case CoreDslPackage.INSTR_ATTRIBUTE:
         return createInstrAttributeFromString(eDataType, initialValue);
       case CoreDslPackage.STRUCT_OR_UNION:
@@ -187,8 +184,8 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
         return convertTypeQualifierToString(eDataType, instanceValue);
       case CoreDslPackage.STORAGE_CLASS_SPECIFIER:
         return convertStorageClassSpecifierToString(eDataType, instanceValue);
-      case CoreDslPackage.STATEMENT_ATTRIBUTE:
-        return convertStatementAttributeToString(eDataType, instanceValue);
+      case CoreDslPackage.DECLARATION_ATTRIBUTE:
+        return convertDeclarationAttributeToString(eDataType, instanceValue);
       case CoreDslPackage.INSTR_ATTRIBUTE:
         return convertInstrAttributeToString(eDataType, instanceValue);
       case CoreDslPackage.STRUCT_OR_UNION:
@@ -542,34 +539,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public TypedefDeclaration createTypedefDeclaration()
-  {
-    TypedefDeclarationImpl typedefDeclaration = new TypedefDeclarationImpl();
-    return typedefDeclaration;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public DeclarationSpecifier createDeclarationSpecifier()
   {
     DeclarationSpecifierImpl declarationSpecifier = new DeclarationSpecifierImpl();
     return declarationSpecifier;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public AttributeList createAttributeList()
-  {
-    AttributeListImpl attributeList = new AttributeListImpl();
-    return attributeList;
   }
 
   /**
@@ -606,18 +579,6 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
   {
     DataTypeSpecifierImpl dataTypeSpecifier = new DataTypeSpecifierImpl();
     return dataTypeSpecifier;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public TypedefRef createTypedefRef()
-  {
-    TypedefRefImpl typedefRef = new TypedefRefImpl();
-    return typedefRef;
   }
 
   /**
@@ -1123,9 +1084,9 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public StatementAttribute createStatementAttributeFromString(EDataType eDataType, String initialValue)
+  public DeclarationAttribute createDeclarationAttributeFromString(EDataType eDataType, String initialValue)
   {
-    StatementAttribute result = StatementAttribute.get(initialValue);
+    DeclarationAttribute result = DeclarationAttribute.get(initialValue);
     if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
     return result;
   }
@@ -1135,7 +1096,7 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public String convertStatementAttributeToString(EDataType eDataType, Object instanceValue)
+  public String convertDeclarationAttributeToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

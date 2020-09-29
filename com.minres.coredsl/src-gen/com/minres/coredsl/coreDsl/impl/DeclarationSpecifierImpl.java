@@ -3,6 +3,7 @@
  */
 package com.minres.coredsl.coreDsl.impl;
 
+import com.minres.coredsl.coreDsl.Attribute;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.DeclarationSpecifier;
 import com.minres.coredsl.coreDsl.StorageClassSpecifier;
@@ -10,11 +11,18 @@ import com.minres.coredsl.coreDsl.TypeQualifier;
 
 import java.util.Collection;
 
+import org.eclipse.emf.common.notify.NotificationChain;
+
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EDataTypeEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -26,11 +34,12 @@ import org.eclipse.emf.ecore.util.EDataTypeEList;
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.DeclarationSpecifierImpl#getStorage <em>Storage</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.DeclarationSpecifierImpl#getQualifiers <em>Qualifiers</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.DeclarationSpecifierImpl#getAttrs <em>Attrs</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class DeclarationSpecifierImpl extends AttributeListImpl implements DeclarationSpecifier
+public class DeclarationSpecifierImpl extends MinimalEObjectImpl.Container implements DeclarationSpecifier
 {
   /**
    * The cached value of the '{@link #getStorage() <em>Storage</em>}' attribute list.
@@ -51,6 +60,16 @@ public class DeclarationSpecifierImpl extends AttributeListImpl implements Decla
    * @ordered
    */
   protected EList<TypeQualifier> qualifiers;
+
+  /**
+   * The cached value of the '{@link #getAttrs() <em>Attrs</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getAttrs()
+   * @generated
+   * @ordered
+   */
+  protected EList<Attribute> attrs;
 
   /**
    * <!-- begin-user-doc -->
@@ -109,6 +128,37 @@ public class DeclarationSpecifierImpl extends AttributeListImpl implements Decla
    * @generated
    */
   @Override
+  public EList<Attribute> getAttrs()
+  {
+    if (attrs == null)
+    {
+      attrs = new EObjectContainmentEList<Attribute>(Attribute.class, this, CoreDslPackage.DECLARATION_SPECIFIER__ATTRS);
+    }
+    return attrs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case CoreDslPackage.DECLARATION_SPECIFIER__ATTRS:
+        return ((InternalEList<?>)getAttrs()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
     switch (featureID)
@@ -117,6 +167,8 @@ public class DeclarationSpecifierImpl extends AttributeListImpl implements Decla
         return getStorage();
       case CoreDslPackage.DECLARATION_SPECIFIER__QUALIFIERS:
         return getQualifiers();
+      case CoreDslPackage.DECLARATION_SPECIFIER__ATTRS:
+        return getAttrs();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -140,6 +192,10 @@ public class DeclarationSpecifierImpl extends AttributeListImpl implements Decla
         getQualifiers().clear();
         getQualifiers().addAll((Collection<? extends TypeQualifier>)newValue);
         return;
+      case CoreDslPackage.DECLARATION_SPECIFIER__ATTRS:
+        getAttrs().clear();
+        getAttrs().addAll((Collection<? extends Attribute>)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -160,6 +216,9 @@ public class DeclarationSpecifierImpl extends AttributeListImpl implements Decla
       case CoreDslPackage.DECLARATION_SPECIFIER__QUALIFIERS:
         getQualifiers().clear();
         return;
+      case CoreDslPackage.DECLARATION_SPECIFIER__ATTRS:
+        getAttrs().clear();
+        return;
     }
     super.eUnset(featureID);
   }
@@ -178,6 +237,8 @@ public class DeclarationSpecifierImpl extends AttributeListImpl implements Decla
         return storage != null && !storage.isEmpty();
       case CoreDslPackage.DECLARATION_SPECIFIER__QUALIFIERS:
         return qualifiers != null && !qualifiers.isEmpty();
+      case CoreDslPackage.DECLARATION_SPECIFIER__ATTRS:
+        return attrs != null && !attrs.isEmpty();
     }
     return super.eIsSet(featureID);
   }

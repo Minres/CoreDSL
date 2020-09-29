@@ -5,8 +5,8 @@ package com.minres.coredsl.coreDsl.impl;
 
 import com.minres.coredsl.coreDsl.Attribute;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
+import com.minres.coredsl.coreDsl.DeclarationAttribute;
 import com.minres.coredsl.coreDsl.Expression;
-import com.minres.coredsl.coreDsl.StatementAttribute;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -41,7 +41,7 @@ public class AttributeImpl extends MinimalEObjectImpl.Container implements Attri
    * @generated
    * @ordered
    */
-  protected static final StatementAttribute TYPE_EDEFAULT = StatementAttribute.NONE;
+  protected static final DeclarationAttribute TYPE_EDEFAULT = DeclarationAttribute.NONE;
 
   /**
    * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
@@ -51,7 +51,7 @@ public class AttributeImpl extends MinimalEObjectImpl.Container implements Attri
    * @generated
    * @ordered
    */
-  protected StatementAttribute type = TYPE_EDEFAULT;
+  protected DeclarationAttribute type = TYPE_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getVal() <em>Val</em>}' containment reference.
@@ -90,7 +90,7 @@ public class AttributeImpl extends MinimalEObjectImpl.Container implements Attri
    * @generated
    */
   @Override
-  public StatementAttribute getType()
+  public DeclarationAttribute getType()
   {
     return type;
   }
@@ -101,9 +101,9 @@ public class AttributeImpl extends MinimalEObjectImpl.Container implements Attri
    * @generated
    */
   @Override
-  public void setType(StatementAttribute newType)
+  public void setType(DeclarationAttribute newType)
   {
-    StatementAttribute oldType = type;
+    DeclarationAttribute oldType = type;
     type = newType == null ? TYPE_EDEFAULT : newType;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.ATTRIBUTE__TYPE, oldType, type));
@@ -204,7 +204,7 @@ public class AttributeImpl extends MinimalEObjectImpl.Container implements Attri
     switch (featureID)
     {
       case CoreDslPackage.ATTRIBUTE__TYPE:
-        setType((StatementAttribute)newValue);
+        setType((DeclarationAttribute)newValue);
         return;
       case CoreDslPackage.ATTRIBUTE__VAL:
         setVal((Expression)newValue);

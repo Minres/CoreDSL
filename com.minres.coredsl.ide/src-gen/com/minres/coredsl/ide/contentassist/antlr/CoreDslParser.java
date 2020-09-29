@@ -43,7 +43,6 @@ public class CoreDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getIterationStatementAccess().getAlternatives(), "rule__IterationStatement__Alternatives");
 			builder.put(grammarAccess.getForConditionAccess().getAlternatives_0(), "rule__ForCondition__Alternatives_0");
 			builder.put(grammarAccess.getJumpStatementAccess().getAlternatives(), "rule__JumpStatement__Alternatives");
-			builder.put(grammarAccess.getDeclarationAccess().getAlternatives(), "rule__Declaration__Alternatives");
 			builder.put(grammarAccess.getDeclarationSpecifierAccess().getAlternatives(), "rule__DeclarationSpecifier__Alternatives");
 			builder.put(grammarAccess.getDataTypeSpecifierAccess().getAlternatives(), "rule__DataTypeSpecifier__Alternatives");
 			builder.put(grammarAccess.getBitSizeValueAccess().getAlternatives(), "rule__BitSizeValue__Alternatives");
@@ -84,7 +83,7 @@ public class CoreDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getDataTypesAccess().getAlternatives(), "rule__DataTypes__Alternatives");
 			builder.put(grammarAccess.getTypeQualifierAccess().getAlternatives(), "rule__TypeQualifier__Alternatives");
 			builder.put(grammarAccess.getStorageClassSpecifierAccess().getAlternatives(), "rule__StorageClassSpecifier__Alternatives");
-			builder.put(grammarAccess.getStatementAttributeAccess().getAlternatives(), "rule__StatementAttribute__Alternatives");
+			builder.put(grammarAccess.getDeclarationAttributeAccess().getAlternatives(), "rule__DeclarationAttribute__Alternatives");
 			builder.put(grammarAccess.getInstrAttributeAccess().getAlternatives(), "rule__InstrAttribute__Alternatives");
 			builder.put(grammarAccess.getStructOrUnionAccess().getAlternatives(), "rule__StructOrUnion__Alternatives");
 			builder.put(grammarAccess.getBitfieldDataTypeAccess().getAlternatives(), "rule__BitfieldDataType__Alternatives");
@@ -140,11 +139,8 @@ public class CoreDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getTypeOrVarDeclarationAccess().getGroup(), "rule__TypeOrVarDeclaration__Group__0");
 			builder.put(grammarAccess.getTypeOrVarDeclarationAccess().getGroup_4(), "rule__TypeOrVarDeclaration__Group_4__0");
 			builder.put(grammarAccess.getTypeOrVarDeclarationAccess().getGroup_4_1(), "rule__TypeOrVarDeclaration__Group_4_1__0");
-			builder.put(grammarAccess.getTypedefDeclarationAccess().getGroup(), "rule__TypedefDeclaration__Group__0");
-			builder.put(grammarAccess.getAttributeListAccess().getGroup(), "rule__AttributeList__Group__0");
-			builder.put(grammarAccess.getAttributeListAccess().getGroup_2(), "rule__AttributeList__Group_2__0");
 			builder.put(grammarAccess.getAttributeAccess().getGroup(), "rule__Attribute__Group__0");
-			builder.put(grammarAccess.getAttributeAccess().getGroup_1(), "rule__Attribute__Group_1__0");
+			builder.put(grammarAccess.getAttributeAccess().getGroup_2(), "rule__Attribute__Group_2__0");
 			builder.put(grammarAccess.getBitSizeSpecifierAccess().getGroup(), "rule__BitSizeSpecifier__Group__0");
 			builder.put(grammarAccess.getBitSizeSpecifierAccess().getGroup_2(), "rule__BitSizeSpecifier__Group_2__0");
 			builder.put(grammarAccess.getEnumSpecifierAccess().getGroup_0(), "rule__EnumSpecifier__Group_0__0");
@@ -157,7 +153,7 @@ public class CoreDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getStructDeclarationAccess().getGroup(), "rule__StructDeclaration__Group__0");
 			builder.put(grammarAccess.getStructDeclarationAccess().getGroup_2(), "rule__StructDeclaration__Group_2__0");
 			builder.put(grammarAccess.getInitDeclaratorAccess().getGroup(), "rule__InitDeclarator__Group__0");
-			builder.put(grammarAccess.getInitDeclaratorAccess().getGroup_1(), "rule__InitDeclarator__Group_1__0");
+			builder.put(grammarAccess.getInitDeclaratorAccess().getGroup_2(), "rule__InitDeclarator__Group_2__0");
 			builder.put(grammarAccess.getDirectDeclaratorAccess().getGroup(), "rule__DirectDeclarator__Group__0");
 			builder.put(grammarAccess.getDirectDeclaratorAccess().getGroup_1(), "rule__DirectDeclarator__Group_1__0");
 			builder.put(grammarAccess.getDirectDeclaratorAccess().getGroup_2_0(), "rule__DirectDeclarator__Group_2_0__0");
@@ -298,15 +294,11 @@ public class CoreDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getTypeOrVarDeclarationAccess().getIs_ptrAssignment_3(), "rule__TypeOrVarDeclaration__Is_ptrAssignment_3");
 			builder.put(grammarAccess.getTypeOrVarDeclarationAccess().getInitAssignment_4_0(), "rule__TypeOrVarDeclaration__InitAssignment_4_0");
 			builder.put(grammarAccess.getTypeOrVarDeclarationAccess().getInitAssignment_4_1_1(), "rule__TypeOrVarDeclaration__InitAssignment_4_1_1");
-			builder.put(grammarAccess.getTypedefDeclarationAccess().getTypeAssignment_2(), "rule__TypedefDeclaration__TypeAssignment_2");
-			builder.put(grammarAccess.getTypedefDeclarationAccess().getInitAssignment_3(), "rule__TypedefDeclaration__InitAssignment_3");
 			builder.put(grammarAccess.getDeclarationSpecifierAccess().getStorageAssignment_0(), "rule__DeclarationSpecifier__StorageAssignment_0");
 			builder.put(grammarAccess.getDeclarationSpecifierAccess().getQualifiersAssignment_1(), "rule__DeclarationSpecifier__QualifiersAssignment_1");
-			builder.put(grammarAccess.getAttributeListAccess().getAttrsAssignment_1(), "rule__AttributeList__AttrsAssignment_1");
-			builder.put(grammarAccess.getAttributeListAccess().getAttrsAssignment_2_1(), "rule__AttributeList__AttrsAssignment_2_1");
-			builder.put(grammarAccess.getAttributeAccess().getTypeAssignment_0(), "rule__Attribute__TypeAssignment_0");
-			builder.put(grammarAccess.getAttributeAccess().getValAssignment_1_1(), "rule__Attribute__ValAssignment_1_1");
-			builder.put(grammarAccess.getTypedefRefAccess().getRefAssignment(), "rule__TypedefRef__RefAssignment");
+			builder.put(grammarAccess.getDeclarationSpecifierAccess().getAttrsAssignment_2(), "rule__DeclarationSpecifier__AttrsAssignment_2");
+			builder.put(grammarAccess.getAttributeAccess().getTypeAssignment_1(), "rule__Attribute__TypeAssignment_1");
+			builder.put(grammarAccess.getAttributeAccess().getValAssignment_2_1(), "rule__Attribute__ValAssignment_2_1");
 			builder.put(grammarAccess.getPodSpecifierAccess().getDataTypeAssignment(), "rule__PodSpecifier__DataTypeAssignment");
 			builder.put(grammarAccess.getBitSizeSpecifierAccess().getSizeAssignment_1(), "rule__BitSizeSpecifier__SizeAssignment_1");
 			builder.put(grammarAccess.getBitSizeSpecifierAccess().getSizeAssignment_2_1(), "rule__BitSizeSpecifier__SizeAssignment_2_1");
@@ -332,7 +324,8 @@ public class CoreDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getStructDeclarationSpecifierAccess().getTypeAssignment_0(), "rule__StructDeclarationSpecifier__TypeAssignment_0");
 			builder.put(grammarAccess.getStructDeclarationSpecifierAccess().getQualifiersAssignment_1(), "rule__StructDeclarationSpecifier__QualifiersAssignment_1");
 			builder.put(grammarAccess.getInitDeclaratorAccess().getDeclaratorAssignment_0(), "rule__InitDeclarator__DeclaratorAssignment_0");
-			builder.put(grammarAccess.getInitDeclaratorAccess().getInitializerAssignment_1_1(), "rule__InitDeclarator__InitializerAssignment_1_1");
+			builder.put(grammarAccess.getInitDeclaratorAccess().getAttrsAssignment_1(), "rule__InitDeclarator__AttrsAssignment_1");
+			builder.put(grammarAccess.getInitDeclaratorAccess().getInitializerAssignment_2_1(), "rule__InitDeclarator__InitializerAssignment_2_1");
 			builder.put(grammarAccess.getDirectDeclaratorAccess().getNameAssignment_0(), "rule__DirectDeclarator__NameAssignment_0");
 			builder.put(grammarAccess.getDirectDeclaratorAccess().getIndexAssignment_1_1(), "rule__DirectDeclarator__IndexAssignment_1_1");
 			builder.put(grammarAccess.getDirectDeclaratorAccess().getSizeAssignment_2_0_1_1(), "rule__DirectDeclarator__SizeAssignment_2_0_1_1");

@@ -6,7 +6,6 @@ package com.minres.coredsl.coreDsl.impl;
 import com.minres.coredsl.coreDsl.AbstractDeclarator;
 import com.minres.coredsl.coreDsl.AssignmentExpression;
 import com.minres.coredsl.coreDsl.Attribute;
-import com.minres.coredsl.coreDsl.AttributeList;
 import com.minres.coredsl.coreDsl.BitField;
 import com.minres.coredsl.coreDsl.BitSizeSpecifier;
 import com.minres.coredsl.coreDsl.BitSizeValue;
@@ -25,6 +24,7 @@ import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.DataTypeSpecifier;
 import com.minres.coredsl.coreDsl.DataTypes;
 import com.minres.coredsl.coreDsl.Declaration;
+import com.minres.coredsl.coreDsl.DeclarationAttribute;
 import com.minres.coredsl.coreDsl.DeclarationSpecifier;
 import com.minres.coredsl.coreDsl.DescriptionContent;
 import com.minres.coredsl.coreDsl.DesignatedInitializer;
@@ -67,7 +67,6 @@ import com.minres.coredsl.coreDsl.RangeSpec;
 import com.minres.coredsl.coreDsl.SelectionStatement;
 import com.minres.coredsl.coreDsl.SpawnStatement;
 import com.minres.coredsl.coreDsl.Statement;
-import com.minres.coredsl.coreDsl.StatementAttribute;
 import com.minres.coredsl.coreDsl.StorageClassSpecifier;
 import com.minres.coredsl.coreDsl.StringLiteral;
 import com.minres.coredsl.coreDsl.StructDeclaration;
@@ -78,8 +77,6 @@ import com.minres.coredsl.coreDsl.SwitchStatement;
 import com.minres.coredsl.coreDsl.TypeOrVarDeclaration;
 import com.minres.coredsl.coreDsl.TypeQualifier;
 import com.minres.coredsl.coreDsl.TypeSpecifier;
-import com.minres.coredsl.coreDsl.TypedefDeclaration;
-import com.minres.coredsl.coreDsl.TypedefRef;
 import com.minres.coredsl.coreDsl.UnaryOperator;
 import com.minres.coredsl.coreDsl.VariableRef;
 
@@ -300,21 +297,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass typedefDeclarationEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   private EClass declarationSpecifierEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass attributeListEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -336,13 +319,6 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   private EClass dataTypeSpecifierEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass typedefRefEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -622,7 +598,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EEnum statementAttributeEEnum = null;
+  private EEnum declarationAttributeEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1572,39 +1548,6 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EClass getTypedefDeclaration()
-  {
-    return typedefDeclarationEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getTypedefDeclaration_Type()
-  {
-    return (EReference)typedefDeclarationEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getTypedefDeclaration_Init()
-  {
-    return (EReference)typedefDeclarationEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EClass getDeclarationSpecifier()
   {
     return declarationSpecifierEClass;
@@ -1638,20 +1581,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EClass getAttributeList()
+  public EReference getDeclarationSpecifier_Attrs()
   {
-    return attributeListEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getAttributeList_Attrs()
-  {
-    return (EReference)attributeListEClass.getEStructuralFeatures().get(0);
+    return (EReference)declarationSpecifierEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -1707,28 +1639,6 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
   public EClass getDataTypeSpecifier()
   {
     return dataTypeSpecifierEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EClass getTypedefRef()
-  {
-    return typedefRefEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EReference getTypedefRef_Ref()
-  {
-    return (EReference)typedefRefEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -2023,9 +1933,20 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EReference getInitDeclarator_Initializer()
+  public EReference getInitDeclarator_Attrs()
   {
     return (EReference)initDeclaratorEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getInitDeclarator_Initializer()
+  {
+    return (EReference)initDeclaratorEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -2782,9 +2703,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EEnum getStatementAttribute()
+  public EEnum getDeclarationAttribute()
   {
-    return statementAttributeEEnum;
+    return declarationAttributeEEnum;
   }
 
   /**
@@ -2957,16 +2878,10 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     createEAttribute(typeOrVarDeclarationEClass, TYPE_OR_VAR_DECLARATION__IS_PTR);
     createEReference(typeOrVarDeclarationEClass, TYPE_OR_VAR_DECLARATION__INIT);
 
-    typedefDeclarationEClass = createEClass(TYPEDEF_DECLARATION);
-    createEReference(typedefDeclarationEClass, TYPEDEF_DECLARATION__TYPE);
-    createEReference(typedefDeclarationEClass, TYPEDEF_DECLARATION__INIT);
-
     declarationSpecifierEClass = createEClass(DECLARATION_SPECIFIER);
     createEAttribute(declarationSpecifierEClass, DECLARATION_SPECIFIER__STORAGE);
     createEAttribute(declarationSpecifierEClass, DECLARATION_SPECIFIER__QUALIFIERS);
-
-    attributeListEClass = createEClass(ATTRIBUTE_LIST);
-    createEReference(attributeListEClass, ATTRIBUTE_LIST__ATTRS);
+    createEReference(declarationSpecifierEClass, DECLARATION_SPECIFIER__ATTRS);
 
     attributeEClass = createEClass(ATTRIBUTE);
     createEAttribute(attributeEClass, ATTRIBUTE__TYPE);
@@ -2975,9 +2890,6 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     typeSpecifierEClass = createEClass(TYPE_SPECIFIER);
 
     dataTypeSpecifierEClass = createEClass(DATA_TYPE_SPECIFIER);
-
-    typedefRefEClass = createEClass(TYPEDEF_REF);
-    createEReference(typedefRefEClass, TYPEDEF_REF__REF);
 
     podSpecifierEClass = createEClass(POD_SPECIFIER);
     createEAttribute(podSpecifierEClass, POD_SPECIFIER__DATA_TYPE);
@@ -3014,6 +2926,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
 
     initDeclaratorEClass = createEClass(INIT_DECLARATOR);
     createEReference(initDeclaratorEClass, INIT_DECLARATOR__DECLARATOR);
+    createEReference(initDeclaratorEClass, INIT_DECLARATOR__ATTRS);
     createEReference(initDeclaratorEClass, INIT_DECLARATOR__INITIALIZER);
 
     directDeclaratorEClass = createEClass(DIRECT_DECLARATOR);
@@ -3111,7 +3024,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     dataTypesEEnum = createEEnum(DATA_TYPES);
     typeQualifierEEnum = createEEnum(TYPE_QUALIFIER);
     storageClassSpecifierEEnum = createEEnum(STORAGE_CLASS_SPECIFIER);
-    statementAttributeEEnum = createEEnum(STATEMENT_ATTRIBUTE);
+    declarationAttributeEEnum = createEEnum(DECLARATION_ATTRIBUTE);
     instrAttributeEEnum = createEEnum(INSTR_ATTRIBUTE);
     structOrUnionEEnum = createEEnum(STRUCT_OR_UNION);
     bitfieldDataTypeEEnum = createEEnum(BITFIELD_DATA_TYPE);
@@ -3166,11 +3079,6 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     declarationEClass.getESuperTypes().add(this.getBlockItem());
     typeOrVarDeclarationEClass.getESuperTypes().add(this.getDeclaration());
     typeOrVarDeclarationEClass.getESuperTypes().add(this.getDeclarationSpecifier());
-    typeOrVarDeclarationEClass.getESuperTypes().add(this.getAttributeList());
-    typedefDeclarationEClass.getESuperTypes().add(this.getDeclaration());
-    typedefDeclarationEClass.getESuperTypes().add(this.getDeclarationSpecifier());
-    typedefDeclarationEClass.getESuperTypes().add(this.getAttributeList());
-    declarationSpecifierEClass.getESuperTypes().add(this.getAttributeList());
     dataTypeSpecifierEClass.getESuperTypes().add(this.getTypeSpecifier());
     podSpecifierEClass.getESuperTypes().add(this.getDataTypeSpecifier());
     enumSpecifierEClass.getESuperTypes().add(this.getDataTypeSpecifier());
@@ -3304,27 +3212,18 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     initEAttribute(getTypeOrVarDeclaration_Is_ptr(), ecorePackage.getEBoolean(), "is_ptr", null, 0, 1, TypeOrVarDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTypeOrVarDeclaration_Init(), this.getInitDeclarator(), null, "init", null, 0, -1, TypeOrVarDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(typedefDeclarationEClass, TypedefDeclaration.class, "TypedefDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getTypedefDeclaration_Type(), this.getTypeSpecifier(), null, "type", null, 0, 1, TypedefDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getTypedefDeclaration_Init(), this.getInitDeclarator(), null, "init", null, 0, -1, TypedefDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
     initEClass(declarationSpecifierEClass, DeclarationSpecifier.class, "DeclarationSpecifier", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDeclarationSpecifier_Storage(), this.getStorageClassSpecifier(), "storage", null, 0, -1, DeclarationSpecifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDeclarationSpecifier_Qualifiers(), this.getTypeQualifier(), "qualifiers", null, 0, -1, DeclarationSpecifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(attributeListEClass, AttributeList.class, "AttributeList", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getAttributeList_Attrs(), this.getAttribute(), null, "attrs", null, 0, -1, AttributeList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getDeclarationSpecifier_Attrs(), this.getAttribute(), null, "attrs", null, 0, -1, DeclarationSpecifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(attributeEClass, Attribute.class, "Attribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getAttribute_Type(), this.getStatementAttribute(), "type", null, 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAttribute_Type(), this.getDeclarationAttribute(), "type", null, 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAttribute_Val(), this.getExpression(), null, "val", null, 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(typeSpecifierEClass, TypeSpecifier.class, "TypeSpecifier", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(dataTypeSpecifierEClass, DataTypeSpecifier.class, "DataTypeSpecifier", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    initEClass(typedefRefEClass, TypedefRef.class, "TypedefRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getTypedefRef_Ref(), this.getDirectDeclarator(), null, "ref", null, 0, 1, TypedefRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(podSpecifierEClass, PodSpecifier.class, "PodSpecifier", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getPodSpecifier_DataType(), this.getDataTypes(), "dataType", null, 0, -1, PodSpecifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3361,6 +3260,7 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
 
     initEClass(initDeclaratorEClass, InitDeclarator.class, "InitDeclarator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getInitDeclarator_Declarator(), this.getDirectDeclarator(), null, "declarator", null, 0, 1, InitDeclarator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getInitDeclarator_Attrs(), this.getAttribute(), null, "attrs", null, 0, -1, InitDeclarator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getInitDeclarator_Initializer(), this.getInitializer(), null, "initializer", null, 0, 1, InitDeclarator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(directDeclaratorEClass, DirectDeclarator.class, "DirectDeclarator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3475,11 +3375,10 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
     addEEnumLiteral(storageClassSpecifierEEnum, StorageClassSpecifier.EXTERN);
     addEEnumLiteral(storageClassSpecifierEEnum, StorageClassSpecifier.STATIC);
 
-    initEEnum(statementAttributeEEnum, StatementAttribute.class, "StatementAttribute");
-    addEEnumLiteral(statementAttributeEEnum, StatementAttribute.NONE);
-    addEEnumLiteral(statementAttributeEEnum, StatementAttribute.IS_PC);
-    addEEnumLiteral(statementAttributeEEnum, StatementAttribute.DEL);
-    addEEnumLiteral(statementAttributeEEnum, StatementAttribute.IS_INTERLOCK_FOR);
+    initEEnum(declarationAttributeEEnum, DeclarationAttribute.class, "DeclarationAttribute");
+    addEEnumLiteral(declarationAttributeEEnum, DeclarationAttribute.NONE);
+    addEEnumLiteral(declarationAttributeEEnum, DeclarationAttribute.IS_PC);
+    addEEnumLiteral(declarationAttributeEEnum, DeclarationAttribute.IS_INTERLOCK_FOR);
 
     initEEnum(instrAttributeEEnum, InstrAttribute.class, "InstrAttribute");
     addEEnumLiteral(instrAttributeEEnum, InstrAttribute.NONE);

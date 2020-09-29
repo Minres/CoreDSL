@@ -5,6 +5,8 @@ package com.minres.coredsl.coreDsl;
 
 import org.eclipse.emf.common.util.EList;
 
+import org.eclipse.emf.ecore.EObject;
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Declaration Specifier</b></em>'.
@@ -16,13 +18,14 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.DeclarationSpecifier#getStorage <em>Storage</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.DeclarationSpecifier#getQualifiers <em>Qualifiers</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.DeclarationSpecifier#getAttrs <em>Attrs</em>}</li>
  * </ul>
  *
  * @see com.minres.coredsl.coreDsl.CoreDslPackage#getDeclarationSpecifier()
  * @model
  * @generated
  */
-public interface DeclarationSpecifier extends AttributeList
+public interface DeclarationSpecifier extends EObject
 {
   /**
    * Returns the value of the '<em><b>Storage</b></em>' attribute list.
@@ -51,5 +54,17 @@ public interface DeclarationSpecifier extends AttributeList
    * @generated
    */
   EList<TypeQualifier> getQualifiers();
+
+  /**
+   * Returns the value of the '<em><b>Attrs</b></em>' containment reference list.
+   * The list contents are of type {@link com.minres.coredsl.coreDsl.Attribute}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Attrs</em>' containment reference list.
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getDeclarationSpecifier_Attrs()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Attribute> getAttrs();
 
 } // DeclarationSpecifier

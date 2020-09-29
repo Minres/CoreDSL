@@ -9,7 +9,6 @@ import com.minres.coredsl.coreDsl.CoreDef;
 import com.minres.coredsl.coreDsl.DirectDeclarator;
 import com.minres.coredsl.coreDsl.ISA;
 import com.minres.coredsl.coreDsl.InstructionSet;
-import com.minres.coredsl.coreDsl.TypedefDeclaration;
 import com.minres.coredsl.coreDsl.VariableRef;
 import com.minres.coredsl.scoping.AbstractCoreDslScopeProvider;
 import java.util.List;
@@ -41,31 +40,22 @@ public class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
       return Scopes.scopeFor(this.<VariableRef>allOfType(isa, VariableRef.class));
     } else {
       String _name_1 = reference.getEReferenceType().getName();
-      boolean _equals_1 = Objects.equal(_name_1, "TypedefDeclaration");
+      boolean _equals_1 = Objects.equal(_name_1, "DirectDeclarator");
       if (_equals_1) {
         ISA _parentOfType_1 = this.<ISA>parentOfType(context, ISA.class);
         final ISA isa_1 = ((ISA) _parentOfType_1);
-        final Iterable<TypedefDeclaration> res = this.<TypedefDeclaration>allOfType(isa_1, TypedefDeclaration.class);
-        return Scopes.scopeFor(res);
+        return Scopes.scopeFor(this.<DirectDeclarator>allOfType(isa_1, DirectDeclarator.class));
       } else {
+        Class<? extends EObject> _class = context.getClass();
+        String _plus = ("Unmatched: context " + _class);
+        String _plus_1 = (_plus + " in ");
+        EObject _eContainer = context.eContainer();
+        String _plus_2 = (_plus_1 + _eContainer);
+        String _plus_3 = (_plus_2 + ", reference ");
         String _name_2 = reference.getEReferenceType().getName();
-        boolean _equals_2 = Objects.equal(_name_2, "DirectDeclarator");
-        if (_equals_2) {
-          ISA _parentOfType_2 = this.<ISA>parentOfType(context, ISA.class);
-          final ISA isa_2 = ((ISA) _parentOfType_2);
-          return Scopes.scopeFor(this.<DirectDeclarator>allOfType(isa_2, DirectDeclarator.class));
-        } else {
-          Class<? extends EObject> _class = context.getClass();
-          String _plus = ("Unmatched: context " + _class);
-          String _plus_1 = (_plus + " in ");
-          EObject _eContainer = context.eContainer();
-          String _plus_2 = (_plus_1 + _eContainer);
-          String _plus_3 = (_plus_2 + ", reference ");
-          String _name_3 = reference.getEReferenceType().getName();
-          String _plus_4 = (_plus_3 + _name_3);
-          InputOutput.<String>println(_plus_4);
-          return super.getScope(context, reference);
-        }
+        String _plus_4 = (_plus_3 + _name_2);
+        InputOutput.<String>println(_plus_4);
+        return super.getScope(context, reference);
       }
     }
   }

@@ -299,18 +299,6 @@ public class CoreDslSwitch<T> extends Switch<T>
         if (result == null) result = caseDeclaration(typeOrVarDeclaration);
         if (result == null) result = caseDeclarationSpecifier(typeOrVarDeclaration);
         if (result == null) result = caseBlockItem(typeOrVarDeclaration);
-        if (result == null) result = caseAttributeList(typeOrVarDeclaration);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case CoreDslPackage.TYPEDEF_DECLARATION:
-      {
-        TypedefDeclaration typedefDeclaration = (TypedefDeclaration)theEObject;
-        T result = caseTypedefDeclaration(typedefDeclaration);
-        if (result == null) result = caseDeclaration(typedefDeclaration);
-        if (result == null) result = caseDeclarationSpecifier(typedefDeclaration);
-        if (result == null) result = caseBlockItem(typedefDeclaration);
-        if (result == null) result = caseAttributeList(typedefDeclaration);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -318,14 +306,6 @@ public class CoreDslSwitch<T> extends Switch<T>
       {
         DeclarationSpecifier declarationSpecifier = (DeclarationSpecifier)theEObject;
         T result = caseDeclarationSpecifier(declarationSpecifier);
-        if (result == null) result = caseAttributeList(declarationSpecifier);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case CoreDslPackage.ATTRIBUTE_LIST:
-      {
-        AttributeList attributeList = (AttributeList)theEObject;
-        T result = caseAttributeList(attributeList);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -348,13 +328,6 @@ public class CoreDslSwitch<T> extends Switch<T>
         DataTypeSpecifier dataTypeSpecifier = (DataTypeSpecifier)theEObject;
         T result = caseDataTypeSpecifier(dataTypeSpecifier);
         if (result == null) result = caseTypeSpecifier(dataTypeSpecifier);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case CoreDslPackage.TYPEDEF_REF:
-      {
-        TypedefRef typedefRef = (TypedefRef)theEObject;
-        T result = caseTypedefRef(typedefRef);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1104,22 +1077,6 @@ public class CoreDslSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Typedef Declaration</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Typedef Declaration</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseTypedefDeclaration(TypedefDeclaration object)
-  {
-    return null;
-  }
-
-  /**
    * Returns the result of interpreting the object as an instance of '<em>Declaration Specifier</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1131,22 +1088,6 @@ public class CoreDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseDeclarationSpecifier(DeclarationSpecifier object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Attribute List</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Attribute List</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseAttributeList(AttributeList object)
   {
     return null;
   }
@@ -1195,22 +1136,6 @@ public class CoreDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseDataTypeSpecifier(DataTypeSpecifier object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Typedef Ref</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Typedef Ref</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseTypedefRef(TypedefRef object)
   {
     return null;
   }

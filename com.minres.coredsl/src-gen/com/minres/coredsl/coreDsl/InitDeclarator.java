@@ -3,6 +3,8 @@
  */
 package com.minres.coredsl.coreDsl;
 
+import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -15,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.InitDeclarator#getDeclarator <em>Declarator</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.InitDeclarator#getAttrs <em>Attrs</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.InitDeclarator#getInitializer <em>Initializer</em>}</li>
  * </ul>
  *
@@ -45,6 +48,18 @@ public interface InitDeclarator extends EObject
    * @generated
    */
   void setDeclarator(DirectDeclarator value);
+
+  /**
+   * Returns the value of the '<em><b>Attrs</b></em>' containment reference list.
+   * The list contents are of type {@link com.minres.coredsl.coreDsl.Attribute}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Attrs</em>' containment reference list.
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getInitDeclarator_Attrs()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Attribute> getAttrs();
 
   /**
    * Returns the value of the '<em><b>Initializer</b></em>' containment reference.

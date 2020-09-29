@@ -156,13 +156,11 @@ TypeOrVarDeclaration
 fragment DeclarationSpecifier
     :   storage+=StorageClassSpecifier
     |   qualifiers+=TypeQualifier
-    |   AttributeList
+    |   attrs+=Attribute
     ;
 
-fragment AttributeList:	DoubleLeftBracket attrs+=Attribute (',' attrs+=Attribute)* DoubleRightBracket;
-
 Attribute
-    :  	type=StatementAttribute ('=' val=ConditionalExpression)?
+    :  	DoubleLeftBracket type=DeclarationAttribute ('=' val=ConditionalExpression)? DoubleRightBracket
     ;
     
 TypeSpecifier
@@ -220,7 +218,7 @@ StructDeclarationSpecifier
     ;
 
 InitDeclarator
-    :   declarator=DirectDeclarator ('=' initializer=Initializer)?
+    :   declarator=DirectDeclarator attrs+=Attribute* ('=' initializer=Initializer)?
     ;
 
 DirectDeclarator
@@ -428,7 +426,7 @@ enum TypeQualifier: CONST='const' | VOLATILE='volatile';
 
 enum StorageClassSpecifier: EXTERN='extern' | STATIC='static';
 
-enum StatementAttribute: NONE | IS_PC='is_pc'| DEL='delete' | IS_INTERLOCK_FOR='is_interlock_for';
+enum DeclarationAttribute: NONE | IS_PC='is_pc' | IS_INTERLOCK_FOR='is_interlock_for';
 	
 enum InstrAttribute: NONE | NO_CONT='no_cont' | COND='cond' | FLUSH='flush';
 

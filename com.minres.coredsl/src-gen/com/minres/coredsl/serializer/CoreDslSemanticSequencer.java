@@ -54,8 +54,6 @@ import com.minres.coredsl.coreDsl.StructDeclarationSpecifier;
 import com.minres.coredsl.coreDsl.StructOrUnionSpecifier;
 import com.minres.coredsl.coreDsl.SwitchStatement;
 import com.minres.coredsl.coreDsl.TypeOrVarDeclaration;
-import com.minres.coredsl.coreDsl.TypedefDeclaration;
-import com.minres.coredsl.coreDsl.TypedefRef;
 import com.minres.coredsl.services.CoreDslGrammarAccess;
 import java.util.Set;
 import org.eclipse.emf.ecore.EObject;
@@ -310,13 +308,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 				sequence_SwitchStatement(context, (SwitchStatement) semanticObject); 
 				return; 
 			case CoreDslPackage.TYPE_OR_VAR_DECLARATION:
-				sequence_AttributeList_DeclarationSpecifier_TypeOrVarDeclaration(context, (TypeOrVarDeclaration) semanticObject); 
-				return; 
-			case CoreDslPackage.TYPEDEF_DECLARATION:
-				sequence_AttributeList_DeclarationSpecifier_TypedefDeclaration(context, (TypedefDeclaration) semanticObject); 
-				return; 
-			case CoreDslPackage.TYPEDEF_REF:
-				sequence_TypedefRef(context, (TypedefRef) semanticObject); 
+				sequence_DeclarationSpecifier_TypeOrVarDeclaration(context, (TypeOrVarDeclaration) semanticObject); 
 				return; 
 			}
 		if (errorAcceptor != null)
@@ -592,44 +584,10 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
-	 *     BlockItem returns TypeOrVarDeclaration
-	 *     Declaration returns TypeOrVarDeclaration
-	 *     TypeOrVarDeclaration returns TypeOrVarDeclaration
-	 *
-	 * Constraint:
-	 *     (
-	 *         ((storage+=StorageClassSpecifier | qualifiers+=TypeQualifier)? (attrs+=Attribute attrs+=Attribute*)?)+ 
-	 *         type=TypeSpecifier 
-	 *         size=BitSizeSpecifier? 
-	 *         is_ptr?='*'? 
-	 *         (init+=InitDeclarator init+=InitDeclarator*)?
-	 *     )
-	 */
-	protected void sequence_AttributeList_DeclarationSpecifier_TypeOrVarDeclaration(ISerializationContext context, TypeOrVarDeclaration semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     BlockItem returns TypedefDeclaration
-	 *     Declaration returns TypedefDeclaration
-	 *     TypedefDeclaration returns TypedefDeclaration
-	 *
-	 * Constraint:
-	 *     (((storage+=StorageClassSpecifier | qualifiers+=TypeQualifier)? (attrs+=Attribute attrs+=Attribute*)?)+ type=TypeSpecifier init+=InitDeclarator)
-	 */
-	protected void sequence_AttributeList_DeclarationSpecifier_TypedefDeclaration(ISerializationContext context, TypedefDeclaration semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
 	 *     Attribute returns Attribute
 	 *
 	 * Constraint:
-	 *     (type=StatementAttribute val=ConditionalExpression?)
+	 *     (type=DeclarationAttribute val=ConditionalExpression?)
 	 */
 	protected void sequence_Attribute(ISerializationContext context, Attribute semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -821,6 +779,26 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     )
 	 */
 	protected void sequence_CoreDef(ISerializationContext context, CoreDef semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     BlockItem returns TypeOrVarDeclaration
+	 *     Declaration returns TypeOrVarDeclaration
+	 *     TypeOrVarDeclaration returns TypeOrVarDeclaration
+	 *
+	 * Constraint:
+	 *     (
+	 *         (storage+=StorageClassSpecifier | qualifiers+=TypeQualifier | attrs+=Attribute)* 
+	 *         type=TypeSpecifier 
+	 *         size=BitSizeSpecifier? 
+	 *         is_ptr?='*'? 
+	 *         (init+=InitDeclarator init+=InitDeclarator*)?
+	 *     )
+	 */
+	protected void sequence_DeclarationSpecifier_TypeOrVarDeclaration(ISerializationContext context, TypeOrVarDeclaration semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
@@ -1089,7 +1067,7 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     InitDeclarator returns InitDeclarator
 	 *
 	 * Constraint:
-	 *     (declarator=DirectDeclarator initializer=Initializer?)
+	 *     (declarator=DirectDeclarator attrs+=Attribute* initializer=Initializer?)
 	 */
 	protected void sequence_InitDeclarator(ISerializationContext context, InitDeclarator semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -1481,24 +1459,6 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 */
 	protected void sequence_SwitchStatement(ISerializationContext context, SwitchStatement semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     TypedefRef returns TypedefRef
-	 *
-	 * Constraint:
-	 *     ref=[DirectDeclarator|ID]
-	 */
-	protected void sequence_TypedefRef(ISerializationContext context, TypedefRef semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.TYPEDEF_REF__REF) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.TYPEDEF_REF__REF));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getTypedefRefAccess().getRefDirectDeclaratorIDTerminalRuleCall_0_1(), semanticObject.eGet(CoreDslPackage.Literals.TYPEDEF_REF__REF, false));
-		feeder.finish();
 	}
 	
 	

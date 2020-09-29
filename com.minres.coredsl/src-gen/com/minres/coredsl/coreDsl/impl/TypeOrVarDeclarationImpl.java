@@ -4,7 +4,6 @@
 package com.minres.coredsl.coreDsl.impl;
 
 import com.minres.coredsl.coreDsl.Attribute;
-import com.minres.coredsl.coreDsl.AttributeList;
 import com.minres.coredsl.coreDsl.BitSizeSpecifier;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.DeclarationSpecifier;
@@ -38,9 +37,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getAttrs <em>Attrs</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getStorage <em>Storage</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getQualifiers <em>Qualifiers</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getAttrs <em>Attrs</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getType <em>Type</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#getSize <em>Size</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl#isIs_ptr <em>Is ptr</em>}</li>
@@ -51,16 +50,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrVarDeclaration
 {
-  /**
-   * The cached value of the '{@link #getAttrs() <em>Attrs</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getAttrs()
-   * @generated
-   * @ordered
-   */
-  protected EList<Attribute> attrs;
-
   /**
    * The cached value of the '{@link #getStorage() <em>Storage</em>}' attribute list.
    * <!-- begin-user-doc -->
@@ -80,6 +69,16 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
    * @ordered
    */
   protected EList<TypeQualifier> qualifiers;
+
+  /**
+   * The cached value of the '{@link #getAttrs() <em>Attrs</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getAttrs()
+   * @generated
+   * @ordered
+   */
+  protected EList<Attribute> attrs;
 
   /**
    * The cached value of the '{@link #getType() <em>Type</em>}' containment reference.
@@ -158,21 +157,6 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
    * @generated
    */
   @Override
-  public EList<Attribute> getAttrs()
-  {
-    if (attrs == null)
-    {
-      attrs = new EObjectContainmentEList<Attribute>(Attribute.class, this, CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS);
-    }
-    return attrs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EList<StorageClassSpecifier> getStorage()
   {
     if (storage == null)
@@ -195,6 +179,21 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
       qualifiers = new EDataTypeEList<TypeQualifier>(TypeQualifier.class, this, CoreDslPackage.TYPE_OR_VAR_DECLARATION__QUALIFIERS);
     }
     return qualifiers;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EList<Attribute> getAttrs()
+  {
+    if (attrs == null)
+    {
+      attrs = new EObjectContainmentEList<Attribute>(Attribute.class, this, CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS);
+    }
+    return attrs;
   }
 
   /**
@@ -369,12 +368,12 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
   {
     switch (featureID)
     {
-      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS:
-        return getAttrs();
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__STORAGE:
         return getStorage();
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__QUALIFIERS:
         return getQualifiers();
+      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS:
+        return getAttrs();
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__TYPE:
         return getType();
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__SIZE:
@@ -398,10 +397,6 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
   {
     switch (featureID)
     {
-      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS:
-        getAttrs().clear();
-        getAttrs().addAll((Collection<? extends Attribute>)newValue);
-        return;
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__STORAGE:
         getStorage().clear();
         getStorage().addAll((Collection<? extends StorageClassSpecifier>)newValue);
@@ -409,6 +404,10 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__QUALIFIERS:
         getQualifiers().clear();
         getQualifiers().addAll((Collection<? extends TypeQualifier>)newValue);
+        return;
+      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS:
+        getAttrs().clear();
+        getAttrs().addAll((Collection<? extends Attribute>)newValue);
         return;
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__TYPE:
         setType((TypeSpecifier)newValue);
@@ -437,14 +436,14 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
   {
     switch (featureID)
     {
-      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS:
-        getAttrs().clear();
-        return;
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__STORAGE:
         getStorage().clear();
         return;
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__QUALIFIERS:
         getQualifiers().clear();
+        return;
+      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS:
+        getAttrs().clear();
         return;
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__TYPE:
         setType((TypeSpecifier)null);
@@ -472,12 +471,12 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
   {
     switch (featureID)
     {
-      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS:
-        return attrs != null && !attrs.isEmpty();
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__STORAGE:
         return storage != null && !storage.isEmpty();
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__QUALIFIERS:
         return qualifiers != null && !qualifiers.isEmpty();
+      case CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS:
+        return attrs != null && !attrs.isEmpty();
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__TYPE:
         return type != null;
       case CoreDslPackage.TYPE_OR_VAR_DECLARATION__SIZE:
@@ -498,20 +497,13 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
-    if (baseClass == AttributeList.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS: return CoreDslPackage.ATTRIBUTE_LIST__ATTRS;
-        default: return -1;
-      }
-    }
     if (baseClass == DeclarationSpecifier.class)
     {
       switch (derivedFeatureID)
       {
         case CoreDslPackage.TYPE_OR_VAR_DECLARATION__STORAGE: return CoreDslPackage.DECLARATION_SPECIFIER__STORAGE;
         case CoreDslPackage.TYPE_OR_VAR_DECLARATION__QUALIFIERS: return CoreDslPackage.DECLARATION_SPECIFIER__QUALIFIERS;
+        case CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS: return CoreDslPackage.DECLARATION_SPECIFIER__ATTRS;
         default: return -1;
       }
     }
@@ -526,20 +518,13 @@ public class TypeOrVarDeclarationImpl extends DeclarationImpl implements TypeOrV
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
-    if (baseClass == AttributeList.class)
-    {
-      switch (baseFeatureID)
-      {
-        case CoreDslPackage.ATTRIBUTE_LIST__ATTRS: return CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS;
-        default: return -1;
-      }
-    }
     if (baseClass == DeclarationSpecifier.class)
     {
       switch (baseFeatureID)
       {
         case CoreDslPackage.DECLARATION_SPECIFIER__STORAGE: return CoreDslPackage.TYPE_OR_VAR_DECLARATION__STORAGE;
         case CoreDslPackage.DECLARATION_SPECIFIER__QUALIFIERS: return CoreDslPackage.TYPE_OR_VAR_DECLARATION__QUALIFIERS;
+        case CoreDslPackage.DECLARATION_SPECIFIER__ATTRS: return CoreDslPackage.TYPE_OR_VAR_DECLARATION__ATTRS;
         default: return -1;
       }
     }

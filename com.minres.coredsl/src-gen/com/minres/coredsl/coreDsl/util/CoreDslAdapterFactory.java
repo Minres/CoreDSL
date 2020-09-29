@@ -216,19 +216,9 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
         return createTypeOrVarDeclarationAdapter();
       }
       @Override
-      public Adapter caseTypedefDeclaration(TypedefDeclaration object)
-      {
-        return createTypedefDeclarationAdapter();
-      }
-      @Override
       public Adapter caseDeclarationSpecifier(DeclarationSpecifier object)
       {
         return createDeclarationSpecifierAdapter();
-      }
-      @Override
-      public Adapter caseAttributeList(AttributeList object)
-      {
-        return createAttributeListAdapter();
       }
       @Override
       public Adapter caseAttribute(Attribute object)
@@ -244,11 +234,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseDataTypeSpecifier(DataTypeSpecifier object)
       {
         return createDataTypeSpecifierAdapter();
-      }
-      @Override
-      public Adapter caseTypedefRef(TypedefRef object)
-      {
-        return createTypedefRefAdapter();
       }
       @Override
       public Adapter casePodSpecifier(PodSpecifier object)
@@ -873,21 +858,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.TypedefDeclaration <em>Typedef Declaration</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.TypedefDeclaration
-   * @generated
-   */
-  public Adapter createTypedefDeclarationAdapter()
-  {
-    return null;
-  }
-
-  /**
    * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.DeclarationSpecifier <em>Declaration Specifier</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -898,21 +868,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createDeclarationSpecifierAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.AttributeList <em>Attribute List</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.AttributeList
-   * @generated
-   */
-  public Adapter createAttributeListAdapter()
   {
     return null;
   }
@@ -958,21 +913,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createDataTypeSpecifierAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.TypedefRef <em>Typedef Ref</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.TypedefRef
-   * @generated
-   */
-  public Adapter createTypedefRefAdapter()
   {
     return null;
   }

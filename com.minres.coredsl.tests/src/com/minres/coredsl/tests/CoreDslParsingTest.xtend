@@ -166,8 +166,9 @@ class CoreDslParsingTest {
         val input = '''
             InstructionSet TestISA {
                 registers {
+                	[[is_pc]] int PC;
                     float Freg[32];
-                    [[is_interlock_for=Freg]] bool F_ready[32] ;  // use attribute to indicate purpose of F_ready
+                    bool F_ready[32] [[is_interlock_for=Freg]];  // use attribute to indicate purpose of F_ready
                 }
                 instructions {
                     SIN {

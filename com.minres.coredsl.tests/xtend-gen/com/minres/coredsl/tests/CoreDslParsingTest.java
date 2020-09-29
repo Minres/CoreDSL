@@ -356,11 +356,14 @@ public class CoreDslParsingTest {
       _builder.append("    ");
       _builder.append("registers {");
       _builder.newLine();
+      _builder.append("    \t");
+      _builder.append("[[is_pc]] int PC;");
+      _builder.newLine();
       _builder.append("        ");
       _builder.append("float Freg[32];");
       _builder.newLine();
       _builder.append("        ");
-      _builder.append("[[is_interlock_for=Freg]] bool F_ready[32] ;  // use attribute to indicate purpose of F_ready");
+      _builder.append("bool F_ready[32] [[is_interlock_for=Freg]];  // use attribute to indicate purpose of F_ready");
       _builder.newLine();
       _builder.append("    ");
       _builder.append("}");

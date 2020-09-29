@@ -26,28 +26,28 @@ public interface Attribute extends EObject
 {
   /**
    * Returns the value of the '<em><b>Type</b></em>' attribute.
-   * The literals are from the enumeration {@link com.minres.coredsl.coreDsl.StatementAttribute}.
+   * The literals are from the enumeration {@link com.minres.coredsl.coreDsl.DeclarationAttribute}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Type</em>' attribute.
-   * @see com.minres.coredsl.coreDsl.StatementAttribute
-   * @see #setType(StatementAttribute)
+   * @see com.minres.coredsl.coreDsl.DeclarationAttribute
+   * @see #setType(DeclarationAttribute)
    * @see com.minres.coredsl.coreDsl.CoreDslPackage#getAttribute_Type()
    * @model
    * @generated
    */
-  StatementAttribute getType();
+  DeclarationAttribute getType();
 
   /**
    * Sets the value of the '{@link com.minres.coredsl.coreDsl.Attribute#getType <em>Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Type</em>' attribute.
-   * @see com.minres.coredsl.coreDsl.StatementAttribute
+   * @see com.minres.coredsl.coreDsl.DeclarationAttribute
    * @see #getType()
    * @generated
    */
-  void setType(StatementAttribute value);
+  void setType(DeclarationAttribute value);
 
   /**
    * Returns the value of the '<em><b>Val</b></em>' containment reference.

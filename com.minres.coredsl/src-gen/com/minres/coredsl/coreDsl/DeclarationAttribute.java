@@ -11,14 +11,14 @@ import org.eclipse.emf.common.util.Enumerator;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the literals of the enumeration '<em><b>Statement Attribute</b></em>',
+ * A representation of the literals of the enumeration '<em><b>Declaration Attribute</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
- * @see com.minres.coredsl.coreDsl.CoreDslPackage#getStatementAttribute()
+ * @see com.minres.coredsl.coreDsl.CoreDslPackage#getDeclarationAttribute()
  * @model
  * @generated
  */
-public enum StatementAttribute implements Enumerator
+public enum DeclarationAttribute implements Enumerator
 {
   /**
    * The '<em><b>NONE</b></em>' literal object.
@@ -41,16 +41,6 @@ public enum StatementAttribute implements Enumerator
   IS_PC(1, "IS_PC", "is_pc"),
 
   /**
-   * The '<em><b>DEL</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #DEL_VALUE
-   * @generated
-   * @ordered
-   */
-  DEL(2, "DEL", "delete"),
-
-  /**
    * The '<em><b>IS INTERLOCK FOR</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -58,7 +48,7 @@ public enum StatementAttribute implements Enumerator
    * @generated
    * @ordered
    */
-  IS_INTERLOCK_FOR(3, "IS_INTERLOCK_FOR", "is_interlock_for");
+  IS_INTERLOCK_FOR(2, "IS_INTERLOCK_FOR", "is_interlock_for");
 
   /**
    * The '<em><b>NONE</b></em>' literal value.
@@ -83,17 +73,6 @@ public enum StatementAttribute implements Enumerator
   public static final int IS_PC_VALUE = 1;
 
   /**
-   * The '<em><b>DEL</b></em>' literal value.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #DEL
-   * @model literal="delete"
-   * @generated
-   * @ordered
-   */
-  public static final int DEL_VALUE = 2;
-
-  /**
    * The '<em><b>IS INTERLOCK FOR</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -102,44 +81,43 @@ public enum StatementAttribute implements Enumerator
    * @generated
    * @ordered
    */
-  public static final int IS_INTERLOCK_FOR_VALUE = 3;
+  public static final int IS_INTERLOCK_FOR_VALUE = 2;
 
   /**
-   * An array of all the '<em><b>Statement Attribute</b></em>' enumerators.
+   * An array of all the '<em><b>Declaration Attribute</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private static final StatementAttribute[] VALUES_ARRAY =
-    new StatementAttribute[]
+  private static final DeclarationAttribute[] VALUES_ARRAY =
+    new DeclarationAttribute[]
     {
       NONE,
       IS_PC,
-      DEL,
       IS_INTERLOCK_FOR,
     };
 
   /**
-   * A public read-only list of all the '<em><b>Statement Attribute</b></em>' enumerators.
+   * A public read-only list of all the '<em><b>Declaration Attribute</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  public static final List<StatementAttribute> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
+  public static final List<DeclarationAttribute> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
   /**
-   * Returns the '<em><b>Statement Attribute</b></em>' literal with the specified literal value.
+   * Returns the '<em><b>Declaration Attribute</b></em>' literal with the specified literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param literal the literal.
    * @return the matching enumerator or <code>null</code>.
    * @generated
    */
-  public static StatementAttribute get(String literal)
+  public static DeclarationAttribute get(String literal)
   {
     for (int i = 0; i < VALUES_ARRAY.length; ++i)
     {
-      StatementAttribute result = VALUES_ARRAY[i];
+      DeclarationAttribute result = VALUES_ARRAY[i];
       if (result.toString().equals(literal))
       {
         return result;
@@ -149,18 +127,18 @@ public enum StatementAttribute implements Enumerator
   }
 
   /**
-   * Returns the '<em><b>Statement Attribute</b></em>' literal with the specified name.
+   * Returns the '<em><b>Declaration Attribute</b></em>' literal with the specified name.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param name the name.
    * @return the matching enumerator or <code>null</code>.
    * @generated
    */
-  public static StatementAttribute getByName(String name)
+  public static DeclarationAttribute getByName(String name)
   {
     for (int i = 0; i < VALUES_ARRAY.length; ++i)
     {
-      StatementAttribute result = VALUES_ARRAY[i];
+      DeclarationAttribute result = VALUES_ARRAY[i];
       if (result.getName().equals(name))
       {
         return result;
@@ -170,20 +148,19 @@ public enum StatementAttribute implements Enumerator
   }
 
   /**
-   * Returns the '<em><b>Statement Attribute</b></em>' literal with the specified integer value.
+   * Returns the '<em><b>Declaration Attribute</b></em>' literal with the specified integer value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the integer value.
    * @return the matching enumerator or <code>null</code>.
    * @generated
    */
-  public static StatementAttribute get(int value)
+  public static DeclarationAttribute get(int value)
   {
     switch (value)
     {
       case NONE_VALUE: return NONE;
       case IS_PC_VALUE: return IS_PC;
-      case DEL_VALUE: return DEL;
       case IS_INTERLOCK_FOR_VALUE: return IS_INTERLOCK_FOR;
     }
     return null;
@@ -216,7 +193,7 @@ public enum StatementAttribute implements Enumerator
    * <!-- end-user-doc -->
    * @generated
    */
-  private StatementAttribute(int value, String name, String literal)
+  private DeclarationAttribute(int value, String name, String literal)
   {
     this.value = value;
     this.name = name;
@@ -268,4 +245,4 @@ public enum StatementAttribute implements Enumerator
     return literal;
   }
   
-} //StatementAttribute
+} //DeclarationAttribute

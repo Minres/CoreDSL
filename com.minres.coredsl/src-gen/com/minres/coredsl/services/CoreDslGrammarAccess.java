@@ -1481,25 +1481,18 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	public class DeclarationElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.Declaration");
-		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
-		private final RuleCall cTypeOrVarDeclarationParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
-		private final RuleCall cTypedefDeclarationParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		private final RuleCall cTypeOrVarDeclarationParserRuleCall = (RuleCall)rule.eContents().get(1);
 		
 		/////////////////////////////////////////////////////////////////////////////////
 		//// Declarations
 		//Declaration:
 		//	TypeOrVarDeclaration
-		//	| TypedefDeclaration;
+		//	//	|   TypedefDeclaration
+		//;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//TypeOrVarDeclaration | TypedefDeclaration
-		public Alternatives getAlternatives() { return cAlternatives; }
-		
 		//TypeOrVarDeclaration
-		public RuleCall getTypeOrVarDeclarationParserRuleCall_0() { return cTypeOrVarDeclarationParserRuleCall_0; }
-		
-		//TypedefDeclaration
-		public RuleCall getTypedefDeclarationParserRuleCall_1() { return cTypedefDeclarationParserRuleCall_1; }
+		public RuleCall getTypeOrVarDeclarationParserRuleCall() { return cTypeOrVarDeclarationParserRuleCall; }
 	}
 	public class TypeOrVarDeclarationElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.TypeOrVarDeclaration");
@@ -1574,45 +1567,6 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//';'
 		public Keyword getSemicolonKeyword_5() { return cSemicolonKeyword_5; }
 	}
-	public class TypedefDeclarationElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.TypedefDeclaration");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cTypedefKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final RuleCall cDeclarationSpecifierParserRuleCall_1 = (RuleCall)cGroup.eContents().get(1);
-		private final Assignment cTypeAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cTypeTypeSpecifierParserRuleCall_2_0 = (RuleCall)cTypeAssignment_2.eContents().get(0);
-		private final Assignment cInitAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cInitInitDeclaratorParserRuleCall_3_0 = (RuleCall)cInitAssignment_3.eContents().get(0);
-		private final Keyword cSemicolonKeyword_4 = (Keyword)cGroup.eContents().get(4);
-		
-		//TypedefDeclaration:
-		//	'typedef' DeclarationSpecifier* type=TypeSpecifier init+=InitDeclarator ';';
-		@Override public ParserRule getRule() { return rule; }
-		
-		//'typedef' DeclarationSpecifier* type=TypeSpecifier init+=InitDeclarator ';'
-		public Group getGroup() { return cGroup; }
-		
-		//'typedef'
-		public Keyword getTypedefKeyword_0() { return cTypedefKeyword_0; }
-		
-		//DeclarationSpecifier*
-		public RuleCall getDeclarationSpecifierParserRuleCall_1() { return cDeclarationSpecifierParserRuleCall_1; }
-		
-		//type=TypeSpecifier
-		public Assignment getTypeAssignment_2() { return cTypeAssignment_2; }
-		
-		//TypeSpecifier
-		public RuleCall getTypeTypeSpecifierParserRuleCall_2_0() { return cTypeTypeSpecifierParserRuleCall_2_0; }
-		
-		//init+=InitDeclarator
-		public Assignment getInitAssignment_3() { return cInitAssignment_3; }
-		
-		//InitDeclarator
-		public RuleCall getInitInitDeclaratorParserRuleCall_3_0() { return cInitInitDeclaratorParserRuleCall_3_0; }
-		
-		//';'
-		public Keyword getSemicolonKeyword_4() { return cSemicolonKeyword_4; }
-	}
 	public class DeclarationSpecifierElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.DeclarationSpecifier");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
@@ -1620,15 +1574,19 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final RuleCall cStorageStorageClassSpecifierEnumRuleCall_0_0 = (RuleCall)cStorageAssignment_0.eContents().get(0);
 		private final Assignment cQualifiersAssignment_1 = (Assignment)cAlternatives.eContents().get(1);
 		private final RuleCall cQualifiersTypeQualifierEnumRuleCall_1_0 = (RuleCall)cQualifiersAssignment_1.eContents().get(0);
-		private final RuleCall cAttributeListParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
+		private final Assignment cAttrsAssignment_2 = (Assignment)cAlternatives.eContents().get(2);
+		private final RuleCall cAttrsAttributeParserRuleCall_2_0 = (RuleCall)cAttrsAssignment_2.eContents().get(0);
 		
+		////TypedefDeclaration
+		////	:	'typedef' DeclarationSpecifier* type=TypeSpecifier init+=InitDeclarator ';'
+		////	;
 		//fragment DeclarationSpecifier:
 		//	storage+=StorageClassSpecifier
 		//	| qualifiers+=TypeQualifier
-		//	| AttributeList;
+		//	| attrs+=Attribute;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//storage+=StorageClassSpecifier | qualifiers+=TypeQualifier | AttributeList
+		//storage+=StorageClassSpecifier | qualifiers+=TypeQualifier | attrs+=Attribute
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//storage+=StorageClassSpecifier
@@ -1643,86 +1601,54 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//TypeQualifier
 		public RuleCall getQualifiersTypeQualifierEnumRuleCall_1_0() { return cQualifiersTypeQualifierEnumRuleCall_1_0; }
 		
-		//AttributeList
-		public RuleCall getAttributeListParserRuleCall_2() { return cAttributeListParserRuleCall_2; }
+		//attrs+=Attribute
+		public Assignment getAttrsAssignment_2() { return cAttrsAssignment_2; }
+		
+		//Attribute
+		public RuleCall getAttrsAttributeParserRuleCall_2_0() { return cAttrsAttributeParserRuleCall_2_0; }
 	}
-	public class AttributeListElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.AttributeList");
+	public class AttributeElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.Attribute");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final RuleCall cDoubleLeftBracketParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
-		private final Assignment cAttrsAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cAttrsAttributeParserRuleCall_1_0 = (RuleCall)cAttrsAssignment_1.eContents().get(0);
+		private final Assignment cTypeAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cTypeDeclarationAttributeEnumRuleCall_1_0 = (RuleCall)cTypeAssignment_1.eContents().get(0);
 		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Keyword cCommaKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
-		private final Assignment cAttrsAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final RuleCall cAttrsAttributeParserRuleCall_2_1_0 = (RuleCall)cAttrsAssignment_2_1.eContents().get(0);
+		private final Keyword cEqualsSignKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cValAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cValConditionalExpressionParserRuleCall_2_1_0 = (RuleCall)cValAssignment_2_1.eContents().get(0);
 		private final RuleCall cDoubleRightBracketParserRuleCall_3 = (RuleCall)cGroup.eContents().get(3);
 		
-		//fragment AttributeList:
-		//	DoubleLeftBracket attrs+=Attribute (',' attrs+=Attribute)* DoubleRightBracket;
+		//Attribute:
+		//	DoubleLeftBracket type=DeclarationAttribute ('=' val=ConditionalExpression)? DoubleRightBracket;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//DoubleLeftBracket attrs+=Attribute (',' attrs+=Attribute)* DoubleRightBracket
+		//DoubleLeftBracket type=DeclarationAttribute ('=' val=ConditionalExpression)? DoubleRightBracket
 		public Group getGroup() { return cGroup; }
 		
 		//DoubleLeftBracket
 		public RuleCall getDoubleLeftBracketParserRuleCall_0() { return cDoubleLeftBracketParserRuleCall_0; }
 		
-		//attrs+=Attribute
-		public Assignment getAttrsAssignment_1() { return cAttrsAssignment_1; }
+		//type=DeclarationAttribute
+		public Assignment getTypeAssignment_1() { return cTypeAssignment_1; }
 		
-		//Attribute
-		public RuleCall getAttrsAttributeParserRuleCall_1_0() { return cAttrsAttributeParserRuleCall_1_0; }
+		//DeclarationAttribute
+		public RuleCall getTypeDeclarationAttributeEnumRuleCall_1_0() { return cTypeDeclarationAttributeEnumRuleCall_1_0; }
 		
-		//(',' attrs+=Attribute)*
+		//('=' val=ConditionalExpression)?
 		public Group getGroup_2() { return cGroup_2; }
 		
-		//','
-		public Keyword getCommaKeyword_2_0() { return cCommaKeyword_2_0; }
+		//'='
+		public Keyword getEqualsSignKeyword_2_0() { return cEqualsSignKeyword_2_0; }
 		
-		//attrs+=Attribute
-		public Assignment getAttrsAssignment_2_1() { return cAttrsAssignment_2_1; }
+		//val=ConditionalExpression
+		public Assignment getValAssignment_2_1() { return cValAssignment_2_1; }
 		
-		//Attribute
-		public RuleCall getAttrsAttributeParserRuleCall_2_1_0() { return cAttrsAttributeParserRuleCall_2_1_0; }
+		//ConditionalExpression
+		public RuleCall getValConditionalExpressionParserRuleCall_2_1_0() { return cValConditionalExpressionParserRuleCall_2_1_0; }
 		
 		//DoubleRightBracket
 		public RuleCall getDoubleRightBracketParserRuleCall_3() { return cDoubleRightBracketParserRuleCall_3; }
-	}
-	public class AttributeElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.Attribute");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Assignment cTypeAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cTypeStatementAttributeEnumRuleCall_0_0 = (RuleCall)cTypeAssignment_0.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cEqualsSignKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cValAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cValConditionalExpressionParserRuleCall_1_1_0 = (RuleCall)cValAssignment_1_1.eContents().get(0);
-		
-		//Attribute:
-		//	type=StatementAttribute ('=' val=ConditionalExpression)?;
-		@Override public ParserRule getRule() { return rule; }
-		
-		//type=StatementAttribute ('=' val=ConditionalExpression)?
-		public Group getGroup() { return cGroup; }
-		
-		//type=StatementAttribute
-		public Assignment getTypeAssignment_0() { return cTypeAssignment_0; }
-		
-		//StatementAttribute
-		public RuleCall getTypeStatementAttributeEnumRuleCall_0_0() { return cTypeStatementAttributeEnumRuleCall_0_0; }
-		
-		//('=' val=ConditionalExpression)?
-		public Group getGroup_1() { return cGroup_1; }
-		
-		//'='
-		public Keyword getEqualsSignKeyword_1_0() { return cEqualsSignKeyword_1_0; }
-		
-		//val=ConditionalExpression
-		public Assignment getValAssignment_1_1() { return cValAssignment_1_1; }
-		
-		//ConditionalExpression
-		public RuleCall getValConditionalExpressionParserRuleCall_1_1_0() { return cValConditionalExpressionParserRuleCall_1_1_0; }
 	}
 	public class TypeSpecifierElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.TypeSpecifier");
@@ -1762,30 +1688,14 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//EnumSpecifier
 		public RuleCall getEnumSpecifierParserRuleCall_2() { return cEnumSpecifierParserRuleCall_2; }
 	}
-	public class TypedefRefElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.TypedefRef");
-		private final Assignment cRefAssignment = (Assignment)rule.eContents().get(1);
-		private final CrossReference cRefDirectDeclaratorCrossReference_0 = (CrossReference)cRefAssignment.eContents().get(0);
-		private final RuleCall cRefDirectDeclaratorIDTerminalRuleCall_0_1 = (RuleCall)cRefDirectDeclaratorCrossReference_0.eContents().get(1);
-		
-		//TypedefRef:
-		//	ref=[DirectDeclarator];
-		@Override public ParserRule getRule() { return rule; }
-		
-		//ref=[DirectDeclarator]
-		public Assignment getRefAssignment() { return cRefAssignment; }
-		
-		//[DirectDeclarator]
-		public CrossReference getRefDirectDeclaratorCrossReference_0() { return cRefDirectDeclaratorCrossReference_0; }
-		
-		//ID
-		public RuleCall getRefDirectDeclaratorIDTerminalRuleCall_0_1() { return cRefDirectDeclaratorIDTerminalRuleCall_0_1; }
-	}
 	public class PodSpecifierElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.PodSpecifier");
 		private final Assignment cDataTypeAssignment = (Assignment)rule.eContents().get(1);
 		private final RuleCall cDataTypeDataTypesEnumRuleCall_0 = (RuleCall)cDataTypeAssignment.eContents().get(0);
 		
+		////TypedefRef
+		////	:	ref=[DirectDeclarator]
+		////	;
 		//PodSpecifier:
 		//	dataType+=DataTypes+;
 		@Override public ParserRule getRule() { return rule; }
@@ -2182,16 +2092,18 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cDeclaratorAssignment_0 = (Assignment)cGroup.eContents().get(0);
 		private final RuleCall cDeclaratorDirectDeclaratorParserRuleCall_0_0 = (RuleCall)cDeclaratorAssignment_0.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cEqualsSignKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cInitializerAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cInitializerInitializerParserRuleCall_1_1_0 = (RuleCall)cInitializerAssignment_1_1.eContents().get(0);
+		private final Assignment cAttrsAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cAttrsAttributeParserRuleCall_1_0 = (RuleCall)cAttrsAssignment_1.eContents().get(0);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cEqualsSignKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cInitializerAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cInitializerInitializerParserRuleCall_2_1_0 = (RuleCall)cInitializerAssignment_2_1.eContents().get(0);
 		
 		//InitDeclarator:
-		//	declarator=DirectDeclarator ('=' initializer=Initializer)?;
+		//	declarator=DirectDeclarator attrs+=Attribute* ('=' initializer=Initializer)?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//declarator=DirectDeclarator ('=' initializer=Initializer)?
+		//declarator=DirectDeclarator attrs+=Attribute* ('=' initializer=Initializer)?
 		public Group getGroup() { return cGroup; }
 		
 		//declarator=DirectDeclarator
@@ -2200,17 +2112,23 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//DirectDeclarator
 		public RuleCall getDeclaratorDirectDeclaratorParserRuleCall_0_0() { return cDeclaratorDirectDeclaratorParserRuleCall_0_0; }
 		
+		//attrs+=Attribute*
+		public Assignment getAttrsAssignment_1() { return cAttrsAssignment_1; }
+		
+		//Attribute
+		public RuleCall getAttrsAttributeParserRuleCall_1_0() { return cAttrsAttributeParserRuleCall_1_0; }
+		
 		//('=' initializer=Initializer)?
-		public Group getGroup_1() { return cGroup_1; }
+		public Group getGroup_2() { return cGroup_2; }
 		
 		//'='
-		public Keyword getEqualsSignKeyword_1_0() { return cEqualsSignKeyword_1_0; }
+		public Keyword getEqualsSignKeyword_2_0() { return cEqualsSignKeyword_2_0; }
 		
 		//initializer=Initializer
-		public Assignment getInitializerAssignment_1_1() { return cInitializerAssignment_1_1; }
+		public Assignment getInitializerAssignment_2_1() { return cInitializerAssignment_2_1; }
 		
 		//Initializer
-		public RuleCall getInitializerInitializerParserRuleCall_1_1_0() { return cInitializerInitializerParserRuleCall_1_1_0; }
+		public RuleCall getInitializerInitializerParserRuleCall_2_1_0() { return cInitializerInitializerParserRuleCall_2_1_0; }
 	}
 	public class DirectDeclaratorElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.DirectDeclarator");
@@ -4308,23 +4226,21 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'static'
 		public Keyword getSTATICStaticKeyword_1_0() { return cSTATICStaticKeyword_1_0; }
 	}
-	public class StatementAttributeElements extends AbstractElementFinder.AbstractEnumRuleElementFinder {
-		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.StatementAttribute");
+	public class DeclarationAttributeElements extends AbstractElementFinder.AbstractEnumRuleElementFinder {
+		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.DeclarationAttribute");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final EnumLiteralDeclaration cNONEEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
 		private final Keyword cNONENONEKeyword_0_0 = (Keyword)cNONEEnumLiteralDeclaration_0.eContents().get(0);
 		private final EnumLiteralDeclaration cIS_PCEnumLiteralDeclaration_1 = (EnumLiteralDeclaration)cAlternatives.eContents().get(1);
 		private final Keyword cIS_PCIs_pcKeyword_1_0 = (Keyword)cIS_PCEnumLiteralDeclaration_1.eContents().get(0);
-		private final EnumLiteralDeclaration cDELEnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
-		private final Keyword cDELDeleteKeyword_2_0 = (Keyword)cDELEnumLiteralDeclaration_2.eContents().get(0);
-		private final EnumLiteralDeclaration cIS_INTERLOCK_FOREnumLiteralDeclaration_3 = (EnumLiteralDeclaration)cAlternatives.eContents().get(3);
-		private final Keyword cIS_INTERLOCK_FORIs_interlock_forKeyword_3_0 = (Keyword)cIS_INTERLOCK_FOREnumLiteralDeclaration_3.eContents().get(0);
+		private final EnumLiteralDeclaration cIS_INTERLOCK_FOREnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
+		private final Keyword cIS_INTERLOCK_FORIs_interlock_forKeyword_2_0 = (Keyword)cIS_INTERLOCK_FOREnumLiteralDeclaration_2.eContents().get(0);
 		
-		//enum StatementAttribute:
-		//	NONE | IS_PC='is_pc' | DEL='delete' | IS_INTERLOCK_FOR='is_interlock_for';
+		//enum DeclarationAttribute:
+		//	NONE | IS_PC='is_pc' | IS_INTERLOCK_FOR='is_interlock_for';
 		public EnumRule getRule() { return rule; }
 		
-		//NONE | IS_PC='is_pc' | DEL='delete' | IS_INTERLOCK_FOR='is_interlock_for'
+		//NONE | IS_PC='is_pc' | IS_INTERLOCK_FOR='is_interlock_for'
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//NONE
@@ -4339,17 +4255,11 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		//'is_pc'
 		public Keyword getIS_PCIs_pcKeyword_1_0() { return cIS_PCIs_pcKeyword_1_0; }
 		
-		//DEL='delete'
-		public EnumLiteralDeclaration getDELEnumLiteralDeclaration_2() { return cDELEnumLiteralDeclaration_2; }
-		
-		//'delete'
-		public Keyword getDELDeleteKeyword_2_0() { return cDELDeleteKeyword_2_0; }
-		
 		//IS_INTERLOCK_FOR='is_interlock_for'
-		public EnumLiteralDeclaration getIS_INTERLOCK_FOREnumLiteralDeclaration_3() { return cIS_INTERLOCK_FOREnumLiteralDeclaration_3; }
+		public EnumLiteralDeclaration getIS_INTERLOCK_FOREnumLiteralDeclaration_2() { return cIS_INTERLOCK_FOREnumLiteralDeclaration_2; }
 		
 		//'is_interlock_for'
-		public Keyword getIS_INTERLOCK_FORIs_interlock_forKeyword_3_0() { return cIS_INTERLOCK_FORIs_interlock_forKeyword_3_0; }
+		public Keyword getIS_INTERLOCK_FORIs_interlock_forKeyword_2_0() { return cIS_INTERLOCK_FORIs_interlock_forKeyword_2_0; }
 	}
 	public class InstrAttributeElements extends AbstractElementFinder.AbstractEnumRuleElementFinder {
 		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.InstrAttribute");
@@ -4477,13 +4387,10 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final SpawnStatementElements pSpawnStatement;
 	private final DeclarationElements pDeclaration;
 	private final TypeOrVarDeclarationElements pTypeOrVarDeclaration;
-	private final TypedefDeclarationElements pTypedefDeclaration;
 	private final DeclarationSpecifierElements pDeclarationSpecifier;
-	private final AttributeListElements pAttributeList;
 	private final AttributeElements pAttribute;
 	private final TypeSpecifierElements pTypeSpecifier;
 	private final DataTypeSpecifierElements pDataTypeSpecifier;
-	private final TypedefRefElements pTypedefRef;
 	private final PodSpecifierElements pPodSpecifier;
 	private final BitSizeSpecifierElements pBitSizeSpecifier;
 	private final BitSizeValueElements pBitSizeValue;
@@ -4537,7 +4444,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final DataTypesElements eDataTypes;
 	private final TypeQualifierElements eTypeQualifier;
 	private final StorageClassSpecifierElements eStorageClassSpecifier;
-	private final StatementAttributeElements eStatementAttribute;
+	private final DeclarationAttributeElements eDeclarationAttribute;
 	private final InstrAttributeElements eInstrAttribute;
 	private final StructOrUnionElements eStructOrUnion;
 	private final BitfieldDataTypeElements eBitfieldDataType;
@@ -4557,7 +4464,6 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final TerminalRule tINT;
 	private final TerminalRule tID;
 	private final TerminalRule tSTRING;
-	private final TerminalRule tANY_OTHER;
 	
 	private final Grammar grammar;
 	
@@ -4596,13 +4502,10 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.pSpawnStatement = new SpawnStatementElements();
 		this.pDeclaration = new DeclarationElements();
 		this.pTypeOrVarDeclaration = new TypeOrVarDeclarationElements();
-		this.pTypedefDeclaration = new TypedefDeclarationElements();
 		this.pDeclarationSpecifier = new DeclarationSpecifierElements();
-		this.pAttributeList = new AttributeListElements();
 		this.pAttribute = new AttributeElements();
 		this.pTypeSpecifier = new TypeSpecifierElements();
 		this.pDataTypeSpecifier = new DataTypeSpecifierElements();
-		this.pTypedefRef = new TypedefRefElements();
 		this.pPodSpecifier = new PodSpecifierElements();
 		this.pBitSizeSpecifier = new BitSizeSpecifierElements();
 		this.pBitSizeValue = new BitSizeValueElements();
@@ -4656,7 +4559,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.eDataTypes = new DataTypesElements();
 		this.eTypeQualifier = new TypeQualifierElements();
 		this.eStorageClassSpecifier = new StorageClassSpecifierElements();
-		this.eStatementAttribute = new StatementAttributeElements();
+		this.eDeclarationAttribute = new DeclarationAttributeElements();
 		this.eInstrAttribute = new InstrAttributeElements();
 		this.eStructOrUnion = new StructOrUnionElements();
 		this.eBitfieldDataType = new BitfieldDataTypeElements();
@@ -4676,7 +4579,6 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.tINT = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.INT");
 		this.tID = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.ID");
 		this.tSTRING = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.STRING");
-		this.tANY_OTHER = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.ANY_OTHER");
 	}
 	
 	protected Grammar internalFindGrammar(GrammarProvider grammarProvider) {
@@ -4997,7 +4899,8 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//// Declarations
 	//Declaration:
 	//	TypeOrVarDeclaration
-	//	| TypedefDeclaration;
+	//	//	|   TypedefDeclaration
+	//;
 	public DeclarationElements getDeclarationAccess() {
 		return pDeclaration;
 	}
@@ -5017,20 +4920,13 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getTypeOrVarDeclarationAccess().getRule();
 	}
 	
-	//TypedefDeclaration:
-	//	'typedef' DeclarationSpecifier* type=TypeSpecifier init+=InitDeclarator ';';
-	public TypedefDeclarationElements getTypedefDeclarationAccess() {
-		return pTypedefDeclaration;
-	}
-	
-	public ParserRule getTypedefDeclarationRule() {
-		return getTypedefDeclarationAccess().getRule();
-	}
-	
+	////TypedefDeclaration
+	////	:	'typedef' DeclarationSpecifier* type=TypeSpecifier init+=InitDeclarator ';'
+	////	;
 	//fragment DeclarationSpecifier:
 	//	storage+=StorageClassSpecifier
 	//	| qualifiers+=TypeQualifier
-	//	| AttributeList;
+	//	| attrs+=Attribute;
 	public DeclarationSpecifierElements getDeclarationSpecifierAccess() {
 		return pDeclarationSpecifier;
 	}
@@ -5039,18 +4935,8 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getDeclarationSpecifierAccess().getRule();
 	}
 	
-	//fragment AttributeList:
-	//	DoubleLeftBracket attrs+=Attribute (',' attrs+=Attribute)* DoubleRightBracket;
-	public AttributeListElements getAttributeListAccess() {
-		return pAttributeList;
-	}
-	
-	public ParserRule getAttributeListRule() {
-		return getAttributeListAccess().getRule();
-	}
-	
 	//Attribute:
-	//	type=StatementAttribute ('=' val=ConditionalExpression)?;
+	//	DoubleLeftBracket type=DeclarationAttribute ('=' val=ConditionalExpression)? DoubleRightBracket;
 	public AttributeElements getAttributeAccess() {
 		return pAttribute;
 	}
@@ -5083,16 +4969,9 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getDataTypeSpecifierAccess().getRule();
 	}
 	
-	//TypedefRef:
-	//	ref=[DirectDeclarator];
-	public TypedefRefElements getTypedefRefAccess() {
-		return pTypedefRef;
-	}
-	
-	public ParserRule getTypedefRefRule() {
-		return getTypedefRefAccess().getRule();
-	}
-	
+	////TypedefRef
+	////	:	ref=[DirectDeclarator]
+	////	;
 	//PodSpecifier:
 	//	dataType+=DataTypes+;
 	public PodSpecifierElements getPodSpecifierAccess() {
@@ -5189,7 +5068,7 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//InitDeclarator:
-	//	declarator=DirectDeclarator ('=' initializer=Initializer)?;
+	//	declarator=DirectDeclarator attrs+=Attribute* ('=' initializer=Initializer)?;
 	public InitDeclaratorElements getInitDeclaratorAccess() {
 		return pInitDeclarator;
 	}
@@ -5678,14 +5557,14 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return getStorageClassSpecifierAccess().getRule();
 	}
 	
-	//enum StatementAttribute:
-	//	NONE | IS_PC='is_pc' | DEL='delete' | IS_INTERLOCK_FOR='is_interlock_for';
-	public StatementAttributeElements getStatementAttributeAccess() {
-		return eStatementAttribute;
+	//enum DeclarationAttribute:
+	//	NONE | IS_PC='is_pc' | IS_INTERLOCK_FOR='is_interlock_for';
+	public DeclarationAttributeElements getDeclarationAttributeAccess() {
+		return eDeclarationAttribute;
 	}
 	
-	public EnumRule getStatementAttributeRule() {
-		return getStatementAttributeAccess().getRule();
+	public EnumRule getDeclarationAttributeRule() {
+		return getDeclarationAttributeAccess().getRule();
 	}
 	
 	//enum InstrAttribute:
@@ -5817,13 +5696,6 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		return tSTRING;
 	}
 	
-	//@Override
-	//terminal ANY_OTHER:
-	//	'~xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
-	public TerminalRule getANY_OTHERRule() {
-		return tANY_OTHER;
-	}
-	
 	//terminal ML_COMMENT:
 	//	'/*'->'*/';
 	public TerminalRule getML_COMMENTRule() {
@@ -5840,5 +5712,11 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//	' ' | '\t' | '\r' | '\n'+;
 	public TerminalRule getWSRule() {
 		return gaTerminals.getWSRule();
+	}
+	
+	//terminal ANY_OTHER:
+	//	.;
+	public TerminalRule getANY_OTHERRule() {
+		return gaTerminals.getANY_OTHERRule();
 	}
 }

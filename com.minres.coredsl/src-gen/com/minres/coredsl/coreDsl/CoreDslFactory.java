@@ -276,15 +276,6 @@ public interface CoreDslFactory extends EFactory
   TypeOrVarDeclaration createTypeOrVarDeclaration();
 
   /**
-   * Returns a new object of class '<em>Typedef Declaration</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Typedef Declaration</em>'.
-   * @generated
-   */
-  TypedefDeclaration createTypedefDeclaration();
-
-  /**
    * Returns a new object of class '<em>Declaration Specifier</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -292,15 +283,6 @@ public interface CoreDslFactory extends EFactory
    * @generated
    */
   DeclarationSpecifier createDeclarationSpecifier();
-
-  /**
-   * Returns a new object of class '<em>Attribute List</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Attribute List</em>'.
-   * @generated
-   */
-  AttributeList createAttributeList();
 
   /**
    * Returns a new object of class '<em>Attribute</em>'.
@@ -328,15 +310,6 @@ public interface CoreDslFactory extends EFactory
    * @generated
    */
   DataTypeSpecifier createDataTypeSpecifier();
-
-  /**
-   * Returns a new object of class '<em>Typedef Ref</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Typedef Ref</em>'.
-   * @generated
-   */
-  TypedefRef createTypedefRef();
 
   /**
    * Returns a new object of class '<em>Pod Specifier</em>'.

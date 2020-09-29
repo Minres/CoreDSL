@@ -24,7 +24,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface TypeOrVarDeclaration extends Declaration, DeclarationSpecifier, AttributeList
+public interface TypeOrVarDeclaration extends Declaration, DeclarationSpecifier
 {
   /**
    * Returns the value of the '<em><b>Type</b></em>' containment reference.

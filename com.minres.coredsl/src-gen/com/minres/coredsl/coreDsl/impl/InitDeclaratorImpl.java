@@ -3,19 +3,27 @@
  */
 package com.minres.coredsl.coreDsl.impl;
 
+import com.minres.coredsl.coreDsl.Attribute;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.DirectDeclarator;
 import com.minres.coredsl.coreDsl.InitDeclarator;
 import com.minres.coredsl.coreDsl.Initializer;
 
+import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -26,6 +34,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * </p>
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.InitDeclaratorImpl#getDeclarator <em>Declarator</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.InitDeclaratorImpl#getAttrs <em>Attrs</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.InitDeclaratorImpl#getInitializer <em>Initializer</em>}</li>
  * </ul>
  *
@@ -42,6 +51,16 @@ public class InitDeclaratorImpl extends MinimalEObjectImpl.Container implements 
    * @ordered
    */
   protected DirectDeclarator declarator;
+
+  /**
+   * The cached value of the '{@link #getAttrs() <em>Attrs</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getAttrs()
+   * @generated
+   * @ordered
+   */
+  protected EList<Attribute> attrs;
 
   /**
    * The cached value of the '{@link #getInitializer() <em>Initializer</em>}' containment reference.
@@ -130,6 +149,21 @@ public class InitDeclaratorImpl extends MinimalEObjectImpl.Container implements 
    * @generated
    */
   @Override
+  public EList<Attribute> getAttrs()
+  {
+    if (attrs == null)
+    {
+      attrs = new EObjectContainmentEList<Attribute>(Attribute.class, this, CoreDslPackage.INIT_DECLARATOR__ATTRS);
+    }
+    return attrs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Initializer getInitializer()
   {
     return initializer;
@@ -186,6 +220,8 @@ public class InitDeclaratorImpl extends MinimalEObjectImpl.Container implements 
     {
       case CoreDslPackage.INIT_DECLARATOR__DECLARATOR:
         return basicSetDeclarator(null, msgs);
+      case CoreDslPackage.INIT_DECLARATOR__ATTRS:
+        return ((InternalEList<?>)getAttrs()).basicRemove(otherEnd, msgs);
       case CoreDslPackage.INIT_DECLARATOR__INITIALIZER:
         return basicSetInitializer(null, msgs);
     }
@@ -204,6 +240,8 @@ public class InitDeclaratorImpl extends MinimalEObjectImpl.Container implements 
     {
       case CoreDslPackage.INIT_DECLARATOR__DECLARATOR:
         return getDeclarator();
+      case CoreDslPackage.INIT_DECLARATOR__ATTRS:
+        return getAttrs();
       case CoreDslPackage.INIT_DECLARATOR__INITIALIZER:
         return getInitializer();
     }
@@ -215,6 +253,7 @@ public class InitDeclaratorImpl extends MinimalEObjectImpl.Container implements 
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
@@ -222,6 +261,10 @@ public class InitDeclaratorImpl extends MinimalEObjectImpl.Container implements 
     {
       case CoreDslPackage.INIT_DECLARATOR__DECLARATOR:
         setDeclarator((DirectDeclarator)newValue);
+        return;
+      case CoreDslPackage.INIT_DECLARATOR__ATTRS:
+        getAttrs().clear();
+        getAttrs().addAll((Collection<? extends Attribute>)newValue);
         return;
       case CoreDslPackage.INIT_DECLARATOR__INITIALIZER:
         setInitializer((Initializer)newValue);
@@ -243,6 +286,9 @@ public class InitDeclaratorImpl extends MinimalEObjectImpl.Container implements 
       case CoreDslPackage.INIT_DECLARATOR__DECLARATOR:
         setDeclarator((DirectDeclarator)null);
         return;
+      case CoreDslPackage.INIT_DECLARATOR__ATTRS:
+        getAttrs().clear();
+        return;
       case CoreDslPackage.INIT_DECLARATOR__INITIALIZER:
         setInitializer((Initializer)null);
         return;
@@ -262,6 +308,8 @@ public class InitDeclaratorImpl extends MinimalEObjectImpl.Container implements 
     {
       case CoreDslPackage.INIT_DECLARATOR__DECLARATOR:
         return declarator != null;
+      case CoreDslPackage.INIT_DECLARATOR__ATTRS:
+        return attrs != null && !attrs.isEmpty();
       case CoreDslPackage.INIT_DECLARATOR__INITIALIZER:
         return initializer != null;
     }

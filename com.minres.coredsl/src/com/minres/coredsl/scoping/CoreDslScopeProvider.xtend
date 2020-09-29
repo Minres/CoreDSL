@@ -7,7 +7,7 @@ import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.InstructionSet
-import com.minres.coredsl.coreDsl.TypedefDeclaration
+//import com.minres.coredsl.coreDsl.TypedefDeclaration
 import com.minres.coredsl.coreDsl.VariableRef
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
@@ -29,10 +29,10 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 		if(reference.EReferenceType.name=="VariableRef") {
 			val isa = context.parentOfType(ISA) as ISA
         	return Scopes.scopeFor(isa.allOfType(VariableRef))
-    	} else if(reference.EReferenceType.name=="TypedefDeclaration") {
-		  	val isa = context.parentOfType(ISA) as ISA
-		  	val res = isa.allOfType(TypedefDeclaration)
-		  	return Scopes.scopeFor(res)
+//    	} else if(reference.EReferenceType.name=="TypedefDeclaration") {
+//		  	val isa = context.parentOfType(ISA) as ISA
+//		  	val res = isa.allOfType(TypedefDeclaration)
+//		  	return Scopes.scopeFor(res)
     	} else if(reference.EReferenceType.name=="DirectDeclarator") {
 		  	val isa = context.parentOfType(ISA) as ISA
 		  	return Scopes.scopeFor(isa.allOfType(DirectDeclarator))
