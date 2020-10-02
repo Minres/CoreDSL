@@ -1,0 +1,33 @@
+            InstructionSet TestISA {
+                registers {
+                	int PC;
+                	int X[32];
+                    unsigned int count, endpc, startpc;
+                }
+                functions {
+                    void doZOL(){      
+                        bool zolactive = true; 
+                        while (zolactive) {         // keep executing while condition is true
+                            if (PC == endpc) {      // evaluate loop body once per clock cycle
+                                if (count != 0) {
+                                    --count;
+                                    PC = startpc;   // jump to loop start
+                                } else
+                                    zolactive = false;  // iteration limit reached, stop execution
+                            }
+                        }
+                    }
+                }
+                instructions {
+                    LP_SETUPI {
+                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        args_disass:"{name(rs1)}, {name(rs2)}";
+                        behavior: {
+                            count   = X[rs1];
+                            endpc   = PC + 4 + X[rs2]<<2; // use PC relative addressing to save bits
+                            startpc = PC + 4; 
+                            spawn doZOL(); // Keep running after LPSETUPI ends
+                        }
+                    }
+                }
+            }
