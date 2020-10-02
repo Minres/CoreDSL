@@ -44,24 +44,24 @@ class CoreDslGenerationTest{
                 } 
                 instructions { 
                     ADDI {
-                        encoding: imm[11:0] | rs1[4:0] | b000 | rd[4:0] | b0010011;
+                        encoding: imm[11:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0010011;
                         if(rd!=0) X[rd] <= X[rs1] + sext(imm, XLEN);
                     }
                     SLTI {
-                        encoding: imm[11:0] | rs1[4:0] | b010 | rd[4:0] | b0010011;
+                        encoding: imm[11:0] :: rs1[4:0] :: b010 :: rd[4:0] :: b0010011;
                         if(rd!=0) X[rd] <= choose(X[rs1]s < sext(imm, XLEN), 1, 0);
                     }
                     SLTIU {
-                        encoding: imm[11:0] | rs1[4:0] | b011 | rd[4:0] | b0010011;
+                        encoding: imm[11:0] :: rs1[4:0] :: b011 :: rd[4:0] :: b0010011;
                         if(rd!=0) X[rd] <= choose(X[rs1] < zext(imm, XLEN), 1, 0);
                     }
                     SW {
-                        encoding: imm[11:5] | rs2[4:0] | rs1[4:0] | b010 | imm[4:0] | b0100011;
+                        encoding: imm[11:5] :: rs2[4:0] :: rs1[4:0] :: b010 :: imm[4:0] :: b0100011;
                         val offs[32] <= X[rs1]s + sext(imm, XLEN);
                         MEM[offs] <= X[rs2];
                     }
                     JAL(no_cont) {
-                            encoding: imm[20:20]s | imm[10:1]s | imm[11:11]s | imm[19:12]s | rd[4:0] | b1101111;
+                            encoding: imm[20:20]s :: imm[10:1]s :: imm[11:11]s :: imm[19:12]s :: rd[4:0] :: b1101111;
                             if(rd!=0) X[rd] <= PC+4;
                             PC<=PC+sext(imm);
                     }

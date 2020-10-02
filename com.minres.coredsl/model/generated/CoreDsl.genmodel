@@ -258,14 +258,9 @@
     <genClasses ecoreClass="CoreDsl.ecore#//Constant"/>
     <genClasses ecoreClass="CoreDsl.ecore#//IntegerConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//IntegerConstant/val"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//IntegerConstant/unsigned"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//IntegerConstant/long"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//IntegerConstant/longlong"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//FloatingConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//FloatingConstant/val"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//FloatingConstant/f"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//FloatingConstant/l"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//BoolConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//BoolConstant/val"/>

@@ -15,8 +15,6 @@ import java.math.BigDecimal;
  * </p>
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.FloatingConstant#getVal <em>Val</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.FloatingConstant#isF <em>F</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.FloatingConstant#isL <em>L</em>}</li>
  * </ul>
  *
  * @see com.minres.coredsl.coreDsl.CoreDslPackage#getFloatingConstant()
@@ -46,49 +44,5 @@ public interface FloatingConstant extends Constant
    * @generated
    */
   void setVal(BigDecimal value);
-
-  /**
-   * Returns the value of the '<em><b>F</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>F</em>' attribute.
-   * @see #setF(boolean)
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getFloatingConstant_F()
-   * @model
-   * @generated
-   */
-  boolean isF();
-
-  /**
-   * Sets the value of the '{@link com.minres.coredsl.coreDsl.FloatingConstant#isF <em>F</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>F</em>' attribute.
-   * @see #isF()
-   * @generated
-   */
-  void setF(boolean value);
-
-  /**
-   * Returns the value of the '<em><b>L</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>L</em>' attribute.
-   * @see #setL(boolean)
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getFloatingConstant_L()
-   * @model
-   * @generated
-   */
-  boolean isL();
-
-  /**
-   * Sets the value of the '{@link com.minres.coredsl.coreDsl.FloatingConstant#isL <em>L</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>L</em>' attribute.
-   * @see #isL()
-   * @generated
-   */
-  void setL(boolean value);
 
 } // FloatingConstant

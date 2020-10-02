@@ -14,32 +14,32 @@ InstructionSet RV32I {
     }
     instructions { 
        ADDI {
-            encoding: imm[11:0] | rs1[4:0] | b000 | rd[4:0] | b0010011;
+            encoding: imm[11:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0010011;
             behavior: {
             	X[rd] = X[rs1] + (int)imm;            
             }
         }
         SLTI {
-            encoding: imm[11:0] | rs1[4:0] | b010 | rd[4:0] | b0010011;
+            encoding: imm[11:0] :: rs1[4:0] :: b010 :: rd[4:0] :: b0010011;
             behavior: {
 	            X[rd] = X[rs1] < (int)imm? 1 : 0;	            
             }
         }
         SLTIU {
-            encoding: imm[11:0] | rs1[4:0] | b011 | rd[4:0] | b0010011;
+            encoding: imm[11:0] :: rs1[4:0] :: b011 :: rd[4:0] :: b0010011;
             behavior: {
 	            X[rd] = X[rs1] < (int)imm? 1 : 0;
             }
         }
         SW {
-            encoding: imm[11:5] | rs2[4:0] | rs1[4:0] | b010 | imm[4:0] | b0100011;
+            encoding: imm[11:5] :: rs2[4:0] :: rs1[4:0] :: b010 :: imm[4:0] :: b0100011;
             behavior: {
 	            int offset =  X[rs1] + (int)imm;
 	            MEM[offset] = X[rs2];
             }
         }
         JAL[[no_cont]] {
-            encoding:imm[20:20]s | imm[10:1]s | imm[11:11]s | imm[19:12]s | rd[4:0] | b1101111;
+            encoding:imm[20:20]s :: imm[10:1]s :: imm[11:11]s :: imm[19:12]s :: rd[4:0] :: b1101111;
             behavior: {
                 if(rd!=0) X[rd] = (unsigned)PC;
                 PC = PC+imm;

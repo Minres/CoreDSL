@@ -2587,40 +2587,13 @@ public interface CoreDslPackage extends EPackage
   int INTEGER_CONSTANT__VAL = CONSTANT_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Unsigned</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INTEGER_CONSTANT__UNSIGNED = CONSTANT_FEATURE_COUNT + 1;
-
-  /**
-   * The feature id for the '<em><b>Long</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INTEGER_CONSTANT__LONG = CONSTANT_FEATURE_COUNT + 2;
-
-  /**
-   * The feature id for the '<em><b>Longlong</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INTEGER_CONSTANT__LONGLONG = CONSTANT_FEATURE_COUNT + 3;
-
-  /**
    * The number of structural features of the '<em>Integer Constant</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int INTEGER_CONSTANT_FEATURE_COUNT = CONSTANT_FEATURE_COUNT + 4;
+  int INTEGER_CONSTANT_FEATURE_COUNT = CONSTANT_FEATURE_COUNT + 1;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.FloatingConstantImpl <em>Floating Constant</em>}' class.
@@ -2642,31 +2615,13 @@ public interface CoreDslPackage extends EPackage
   int FLOATING_CONSTANT__VAL = CONSTANT_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>F</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FLOATING_CONSTANT__F = CONSTANT_FEATURE_COUNT + 1;
-
-  /**
-   * The feature id for the '<em><b>L</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FLOATING_CONSTANT__L = CONSTANT_FEATURE_COUNT + 2;
-
-  /**
    * The number of structural features of the '<em>Floating Constant</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int FLOATING_CONSTANT_FEATURE_COUNT = CONSTANT_FEATURE_COUNT + 3;
+  int FLOATING_CONSTANT_FEATURE_COUNT = CONSTANT_FEATURE_COUNT + 1;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.BoolConstantImpl <em>Bool Constant</em>}' class.
@@ -4672,39 +4627,6 @@ public interface CoreDslPackage extends EPackage
   EAttribute getIntegerConstant_Val();
 
   /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.IntegerConstant#isUnsigned <em>Unsigned</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Unsigned</em>'.
-   * @see com.minres.coredsl.coreDsl.IntegerConstant#isUnsigned()
-   * @see #getIntegerConstant()
-   * @generated
-   */
-  EAttribute getIntegerConstant_Unsigned();
-
-  /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.IntegerConstant#isLong <em>Long</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Long</em>'.
-   * @see com.minres.coredsl.coreDsl.IntegerConstant#isLong()
-   * @see #getIntegerConstant()
-   * @generated
-   */
-  EAttribute getIntegerConstant_Long();
-
-  /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.IntegerConstant#isLonglong <em>Longlong</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Longlong</em>'.
-   * @see com.minres.coredsl.coreDsl.IntegerConstant#isLonglong()
-   * @see #getIntegerConstant()
-   * @generated
-   */
-  EAttribute getIntegerConstant_Longlong();
-
-  /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.FloatingConstant <em>Floating Constant</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4724,28 +4646,6 @@ public interface CoreDslPackage extends EPackage
    * @generated
    */
   EAttribute getFloatingConstant_Val();
-
-  /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.FloatingConstant#isF <em>F</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>F</em>'.
-   * @see com.minres.coredsl.coreDsl.FloatingConstant#isF()
-   * @see #getFloatingConstant()
-   * @generated
-   */
-  EAttribute getFloatingConstant_F();
-
-  /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.FloatingConstant#isL <em>L</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>L</em>'.
-   * @see com.minres.coredsl.coreDsl.FloatingConstant#isL()
-   * @see #getFloatingConstant()
-   * @generated
-   */
-  EAttribute getFloatingConstant_L();
 
   /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.BoolConstant <em>Bool Constant</em>}'.
@@ -6388,30 +6288,6 @@ public interface CoreDslPackage extends EPackage
     EAttribute INTEGER_CONSTANT__VAL = eINSTANCE.getIntegerConstant_Val();
 
     /**
-     * The meta object literal for the '<em><b>Unsigned</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute INTEGER_CONSTANT__UNSIGNED = eINSTANCE.getIntegerConstant_Unsigned();
-
-    /**
-     * The meta object literal for the '<em><b>Long</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute INTEGER_CONSTANT__LONG = eINSTANCE.getIntegerConstant_Long();
-
-    /**
-     * The meta object literal for the '<em><b>Longlong</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute INTEGER_CONSTANT__LONGLONG = eINSTANCE.getIntegerConstant_Longlong();
-
-    /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.FloatingConstantImpl <em>Floating Constant</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -6428,22 +6304,6 @@ public interface CoreDslPackage extends EPackage
      * @generated
      */
     EAttribute FLOATING_CONSTANT__VAL = eINSTANCE.getFloatingConstant_Val();
-
-    /**
-     * The meta object literal for the '<em><b>F</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute FLOATING_CONSTANT__F = eINSTANCE.getFloatingConstant_F();
-
-    /**
-     * The meta object literal for the '<em><b>L</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute FLOATING_CONSTANT__L = eINSTANCE.getFloatingConstant_L();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.BoolConstantImpl <em>Bool Constant</em>}' class.

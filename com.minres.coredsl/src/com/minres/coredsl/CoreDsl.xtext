@@ -391,11 +391,11 @@ Constant
     ;
 
 IntegerConstant hidden(WS)
-    :   val=INTEGER unsigned?=('u'|'U')? (long?=('l'|'L') longlong?=('l'|'L')?)?
+    :   val=INTEGER// unsigned?=('u'|'U')? (long?=('l'|'L') longlong?=('l'|'L')?)?
     ;
 
 FloatingConstant hidden(WS)
-    :  	val=FLOAT (f?=('f'|'F') | l?=('l'|'L'))?
+    :  	val=FLOAT// (f?=('f'|'F') | l?=('l'|'L'))?
     ;
     
 BoolConstant
@@ -446,9 +446,9 @@ terminal VLOGVAL: VLOGINT;
 
 terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false' ;
 
-terminal FLOAT returns ecore::EBigDecimal:  (('0'..'9')+ '.' ('0'..'9')*) (('e' | 'E') ('+' | '-')? ('0'..'9')+)?;
+terminal FLOAT returns ecore::EBigDecimal:  (('0'..'9')+ '.' ('0'..'9')*) (('e' | 'E') ('+' | '-')? ('0'..'9')+)? ('f'|'F'|'l'|'L')?;
 
-terminal INTEGER returns ecore::EBigInteger:  (BINARYINT) | (HEXADECIMALINT) | (OCTALINT) | (DECIMALINT);
+terminal INTEGER returns ecore::EBigInteger:  (BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT) ('u'|'U')? ('l'|'L' ('l'|'L')?)?;
 
 terminal fragment BINARYINT:	('0b' | '0B') '0'..'1' (('_')? '0'..'1')*;
 

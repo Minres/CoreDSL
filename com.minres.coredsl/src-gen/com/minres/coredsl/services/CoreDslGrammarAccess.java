@@ -3839,129 +3839,35 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	public class IntegerConstantElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.IntegerConstant");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Assignment cValAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cValINTEGERTerminalRuleCall_0_0 = (RuleCall)cValAssignment_0.eContents().get(0);
-		private final Assignment cUnsignedAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final Alternatives cUnsignedAlternatives_1_0 = (Alternatives)cUnsignedAssignment_1.eContents().get(0);
-		private final Keyword cUnsignedUKeyword_1_0_0 = (Keyword)cUnsignedAlternatives_1_0.eContents().get(0);
-		private final Keyword cUnsignedUKeyword_1_0_1 = (Keyword)cUnsignedAlternatives_1_0.eContents().get(1);
-		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Assignment cLongAssignment_2_0 = (Assignment)cGroup_2.eContents().get(0);
-		private final Alternatives cLongAlternatives_2_0_0 = (Alternatives)cLongAssignment_2_0.eContents().get(0);
-		private final Keyword cLongLKeyword_2_0_0_0 = (Keyword)cLongAlternatives_2_0_0.eContents().get(0);
-		private final Keyword cLongLKeyword_2_0_0_1 = (Keyword)cLongAlternatives_2_0_0.eContents().get(1);
-		private final Assignment cLonglongAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final Alternatives cLonglongAlternatives_2_1_0 = (Alternatives)cLonglongAssignment_2_1.eContents().get(0);
-		private final Keyword cLonglongLKeyword_2_1_0_0 = (Keyword)cLonglongAlternatives_2_1_0.eContents().get(0);
-		private final Keyword cLonglongLKeyword_2_1_0_1 = (Keyword)cLonglongAlternatives_2_1_0.eContents().get(1);
+		private final Assignment cValAssignment = (Assignment)rule.eContents().get(1);
+		private final RuleCall cValINTEGERTerminalRuleCall_0 = (RuleCall)cValAssignment.eContents().get(0);
 		
 		//IntegerConstant hidden(WS):
-		//	val=INTEGER unsigned?=('u' | 'U')? (long?=('l' | 'L') longlong?=('l' | 'L')?)?;
+		//	val=INTEGER // unsigned?=('u'|'U')? (long?=('l'|'L') longlong?=('l'|'L')?)?
+		//;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//val=INTEGER unsigned?=('u' | 'U')? (long?=('l' | 'L') longlong?=('l' | 'L')?)?
-		public Group getGroup() { return cGroup; }
-		
 		//val=INTEGER
-		public Assignment getValAssignment_0() { return cValAssignment_0; }
+		public Assignment getValAssignment() { return cValAssignment; }
 		
 		//INTEGER
-		public RuleCall getValINTEGERTerminalRuleCall_0_0() { return cValINTEGERTerminalRuleCall_0_0; }
-		
-		//unsigned?=('u' | 'U')?
-		public Assignment getUnsignedAssignment_1() { return cUnsignedAssignment_1; }
-		
-		//('u' | 'U')
-		public Alternatives getUnsignedAlternatives_1_0() { return cUnsignedAlternatives_1_0; }
-		
-		//'u'
-		public Keyword getUnsignedUKeyword_1_0_0() { return cUnsignedUKeyword_1_0_0; }
-		
-		//'U'
-		public Keyword getUnsignedUKeyword_1_0_1() { return cUnsignedUKeyword_1_0_1; }
-		
-		//(long?=('l' | 'L') longlong?=('l' | 'L')?)?
-		public Group getGroup_2() { return cGroup_2; }
-		
-		//long?=('l' | 'L')
-		public Assignment getLongAssignment_2_0() { return cLongAssignment_2_0; }
-		
-		//('l' | 'L')
-		public Alternatives getLongAlternatives_2_0_0() { return cLongAlternatives_2_0_0; }
-		
-		//'l'
-		public Keyword getLongLKeyword_2_0_0_0() { return cLongLKeyword_2_0_0_0; }
-		
-		//'L'
-		public Keyword getLongLKeyword_2_0_0_1() { return cLongLKeyword_2_0_0_1; }
-		
-		//longlong?=('l' | 'L')?
-		public Assignment getLonglongAssignment_2_1() { return cLonglongAssignment_2_1; }
-		
-		//('l' | 'L')
-		public Alternatives getLonglongAlternatives_2_1_0() { return cLonglongAlternatives_2_1_0; }
-		
-		//'l'
-		public Keyword getLonglongLKeyword_2_1_0_0() { return cLonglongLKeyword_2_1_0_0; }
-		
-		//'L'
-		public Keyword getLonglongLKeyword_2_1_0_1() { return cLonglongLKeyword_2_1_0_1; }
+		public RuleCall getValINTEGERTerminalRuleCall_0() { return cValINTEGERTerminalRuleCall_0; }
 	}
 	public class FloatingConstantElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.FloatingConstant");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Assignment cValAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cValFLOATTerminalRuleCall_0_0 = (RuleCall)cValAssignment_0.eContents().get(0);
-		private final Alternatives cAlternatives_1 = (Alternatives)cGroup.eContents().get(1);
-		private final Assignment cFAssignment_1_0 = (Assignment)cAlternatives_1.eContents().get(0);
-		private final Alternatives cFAlternatives_1_0_0 = (Alternatives)cFAssignment_1_0.eContents().get(0);
-		private final Keyword cFFKeyword_1_0_0_0 = (Keyword)cFAlternatives_1_0_0.eContents().get(0);
-		private final Keyword cFFKeyword_1_0_0_1 = (Keyword)cFAlternatives_1_0_0.eContents().get(1);
-		private final Assignment cLAssignment_1_1 = (Assignment)cAlternatives_1.eContents().get(1);
-		private final Alternatives cLAlternatives_1_1_0 = (Alternatives)cLAssignment_1_1.eContents().get(0);
-		private final Keyword cLLKeyword_1_1_0_0 = (Keyword)cLAlternatives_1_1_0.eContents().get(0);
-		private final Keyword cLLKeyword_1_1_0_1 = (Keyword)cLAlternatives_1_1_0.eContents().get(1);
+		private final Assignment cValAssignment = (Assignment)rule.eContents().get(1);
+		private final RuleCall cValFLOATTerminalRuleCall_0 = (RuleCall)cValAssignment.eContents().get(0);
 		
 		//FloatingConstant hidden(WS):
-		//	val=FLOAT (f?=('f' | 'F') | l?=('l' | 'L'))?;
+		//	val=FLOAT // (f?=('f'|'F') | l?=('l'|'L'))?
+		//;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//val=FLOAT (f?=('f' | 'F') | l?=('l' | 'L'))?
-		public Group getGroup() { return cGroup; }
-		
 		//val=FLOAT
-		public Assignment getValAssignment_0() { return cValAssignment_0; }
+		public Assignment getValAssignment() { return cValAssignment; }
 		
 		//FLOAT
-		public RuleCall getValFLOATTerminalRuleCall_0_0() { return cValFLOATTerminalRuleCall_0_0; }
-		
-		//(f?=('f' | 'F') | l?=('l' | 'L'))?
-		public Alternatives getAlternatives_1() { return cAlternatives_1; }
-		
-		//f?=('f' | 'F')
-		public Assignment getFAssignment_1_0() { return cFAssignment_1_0; }
-		
-		//('f' | 'F')
-		public Alternatives getFAlternatives_1_0_0() { return cFAlternatives_1_0_0; }
-		
-		//'f'
-		public Keyword getFFKeyword_1_0_0_0() { return cFFKeyword_1_0_0_0; }
-		
-		//'F'
-		public Keyword getFFKeyword_1_0_0_1() { return cFFKeyword_1_0_0_1; }
-		
-		//l?=('l' | 'L')
-		public Assignment getLAssignment_1_1() { return cLAssignment_1_1; }
-		
-		//('l' | 'L')
-		public Alternatives getLAlternatives_1_1_0() { return cLAlternatives_1_1_0; }
-		
-		//'l'
-		public Keyword getLLKeyword_1_1_0_0() { return cLLKeyword_1_1_0_0; }
-		
-		//'L'
-		public Keyword getLLKeyword_1_1_0_1() { return cLLKeyword_1_1_0_1; }
+		public RuleCall getValFLOATTerminalRuleCall_0() { return cValFLOATTerminalRuleCall_0; }
 	}
 	public class BoolConstantElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.BoolConstant");
@@ -5494,7 +5400,8 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//IntegerConstant hidden(WS):
-	//	val=INTEGER unsigned?=('u' | 'U')? (long?=('l' | 'L') longlong?=('l' | 'L')?)?;
+	//	val=INTEGER // unsigned?=('u'|'U')? (long?=('l'|'L') longlong?=('l'|'L')?)?
+	//;
 	public IntegerConstantElements getIntegerConstantAccess() {
 		return pIntegerConstant;
 	}
@@ -5504,7 +5411,8 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//FloatingConstant hidden(WS):
-	//	val=FLOAT (f?=('f' | 'F') | l?=('l' | 'L'))?;
+	//	val=FLOAT // (f?=('f'|'F') | l?=('l'|'L'))?
+	//;
 	public FloatingConstantElements getFloatingConstantAccess() {
 		return pFloatingConstant;
 	}
@@ -5664,13 +5572,13 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	}
 	
 	//terminal FLOAT returns ecore::EBigDecimal:
-	//	('0'..'9'+ '.' '0'..'9'*) (('e' | 'E') ('+' | '-')? '0'..'9'+)?;
+	//	('0'..'9'+ '.' '0'..'9'*) (('e' | 'E') ('+' | '-')? '0'..'9'+)? ('f' | 'F' | 'l' | 'L')?;
 	public TerminalRule getFLOATRule() {
 		return tFLOAT;
 	}
 	
 	//terminal INTEGER returns ecore::EBigInteger:
-	//	BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT;
+	//	(BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT) ('u' | 'U')? ('l' | 'L' ('l' | 'L')?)?;
 	public TerminalRule getINTEGERRule() {
 		return tINTEGER;
 	}

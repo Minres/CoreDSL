@@ -992,41 +992,11 @@ ruleConstant:
 // Rule IntegerConstant
 ruleIntegerConstant:
 	RULE_INTEGER
-	(
-		'u'
-		    |
-		'U'
-	)?
-	(
-		(
-			'l'
-			    |
-			'L'
-		)
-		(
-			'l'
-			    |
-			'L'
-		)?
-	)?
 ;
 
 // Rule FloatingConstant
 ruleFloatingConstant:
 	RULE_FLOAT
-	(
-		(
-			'f'
-			    |
-			'F'
-		)
-		    |
-		(
-			'l'
-			    |
-			'L'
-		)
-	)?
 ;
 
 // Rule BoolConstant
@@ -1159,9 +1129,9 @@ RULE_VLOGVAL : RULE_VLOGINT;
 
 RULE_BOOLEAN : ('true'|'false');
 
-RULE_FLOAT : ('0'..'9')+ '.' ('0'..'9')* (('e'|'E') ('+'|'-')? ('0'..'9')+)?;
+RULE_FLOAT : ('0'..'9')+ '.' ('0'..'9')* (('e'|'E') ('+'|'-')? ('0'..'9')+)? ('f'|'F'|'l'|'L')?;
 
-RULE_INTEGER : (RULE_BINARYINT|RULE_HEXADECIMALINT|RULE_OCTALINT|RULE_DECIMALINT);
+RULE_INTEGER : (RULE_BINARYINT|RULE_HEXADECIMALINT|RULE_OCTALINT|RULE_DECIMALINT) ('u'|'U')? ('l'|'L' ('l'|'L')?)?;
 
 fragment RULE_BINARYINT : ('0b'|'0B') '0'..'1' ('_'? '0'..'1')*;
 

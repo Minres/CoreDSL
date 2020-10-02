@@ -982,10 +982,16 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     FloatingConstant returns FloatingConstant
 	 *
 	 * Constraint:
-	 *     (val=FLOAT (f?='f' | f?='F' | l?='l' | l?='L')?)
+	 *     val=FLOAT
 	 */
 	protected void sequence_FloatingConstant(ISerializationContext context, FloatingConstant semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.FLOATING_CONSTANT__VAL) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.FLOATING_CONSTANT__VAL));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getFloatingConstantAccess().getValFLOATTerminalRuleCall_0(), semanticObject.getVal());
+		feeder.finish();
 	}
 	
 	
@@ -1129,10 +1135,16 @@ public class CoreDslSemanticSequencer extends AbstractDelegatingSemanticSequence
 	 *     IntegerConstant returns IntegerConstant
 	 *
 	 * Constraint:
-	 *     (val=INTEGER (unsigned?='u' | unsigned?='U')? ((long?='l' | long?='L') (longlong?='l' | longlong?='L')?)?)
+	 *     val=INTEGER
 	 */
 	protected void sequence_IntegerConstant(ISerializationContext context, IntegerConstant semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, CoreDslPackage.Literals.INTEGER_CONSTANT__VAL) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, CoreDslPackage.Literals.INTEGER_CONSTANT__VAL));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getIntegerConstantAccess().getValINTEGERTerminalRuleCall_0(), semanticObject.getVal());
+		feeder.finish();
 	}
 	
 	

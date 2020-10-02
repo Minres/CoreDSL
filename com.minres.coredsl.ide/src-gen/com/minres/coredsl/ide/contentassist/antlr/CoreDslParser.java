@@ -73,12 +73,6 @@ public class CoreDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getVariableRefAccess().getAlternatives(), "rule__VariableRef__Alternatives");
 			builder.put(grammarAccess.getEncodingPrefixAccess().getPrefixAlternatives_0(), "rule__EncodingPrefix__PrefixAlternatives_0");
 			builder.put(grammarAccess.getConstantAccess().getAlternatives(), "rule__Constant__Alternatives");
-			builder.put(grammarAccess.getIntegerConstantAccess().getUnsignedAlternatives_1_0(), "rule__IntegerConstant__UnsignedAlternatives_1_0");
-			builder.put(grammarAccess.getIntegerConstantAccess().getLongAlternatives_2_0_0(), "rule__IntegerConstant__LongAlternatives_2_0_0");
-			builder.put(grammarAccess.getIntegerConstantAccess().getLonglongAlternatives_2_1_0(), "rule__IntegerConstant__LonglongAlternatives_2_1_0");
-			builder.put(grammarAccess.getFloatingConstantAccess().getAlternatives_1(), "rule__FloatingConstant__Alternatives_1");
-			builder.put(grammarAccess.getFloatingConstantAccess().getFAlternatives_1_0_0(), "rule__FloatingConstant__FAlternatives_1_0_0");
-			builder.put(grammarAccess.getFloatingConstantAccess().getLAlternatives_1_1_0(), "rule__FloatingConstant__LAlternatives_1_1_0");
 			builder.put(grammarAccess.getCharacterConstantAccess().getAlternatives(), "rule__CharacterConstant__Alternatives");
 			builder.put(grammarAccess.getDataTypesAccess().getAlternatives(), "rule__DataTypes__Alternatives");
 			builder.put(grammarAccess.getTypeQualifierAccess().getAlternatives(), "rule__TypeQualifier__Alternatives");
@@ -213,9 +207,6 @@ public class CoreDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getPostfixOperatorAccess().getGroup_3(), "rule__PostfixOperator__Group_3__0");
 			builder.put(grammarAccess.getPrimaryExpressionAccess().getGroup_3(), "rule__PrimaryExpression__Group_3__0");
 			builder.put(grammarAccess.getStringLiteralAccess().getGroup(), "rule__StringLiteral__Group__0");
-			builder.put(grammarAccess.getIntegerConstantAccess().getGroup(), "rule__IntegerConstant__Group__0");
-			builder.put(grammarAccess.getIntegerConstantAccess().getGroup_2(), "rule__IntegerConstant__Group_2__0");
-			builder.put(grammarAccess.getFloatingConstantAccess().getGroup(), "rule__FloatingConstant__Group__0");
 			builder.put(grammarAccess.getCharacterConstantAccess().getGroup_1(), "rule__CharacterConstant__Group_1__0");
 			builder.put(grammarAccess.getCharacterConstantAccess().getGroup_2(), "rule__CharacterConstant__Group_2__0");
 			builder.put(grammarAccess.getCharacterConstantAccess().getGroup_3(), "rule__CharacterConstant__Group_3__0");
@@ -399,13 +390,8 @@ public class CoreDslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getPrimaryExpressionAccess().getLeftAssignment_3_1(), "rule__PrimaryExpression__LeftAssignment_3_1");
 			builder.put(grammarAccess.getStringLiteralAccess().getValAssignment_1(), "rule__StringLiteral__ValAssignment_1");
 			builder.put(grammarAccess.getEncodingPrefixAccess().getPrefixAssignment(), "rule__EncodingPrefix__PrefixAssignment");
-			builder.put(grammarAccess.getIntegerConstantAccess().getValAssignment_0(), "rule__IntegerConstant__ValAssignment_0");
-			builder.put(grammarAccess.getIntegerConstantAccess().getUnsignedAssignment_1(), "rule__IntegerConstant__UnsignedAssignment_1");
-			builder.put(grammarAccess.getIntegerConstantAccess().getLongAssignment_2_0(), "rule__IntegerConstant__LongAssignment_2_0");
-			builder.put(grammarAccess.getIntegerConstantAccess().getLonglongAssignment_2_1(), "rule__IntegerConstant__LonglongAssignment_2_1");
-			builder.put(grammarAccess.getFloatingConstantAccess().getValAssignment_0(), "rule__FloatingConstant__ValAssignment_0");
-			builder.put(grammarAccess.getFloatingConstantAccess().getFAssignment_1_0(), "rule__FloatingConstant__FAssignment_1_0");
-			builder.put(grammarAccess.getFloatingConstantAccess().getLAssignment_1_1(), "rule__FloatingConstant__LAssignment_1_1");
+			builder.put(grammarAccess.getIntegerConstantAccess().getValAssignment(), "rule__IntegerConstant__ValAssignment");
+			builder.put(grammarAccess.getFloatingConstantAccess().getValAssignment(), "rule__FloatingConstant__ValAssignment");
 			builder.put(grammarAccess.getBoolConstantAccess().getValAssignment(), "rule__BoolConstant__ValAssignment");
 			builder.put(grammarAccess.getCharacterConstantAccess().getValAssignment_0(), "rule__CharacterConstant__ValAssignment_0");
 			builder.put(grammarAccess.getCharacterConstantAccess().getEncAssignment_1_0(), "rule__CharacterConstant__EncAssignment_1_0");

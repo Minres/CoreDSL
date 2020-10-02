@@ -2472,39 +2472,6 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
    * @generated
    */
   @Override
-  public EAttribute getIntegerConstant_Unsigned()
-  {
-    return (EAttribute)integerConstantEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getIntegerConstant_Long()
-  {
-    return (EAttribute)integerConstantEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getIntegerConstant_Longlong()
-  {
-    return (EAttribute)integerConstantEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EClass getFloatingConstant()
   {
     return floatingConstantEClass;
@@ -2519,28 +2486,6 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
   public EAttribute getFloatingConstant_Val()
   {
     return (EAttribute)floatingConstantEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getFloatingConstant_F()
-  {
-    return (EAttribute)floatingConstantEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getFloatingConstant_L()
-  {
-    return (EAttribute)floatingConstantEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -3006,14 +2951,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
 
     integerConstantEClass = createEClass(INTEGER_CONSTANT);
     createEAttribute(integerConstantEClass, INTEGER_CONSTANT__VAL);
-    createEAttribute(integerConstantEClass, INTEGER_CONSTANT__UNSIGNED);
-    createEAttribute(integerConstantEClass, INTEGER_CONSTANT__LONG);
-    createEAttribute(integerConstantEClass, INTEGER_CONSTANT__LONGLONG);
 
     floatingConstantEClass = createEClass(FLOATING_CONSTANT);
     createEAttribute(floatingConstantEClass, FLOATING_CONSTANT__VAL);
-    createEAttribute(floatingConstantEClass, FLOATING_CONSTANT__F);
-    createEAttribute(floatingConstantEClass, FLOATING_CONSTANT__L);
 
     boolConstantEClass = createEClass(BOOL_CONSTANT);
     createEAttribute(boolConstantEClass, BOOL_CONSTANT__VAL);
@@ -3341,14 +3281,9 @@ public class CoreDslPackageImpl extends EPackageImpl implements CoreDslPackage
 
     initEClass(integerConstantEClass, IntegerConstant.class, "IntegerConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getIntegerConstant_Val(), ecorePackage.getEBigInteger(), "val", null, 0, 1, IntegerConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getIntegerConstant_Unsigned(), ecorePackage.getEBoolean(), "unsigned", null, 0, 1, IntegerConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getIntegerConstant_Long(), ecorePackage.getEBoolean(), "long", null, 0, 1, IntegerConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getIntegerConstant_Longlong(), ecorePackage.getEBoolean(), "longlong", null, 0, 1, IntegerConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(floatingConstantEClass, FloatingConstant.class, "FloatingConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getFloatingConstant_Val(), ecorePackage.getEBigDecimal(), "val", null, 0, 1, FloatingConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getFloatingConstant_F(), ecorePackage.getEBoolean(), "f", null, 0, 1, FloatingConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getFloatingConstant_L(), ecorePackage.getEBoolean(), "l", null, 0, 1, FloatingConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(boolConstantEClass, BoolConstant.class, "BoolConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getBoolConstant_Val(), ecorePackage.getEBoolean(), "val", null, 0, 1, BoolConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

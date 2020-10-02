@@ -23,9 +23,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * </p>
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.IntegerConstantImpl#getVal <em>Val</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.IntegerConstantImpl#isUnsigned <em>Unsigned</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.IntegerConstantImpl#isLong <em>Long</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.IntegerConstantImpl#isLonglong <em>Longlong</em>}</li>
  * </ul>
  *
  * @generated
@@ -51,66 +48,6 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
    * @ordered
    */
   protected BigInteger val = VAL_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #isUnsigned() <em>Unsigned</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isUnsigned()
-   * @generated
-   * @ordered
-   */
-  protected static final boolean UNSIGNED_EDEFAULT = false;
-
-  /**
-   * The cached value of the '{@link #isUnsigned() <em>Unsigned</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isUnsigned()
-   * @generated
-   * @ordered
-   */
-  protected boolean unsigned = UNSIGNED_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #isLong() <em>Long</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isLong()
-   * @generated
-   * @ordered
-   */
-  protected static final boolean LONG_EDEFAULT = false;
-
-  /**
-   * The cached value of the '{@link #isLong() <em>Long</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isLong()
-   * @generated
-   * @ordered
-   */
-  protected boolean long_ = LONG_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #isLonglong() <em>Longlong</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isLonglong()
-   * @generated
-   * @ordered
-   */
-  protected static final boolean LONGLONG_EDEFAULT = false;
-
-  /**
-   * The cached value of the '{@link #isLonglong() <em>Longlong</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isLonglong()
-   * @generated
-   * @ordered
-   */
-  protected boolean longlong = LONGLONG_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -164,93 +101,12 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
    * @generated
    */
   @Override
-  public boolean isUnsigned()
-  {
-    return unsigned;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setUnsigned(boolean newUnsigned)
-  {
-    boolean oldUnsigned = unsigned;
-    unsigned = newUnsigned;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.INTEGER_CONSTANT__UNSIGNED, oldUnsigned, unsigned));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isLong()
-  {
-    return long_;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setLong(boolean newLong)
-  {
-    boolean oldLong = long_;
-    long_ = newLong;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.INTEGER_CONSTANT__LONG, oldLong, long_));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isLonglong()
-  {
-    return longlong;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setLonglong(boolean newLonglong)
-  {
-    boolean oldLonglong = longlong;
-    longlong = newLonglong;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.INTEGER_CONSTANT__LONGLONG, oldLonglong, longlong));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
     switch (featureID)
     {
       case CoreDslPackage.INTEGER_CONSTANT__VAL:
         return getVal();
-      case CoreDslPackage.INTEGER_CONSTANT__UNSIGNED:
-        return isUnsigned();
-      case CoreDslPackage.INTEGER_CONSTANT__LONG:
-        return isLong();
-      case CoreDslPackage.INTEGER_CONSTANT__LONGLONG:
-        return isLonglong();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -267,15 +123,6 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
     {
       case CoreDslPackage.INTEGER_CONSTANT__VAL:
         setVal((BigInteger)newValue);
-        return;
-      case CoreDslPackage.INTEGER_CONSTANT__UNSIGNED:
-        setUnsigned((Boolean)newValue);
-        return;
-      case CoreDslPackage.INTEGER_CONSTANT__LONG:
-        setLong((Boolean)newValue);
-        return;
-      case CoreDslPackage.INTEGER_CONSTANT__LONGLONG:
-        setLonglong((Boolean)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -294,15 +141,6 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
       case CoreDslPackage.INTEGER_CONSTANT__VAL:
         setVal(VAL_EDEFAULT);
         return;
-      case CoreDslPackage.INTEGER_CONSTANT__UNSIGNED:
-        setUnsigned(UNSIGNED_EDEFAULT);
-        return;
-      case CoreDslPackage.INTEGER_CONSTANT__LONG:
-        setLong(LONG_EDEFAULT);
-        return;
-      case CoreDslPackage.INTEGER_CONSTANT__LONGLONG:
-        setLonglong(LONGLONG_EDEFAULT);
-        return;
     }
     super.eUnset(featureID);
   }
@@ -319,12 +157,6 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
     {
       case CoreDslPackage.INTEGER_CONSTANT__VAL:
         return VAL_EDEFAULT == null ? val != null : !VAL_EDEFAULT.equals(val);
-      case CoreDslPackage.INTEGER_CONSTANT__UNSIGNED:
-        return unsigned != UNSIGNED_EDEFAULT;
-      case CoreDslPackage.INTEGER_CONSTANT__LONG:
-        return long_ != LONG_EDEFAULT;
-      case CoreDslPackage.INTEGER_CONSTANT__LONGLONG:
-        return longlong != LONGLONG_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -342,12 +174,6 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
     StringBuilder result = new StringBuilder(super.toString());
     result.append(" (val: ");
     result.append(val);
-    result.append(", unsigned: ");
-    result.append(unsigned);
-    result.append(", long: ");
-    result.append(long_);
-    result.append(", longlong: ");
-    result.append(longlong);
     result.append(')');
     return result.toString();
   }

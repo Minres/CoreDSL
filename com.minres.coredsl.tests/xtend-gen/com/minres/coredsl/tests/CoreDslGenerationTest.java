@@ -89,7 +89,7 @@ public class CoreDslGenerationTest {
       _builder.append("ADDI {");
       _builder.newLine();
       _builder.append("            ");
-      _builder.append("encoding: imm[11:0] | rs1[4:0] | b000 | rd[4:0] | b0010011;");
+      _builder.append("encoding: imm[11:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0010011;");
       _builder.newLine();
       _builder.append("            ");
       _builder.append("if(rd!=0) X[rd] <= X[rs1] + sext(imm, XLEN);");
@@ -101,7 +101,7 @@ public class CoreDslGenerationTest {
       _builder.append("SLTI {");
       _builder.newLine();
       _builder.append("            ");
-      _builder.append("encoding: imm[11:0] | rs1[4:0] | b010 | rd[4:0] | b0010011;");
+      _builder.append("encoding: imm[11:0] :: rs1[4:0] :: b010 :: rd[4:0] :: b0010011;");
       _builder.newLine();
       _builder.append("            ");
       _builder.append("if(rd!=0) X[rd] <= choose(X[rs1]s < sext(imm, XLEN), 1, 0);");
@@ -113,7 +113,7 @@ public class CoreDslGenerationTest {
       _builder.append("SLTIU {");
       _builder.newLine();
       _builder.append("            ");
-      _builder.append("encoding: imm[11:0] | rs1[4:0] | b011 | rd[4:0] | b0010011;");
+      _builder.append("encoding: imm[11:0] :: rs1[4:0] :: b011 :: rd[4:0] :: b0010011;");
       _builder.newLine();
       _builder.append("            ");
       _builder.append("if(rd!=0) X[rd] <= choose(X[rs1] < zext(imm, XLEN), 1, 0);");
@@ -125,7 +125,7 @@ public class CoreDslGenerationTest {
       _builder.append("SW {");
       _builder.newLine();
       _builder.append("            ");
-      _builder.append("encoding: imm[11:5] | rs2[4:0] | rs1[4:0] | b010 | imm[4:0] | b0100011;");
+      _builder.append("encoding: imm[11:5] :: rs2[4:0] :: rs1[4:0] :: b010 :: imm[4:0] :: b0100011;");
       _builder.newLine();
       _builder.append("            ");
       _builder.append("val offs[32] <= X[rs1]s + sext(imm, XLEN);");
@@ -140,7 +140,7 @@ public class CoreDslGenerationTest {
       _builder.append("JAL(no_cont) {");
       _builder.newLine();
       _builder.append("                ");
-      _builder.append("encoding: imm[20:20]s | imm[10:1]s | imm[11:11]s | imm[19:12]s | rd[4:0] | b1101111;");
+      _builder.append("encoding: imm[20:20]s :: imm[10:1]s :: imm[11:11]s :: imm[19:12]s :: rd[4:0] :: b1101111;");
       _builder.newLine();
       _builder.append("                ");
       _builder.append("if(rd!=0) X[rd] <= PC+4;");

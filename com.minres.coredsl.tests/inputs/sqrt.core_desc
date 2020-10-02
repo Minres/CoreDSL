@@ -13,8 +13,7 @@ InstructionSet Vec2D {
                unsigned a3;
                unsigned a4;
            };
-           typedef struct simd simd_t;
-           simd_t reg[32];
+           struct simd reg[32];
     }
     functions{
         double sqrt(float x) {
@@ -34,7 +33,7 @@ InstructionSet Vec2D {
     }
     instructions{
         VectorL{
-            encoding: b10101 | rd[4:0] | rs1[4:0];
+            encoding: b10101 :: rd[4:0] :: rs1[4:0];
             args_disass:"{name(rd)}, {name(rs1)}";
             behavior: {
                 float xc = ISAXRegFile[rs1].vector2d.x_coord;

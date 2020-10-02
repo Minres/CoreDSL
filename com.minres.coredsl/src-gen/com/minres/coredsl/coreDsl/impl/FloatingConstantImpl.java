@@ -23,8 +23,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * </p>
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.FloatingConstantImpl#getVal <em>Val</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.FloatingConstantImpl#isF <em>F</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.FloatingConstantImpl#isL <em>L</em>}</li>
  * </ul>
  *
  * @generated
@@ -50,46 +48,6 @@ public class FloatingConstantImpl extends ConstantImpl implements FloatingConsta
    * @ordered
    */
   protected BigDecimal val = VAL_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #isF() <em>F</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isF()
-   * @generated
-   * @ordered
-   */
-  protected static final boolean F_EDEFAULT = false;
-
-  /**
-   * The cached value of the '{@link #isF() <em>F</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isF()
-   * @generated
-   * @ordered
-   */
-  protected boolean f = F_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #isL() <em>L</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isL()
-   * @generated
-   * @ordered
-   */
-  protected static final boolean L_EDEFAULT = false;
-
-  /**
-   * The cached value of the '{@link #isL() <em>L</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isL()
-   * @generated
-   * @ordered
-   */
-  protected boolean l = L_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -143,66 +101,12 @@ public class FloatingConstantImpl extends ConstantImpl implements FloatingConsta
    * @generated
    */
   @Override
-  public boolean isF()
-  {
-    return f;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setF(boolean newF)
-  {
-    boolean oldF = f;
-    f = newF;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.FLOATING_CONSTANT__F, oldF, f));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean isL()
-  {
-    return l;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setL(boolean newL)
-  {
-    boolean oldL = l;
-    l = newL;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.FLOATING_CONSTANT__L, oldL, l));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
     switch (featureID)
     {
       case CoreDslPackage.FLOATING_CONSTANT__VAL:
         return getVal();
-      case CoreDslPackage.FLOATING_CONSTANT__F:
-        return isF();
-      case CoreDslPackage.FLOATING_CONSTANT__L:
-        return isL();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -219,12 +123,6 @@ public class FloatingConstantImpl extends ConstantImpl implements FloatingConsta
     {
       case CoreDslPackage.FLOATING_CONSTANT__VAL:
         setVal((BigDecimal)newValue);
-        return;
-      case CoreDslPackage.FLOATING_CONSTANT__F:
-        setF((Boolean)newValue);
-        return;
-      case CoreDslPackage.FLOATING_CONSTANT__L:
-        setL((Boolean)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -243,12 +141,6 @@ public class FloatingConstantImpl extends ConstantImpl implements FloatingConsta
       case CoreDslPackage.FLOATING_CONSTANT__VAL:
         setVal(VAL_EDEFAULT);
         return;
-      case CoreDslPackage.FLOATING_CONSTANT__F:
-        setF(F_EDEFAULT);
-        return;
-      case CoreDslPackage.FLOATING_CONSTANT__L:
-        setL(L_EDEFAULT);
-        return;
     }
     super.eUnset(featureID);
   }
@@ -265,10 +157,6 @@ public class FloatingConstantImpl extends ConstantImpl implements FloatingConsta
     {
       case CoreDslPackage.FLOATING_CONSTANT__VAL:
         return VAL_EDEFAULT == null ? val != null : !VAL_EDEFAULT.equals(val);
-      case CoreDslPackage.FLOATING_CONSTANT__F:
-        return f != F_EDEFAULT;
-      case CoreDslPackage.FLOATING_CONSTANT__L:
-        return l != L_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -286,10 +174,6 @@ public class FloatingConstantImpl extends ConstantImpl implements FloatingConsta
     StringBuilder result = new StringBuilder(super.toString());
     result.append(" (val: ");
     result.append(val);
-    result.append(", f: ");
-    result.append(f);
-    result.append(", l: ");
-    result.append(l);
     result.append(')');
     return result.toString();
   }
