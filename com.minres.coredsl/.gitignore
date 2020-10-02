@@ -1,4 +1,5 @@
 target
 *.java_trace
-*.java._trace
+*._trace
 *.xtendbin
+*.xtextbin
