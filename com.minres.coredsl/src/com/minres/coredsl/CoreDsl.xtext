@@ -161,7 +161,7 @@ fragment DeclarationSpecifier
     ;
 
 Attribute
-    :  	DoubleLeftBracket type=DeclarationAttribute ('=' val=ConditionalExpression)? DoubleRightBracket
+    :  	DoubleLeftBracket type=DeclarationAttribute ('=' value=ConditionalExpression)? DoubleRightBracket
     ;
     
 TypeSpecifier
@@ -188,7 +188,7 @@ BitSizeSpecifier
 	;
 
 BitSizeValue
-	:	val+=IntegerConstant
+	:	value+=IntegerConstant
 	|	constant+=[Constant]
 	;
 
@@ -362,18 +362,18 @@ PostfixOperator
 	;
 	
 PrimaryExpression
-    :	ref=[VariableRef]
+    :	ref=[Variable]
     |   constant=Constant
     |   literal+=StringLiteral+
     |   '(' left=ConditionalExpression ')'
     ;
 
-VariableRef hidden()
+Variable hidden()
 	:	FunctionDefinition|DirectDeclarator|Field
 	;
 
 StringLiteral
-    :   EncodingPrefix? val=STRING
+    :   EncodingPrefix? value=STRING
     ;
 
 fragment EncodingPrefix :   prefix= ('u8'|'u'|'U'|'L');
@@ -399,14 +399,14 @@ FloatingConstant hidden(WS)
     ;
     
 BoolConstant
-    :   val=BOOLEAN
+    :   value=BOOLEAN
     ;
     
 CharacterConstant
-    :   val=CHARCONST
-    |   enc="L" val=CHARCONST
-    |   enc="u" val=CHARCONST
-    |   enc="U" val=CHARCONST
+    :   value=CHARCONST
+    |   enc="L" value=CHARCONST
+    |   enc="u" value=CHARCONST
+    |   enc="U" value=CHARCONST
     ;
 
 // the follwoing 2 rules are needed so that XText does not generate a terminal symbol '[[' and '&&'
