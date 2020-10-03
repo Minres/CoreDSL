@@ -1115,8 +1115,6 @@ RULE_RIGHT_BR : ']';
 
 RULE_BVAL : 'b' ('0'..'9')+;
 
-RULE_VLOGVAL : RULE_VLOGINT;
-
 RULE_BOOLEAN : ('true'|'false');
 
 RULE_FLOAT : ('0'..'9')+ '.' ('0'..'9')* (('e'|'E') ('+'|'-')? ('0'..'9')+)? ('f'|'F'|'l'|'L')?;

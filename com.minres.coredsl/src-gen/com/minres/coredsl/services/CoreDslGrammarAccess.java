@@ -4322,7 +4322,6 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	private final TerminalRule tLEFT_BR;
 	private final TerminalRule tRIGHT_BR;
 	private final TerminalRule tBVAL;
-	private final TerminalRule tVLOGVAL;
 	private final TerminalRule tBOOLEAN;
 	private final TerminalRule tFLOAT;
 	private final TerminalRule tINTEGER;
@@ -4434,7 +4433,6 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 		this.tLEFT_BR = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.LEFT_BR");
 		this.tRIGHT_BR = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.RIGHT_BR");
 		this.tBVAL = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.BVAL");
-		this.tVLOGVAL = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.VLOGVAL");
 		this.tBOOLEAN = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.BOOLEAN");
 		this.tFLOAT = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.FLOAT");
 		this.tINTEGER = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.minres.coredsl.CoreDsl.INTEGER");
@@ -5442,12 +5440,6 @@ public class CoreDslGrammarAccess extends AbstractElementFinder.AbstractGrammarE
 	//	'b' '0'..'9'+;
 	public TerminalRule getBVALRule() {
 		return tBVAL;
-	}
-	
-	//terminal VLOGVAL:
-	//	VLOGINT;
-	public TerminalRule getVLOGVALRule() {
-		return tVLOGVAL;
 	}
 	
 	//terminal BOOLEAN returns ecore::EBoolean:

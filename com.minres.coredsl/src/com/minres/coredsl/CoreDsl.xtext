@@ -418,8 +418,6 @@ terminal RIGHT_BR: ']';
 
 terminal BVAL : 'b'('0'..'9')+;
 
-terminal VLOGVAL: VLOGINT;
-
 terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false' ;
 
 terminal FLOAT returns ecore::EBigDecimal:  (('0'..'9')+ '.' ('0'..'9')*) (('e' | 'E') ('+' | '-')? ('0'..'9')+)? ('f'|'F'|'l'|'L')?;
