@@ -13,7 +13,7 @@ import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor;
 @FinalFieldsConstructor
 @SuppressWarnings("all")
 public class CoreDslUiModule extends AbstractCoreDslUiModule {
-  public CoreDslUiModule(final AbstractUIPlugin plugin) {
-    super(plugin);
+  public CoreDslUiModule(final AbstractUIPlugin arg0) {
+    super(arg0);
   }
 }

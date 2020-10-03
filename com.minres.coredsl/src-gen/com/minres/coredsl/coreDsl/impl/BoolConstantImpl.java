@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.BoolConstantImpl#isVal <em>Val</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.BoolConstantImpl#isValue <em>Value</em>}</li>
  * </ul>
  *
  * @generated
@@ -28,24 +28,24 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 public class BoolConstantImpl extends ConstantImpl implements BoolConstant
 {
   /**
-   * The default value of the '{@link #isVal() <em>Val</em>}' attribute.
+   * The default value of the '{@link #isValue() <em>Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isVal()
+   * @see #isValue()
    * @generated
    * @ordered
    */
-  protected static final boolean VAL_EDEFAULT = false;
+  protected static final boolean VALUE_EDEFAULT = false;
 
   /**
-   * The cached value of the '{@link #isVal() <em>Val</em>}' attribute.
+   * The cached value of the '{@link #isValue() <em>Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isVal()
+   * @see #isValue()
    * @generated
    * @ordered
    */
-  protected boolean val = VAL_EDEFAULT;
+  protected boolean value = VALUE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -74,9 +74,9 @@ public class BoolConstantImpl extends ConstantImpl implements BoolConstant
    * @generated
    */
   @Override
-  public boolean isVal()
+  public boolean isValue()
   {
-    return val;
+    return value;
   }
 
   /**
@@ -85,12 +85,12 @@ public class BoolConstantImpl extends ConstantImpl implements BoolConstant
    * @generated
    */
   @Override
-  public void setVal(boolean newVal)
+  public void setValue(boolean newValue)
   {
-    boolean oldVal = val;
-    val = newVal;
+    boolean oldValue = value;
+    value = newValue;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.BOOL_CONSTANT__VAL, oldVal, val));
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.BOOL_CONSTANT__VALUE, oldValue, value));
   }
 
   /**
@@ -103,8 +103,8 @@ public class BoolConstantImpl extends ConstantImpl implements BoolConstant
   {
     switch (featureID)
     {
-      case CoreDslPackage.BOOL_CONSTANT__VAL:
-        return isVal();
+      case CoreDslPackage.BOOL_CONSTANT__VALUE:
+        return isValue();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -119,8 +119,8 @@ public class BoolConstantImpl extends ConstantImpl implements BoolConstant
   {
     switch (featureID)
     {
-      case CoreDslPackage.BOOL_CONSTANT__VAL:
-        setVal((Boolean)newValue);
+      case CoreDslPackage.BOOL_CONSTANT__VALUE:
+        setValue((Boolean)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -136,8 +136,8 @@ public class BoolConstantImpl extends ConstantImpl implements BoolConstant
   {
     switch (featureID)
     {
-      case CoreDslPackage.BOOL_CONSTANT__VAL:
-        setVal(VAL_EDEFAULT);
+      case CoreDslPackage.BOOL_CONSTANT__VALUE:
+        setValue(VALUE_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -153,8 +153,8 @@ public class BoolConstantImpl extends ConstantImpl implements BoolConstant
   {
     switch (featureID)
     {
-      case CoreDslPackage.BOOL_CONSTANT__VAL:
-        return val != VAL_EDEFAULT;
+      case CoreDslPackage.BOOL_CONSTANT__VALUE:
+        return value != VALUE_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -170,8 +170,8 @@ public class BoolConstantImpl extends ConstantImpl implements BoolConstant
     if (eIsProxy()) return super.toString();
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (val: ");
-    result.append(val);
+    result.append(" (value: ");
+    result.append(value);
     result.append(')');
     return result.toString();
   }

@@ -9,7 +9,7 @@ import com.minres.coredsl.coreDsl.CoreDef;
 import com.minres.coredsl.coreDsl.DirectDeclarator;
 import com.minres.coredsl.coreDsl.ISA;
 import com.minres.coredsl.coreDsl.InstructionSet;
-import com.minres.coredsl.coreDsl.VariableRef;
+import com.minres.coredsl.coreDsl.Variable;
 import com.minres.coredsl.scoping.AbstractCoreDslScopeProvider;
 import java.util.List;
 import org.eclipse.emf.common.util.EList;
@@ -33,11 +33,11 @@ public class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
   @Override
   public IScope getScope(final EObject context, final EReference reference) {
     String _name = reference.getEReferenceType().getName();
-    boolean _equals = Objects.equal(_name, "VariableRef");
+    boolean _equals = Objects.equal(_name, "Variable");
     if (_equals) {
       ISA _parentOfType = this.<ISA>parentOfType(context, ISA.class);
       final ISA isa = ((ISA) _parentOfType);
-      return Scopes.scopeFor(this.<VariableRef>allOfType(isa, VariableRef.class));
+      return Scopes.scopeFor(this.<Variable>allOfType(isa, Variable.class));
     } else {
       String _name_1 = reference.getEReferenceType().getName();
       boolean _equals_1 = Objects.equal(_name_1, "DirectDeclarator");
@@ -46,16 +46,28 @@ public class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
         final ISA isa_1 = ((ISA) _parentOfType_1);
         return Scopes.scopeFor(this.<DirectDeclarator>allOfType(isa_1, DirectDeclarator.class));
       } else {
-        Class<? extends EObject> _class = context.getClass();
-        String _plus = ("Unmatched: context " + _class);
-        String _plus_1 = (_plus + " in ");
-        EObject _eContainer = context.eContainer();
-        String _plus_2 = (_plus_1 + _eContainer);
-        String _plus_3 = (_plus_2 + ", reference ");
         String _name_2 = reference.getEReferenceType().getName();
-        String _plus_4 = (_plus_3 + _name_2);
-        InputOutput.<String>println(_plus_4);
-        return super.getScope(context, reference);
+        boolean _equals_2 = Objects.equal(_name_2, "InstructionSet");
+        if (_equals_2) {
+          return super.getScope(context, reference);
+        } else {
+          String _name_3 = reference.getEReferenceType().getName();
+          boolean _equals_3 = Objects.equal(_name_3, "CoreDef");
+          if (_equals_3) {
+            return super.getScope(context, reference);
+          } else {
+            Class<? extends EObject> _class = context.getClass();
+            String _plus = ("Unmatched: context " + _class);
+            String _plus_1 = (_plus + " in ");
+            EObject _eContainer = context.eContainer();
+            String _plus_2 = (_plus_1 + _eContainer);
+            String _plus_3 = (_plus_2 + ", reference ");
+            String _name_4 = reference.getEReferenceType().getName();
+            String _plus_4 = (_plus_3 + _name_4);
+            InputOutput.<String>println(_plus_4);
+            return super.getScope(context, reference);
+          }
+        }
       }
     }
   }

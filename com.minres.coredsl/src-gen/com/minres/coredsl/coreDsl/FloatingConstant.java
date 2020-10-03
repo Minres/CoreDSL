@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.FloatingConstant#getVal <em>Val</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.FloatingConstant#getValue <em>Value</em>}</li>
  * </ul>
  *
  * @see com.minres.coredsl.coreDsl.CoreDslPackage#getFloatingConstant()
@@ -24,25 +24,25 @@ import java.math.BigDecimal;
 public interface FloatingConstant extends Constant
 {
   /**
-   * Returns the value of the '<em><b>Val</b></em>' attribute.
+   * Returns the value of the '<em><b>Value</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Val</em>' attribute.
-   * @see #setVal(BigDecimal)
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getFloatingConstant_Val()
+   * @return the value of the '<em>Value</em>' attribute.
+   * @see #setValue(BigDecimal)
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getFloatingConstant_Value()
    * @model
    * @generated
    */
-  BigDecimal getVal();
+  BigDecimal getValue();
 
   /**
-   * Sets the value of the '{@link com.minres.coredsl.coreDsl.FloatingConstant#getVal <em>Val</em>}' attribute.
+   * Sets the value of the '{@link com.minres.coredsl.coreDsl.FloatingConstant#getValue <em>Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Val</em>' attribute.
-   * @see #getVal()
+   * @param value the new value of the '<em>Value</em>' attribute.
+   * @see #getValue()
    * @generated
    */
-  void setVal(BigDecimal value);
+  void setValue(BigDecimal value);
 
 } // FloatingConstant

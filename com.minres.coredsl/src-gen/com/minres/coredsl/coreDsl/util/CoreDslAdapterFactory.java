@@ -211,11 +211,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
         return createDeclarationAdapter();
       }
       @Override
-      public Adapter caseTypeOrVarDeclaration(TypeOrVarDeclaration object)
-      {
-        return createTypeOrVarDeclarationAdapter();
-      }
-      @Override
       public Adapter caseDeclarationSpecifier(DeclarationSpecifier object)
       {
         return createDeclarationSpecifierAdapter();
@@ -231,11 +226,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
         return createTypeSpecifierAdapter();
       }
       @Override
-      public Adapter caseDataTypeSpecifier(DataTypeSpecifier object)
-      {
-        return createDataTypeSpecifierAdapter();
-      }
-      @Override
       public Adapter casePodSpecifier(PodSpecifier object)
       {
         return createPodSpecifierAdapter();
@@ -244,11 +234,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseBitSizeSpecifier(BitSizeSpecifier object)
       {
         return createBitSizeSpecifierAdapter();
-      }
-      @Override
-      public Adapter caseBitSizeValue(BitSizeValue object)
-      {
-        return createBitSizeValueAdapter();
       }
       @Override
       public Adapter caseEnumSpecifier(EnumSpecifier object)
@@ -361,9 +346,9 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
         return createPrimaryExpressionAdapter();
       }
       @Override
-      public Adapter caseVariableRef(VariableRef object)
+      public Adapter caseVariable(Variable object)
       {
-        return createVariableRefAdapter();
+        return createVariableAdapter();
       }
       @Override
       public Adapter caseStringLiteral(StringLiteral object)
@@ -843,21 +828,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration <em>Type Or Var Declaration</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.TypeOrVarDeclaration
-   * @generated
-   */
-  public Adapter createTypeOrVarDeclarationAdapter()
-  {
-    return null;
-  }
-
-  /**
    * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.DeclarationSpecifier <em>Declaration Specifier</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -903,21 +873,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.DataTypeSpecifier <em>Data Type Specifier</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.DataTypeSpecifier
-   * @generated
-   */
-  public Adapter createDataTypeSpecifierAdapter()
-  {
-    return null;
-  }
-
-  /**
    * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.PodSpecifier <em>Pod Specifier</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -943,21 +898,6 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createBitSizeSpecifierAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.BitSizeValue <em>Bit Size Value</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.BitSizeValue
-   * @generated
-   */
-  public Adapter createBitSizeValueAdapter()
   {
     return null;
   }
@@ -1293,16 +1233,16 @@ public class CoreDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.VariableRef <em>Variable Ref</em>}'.
+   * Creates a new adapter for an object of class '{@link com.minres.coredsl.coreDsl.Variable <em>Variable</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see com.minres.coredsl.coreDsl.VariableRef
+   * @see com.minres.coredsl.coreDsl.Variable
    * @generated
    */
-  public Adapter createVariableRefAdapter()
+  public Adapter createVariableAdapter()
   {
     return null;
   }

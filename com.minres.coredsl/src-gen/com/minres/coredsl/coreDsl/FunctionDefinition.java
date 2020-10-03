@@ -22,7 +22,7 @@ package com.minres.coredsl.coreDsl;
  * @model
  * @generated
  */
-public interface FunctionDefinition extends ParameterList, VariableRef
+public interface FunctionDefinition extends ParameterList, Variable
 {
   /**
    * Returns the value of the '<em><b>Extern</b></em>' attribute.

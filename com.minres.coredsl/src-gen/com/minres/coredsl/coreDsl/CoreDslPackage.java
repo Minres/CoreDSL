@@ -152,22 +152,22 @@ public interface CoreDslPackage extends EPackage
   int ISA__CONSTANTS = 1;
 
   /**
-   * The feature id for the '<em><b>Spaces</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ISA__SPACES = 2;
-
-  /**
    * The feature id for the '<em><b>Regs</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ISA__REGS = 3;
+  int ISA__REGS = 2;
+
+  /**
+   * The feature id for the '<em><b>Spaces</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ISA__SPACES = 3;
 
   /**
    * The feature id for the '<em><b>Instr</b></em>' containment reference list.
@@ -216,15 +216,6 @@ public interface CoreDslPackage extends EPackage
   int INSTRUCTION_SET__CONSTANTS = ISA__CONSTANTS;
 
   /**
-   * The feature id for the '<em><b>Spaces</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INSTRUCTION_SET__SPACES = ISA__SPACES;
-
-  /**
    * The feature id for the '<em><b>Regs</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -232,6 +223,15 @@ public interface CoreDslPackage extends EPackage
    * @ordered
    */
   int INSTRUCTION_SET__REGS = ISA__REGS;
+
+  /**
+   * The feature id for the '<em><b>Spaces</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int INSTRUCTION_SET__SPACES = ISA__SPACES;
 
   /**
    * The feature id for the '<em><b>Instr</b></em>' containment reference list.
@@ -298,15 +298,6 @@ public interface CoreDslPackage extends EPackage
   int CORE_DEF__CONSTANTS = ISA__CONSTANTS;
 
   /**
-   * The feature id for the '<em><b>Spaces</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int CORE_DEF__SPACES = ISA__SPACES;
-
-  /**
    * The feature id for the '<em><b>Regs</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -314,6 +305,15 @@ public interface CoreDslPackage extends EPackage
    * @ordered
    */
   int CORE_DEF__REGS = ISA__REGS;
+
+  /**
+   * The feature id for the '<em><b>Spaces</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CORE_DEF__SPACES = ISA__SPACES;
 
   /**
    * The feature id for the '<em><b>Instr</b></em>' containment reference list.
@@ -435,14 +435,14 @@ public interface CoreDslPackage extends EPackage
   int ENCODING_FEATURE_COUNT = 1;
 
   /**
-   * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.VariableRefImpl <em>Variable Ref</em>}' class.
+   * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.VariableImpl <em>Variable</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see com.minres.coredsl.coreDsl.impl.VariableRefImpl
-   * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getVariableRef()
+   * @see com.minres.coredsl.coreDsl.impl.VariableImpl
+   * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getVariable()
    * @generated
    */
-  int VARIABLE_REF = 57;
+  int VARIABLE = 54;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -451,16 +451,16 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VARIABLE_REF__NAME = 0;
+  int VARIABLE__NAME = 0;
 
   /**
-   * The number of structural features of the '<em>Variable Ref</em>' class.
+   * The number of structural features of the '<em>Variable</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VARIABLE_REF_FEATURE_COUNT = 1;
+  int VARIABLE_FEATURE_COUNT = 1;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.FieldImpl <em>Field</em>}' class.
@@ -479,7 +479,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int FIELD__NAME = VARIABLE_REF__NAME;
+  int FIELD__NAME = VARIABLE__NAME;
 
   /**
    * The number of structural features of the '<em>Field</em>' class.
@@ -488,7 +488,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int FIELD_FEATURE_COUNT = VARIABLE_REF_FEATURE_COUNT + 0;
+  int FIELD_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 0;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.BitValueImpl <em>Bit Value</em>}' class.
@@ -1203,32 +1203,13 @@ public interface CoreDslPackage extends EPackage
   int DECLARATION = 26;
 
   /**
-   * The number of structural features of the '<em>Declaration</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int DECLARATION_FEATURE_COUNT = BLOCK_ITEM_FEATURE_COUNT + 0;
-
-  /**
-   * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl <em>Type Or Var Declaration</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl
-   * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getTypeOrVarDeclaration()
-   * @generated
-   */
-  int TYPE_OR_VAR_DECLARATION = 27;
-
-  /**
    * The feature id for the '<em><b>Storage</b></em>' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TYPE_OR_VAR_DECLARATION__STORAGE = DECLARATION_FEATURE_COUNT + 0;
+  int DECLARATION__STORAGE = BLOCK_ITEM_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Qualifiers</b></em>' attribute list.
@@ -1237,7 +1218,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TYPE_OR_VAR_DECLARATION__QUALIFIERS = DECLARATION_FEATURE_COUNT + 1;
+  int DECLARATION__QUALIFIERS = BLOCK_ITEM_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Attrs</b></em>' containment reference list.
@@ -1246,7 +1227,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TYPE_OR_VAR_DECLARATION__ATTRS = DECLARATION_FEATURE_COUNT + 2;
+  int DECLARATION__ATTRS = BLOCK_ITEM_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -1255,7 +1236,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TYPE_OR_VAR_DECLARATION__TYPE = DECLARATION_FEATURE_COUNT + 3;
+  int DECLARATION__TYPE = BLOCK_ITEM_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Size</b></em>' containment reference.
@@ -1264,7 +1245,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TYPE_OR_VAR_DECLARATION__SIZE = DECLARATION_FEATURE_COUNT + 4;
+  int DECLARATION__SIZE = BLOCK_ITEM_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Ptr</b></em>' attribute.
@@ -1273,7 +1254,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TYPE_OR_VAR_DECLARATION__PTR = DECLARATION_FEATURE_COUNT + 5;
+  int DECLARATION__PTR = BLOCK_ITEM_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Init</b></em>' containment reference list.
@@ -1282,16 +1263,16 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TYPE_OR_VAR_DECLARATION__INIT = DECLARATION_FEATURE_COUNT + 6;
+  int DECLARATION__INIT = BLOCK_ITEM_FEATURE_COUNT + 6;
 
   /**
-   * The number of structural features of the '<em>Type Or Var Declaration</em>' class.
+   * The number of structural features of the '<em>Declaration</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TYPE_OR_VAR_DECLARATION_FEATURE_COUNT = DECLARATION_FEATURE_COUNT + 7;
+  int DECLARATION_FEATURE_COUNT = BLOCK_ITEM_FEATURE_COUNT + 7;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.DeclarationSpecifierImpl <em>Declaration Specifier</em>}' class.
@@ -1301,7 +1282,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getDeclarationSpecifier()
    * @generated
    */
-  int DECLARATION_SPECIFIER = 28;
+  int DECLARATION_SPECIFIER = 27;
 
   /**
    * The feature id for the '<em><b>Storage</b></em>' attribute list.
@@ -1347,7 +1328,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getAttribute()
    * @generated
    */
-  int ATTRIBUTE = 29;
+  int ATTRIBUTE = 28;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' attribute.
@@ -1359,13 +1340,13 @@ public interface CoreDslPackage extends EPackage
   int ATTRIBUTE__TYPE = 0;
 
   /**
-   * The feature id for the '<em><b>Val</b></em>' containment reference.
+   * The feature id for the '<em><b>Value</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ATTRIBUTE__VAL = 1;
+  int ATTRIBUTE__VALUE = 1;
 
   /**
    * The number of structural features of the '<em>Attribute</em>' class.
@@ -1384,7 +1365,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getTypeSpecifier()
    * @generated
    */
-  int TYPE_SPECIFIER = 30;
+  int TYPE_SPECIFIER = 29;
 
   /**
    * The number of structural features of the '<em>Type Specifier</em>' class.
@@ -1396,25 +1377,6 @@ public interface CoreDslPackage extends EPackage
   int TYPE_SPECIFIER_FEATURE_COUNT = 0;
 
   /**
-   * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.DataTypeSpecifierImpl <em>Data Type Specifier</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see com.minres.coredsl.coreDsl.impl.DataTypeSpecifierImpl
-   * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getDataTypeSpecifier()
-   * @generated
-   */
-  int DATA_TYPE_SPECIFIER = 31;
-
-  /**
-   * The number of structural features of the '<em>Data Type Specifier</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int DATA_TYPE_SPECIFIER_FEATURE_COUNT = TYPE_SPECIFIER_FEATURE_COUNT + 0;
-
-  /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.PodSpecifierImpl <em>Pod Specifier</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1422,7 +1384,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getPodSpecifier()
    * @generated
    */
-  int POD_SPECIFIER = 32;
+  int POD_SPECIFIER = 30;
 
   /**
    * The feature id for the '<em><b>Data Type</b></em>' attribute list.
@@ -1431,7 +1393,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int POD_SPECIFIER__DATA_TYPE = DATA_TYPE_SPECIFIER_FEATURE_COUNT + 0;
+  int POD_SPECIFIER__DATA_TYPE = TYPE_SPECIFIER_FEATURE_COUNT + 0;
 
   /**
    * The number of structural features of the '<em>Pod Specifier</em>' class.
@@ -1440,7 +1402,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int POD_SPECIFIER_FEATURE_COUNT = DATA_TYPE_SPECIFIER_FEATURE_COUNT + 1;
+  int POD_SPECIFIER_FEATURE_COUNT = TYPE_SPECIFIER_FEATURE_COUNT + 1;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.BitSizeSpecifierImpl <em>Bit Size Specifier</em>}' class.
@@ -1450,7 +1412,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getBitSizeSpecifier()
    * @generated
    */
-  int BIT_SIZE_SPECIFIER = 33;
+  int BIT_SIZE_SPECIFIER = 31;
 
   /**
    * The feature id for the '<em><b>Size</b></em>' containment reference list.
@@ -1471,43 +1433,6 @@ public interface CoreDslPackage extends EPackage
   int BIT_SIZE_SPECIFIER_FEATURE_COUNT = 1;
 
   /**
-   * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.BitSizeValueImpl <em>Bit Size Value</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see com.minres.coredsl.coreDsl.impl.BitSizeValueImpl
-   * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getBitSizeValue()
-   * @generated
-   */
-  int BIT_SIZE_VALUE = 34;
-
-  /**
-   * The feature id for the '<em><b>Val</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int BIT_SIZE_VALUE__VAL = 0;
-
-  /**
-   * The feature id for the '<em><b>Constant</b></em>' reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int BIT_SIZE_VALUE__CONSTANT = 1;
-
-  /**
-   * The number of structural features of the '<em>Bit Size Value</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int BIT_SIZE_VALUE_FEATURE_COUNT = 2;
-
-  /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.EnumSpecifierImpl <em>Enum Specifier</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1515,7 +1440,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getEnumSpecifier()
    * @generated
    */
-  int ENUM_SPECIFIER = 35;
+  int ENUM_SPECIFIER = 32;
 
   /**
    * The feature id for the '<em><b>Enumerators</b></em>' containment reference list.
@@ -1524,7 +1449,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ENUM_SPECIFIER__ENUMERATORS = DATA_TYPE_SPECIFIER_FEATURE_COUNT + 0;
+  int ENUM_SPECIFIER__ENUMERATORS = TYPE_SPECIFIER_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1533,7 +1458,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ENUM_SPECIFIER__NAME = DATA_TYPE_SPECIFIER_FEATURE_COUNT + 1;
+  int ENUM_SPECIFIER__NAME = TYPE_SPECIFIER_FEATURE_COUNT + 1;
 
   /**
    * The number of structural features of the '<em>Enum Specifier</em>' class.
@@ -1542,7 +1467,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ENUM_SPECIFIER_FEATURE_COUNT = DATA_TYPE_SPECIFIER_FEATURE_COUNT + 2;
+  int ENUM_SPECIFIER_FEATURE_COUNT = TYPE_SPECIFIER_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.EnumeratorListImpl <em>Enumerator List</em>}' class.
@@ -1552,7 +1477,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getEnumeratorList()
    * @generated
    */
-  int ENUMERATOR_LIST = 36;
+  int ENUMERATOR_LIST = 33;
 
   /**
    * The feature id for the '<em><b>Enumerators</b></em>' containment reference list.
@@ -1580,7 +1505,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getEnumerator()
    * @generated
    */
-  int ENUMERATOR = 37;
+  int ENUMERATOR = 34;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1617,7 +1542,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getStructOrUnionSpecifier()
    * @generated
    */
-  int STRUCT_OR_UNION_SPECIFIER = 38;
+  int STRUCT_OR_UNION_SPECIFIER = 35;
 
   /**
    * The feature id for the '<em><b>Compose Type</b></em>' attribute.
@@ -1626,7 +1551,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int STRUCT_OR_UNION_SPECIFIER__COMPOSE_TYPE = DATA_TYPE_SPECIFIER_FEATURE_COUNT + 0;
+  int STRUCT_OR_UNION_SPECIFIER__COMPOSE_TYPE = TYPE_SPECIFIER_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1635,7 +1560,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int STRUCT_OR_UNION_SPECIFIER__NAME = DATA_TYPE_SPECIFIER_FEATURE_COUNT + 1;
+  int STRUCT_OR_UNION_SPECIFIER__NAME = TYPE_SPECIFIER_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Decls</b></em>' containment reference list.
@@ -1644,7 +1569,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int STRUCT_OR_UNION_SPECIFIER__DECLS = DATA_TYPE_SPECIFIER_FEATURE_COUNT + 2;
+  int STRUCT_OR_UNION_SPECIFIER__DECLS = TYPE_SPECIFIER_FEATURE_COUNT + 2;
 
   /**
    * The number of structural features of the '<em>Struct Or Union Specifier</em>' class.
@@ -1653,7 +1578,7 @@ public interface CoreDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int STRUCT_OR_UNION_SPECIFIER_FEATURE_COUNT = DATA_TYPE_SPECIFIER_FEATURE_COUNT + 3;
+  int STRUCT_OR_UNION_SPECIFIER_FEATURE_COUNT = TYPE_SPECIFIER_FEATURE_COUNT + 3;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.impl.StructDeclarationImpl <em>Struct Declaration</em>}' class.
@@ -1663,7 +1588,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getStructDeclaration()
    * @generated
    */
-  int STRUCT_DECLARATION = 39;
+  int STRUCT_DECLARATION = 36;
 
   /**
    * The feature id for the '<em><b>Specifier</b></em>' containment reference.
@@ -1700,7 +1625,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getStructDeclarationSpecifier()
    * @generated
    */
-  int STRUCT_DECLARATION_SPECIFIER = 40;
+  int STRUCT_DECLARATION_SPECIFIER = 37;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -1737,7 +1662,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getInitDeclarator()
    * @generated
    */
-  int INIT_DECLARATOR = 41;
+  int INIT_DECLARATOR = 38;
 
   /**
    * The feature id for the '<em><b>Declarator</b></em>' containment reference.
@@ -1783,7 +1708,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getDirectDeclarator()
    * @generated
    */
-  int DIRECT_DECLARATOR = 42;
+  int DIRECT_DECLARATOR = 39;
 
   /**
    * The feature id for the '<em><b>Params</b></em>' containment reference list.
@@ -1856,7 +1781,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getEmptyExpression()
    * @generated
    */
-  int EMPTY_EXPRESSION = 43;
+  int EMPTY_EXPRESSION = 40;
 
   /**
    * The number of structural features of the '<em>Empty Expression</em>' class.
@@ -1875,7 +1800,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getInitializerList()
    * @generated
    */
-  int INITIALIZER_LIST = 45;
+  int INITIALIZER_LIST = 42;
 
   /**
    * The feature id for the '<em><b>Init</b></em>' containment reference list.
@@ -1903,7 +1828,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getInitializer()
    * @generated
    */
-  int INITIALIZER = 44;
+  int INITIALIZER = 41;
 
   /**
    * The feature id for the '<em><b>Init</b></em>' containment reference list.
@@ -1940,7 +1865,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getDesignatedInitializer()
    * @generated
    */
-  int DESIGNATED_INITIALIZER = 46;
+  int DESIGNATED_INITIALIZER = 43;
 
   /**
    * The feature id for the '<em><b>Designators</b></em>' containment reference list.
@@ -1977,7 +1902,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getDesignator()
    * @generated
    */
-  int DESIGNATOR = 47;
+  int DESIGNATOR = 44;
 
   /**
    * The feature id for the '<em><b>Idx</b></em>' containment reference.
@@ -2014,7 +1939,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getAbstractDeclarator()
    * @generated
    */
-  int ABSTRACT_DECLARATOR = 48;
+  int ABSTRACT_DECLARATOR = 45;
 
   /**
    * The number of structural features of the '<em>Abstract Declarator</em>' class.
@@ -2033,7 +1958,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getDirectAbstractDeclarator()
    * @generated
    */
-  int DIRECT_ABSTRACT_DECLARATOR = 49;
+  int DIRECT_ABSTRACT_DECLARATOR = 46;
 
   /**
    * The feature id for the '<em><b>Params</b></em>' containment reference list.
@@ -2088,7 +2013,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getExpression()
    * @generated
    */
-  int EXPRESSION = 50;
+  int EXPRESSION = 47;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -2125,7 +2050,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getCastExpression()
    * @generated
    */
-  int CAST_EXPRESSION = 51;
+  int CAST_EXPRESSION = 48;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -2180,7 +2105,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getPrefixExpression()
    * @generated
    */
-  int PREFIX_EXPRESSION = 52;
+  int PREFIX_EXPRESSION = 49;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -2244,7 +2169,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getUnaryOperator()
    * @generated
    */
-  int UNARY_OPERATOR = 53;
+  int UNARY_OPERATOR = 50;
 
   /**
    * The feature id for the '<em><b>Op</b></em>' attribute.
@@ -2272,7 +2197,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getPostfixExpression()
    * @generated
    */
-  int POSTFIX_EXPRESSION = 54;
+  int POSTFIX_EXPRESSION = 51;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -2345,7 +2270,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getPostfixOperator()
    * @generated
    */
-  int POSTFIX_OPERATOR = 55;
+  int POSTFIX_OPERATOR = 52;
 
   /**
    * The feature id for the '<em><b>Op</b></em>' attribute.
@@ -2391,7 +2316,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getPrimaryExpression()
    * @generated
    */
-  int PRIMARY_EXPRESSION = 56;
+  int PRIMARY_EXPRESSION = 53;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -2491,7 +2416,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getEncodingPrefix()
    * @generated
    */
-  int ENCODING_PREFIX = 59;
+  int ENCODING_PREFIX = 56;
 
   /**
    * The feature id for the '<em><b>Prefix</b></em>' attribute.
@@ -2519,7 +2444,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getStringLiteral()
    * @generated
    */
-  int STRING_LITERAL = 58;
+  int STRING_LITERAL = 55;
 
   /**
    * The feature id for the '<em><b>Prefix</b></em>' attribute.
@@ -2531,13 +2456,13 @@ public interface CoreDslPackage extends EPackage
   int STRING_LITERAL__PREFIX = ENCODING_PREFIX__PREFIX;
 
   /**
-   * The feature id for the '<em><b>Val</b></em>' attribute.
+   * The feature id for the '<em><b>Value</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int STRING_LITERAL__VAL = ENCODING_PREFIX_FEATURE_COUNT + 0;
+  int STRING_LITERAL__VALUE = ENCODING_PREFIX_FEATURE_COUNT + 0;
 
   /**
    * The number of structural features of the '<em>String Literal</em>' class.
@@ -2556,7 +2481,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getConstant()
    * @generated
    */
-  int CONSTANT = 60;
+  int CONSTANT = 57;
 
   /**
    * The number of structural features of the '<em>Constant</em>' class.
@@ -2575,16 +2500,16 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getIntegerConstant()
    * @generated
    */
-  int INTEGER_CONSTANT = 61;
+  int INTEGER_CONSTANT = 58;
 
   /**
-   * The feature id for the '<em><b>Val</b></em>' attribute.
+   * The feature id for the '<em><b>Value</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int INTEGER_CONSTANT__VAL = CONSTANT_FEATURE_COUNT + 0;
+  int INTEGER_CONSTANT__VALUE = CONSTANT_FEATURE_COUNT + 0;
 
   /**
    * The number of structural features of the '<em>Integer Constant</em>' class.
@@ -2603,16 +2528,16 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getFloatingConstant()
    * @generated
    */
-  int FLOATING_CONSTANT = 62;
+  int FLOATING_CONSTANT = 59;
 
   /**
-   * The feature id for the '<em><b>Val</b></em>' attribute.
+   * The feature id for the '<em><b>Value</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int FLOATING_CONSTANT__VAL = CONSTANT_FEATURE_COUNT + 0;
+  int FLOATING_CONSTANT__VALUE = CONSTANT_FEATURE_COUNT + 0;
 
   /**
    * The number of structural features of the '<em>Floating Constant</em>' class.
@@ -2631,16 +2556,16 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getBoolConstant()
    * @generated
    */
-  int BOOL_CONSTANT = 63;
+  int BOOL_CONSTANT = 60;
 
   /**
-   * The feature id for the '<em><b>Val</b></em>' attribute.
+   * The feature id for the '<em><b>Value</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int BOOL_CONSTANT__VAL = CONSTANT_FEATURE_COUNT + 0;
+  int BOOL_CONSTANT__VALUE = CONSTANT_FEATURE_COUNT + 0;
 
   /**
    * The number of structural features of the '<em>Bool Constant</em>' class.
@@ -2659,16 +2584,16 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getCharacterConstant()
    * @generated
    */
-  int CHARACTER_CONSTANT = 64;
+  int CHARACTER_CONSTANT = 61;
 
   /**
-   * The feature id for the '<em><b>Val</b></em>' attribute.
+   * The feature id for the '<em><b>Value</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int CHARACTER_CONSTANT__VAL = CONSTANT_FEATURE_COUNT + 0;
+  int CHARACTER_CONSTANT__VALUE = CONSTANT_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Enc</b></em>' attribute.
@@ -2696,7 +2621,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getAssignmentExpression()
    * @generated
    */
-  int ASSIGNMENT_EXPRESSION = 65;
+  int ASSIGNMENT_EXPRESSION = 62;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -2751,7 +2676,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getConditionalExpression()
    * @generated
    */
-  int CONDITIONAL_EXPRESSION = 66;
+  int CONDITIONAL_EXPRESSION = 63;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -2797,7 +2722,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getInfixExpression()
    * @generated
    */
-  int INFIX_EXPRESSION = 67;
+  int INFIX_EXPRESSION = 64;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -2843,7 +2768,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getDataTypes()
    * @generated
    */
-  int DATA_TYPES = 68;
+  int DATA_TYPES = 65;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.TypeQualifier <em>Type Qualifier</em>}' enum.
@@ -2853,7 +2778,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getTypeQualifier()
    * @generated
    */
-  int TYPE_QUALIFIER = 69;
+  int TYPE_QUALIFIER = 66;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.StorageClassSpecifier <em>Storage Class Specifier</em>}' enum.
@@ -2863,7 +2788,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getStorageClassSpecifier()
    * @generated
    */
-  int STORAGE_CLASS_SPECIFIER = 70;
+  int STORAGE_CLASS_SPECIFIER = 67;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.DeclarationAttribute <em>Declaration Attribute</em>}' enum.
@@ -2873,7 +2798,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getDeclarationAttribute()
    * @generated
    */
-  int DECLARATION_ATTRIBUTE = 71;
+  int DECLARATION_ATTRIBUTE = 68;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.InstrAttribute <em>Instr Attribute</em>}' enum.
@@ -2883,7 +2808,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getInstrAttribute()
    * @generated
    */
-  int INSTR_ATTRIBUTE = 72;
+  int INSTR_ATTRIBUTE = 69;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.StructOrUnion <em>Struct Or Union</em>}' enum.
@@ -2893,7 +2818,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getStructOrUnion()
    * @generated
    */
-  int STRUCT_OR_UNION = 73;
+  int STRUCT_OR_UNION = 70;
 
   /**
    * The meta object id for the '{@link com.minres.coredsl.coreDsl.BitfieldDataType <em>Bitfield Data Type</em>}' enum.
@@ -2903,7 +2828,7 @@ public interface CoreDslPackage extends EPackage
    * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getBitfieldDataType()
    * @generated
    */
-  int BITFIELD_DATA_TYPE = 74;
+  int BITFIELD_DATA_TYPE = 71;
 
 
   /**
@@ -2992,17 +2917,6 @@ public interface CoreDslPackage extends EPackage
   EReference getISA_Constants();
 
   /**
-   * Returns the meta object for the containment reference list '{@link com.minres.coredsl.coreDsl.ISA#getSpaces <em>Spaces</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Spaces</em>'.
-   * @see com.minres.coredsl.coreDsl.ISA#getSpaces()
-   * @see #getISA()
-   * @generated
-   */
-  EReference getISA_Spaces();
-
-  /**
    * Returns the meta object for the containment reference list '{@link com.minres.coredsl.coreDsl.ISA#getRegs <em>Regs</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3012,6 +2926,17 @@ public interface CoreDslPackage extends EPackage
    * @generated
    */
   EReference getISA_Regs();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link com.minres.coredsl.coreDsl.ISA#getSpaces <em>Spaces</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Spaces</em>'.
+   * @see com.minres.coredsl.coreDsl.ISA#getSpaces()
+   * @see #getISA()
+   * @generated
+   */
+  EReference getISA_Spaces();
 
   /**
    * Returns the meta object for the containment reference list '{@link com.minres.coredsl.coreDsl.ISA#getInstr <em>Instr</em>}'.
@@ -3683,58 +3608,48 @@ public interface CoreDslPackage extends EPackage
   EClass getDeclaration();
 
   /**
-   * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration <em>Type Or Var Declaration</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Type Or Var Declaration</em>'.
-   * @see com.minres.coredsl.coreDsl.TypeOrVarDeclaration
-   * @generated
-   */
-  EClass getTypeOrVarDeclaration();
-
-  /**
-   * Returns the meta object for the containment reference '{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getType <em>Type</em>}'.
+   * Returns the meta object for the containment reference '{@link com.minres.coredsl.coreDsl.Declaration#getType <em>Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Type</em>'.
-   * @see com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getType()
-   * @see #getTypeOrVarDeclaration()
+   * @see com.minres.coredsl.coreDsl.Declaration#getType()
+   * @see #getDeclaration()
    * @generated
    */
-  EReference getTypeOrVarDeclaration_Type();
+  EReference getDeclaration_Type();
 
   /**
-   * Returns the meta object for the containment reference '{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getSize <em>Size</em>}'.
+   * Returns the meta object for the containment reference '{@link com.minres.coredsl.coreDsl.Declaration#getSize <em>Size</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Size</em>'.
-   * @see com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getSize()
-   * @see #getTypeOrVarDeclaration()
+   * @see com.minres.coredsl.coreDsl.Declaration#getSize()
+   * @see #getDeclaration()
    * @generated
    */
-  EReference getTypeOrVarDeclaration_Size();
+  EReference getDeclaration_Size();
 
   /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getPtr <em>Ptr</em>}'.
+   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.Declaration#getPtr <em>Ptr</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Ptr</em>'.
-   * @see com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getPtr()
-   * @see #getTypeOrVarDeclaration()
+   * @see com.minres.coredsl.coreDsl.Declaration#getPtr()
+   * @see #getDeclaration()
    * @generated
    */
-  EAttribute getTypeOrVarDeclaration_Ptr();
+  EAttribute getDeclaration_Ptr();
 
   /**
-   * Returns the meta object for the containment reference list '{@link com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getInit <em>Init</em>}'.
+   * Returns the meta object for the containment reference list '{@link com.minres.coredsl.coreDsl.Declaration#getInit <em>Init</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference list '<em>Init</em>'.
-   * @see com.minres.coredsl.coreDsl.TypeOrVarDeclaration#getInit()
-   * @see #getTypeOrVarDeclaration()
+   * @see com.minres.coredsl.coreDsl.Declaration#getInit()
+   * @see #getDeclaration()
    * @generated
    */
-  EReference getTypeOrVarDeclaration_Init();
+  EReference getDeclaration_Init();
 
   /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.DeclarationSpecifier <em>Declaration Specifier</em>}'.
@@ -3801,15 +3716,15 @@ public interface CoreDslPackage extends EPackage
   EAttribute getAttribute_Type();
 
   /**
-   * Returns the meta object for the containment reference '{@link com.minres.coredsl.coreDsl.Attribute#getVal <em>Val</em>}'.
+   * Returns the meta object for the containment reference '{@link com.minres.coredsl.coreDsl.Attribute#getValue <em>Value</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Val</em>'.
-   * @see com.minres.coredsl.coreDsl.Attribute#getVal()
+   * @return the meta object for the containment reference '<em>Value</em>'.
+   * @see com.minres.coredsl.coreDsl.Attribute#getValue()
    * @see #getAttribute()
    * @generated
    */
-  EReference getAttribute_Val();
+  EReference getAttribute_Value();
 
   /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.TypeSpecifier <em>Type Specifier</em>}'.
@@ -3820,16 +3735,6 @@ public interface CoreDslPackage extends EPackage
    * @generated
    */
   EClass getTypeSpecifier();
-
-  /**
-   * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.DataTypeSpecifier <em>Data Type Specifier</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Data Type Specifier</em>'.
-   * @see com.minres.coredsl.coreDsl.DataTypeSpecifier
-   * @generated
-   */
-  EClass getDataTypeSpecifier();
 
   /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.PodSpecifier <em>Pod Specifier</em>}'.
@@ -3872,38 +3777,6 @@ public interface CoreDslPackage extends EPackage
    * @generated
    */
   EReference getBitSizeSpecifier_Size();
-
-  /**
-   * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.BitSizeValue <em>Bit Size Value</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Bit Size Value</em>'.
-   * @see com.minres.coredsl.coreDsl.BitSizeValue
-   * @generated
-   */
-  EClass getBitSizeValue();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link com.minres.coredsl.coreDsl.BitSizeValue#getVal <em>Val</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Val</em>'.
-   * @see com.minres.coredsl.coreDsl.BitSizeValue#getVal()
-   * @see #getBitSizeValue()
-   * @generated
-   */
-  EReference getBitSizeValue_Val();
-
-  /**
-   * Returns the meta object for the reference list '{@link com.minres.coredsl.coreDsl.BitSizeValue#getConstant <em>Constant</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the reference list '<em>Constant</em>'.
-   * @see com.minres.coredsl.coreDsl.BitSizeValue#getConstant()
-   * @see #getBitSizeValue()
-   * @generated
-   */
-  EReference getBitSizeValue_Constant();
 
   /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.EnumSpecifier <em>Enum Specifier</em>}'.
@@ -4533,25 +4406,25 @@ public interface CoreDslPackage extends EPackage
   EReference getPrimaryExpression_Literal();
 
   /**
-   * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.VariableRef <em>Variable Ref</em>}'.
+   * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.Variable <em>Variable</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Variable Ref</em>'.
-   * @see com.minres.coredsl.coreDsl.VariableRef
+   * @return the meta object for class '<em>Variable</em>'.
+   * @see com.minres.coredsl.coreDsl.Variable
    * @generated
    */
-  EClass getVariableRef();
+  EClass getVariable();
 
   /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.VariableRef#getName <em>Name</em>}'.
+   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.Variable#getName <em>Name</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Name</em>'.
-   * @see com.minres.coredsl.coreDsl.VariableRef#getName()
-   * @see #getVariableRef()
+   * @see com.minres.coredsl.coreDsl.Variable#getName()
+   * @see #getVariable()
    * @generated
    */
-  EAttribute getVariableRef_Name();
+  EAttribute getVariable_Name();
 
   /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.StringLiteral <em>String Literal</em>}'.
@@ -4564,15 +4437,15 @@ public interface CoreDslPackage extends EPackage
   EClass getStringLiteral();
 
   /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.StringLiteral#getVal <em>Val</em>}'.
+   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.StringLiteral#getValue <em>Value</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Val</em>'.
-   * @see com.minres.coredsl.coreDsl.StringLiteral#getVal()
+   * @return the meta object for the attribute '<em>Value</em>'.
+   * @see com.minres.coredsl.coreDsl.StringLiteral#getValue()
    * @see #getStringLiteral()
    * @generated
    */
-  EAttribute getStringLiteral_Val();
+  EAttribute getStringLiteral_Value();
 
   /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.EncodingPrefix <em>Encoding Prefix</em>}'.
@@ -4616,15 +4489,15 @@ public interface CoreDslPackage extends EPackage
   EClass getIntegerConstant();
 
   /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.IntegerConstant#getVal <em>Val</em>}'.
+   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.IntegerConstant#getValue <em>Value</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Val</em>'.
-   * @see com.minres.coredsl.coreDsl.IntegerConstant#getVal()
+   * @return the meta object for the attribute '<em>Value</em>'.
+   * @see com.minres.coredsl.coreDsl.IntegerConstant#getValue()
    * @see #getIntegerConstant()
    * @generated
    */
-  EAttribute getIntegerConstant_Val();
+  EAttribute getIntegerConstant_Value();
 
   /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.FloatingConstant <em>Floating Constant</em>}'.
@@ -4637,15 +4510,15 @@ public interface CoreDslPackage extends EPackage
   EClass getFloatingConstant();
 
   /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.FloatingConstant#getVal <em>Val</em>}'.
+   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.FloatingConstant#getValue <em>Value</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Val</em>'.
-   * @see com.minres.coredsl.coreDsl.FloatingConstant#getVal()
+   * @return the meta object for the attribute '<em>Value</em>'.
+   * @see com.minres.coredsl.coreDsl.FloatingConstant#getValue()
    * @see #getFloatingConstant()
    * @generated
    */
-  EAttribute getFloatingConstant_Val();
+  EAttribute getFloatingConstant_Value();
 
   /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.BoolConstant <em>Bool Constant</em>}'.
@@ -4658,15 +4531,15 @@ public interface CoreDslPackage extends EPackage
   EClass getBoolConstant();
 
   /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.BoolConstant#isVal <em>Val</em>}'.
+   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.BoolConstant#isValue <em>Value</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Val</em>'.
-   * @see com.minres.coredsl.coreDsl.BoolConstant#isVal()
+   * @return the meta object for the attribute '<em>Value</em>'.
+   * @see com.minres.coredsl.coreDsl.BoolConstant#isValue()
    * @see #getBoolConstant()
    * @generated
    */
-  EAttribute getBoolConstant_Val();
+  EAttribute getBoolConstant_Value();
 
   /**
    * Returns the meta object for class '{@link com.minres.coredsl.coreDsl.CharacterConstant <em>Character Constant</em>}'.
@@ -4679,15 +4552,15 @@ public interface CoreDslPackage extends EPackage
   EClass getCharacterConstant();
 
   /**
-   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.CharacterConstant#getVal <em>Val</em>}'.
+   * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.CharacterConstant#getValue <em>Value</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Val</em>'.
-   * @see com.minres.coredsl.coreDsl.CharacterConstant#getVal()
+   * @return the meta object for the attribute '<em>Value</em>'.
+   * @see com.minres.coredsl.coreDsl.CharacterConstant#getValue()
    * @see #getCharacterConstant()
    * @generated
    */
-  EAttribute getCharacterConstant_Val();
+  EAttribute getCharacterConstant_Value();
 
   /**
    * Returns the meta object for the attribute '{@link com.minres.coredsl.coreDsl.CharacterConstant#getEnc <em>Enc</em>}'.
@@ -4938,20 +4811,20 @@ public interface CoreDslPackage extends EPackage
     EReference ISA__CONSTANTS = eINSTANCE.getISA_Constants();
 
     /**
-     * The meta object literal for the '<em><b>Spaces</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference ISA__SPACES = eINSTANCE.getISA_Spaces();
-
-    /**
      * The meta object literal for the '<em><b>Regs</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
     EReference ISA__REGS = eINSTANCE.getISA_Regs();
+
+    /**
+     * The meta object literal for the '<em><b>Spaces</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ISA__SPACES = eINSTANCE.getISA_Spaces();
 
     /**
      * The meta object literal for the '<em><b>Instr</b></em>' containment reference list feature.
@@ -5506,22 +5379,12 @@ public interface CoreDslPackage extends EPackage
     EClass DECLARATION = eINSTANCE.getDeclaration();
 
     /**
-     * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl <em>Type Or Var Declaration</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see com.minres.coredsl.coreDsl.impl.TypeOrVarDeclarationImpl
-     * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getTypeOrVarDeclaration()
-     * @generated
-     */
-    EClass TYPE_OR_VAR_DECLARATION = eINSTANCE.getTypeOrVarDeclaration();
-
-    /**
      * The meta object literal for the '<em><b>Type</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference TYPE_OR_VAR_DECLARATION__TYPE = eINSTANCE.getTypeOrVarDeclaration_Type();
+    EReference DECLARATION__TYPE = eINSTANCE.getDeclaration_Type();
 
     /**
      * The meta object literal for the '<em><b>Size</b></em>' containment reference feature.
@@ -5529,7 +5392,7 @@ public interface CoreDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference TYPE_OR_VAR_DECLARATION__SIZE = eINSTANCE.getTypeOrVarDeclaration_Size();
+    EReference DECLARATION__SIZE = eINSTANCE.getDeclaration_Size();
 
     /**
      * The meta object literal for the '<em><b>Ptr</b></em>' attribute feature.
@@ -5537,7 +5400,7 @@ public interface CoreDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute TYPE_OR_VAR_DECLARATION__PTR = eINSTANCE.getTypeOrVarDeclaration_Ptr();
+    EAttribute DECLARATION__PTR = eINSTANCE.getDeclaration_Ptr();
 
     /**
      * The meta object literal for the '<em><b>Init</b></em>' containment reference list feature.
@@ -5545,7 +5408,7 @@ public interface CoreDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference TYPE_OR_VAR_DECLARATION__INIT = eINSTANCE.getTypeOrVarDeclaration_Init();
+    EReference DECLARATION__INIT = eINSTANCE.getDeclaration_Init();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.DeclarationSpecifierImpl <em>Declaration Specifier</em>}' class.
@@ -5600,12 +5463,12 @@ public interface CoreDslPackage extends EPackage
     EAttribute ATTRIBUTE__TYPE = eINSTANCE.getAttribute_Type();
 
     /**
-     * The meta object literal for the '<em><b>Val</b></em>' containment reference feature.
+     * The meta object literal for the '<em><b>Value</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference ATTRIBUTE__VAL = eINSTANCE.getAttribute_Val();
+    EReference ATTRIBUTE__VALUE = eINSTANCE.getAttribute_Value();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.TypeSpecifierImpl <em>Type Specifier</em>}' class.
@@ -5616,16 +5479,6 @@ public interface CoreDslPackage extends EPackage
      * @generated
      */
     EClass TYPE_SPECIFIER = eINSTANCE.getTypeSpecifier();
-
-    /**
-     * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.DataTypeSpecifierImpl <em>Data Type Specifier</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see com.minres.coredsl.coreDsl.impl.DataTypeSpecifierImpl
-     * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getDataTypeSpecifier()
-     * @generated
-     */
-    EClass DATA_TYPE_SPECIFIER = eINSTANCE.getDataTypeSpecifier();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.PodSpecifierImpl <em>Pod Specifier</em>}' class.
@@ -5662,32 +5515,6 @@ public interface CoreDslPackage extends EPackage
      * @generated
      */
     EReference BIT_SIZE_SPECIFIER__SIZE = eINSTANCE.getBitSizeSpecifier_Size();
-
-    /**
-     * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.BitSizeValueImpl <em>Bit Size Value</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see com.minres.coredsl.coreDsl.impl.BitSizeValueImpl
-     * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getBitSizeValue()
-     * @generated
-     */
-    EClass BIT_SIZE_VALUE = eINSTANCE.getBitSizeValue();
-
-    /**
-     * The meta object literal for the '<em><b>Val</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference BIT_SIZE_VALUE__VAL = eINSTANCE.getBitSizeValue_Val();
-
-    /**
-     * The meta object literal for the '<em><b>Constant</b></em>' reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference BIT_SIZE_VALUE__CONSTANT = eINSTANCE.getBitSizeValue_Constant();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.EnumSpecifierImpl <em>Enum Specifier</em>}' class.
@@ -6206,14 +6033,14 @@ public interface CoreDslPackage extends EPackage
     EReference PRIMARY_EXPRESSION__LITERAL = eINSTANCE.getPrimaryExpression_Literal();
 
     /**
-     * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.VariableRefImpl <em>Variable Ref</em>}' class.
+     * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.VariableImpl <em>Variable</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see com.minres.coredsl.coreDsl.impl.VariableRefImpl
-     * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getVariableRef()
+     * @see com.minres.coredsl.coreDsl.impl.VariableImpl
+     * @see com.minres.coredsl.coreDsl.impl.CoreDslPackageImpl#getVariable()
      * @generated
      */
-    EClass VARIABLE_REF = eINSTANCE.getVariableRef();
+    EClass VARIABLE = eINSTANCE.getVariable();
 
     /**
      * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -6221,7 +6048,7 @@ public interface CoreDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute VARIABLE_REF__NAME = eINSTANCE.getVariableRef_Name();
+    EAttribute VARIABLE__NAME = eINSTANCE.getVariable_Name();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.StringLiteralImpl <em>String Literal</em>}' class.
@@ -6234,12 +6061,12 @@ public interface CoreDslPackage extends EPackage
     EClass STRING_LITERAL = eINSTANCE.getStringLiteral();
 
     /**
-     * The meta object literal for the '<em><b>Val</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute STRING_LITERAL__VAL = eINSTANCE.getStringLiteral_Val();
+    EAttribute STRING_LITERAL__VALUE = eINSTANCE.getStringLiteral_Value();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.EncodingPrefixImpl <em>Encoding Prefix</em>}' class.
@@ -6280,12 +6107,12 @@ public interface CoreDslPackage extends EPackage
     EClass INTEGER_CONSTANT = eINSTANCE.getIntegerConstant();
 
     /**
-     * The meta object literal for the '<em><b>Val</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute INTEGER_CONSTANT__VAL = eINSTANCE.getIntegerConstant_Val();
+    EAttribute INTEGER_CONSTANT__VALUE = eINSTANCE.getIntegerConstant_Value();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.FloatingConstantImpl <em>Floating Constant</em>}' class.
@@ -6298,12 +6125,12 @@ public interface CoreDslPackage extends EPackage
     EClass FLOATING_CONSTANT = eINSTANCE.getFloatingConstant();
 
     /**
-     * The meta object literal for the '<em><b>Val</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute FLOATING_CONSTANT__VAL = eINSTANCE.getFloatingConstant_Val();
+    EAttribute FLOATING_CONSTANT__VALUE = eINSTANCE.getFloatingConstant_Value();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.BoolConstantImpl <em>Bool Constant</em>}' class.
@@ -6316,12 +6143,12 @@ public interface CoreDslPackage extends EPackage
     EClass BOOL_CONSTANT = eINSTANCE.getBoolConstant();
 
     /**
-     * The meta object literal for the '<em><b>Val</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute BOOL_CONSTANT__VAL = eINSTANCE.getBoolConstant_Val();
+    EAttribute BOOL_CONSTANT__VALUE = eINSTANCE.getBoolConstant_Value();
 
     /**
      * The meta object literal for the '{@link com.minres.coredsl.coreDsl.impl.CharacterConstantImpl <em>Character Constant</em>}' class.
@@ -6334,12 +6161,12 @@ public interface CoreDslPackage extends EPackage
     EClass CHARACTER_CONSTANT = eINSTANCE.getCharacterConstant();
 
     /**
-     * The meta object literal for the '<em><b>Val</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute CHARACTER_CONSTANT__VAL = eINSTANCE.getCharacterConstant_Val();
+    EAttribute CHARACTER_CONSTANT__VALUE = eINSTANCE.getCharacterConstant_Value();
 
     /**
      * The meta object literal for the '<em><b>Enc</b></em>' attribute feature.

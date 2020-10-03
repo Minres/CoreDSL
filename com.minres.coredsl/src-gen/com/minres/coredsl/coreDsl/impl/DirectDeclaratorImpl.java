@@ -7,7 +7,7 @@ import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.DirectDeclarator;
 import com.minres.coredsl.coreDsl.Expression;
 import com.minres.coredsl.coreDsl.IntegerConstant;
-import com.minres.coredsl.coreDsl.VariableRef;
+import com.minres.coredsl.coreDsl.Variable;
 
 import java.util.Collection;
 
@@ -379,11 +379,11 @@ public class DirectDeclaratorImpl extends ParameterListImpl implements DirectDec
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
-    if (baseClass == VariableRef.class)
+    if (baseClass == Variable.class)
     {
       switch (derivedFeatureID)
       {
-        case CoreDslPackage.DIRECT_DECLARATOR__NAME: return CoreDslPackage.VARIABLE_REF__NAME;
+        case CoreDslPackage.DIRECT_DECLARATOR__NAME: return CoreDslPackage.VARIABLE__NAME;
         default: return -1;
       }
     }
@@ -398,11 +398,11 @@ public class DirectDeclaratorImpl extends ParameterListImpl implements DirectDec
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
-    if (baseClass == VariableRef.class)
+    if (baseClass == Variable.class)
     {
       switch (baseFeatureID)
       {
-        case CoreDslPackage.VARIABLE_REF__NAME: return CoreDslPackage.DIRECT_DECLARATOR__NAME;
+        case CoreDslPackage.VARIABLE__NAME: return CoreDslPackage.DIRECT_DECLARATOR__NAME;
         default: return -1;
       }
     }

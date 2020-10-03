@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.CharacterConstantImpl#getVal <em>Val</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.CharacterConstantImpl#getValue <em>Value</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.CharacterConstantImpl#getEnc <em>Enc</em>}</li>
  * </ul>
  *
@@ -29,24 +29,24 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 public class CharacterConstantImpl extends ConstantImpl implements CharacterConstant
 {
   /**
-   * The default value of the '{@link #getVal() <em>Val</em>}' attribute.
+   * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVal()
+   * @see #getValue()
    * @generated
    * @ordered
    */
-  protected static final String VAL_EDEFAULT = null;
+  protected static final String VALUE_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getVal() <em>Val</em>}' attribute.
+   * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVal()
+   * @see #getValue()
    * @generated
    * @ordered
    */
-  protected String val = VAL_EDEFAULT;
+  protected String value = VALUE_EDEFAULT;
 
   /**
    * The default value of the '{@link #getEnc() <em>Enc</em>}' attribute.
@@ -95,9 +95,9 @@ public class CharacterConstantImpl extends ConstantImpl implements CharacterCons
    * @generated
    */
   @Override
-  public String getVal()
+  public String getValue()
   {
-    return val;
+    return value;
   }
 
   /**
@@ -106,12 +106,12 @@ public class CharacterConstantImpl extends ConstantImpl implements CharacterCons
    * @generated
    */
   @Override
-  public void setVal(String newVal)
+  public void setValue(String newValue)
   {
-    String oldVal = val;
-    val = newVal;
+    String oldValue = value;
+    value = newValue;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.CHARACTER_CONSTANT__VAL, oldVal, val));
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.CHARACTER_CONSTANT__VALUE, oldValue, value));
   }
 
   /**
@@ -149,8 +149,8 @@ public class CharacterConstantImpl extends ConstantImpl implements CharacterCons
   {
     switch (featureID)
     {
-      case CoreDslPackage.CHARACTER_CONSTANT__VAL:
-        return getVal();
+      case CoreDslPackage.CHARACTER_CONSTANT__VALUE:
+        return getValue();
       case CoreDslPackage.CHARACTER_CONSTANT__ENC:
         return getEnc();
     }
@@ -167,8 +167,8 @@ public class CharacterConstantImpl extends ConstantImpl implements CharacterCons
   {
     switch (featureID)
     {
-      case CoreDslPackage.CHARACTER_CONSTANT__VAL:
-        setVal((String)newValue);
+      case CoreDslPackage.CHARACTER_CONSTANT__VALUE:
+        setValue((String)newValue);
         return;
       case CoreDslPackage.CHARACTER_CONSTANT__ENC:
         setEnc((String)newValue);
@@ -187,8 +187,8 @@ public class CharacterConstantImpl extends ConstantImpl implements CharacterCons
   {
     switch (featureID)
     {
-      case CoreDslPackage.CHARACTER_CONSTANT__VAL:
-        setVal(VAL_EDEFAULT);
+      case CoreDslPackage.CHARACTER_CONSTANT__VALUE:
+        setValue(VALUE_EDEFAULT);
         return;
       case CoreDslPackage.CHARACTER_CONSTANT__ENC:
         setEnc(ENC_EDEFAULT);
@@ -207,8 +207,8 @@ public class CharacterConstantImpl extends ConstantImpl implements CharacterCons
   {
     switch (featureID)
     {
-      case CoreDslPackage.CHARACTER_CONSTANT__VAL:
-        return VAL_EDEFAULT == null ? val != null : !VAL_EDEFAULT.equals(val);
+      case CoreDslPackage.CHARACTER_CONSTANT__VALUE:
+        return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
       case CoreDslPackage.CHARACTER_CONSTANT__ENC:
         return ENC_EDEFAULT == null ? enc != null : !ENC_EDEFAULT.equals(enc);
     }
@@ -226,8 +226,8 @@ public class CharacterConstantImpl extends ConstantImpl implements CharacterCons
     if (eIsProxy()) return super.toString();
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (val: ");
-    result.append(val);
+    result.append(" (value: ");
+    result.append(value);
     result.append(", enc: ");
     result.append(enc);
     result.append(')');

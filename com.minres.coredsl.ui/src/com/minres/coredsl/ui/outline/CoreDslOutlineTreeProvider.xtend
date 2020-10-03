@@ -5,6 +5,7 @@ package com.minres.coredsl.ui.outline
 
 import com.minres.coredsl.coreDsl.BitField
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
+import com.minres.coredsl.coreDsl.Variable
 
 /**
  * Customization of the default outline structure.
@@ -14,22 +15,19 @@ import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
 class CoreDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
 
 	// feature nodes are leafs and not expandable
-//	def boolean _isLeaf(Variable register) {
-//		return true;
-//	}
+	def boolean _isLeaf(Variable variable) {
+		return true;
+	}
 
     def boolean _isLeaf(BitField bitField) {
         return true;
     }
     
-//    def boolean _isLeaf(Statement stmt) {
-//        return !(stmt instanceof ConditionalStmt);
-//    }
-//    
 //	def void _createChildren(IOutlineNode parentNode, Statement stmt) {
 //		if(stmt instanceof ConditionalStmt) {
 //			for (element : stmt.thenStmts) createNode(parentNode, element)
 //			for (element : stmt.elseStmts) createNode(parentNode, element)
 //		}
 //	}
+
 }

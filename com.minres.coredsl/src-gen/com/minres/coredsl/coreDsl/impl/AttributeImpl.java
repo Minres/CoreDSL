@@ -26,7 +26,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * </p>
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.AttributeImpl#getType <em>Type</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.AttributeImpl#getVal <em>Val</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.AttributeImpl#getValue <em>Value</em>}</li>
  * </ul>
  *
  * @generated
@@ -54,14 +54,14 @@ public class AttributeImpl extends MinimalEObjectImpl.Container implements Attri
   protected DeclarationAttribute type = TYPE_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getVal() <em>Val</em>}' containment reference.
+   * The cached value of the '{@link #getValue() <em>Value</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVal()
+   * @see #getValue()
    * @generated
    * @ordered
    */
-  protected Expression val;
+  protected Expression value;
 
   /**
    * <!-- begin-user-doc -->
@@ -115,9 +115,9 @@ public class AttributeImpl extends MinimalEObjectImpl.Container implements Attri
    * @generated
    */
   @Override
-  public Expression getVal()
+  public Expression getValue()
   {
-    return val;
+    return value;
   }
 
   /**
@@ -125,13 +125,13 @@ public class AttributeImpl extends MinimalEObjectImpl.Container implements Attri
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetVal(Expression newVal, NotificationChain msgs)
+  public NotificationChain basicSetValue(Expression newValue, NotificationChain msgs)
   {
-    Expression oldVal = val;
-    val = newVal;
+    Expression oldValue = value;
+    value = newValue;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CoreDslPackage.ATTRIBUTE__VAL, oldVal, newVal);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CoreDslPackage.ATTRIBUTE__VALUE, oldValue, newValue);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -143,20 +143,20 @@ public class AttributeImpl extends MinimalEObjectImpl.Container implements Attri
    * @generated
    */
   @Override
-  public void setVal(Expression newVal)
+  public void setValue(Expression newValue)
   {
-    if (newVal != val)
+    if (newValue != value)
     {
       NotificationChain msgs = null;
-      if (val != null)
-        msgs = ((InternalEObject)val).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.ATTRIBUTE__VAL, null, msgs);
-      if (newVal != null)
-        msgs = ((InternalEObject)newVal).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.ATTRIBUTE__VAL, null, msgs);
-      msgs = basicSetVal(newVal, msgs);
+      if (value != null)
+        msgs = ((InternalEObject)value).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.ATTRIBUTE__VALUE, null, msgs);
+      if (newValue != null)
+        msgs = ((InternalEObject)newValue).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CoreDslPackage.ATTRIBUTE__VALUE, null, msgs);
+      msgs = basicSetValue(newValue, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.ATTRIBUTE__VAL, newVal, newVal));
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.ATTRIBUTE__VALUE, newValue, newValue));
   }
 
   /**
@@ -169,8 +169,8 @@ public class AttributeImpl extends MinimalEObjectImpl.Container implements Attri
   {
     switch (featureID)
     {
-      case CoreDslPackage.ATTRIBUTE__VAL:
-        return basicSetVal(null, msgs);
+      case CoreDslPackage.ATTRIBUTE__VALUE:
+        return basicSetValue(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -187,8 +187,8 @@ public class AttributeImpl extends MinimalEObjectImpl.Container implements Attri
     {
       case CoreDslPackage.ATTRIBUTE__TYPE:
         return getType();
-      case CoreDslPackage.ATTRIBUTE__VAL:
-        return getVal();
+      case CoreDslPackage.ATTRIBUTE__VALUE:
+        return getValue();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -206,8 +206,8 @@ public class AttributeImpl extends MinimalEObjectImpl.Container implements Attri
       case CoreDslPackage.ATTRIBUTE__TYPE:
         setType((DeclarationAttribute)newValue);
         return;
-      case CoreDslPackage.ATTRIBUTE__VAL:
-        setVal((Expression)newValue);
+      case CoreDslPackage.ATTRIBUTE__VALUE:
+        setValue((Expression)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -226,8 +226,8 @@ public class AttributeImpl extends MinimalEObjectImpl.Container implements Attri
       case CoreDslPackage.ATTRIBUTE__TYPE:
         setType(TYPE_EDEFAULT);
         return;
-      case CoreDslPackage.ATTRIBUTE__VAL:
-        setVal((Expression)null);
+      case CoreDslPackage.ATTRIBUTE__VALUE:
+        setValue((Expression)null);
         return;
     }
     super.eUnset(featureID);
@@ -245,8 +245,8 @@ public class AttributeImpl extends MinimalEObjectImpl.Container implements Attri
     {
       case CoreDslPackage.ATTRIBUTE__TYPE:
         return type != TYPE_EDEFAULT;
-      case CoreDslPackage.ATTRIBUTE__VAL:
-        return val != null;
+      case CoreDslPackage.ATTRIBUTE__VALUE:
+        return value != null;
     }
     return super.eIsSet(featureID);
   }

@@ -7,7 +7,7 @@ import com.minres.coredsl.coreDsl.CompoundStatement;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.FunctionDefinition;
 import com.minres.coredsl.coreDsl.TypeSpecifier;
-import com.minres.coredsl.coreDsl.VariableRef;
+import com.minres.coredsl.coreDsl.Variable;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -388,11 +388,11 @@ public class FunctionDefinitionImpl extends ParameterListImpl implements Functio
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
-    if (baseClass == VariableRef.class)
+    if (baseClass == Variable.class)
     {
       switch (derivedFeatureID)
       {
-        case CoreDslPackage.FUNCTION_DEFINITION__NAME: return CoreDslPackage.VARIABLE_REF__NAME;
+        case CoreDslPackage.FUNCTION_DEFINITION__NAME: return CoreDslPackage.VARIABLE__NAME;
         default: return -1;
       }
     }
@@ -407,11 +407,11 @@ public class FunctionDefinitionImpl extends ParameterListImpl implements Functio
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
-    if (baseClass == VariableRef.class)
+    if (baseClass == Variable.class)
     {
       switch (baseFeatureID)
       {
-        case CoreDslPackage.VARIABLE_REF__NAME: return CoreDslPackage.FUNCTION_DEFINITION__NAME;
+        case CoreDslPackage.VARIABLE__NAME: return CoreDslPackage.FUNCTION_DEFINITION__NAME;
         default: return -1;
       }
     }

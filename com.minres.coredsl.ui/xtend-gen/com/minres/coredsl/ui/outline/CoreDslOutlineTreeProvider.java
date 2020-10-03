@@ -4,6 +4,7 @@
 package com.minres.coredsl.ui.outline;
 
 import com.minres.coredsl.coreDsl.BitField;
+import com.minres.coredsl.coreDsl.Variable;
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
 
 /**
@@ -13,6 +14,10 @@ import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
  */
 @SuppressWarnings("all")
 public class CoreDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
+  public boolean _isLeaf(final Variable variable) {
+    return true;
+  }
+  
   public boolean _isLeaf(final BitField bitField) {
     return true;
   }

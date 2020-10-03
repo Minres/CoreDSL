@@ -267,15 +267,6 @@ public interface CoreDslFactory extends EFactory
   Declaration createDeclaration();
 
   /**
-   * Returns a new object of class '<em>Type Or Var Declaration</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Type Or Var Declaration</em>'.
-   * @generated
-   */
-  TypeOrVarDeclaration createTypeOrVarDeclaration();
-
-  /**
    * Returns a new object of class '<em>Declaration Specifier</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -303,15 +294,6 @@ public interface CoreDslFactory extends EFactory
   TypeSpecifier createTypeSpecifier();
 
   /**
-   * Returns a new object of class '<em>Data Type Specifier</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Data Type Specifier</em>'.
-   * @generated
-   */
-  DataTypeSpecifier createDataTypeSpecifier();
-
-  /**
    * Returns a new object of class '<em>Pod Specifier</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -328,15 +310,6 @@ public interface CoreDslFactory extends EFactory
    * @generated
    */
   BitSizeSpecifier createBitSizeSpecifier();
-
-  /**
-   * Returns a new object of class '<em>Bit Size Value</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Bit Size Value</em>'.
-   * @generated
-   */
-  BitSizeValue createBitSizeValue();
 
   /**
    * Returns a new object of class '<em>Enum Specifier</em>'.
@@ -537,13 +510,13 @@ public interface CoreDslFactory extends EFactory
   PrimaryExpression createPrimaryExpression();
 
   /**
-   * Returns a new object of class '<em>Variable Ref</em>'.
+   * Returns a new object of class '<em>Variable</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Variable Ref</em>'.
+   * @return a new object of class '<em>Variable</em>'.
    * @generated
    */
-  VariableRef createVariableRef();
+  Variable createVariable();
 
   /**
    * Returns a new object of class '<em>String Literal</em>'.

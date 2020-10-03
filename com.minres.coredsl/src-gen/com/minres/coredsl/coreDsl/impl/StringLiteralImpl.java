@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.StringLiteralImpl#getVal <em>Val</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.StringLiteralImpl#getValue <em>Value</em>}</li>
  * </ul>
  *
  * @generated
@@ -28,24 +28,24 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 public class StringLiteralImpl extends EncodingPrefixImpl implements StringLiteral
 {
   /**
-   * The default value of the '{@link #getVal() <em>Val</em>}' attribute.
+   * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVal()
+   * @see #getValue()
    * @generated
    * @ordered
    */
-  protected static final String VAL_EDEFAULT = null;
+  protected static final String VALUE_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getVal() <em>Val</em>}' attribute.
+   * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVal()
+   * @see #getValue()
    * @generated
    * @ordered
    */
-  protected String val = VAL_EDEFAULT;
+  protected String value = VALUE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -74,9 +74,9 @@ public class StringLiteralImpl extends EncodingPrefixImpl implements StringLiter
    * @generated
    */
   @Override
-  public String getVal()
+  public String getValue()
   {
-    return val;
+    return value;
   }
 
   /**
@@ -85,12 +85,12 @@ public class StringLiteralImpl extends EncodingPrefixImpl implements StringLiter
    * @generated
    */
   @Override
-  public void setVal(String newVal)
+  public void setValue(String newValue)
   {
-    String oldVal = val;
-    val = newVal;
+    String oldValue = value;
+    value = newValue;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.STRING_LITERAL__VAL, oldVal, val));
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.STRING_LITERAL__VALUE, oldValue, value));
   }
 
   /**
@@ -103,8 +103,8 @@ public class StringLiteralImpl extends EncodingPrefixImpl implements StringLiter
   {
     switch (featureID)
     {
-      case CoreDslPackage.STRING_LITERAL__VAL:
-        return getVal();
+      case CoreDslPackage.STRING_LITERAL__VALUE:
+        return getValue();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -119,8 +119,8 @@ public class StringLiteralImpl extends EncodingPrefixImpl implements StringLiter
   {
     switch (featureID)
     {
-      case CoreDslPackage.STRING_LITERAL__VAL:
-        setVal((String)newValue);
+      case CoreDslPackage.STRING_LITERAL__VALUE:
+        setValue((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -136,8 +136,8 @@ public class StringLiteralImpl extends EncodingPrefixImpl implements StringLiter
   {
     switch (featureID)
     {
-      case CoreDslPackage.STRING_LITERAL__VAL:
-        setVal(VAL_EDEFAULT);
+      case CoreDslPackage.STRING_LITERAL__VALUE:
+        setValue(VALUE_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -153,8 +153,8 @@ public class StringLiteralImpl extends EncodingPrefixImpl implements StringLiter
   {
     switch (featureID)
     {
-      case CoreDslPackage.STRING_LITERAL__VAL:
-        return VAL_EDEFAULT == null ? val != null : !VAL_EDEFAULT.equals(val);
+      case CoreDslPackage.STRING_LITERAL__VALUE:
+        return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
     }
     return super.eIsSet(featureID);
   }
@@ -170,8 +170,8 @@ public class StringLiteralImpl extends EncodingPrefixImpl implements StringLiter
     if (eIsProxy()) return super.toString();
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (val: ");
-    result.append(val);
+    result.append(" (value: ");
+    result.append(value);
     result.append(')');
     return result.toString();
   }

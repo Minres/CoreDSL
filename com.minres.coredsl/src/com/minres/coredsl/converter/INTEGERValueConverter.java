@@ -27,26 +27,31 @@ public class INTEGERValueConverter extends AbstractLexerBasedConverter<BigIntege
 			throw new ValueConverterException("Couldn't convert empty string to an integer value.", node, null);
 		try {
 			String s = string.toLowerCase().replaceAll("_", "");
+			int size = 32;
+			BigIntegerWithRadix.TYPE type = BigIntegerWithRadix.TYPE.SIGNED;
+			if(string.contains("u")) type =BigIntegerWithRadix.TYPE.UNSIGNED;
+			if(string.endsWith("ll")) size=128;
+			else if(string.endsWith("l")) size=64;
 			if(s.contains("'")) {
 				String[] token = s.split("/'/");
-				int size = Integer.parseInt(token[0]);
+				size = Integer.parseInt(token[0]);
 				if(token[1].startsWith("h")){
-					return new BigIntegerWithRadix(string.substring(2), 16, size);
+					return new BigIntegerWithRadix(string.substring(2), 16, size, type);
 				} else if(token[1].startsWith("b")){
-					return new BigIntegerWithRadix(string.substring(2), 2, size);
+					return new BigIntegerWithRadix(string.substring(2), 2, size, type);
 				} else if(token[1].startsWith("o")){
-					return new BigIntegerWithRadix(s, 8, size);
+					return new BigIntegerWithRadix(s, 8, size, type);
 				}else 
-					return new BigIntegerWithRadix(s, 10, size);
+					return new BigIntegerWithRadix(s, 10, size, type);
 			} else {
 				if(s.startsWith("0x")){
-					return new BigIntegerWithRadix(string.substring(2), 16);
+					return new BigIntegerWithRadix(string.substring(2), 16, size, type);
 				} else if(s.startsWith("0b")){
-					return new BigIntegerWithRadix(string.substring(2), 2);
+					return new BigIntegerWithRadix(string.substring(2), 2, size, type);
 				} else if(s.length()>1 && s.startsWith("0")){
-					return new BigIntegerWithRadix(s, 8);
+					return new BigIntegerWithRadix(s, 8, size, type);
 				}else 
-					return new BigIntegerWithRadix(s, 10);
+					return new BigIntegerWithRadix(s, 10, size, type);
 			}
 		} catch (NumberFormatException e) {
 			throw new ValueConverterException("Couldn't convert '" + string + "' to an integer value.", node, e);

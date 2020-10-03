@@ -27,5 +27,6 @@ Export-Package: com.minres.coredsl,
  com.minres.coredsl.scoping,
  com.minres.coredsl.serializer,
  com.minres.coredsl.services,
+ com.minres.coredsl.util,
  com.minres.coredsl.validation
 Import-Package: org.apache.log4j

@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.FloatingConstantImpl#getVal <em>Val</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.FloatingConstantImpl#getValue <em>Value</em>}</li>
  * </ul>
  *
  * @generated
@@ -30,24 +30,24 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 public class FloatingConstantImpl extends ConstantImpl implements FloatingConstant
 {
   /**
-   * The default value of the '{@link #getVal() <em>Val</em>}' attribute.
+   * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVal()
+   * @see #getValue()
    * @generated
    * @ordered
    */
-  protected static final BigDecimal VAL_EDEFAULT = null;
+  protected static final BigDecimal VALUE_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getVal() <em>Val</em>}' attribute.
+   * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVal()
+   * @see #getValue()
    * @generated
    * @ordered
    */
-  protected BigDecimal val = VAL_EDEFAULT;
+  protected BigDecimal value = VALUE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -76,9 +76,9 @@ public class FloatingConstantImpl extends ConstantImpl implements FloatingConsta
    * @generated
    */
   @Override
-  public BigDecimal getVal()
+  public BigDecimal getValue()
   {
-    return val;
+    return value;
   }
 
   /**
@@ -87,12 +87,12 @@ public class FloatingConstantImpl extends ConstantImpl implements FloatingConsta
    * @generated
    */
   @Override
-  public void setVal(BigDecimal newVal)
+  public void setValue(BigDecimal newValue)
   {
-    BigDecimal oldVal = val;
-    val = newVal;
+    BigDecimal oldValue = value;
+    value = newValue;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.FLOATING_CONSTANT__VAL, oldVal, val));
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.FLOATING_CONSTANT__VALUE, oldValue, value));
   }
 
   /**
@@ -105,8 +105,8 @@ public class FloatingConstantImpl extends ConstantImpl implements FloatingConsta
   {
     switch (featureID)
     {
-      case CoreDslPackage.FLOATING_CONSTANT__VAL:
-        return getVal();
+      case CoreDslPackage.FLOATING_CONSTANT__VALUE:
+        return getValue();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -121,8 +121,8 @@ public class FloatingConstantImpl extends ConstantImpl implements FloatingConsta
   {
     switch (featureID)
     {
-      case CoreDslPackage.FLOATING_CONSTANT__VAL:
-        setVal((BigDecimal)newValue);
+      case CoreDslPackage.FLOATING_CONSTANT__VALUE:
+        setValue((BigDecimal)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -138,8 +138,8 @@ public class FloatingConstantImpl extends ConstantImpl implements FloatingConsta
   {
     switch (featureID)
     {
-      case CoreDslPackage.FLOATING_CONSTANT__VAL:
-        setVal(VAL_EDEFAULT);
+      case CoreDslPackage.FLOATING_CONSTANT__VALUE:
+        setValue(VALUE_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -155,8 +155,8 @@ public class FloatingConstantImpl extends ConstantImpl implements FloatingConsta
   {
     switch (featureID)
     {
-      case CoreDslPackage.FLOATING_CONSTANT__VAL:
-        return VAL_EDEFAULT == null ? val != null : !VAL_EDEFAULT.equals(val);
+      case CoreDslPackage.FLOATING_CONSTANT__VALUE:
+        return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
     }
     return super.eIsSet(featureID);
   }
@@ -172,8 +172,8 @@ public class FloatingConstantImpl extends ConstantImpl implements FloatingConsta
     if (eIsProxy()) return super.toString();
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (val: ");
-    result.append(val);
+    result.append(" (value: ");
+    result.append(value);
     result.append(')');
     return result.toString();
   }

@@ -30,12 +30,12 @@ public interface PrimaryExpression extends PostfixExpression
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Ref</em>' reference.
-   * @see #setRef(VariableRef)
+   * @see #setRef(Variable)
    * @see com.minres.coredsl.coreDsl.CoreDslPackage#getPrimaryExpression_Ref()
    * @model
    * @generated
    */
-  VariableRef getRef();
+  Variable getRef();
 
   /**
    * Sets the value of the '{@link com.minres.coredsl.coreDsl.PrimaryExpression#getRef <em>Ref</em>}' reference.
@@ -45,7 +45,7 @@ public interface PrimaryExpression extends PostfixExpression
    * @see #getRef()
    * @generated
    */
-  void setRef(VariableRef value);
+  void setRef(Variable value);
 
   /**
    * Returns the value of the '<em><b>Constant</b></em>' containment reference.

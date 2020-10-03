@@ -18,8 +18,8 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.ISA#getName <em>Name</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.ISA#getConstants <em>Constants</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.ISA#getSpaces <em>Spaces</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.ISA#getRegs <em>Regs</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.ISA#getSpaces <em>Spaces</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.ISA#getInstr <em>Instr</em>}</li>
  * </ul>
  *
@@ -64,18 +64,6 @@ public interface ISA extends EObject
   EList<Declaration> getConstants();
 
   /**
-   * Returns the value of the '<em><b>Spaces</b></em>' containment reference list.
-   * The list contents are of type {@link com.minres.coredsl.coreDsl.Declaration}.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Spaces</em>' containment reference list.
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getISA_Spaces()
-   * @model containment="true"
-   * @generated
-   */
-  EList<Declaration> getSpaces();
-
-  /**
    * Returns the value of the '<em><b>Regs</b></em>' containment reference list.
    * The list contents are of type {@link com.minres.coredsl.coreDsl.Declaration}.
    * <!-- begin-user-doc -->
@@ -86,6 +74,18 @@ public interface ISA extends EObject
    * @generated
    */
   EList<Declaration> getRegs();
+
+  /**
+   * Returns the value of the '<em><b>Spaces</b></em>' containment reference list.
+   * The list contents are of type {@link com.minres.coredsl.coreDsl.Declaration}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Spaces</em>' containment reference list.
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getISA_Spaces()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Declaration> getSpaces();
 
   /**
    * Returns the value of the '<em><b>Instr</b></em>' containment reference list.

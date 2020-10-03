@@ -6,7 +6,7 @@ package com.minres.coredsl.coreDsl.impl;
 import com.minres.coredsl.coreDsl.BitSizeSpecifier;
 import com.minres.coredsl.coreDsl.CastExpression;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
-import com.minres.coredsl.coreDsl.DataTypeSpecifier;
+import com.minres.coredsl.coreDsl.TypeSpecifier;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -40,7 +40,7 @@ public class CastExpressionImpl extends ExpressionImpl implements CastExpression
    * @generated
    * @ordered
    */
-  protected DataTypeSpecifier type;
+  protected TypeSpecifier type;
 
   /**
    * The cached value of the '{@link #getSize() <em>Size</em>}' containment reference.
@@ -79,7 +79,7 @@ public class CastExpressionImpl extends ExpressionImpl implements CastExpression
    * @generated
    */
   @Override
-  public DataTypeSpecifier getType()
+  public TypeSpecifier getType()
   {
     return type;
   }
@@ -89,9 +89,9 @@ public class CastExpressionImpl extends ExpressionImpl implements CastExpression
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetType(DataTypeSpecifier newType, NotificationChain msgs)
+  public NotificationChain basicSetType(TypeSpecifier newType, NotificationChain msgs)
   {
-    DataTypeSpecifier oldType = type;
+    TypeSpecifier oldType = type;
     type = newType;
     if (eNotificationRequired())
     {
@@ -107,7 +107,7 @@ public class CastExpressionImpl extends ExpressionImpl implements CastExpression
    * @generated
    */
   @Override
-  public void setType(DataTypeSpecifier newType)
+  public void setType(TypeSpecifier newType)
   {
     if (newType != type)
     {
@@ -220,7 +220,7 @@ public class CastExpressionImpl extends ExpressionImpl implements CastExpression
     switch (featureID)
     {
       case CoreDslPackage.CAST_EXPRESSION__TYPE:
-        setType((DataTypeSpecifier)newValue);
+        setType((TypeSpecifier)newValue);
         return;
       case CoreDslPackage.CAST_EXPRESSION__SIZE:
         setSize((BitSizeSpecifier)newValue);
@@ -240,7 +240,7 @@ public class CastExpressionImpl extends ExpressionImpl implements CastExpression
     switch (featureID)
     {
       case CoreDslPackage.CAST_EXPRESSION__TYPE:
-        setType((DataTypeSpecifier)null);
+        setType((TypeSpecifier)null);
         return;
       case CoreDslPackage.CAST_EXPRESSION__SIZE:
         setSize((BitSizeSpecifier)null);

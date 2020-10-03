@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.EClass;
  *
  * @generated
  */
-public class FieldImpl extends VariableRefImpl implements Field
+public class FieldImpl extends VariableImpl implements Field
 {
   /**
    * <!-- begin-user-doc -->

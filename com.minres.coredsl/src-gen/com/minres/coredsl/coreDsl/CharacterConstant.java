@@ -13,7 +13,7 @@ package com.minres.coredsl.coreDsl;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.CharacterConstant#getVal <em>Val</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.CharacterConstant#getValue <em>Value</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.CharacterConstant#getEnc <em>Enc</em>}</li>
  * </ul>
  *
@@ -24,26 +24,26 @@ package com.minres.coredsl.coreDsl;
 public interface CharacterConstant extends Constant
 {
   /**
-   * Returns the value of the '<em><b>Val</b></em>' attribute.
+   * Returns the value of the '<em><b>Value</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Val</em>' attribute.
-   * @see #setVal(String)
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getCharacterConstant_Val()
+   * @return the value of the '<em>Value</em>' attribute.
+   * @see #setValue(String)
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getCharacterConstant_Value()
    * @model
    * @generated
    */
-  String getVal();
+  String getValue();
 
   /**
-   * Sets the value of the '{@link com.minres.coredsl.coreDsl.CharacterConstant#getVal <em>Val</em>}' attribute.
+   * Sets the value of the '{@link com.minres.coredsl.coreDsl.CharacterConstant#getValue <em>Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Val</em>' attribute.
-   * @see #getVal()
+   * @param value the new value of the '<em>Value</em>' attribute.
+   * @see #getValue()
    * @generated
    */
-  void setVal(String value);
+  void setValue(String value);
 
   /**
    * Returns the value of the '<em><b>Enc</b></em>' attribute.

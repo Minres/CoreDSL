@@ -3,7 +3,20 @@
  */
 package com.minres.coredsl.validation;
 
+import com.minres.coredsl.coreDsl.AssignmentExpression;
+import com.minres.coredsl.coreDsl.CastExpression;
+import com.minres.coredsl.coreDsl.ConditionalExpression;
+import com.minres.coredsl.coreDsl.DataTypes;
+import com.minres.coredsl.coreDsl.Expression;
+import com.minres.coredsl.coreDsl.InfixExpression;
+import com.minres.coredsl.coreDsl.PodSpecifier;
+import com.minres.coredsl.coreDsl.PostfixExpression;
+import com.minres.coredsl.coreDsl.PrefixExpression;
+import com.minres.coredsl.coreDsl.PrimaryExpression;
+import com.minres.coredsl.coreDsl.TypeSpecifier;
+import com.minres.coredsl.util.TypeProvider;
 import com.minres.coredsl.validation.AbstractCoreDslValidator;
+import org.eclipse.xtext.validation.Check;
 
 /**
  * This class contains custom validation rules.
@@ -14,9 +27,50 @@ import com.minres.coredsl.validation.AbstractCoreDslValidator;
 public class CoreDslValidator extends AbstractCoreDslValidator {
   protected static final String ISSUE_CODE_PREFIX = "com.minres.coredsl.";
   
-  public static final String FORWARD_REFERENCE = (CoreDslValidator.ISSUE_CODE_PREFIX + "ForwardReference");
-  
   public static final String TYPE_MISMATCH = (CoreDslValidator.ISSUE_CODE_PREFIX + "TypeMismatch");
   
-  public static final String SHADOWING_NAME = (CoreDslValidator.ISSUE_CODE_PREFIX + "NameShadow");
+  @Check
+  public void checkType(final Expression e) {
+    boolean _matched = false;
+    if (e instanceof PrimaryExpression) {
+      _matched=true;
+    }
+    if (!_matched) {
+      if (e instanceof PostfixExpression) {
+        _matched=true;
+      }
+    }
+    if (!_matched) {
+      if (e instanceof PrefixExpression) {
+        _matched=true;
+      }
+    }
+    if (!_matched) {
+      if (e instanceof CastExpression) {
+        _matched=true;
+      }
+    }
+    if (!_matched) {
+      if (e instanceof AssignmentExpression) {
+        _matched=true;
+      }
+    }
+    if (!_matched) {
+      if (e instanceof ConditionalExpression) {
+        _matched=true;
+        final TypeSpecifier type = TypeProvider.typeOf(((ConditionalExpression)e).getCond());
+        if ((type instanceof PodSpecifier)) {
+          boolean _contains = ((PodSpecifier)type).getDataType().contains(DataTypes.BOOL);
+          if (_contains) {
+            return;
+          }
+        }
+      }
+    }
+    if (!_matched) {
+      if (e instanceof InfixExpression) {
+        _matched=true;
+      }
+    }
+  }
 }

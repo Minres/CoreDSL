@@ -7,7 +7,7 @@ import com.minres.coredsl.coreDsl.Constant;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
 import com.minres.coredsl.coreDsl.PrimaryExpression;
 import com.minres.coredsl.coreDsl.StringLiteral;
-import com.minres.coredsl.coreDsl.VariableRef;
+import com.minres.coredsl.coreDsl.Variable;
 
 import java.util.Collection;
 
@@ -49,7 +49,7 @@ public class PrimaryExpressionImpl extends PostfixExpressionImpl implements Prim
    * @generated
    * @ordered
    */
-  protected VariableRef ref;
+  protected Variable ref;
 
   /**
    * The cached value of the '{@link #getConstant() <em>Constant</em>}' containment reference.
@@ -98,12 +98,12 @@ public class PrimaryExpressionImpl extends PostfixExpressionImpl implements Prim
    * @generated
    */
   @Override
-  public VariableRef getRef()
+  public Variable getRef()
   {
     if (ref != null && ref.eIsProxy())
     {
       InternalEObject oldRef = (InternalEObject)ref;
-      ref = (VariableRef)eResolveProxy(oldRef);
+      ref = (Variable)eResolveProxy(oldRef);
       if (ref != oldRef)
       {
         if (eNotificationRequired())
@@ -118,7 +118,7 @@ public class PrimaryExpressionImpl extends PostfixExpressionImpl implements Prim
    * <!-- end-user-doc -->
    * @generated
    */
-  public VariableRef basicGetRef()
+  public Variable basicGetRef()
   {
     return ref;
   }
@@ -129,9 +129,9 @@ public class PrimaryExpressionImpl extends PostfixExpressionImpl implements Prim
    * @generated
    */
   @Override
-  public void setRef(VariableRef newRef)
+  public void setRef(Variable newRef)
   {
-    VariableRef oldRef = ref;
+    Variable oldRef = ref;
     ref = newRef;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.PRIMARY_EXPRESSION__REF, oldRef, ref));
@@ -253,7 +253,7 @@ public class PrimaryExpressionImpl extends PostfixExpressionImpl implements Prim
     switch (featureID)
     {
       case CoreDslPackage.PRIMARY_EXPRESSION__REF:
-        setRef((VariableRef)newValue);
+        setRef((Variable)newValue);
         return;
       case CoreDslPackage.PRIMARY_EXPRESSION__CONSTANT:
         setConstant((Constant)newValue);
@@ -277,7 +277,7 @@ public class PrimaryExpressionImpl extends PostfixExpressionImpl implements Prim
     switch (featureID)
     {
       case CoreDslPackage.PRIMARY_EXPRESSION__REF:
-        setRef((VariableRef)null);
+        setRef((Variable)null);
         return;
       case CoreDslPackage.PRIMARY_EXPRESSION__CONSTANT:
         setConstant((Constant)null);

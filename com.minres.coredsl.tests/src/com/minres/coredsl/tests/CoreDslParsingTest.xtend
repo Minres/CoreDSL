@@ -4,23 +4,23 @@
 package com.minres.coredsl.tests
 
 import com.google.inject.Inject
-import org.eclipse.emf.ecore.util.EcoreUtil
+import com.minres.coredsl.coreDsl.DescriptionContent
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
+import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import static org.junit.Assert.*
-import com.minres.coredsl.coreDsl.DescriptionContent
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
 class CoreDslParsingTest {
 
-    @Inject ParseHelper<DescriptionContent> parseHelper
+    @Inject extension ParseHelper<DescriptionContent> parseHelper
 
-    def String addInstructionContext(String str)'''
+    @Inject ValidationTestHelper validator
+
+    def CharSequence addInstructionContext(CharSequence str)'''
         InstructionSet TestISA {
             registers { 
                 [[is_pc]] int PC ;
@@ -33,15 +33,9 @@ class CoreDslParsingTest {
         }
     '''
 
-    def String addInstructionSetContext(String str)'''
-        InstructionSet TestISA {
-            «str»
-        }
-    '''
-
     @Test
     def void parseInstrPRELU() {
-        val input = '''
+        val content = '''
         PRELU {
             encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011;  
             args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
@@ -61,18 +55,13 @@ class CoreDslParsingTest {
                     alpha = new_alpha; // update internal alpha register
                 }
         }
-        '''
-        val content = parseHelper.parse(input.addInstructionContext)
-        assertEquals(1, content.definitions.size)
-        val resource = content.eResource
-        EcoreUtil.resolveAll(resource);
-        assertEquals(0, resource.errors.size)
-        assertEquals(0, resource.warnings.size)
+        '''.addInstructionContext.parse
+        validator.assertNoErrors(content)
     }
 
     @Test
     def void parseInstrSBOX() {
-        val input = '''
+        val content = '''
         SBOX {
             encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011;  
             args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
@@ -84,18 +73,13 @@ class CoreDslParsingTest {
                 Xreg[rd] = sbox[data_i[31:24]] :: sbox[data_i[23:16]] :: sbox[data_i[15:8]] :: sbox[data_i[7:0]];
             }
         }
-        '''
-        val content = parseHelper.parse(input.addInstructionContext)
-        assertEquals(1, content.definitions.size)
-        val resource = content.eResource
-        EcoreUtil.resolveAll(resource);
-        assertEquals(0, resource.errors.size)
-        assertEquals(0, resource.warnings.size)
+        '''.addInstructionContext.parse
+        validator.assertNoErrors(content)
     }
 
     @Test
     def void parseInstrSQRTFloatRegs() {
-        val input = '''
+        val content = '''
             InstructionSet TestISA {
                 registers {
                     float F_Ext[32];}
@@ -112,18 +96,13 @@ class CoreDslParsingTest {
                     }
                 }
             }
-        '''
-        val content = parseHelper.parse(input)
-        assertEquals(1, content.definitions.size)
-        val resource = content.eResource
-        EcoreUtil.resolveAll(resource);
-        assertEquals(0, resource.errors.size)
-        assertEquals(0, resource.warnings.size)
+        '''.parse
+        validator.assertNoErrors(content)
     }
 
     @Test
     def void parseInstrSQRTUnionRegs() {
-        val input = '''
+        val content = '''
             InstructionSet TestISA {
                 registers {
                     union ISAXRegFile{
@@ -152,18 +131,13 @@ class CoreDslParsingTest {
                     }
                 }
             }
-        '''
-        val content = parseHelper.parse(input)
-        assertEquals(1, content.definitions.size)
-        val resource = content.eResource
-        EcoreUtil.resolveAll(resource);
-        assertEquals(0, resource.errors.size)
-        assertEquals(0, resource.warnings.size)
+        '''.parse
+        validator.assertNoErrors(content)
     }
 
     @Test
     def void parseInstrSpawn() {
-        val input = '''
+        val content = '''
             InstructionSet TestISA {
                 registers {
                 	[[is_pc]] int PC;
@@ -185,18 +159,13 @@ class CoreDslParsingTest {
                     }
                 }
             }
-        '''
-        val content = parseHelper.parse(input)
-        assertEquals(1, content.definitions.size)
-        val resource = content.eResource
-        EcoreUtil.resolveAll(resource);
-        assertEquals(0, resource.errors.size)
-        assertEquals(0, resource.warnings.size)
+        '''.parse
+        validator.assertNoErrors(content)
     }
 
     @Test
     def void parseInstrZOL() {
-        val input = '''
+        val content = '''
             InstructionSet TestISA {
                 registers {
                 	int PC;
@@ -230,12 +199,7 @@ class CoreDslParsingTest {
                     }
                 }
             }
-        '''
-        val content = parseHelper.parse(input)
-        assertEquals(1, content.definitions.size)
-        val resource = content.eResource
-        EcoreUtil.resolveAll(resource);
-        assertEquals(0, resource.errors.size)
-        assertEquals(0, resource.warnings.size)
+        '''.parse
+        validator.assertNoErrors(content)
     }
 }

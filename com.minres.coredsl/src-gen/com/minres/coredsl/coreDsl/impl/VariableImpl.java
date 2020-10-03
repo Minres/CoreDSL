@@ -4,7 +4,7 @@
 package com.minres.coredsl.coreDsl.impl;
 
 import com.minres.coredsl.coreDsl.CoreDslPackage;
-import com.minres.coredsl.coreDsl.VariableRef;
+import com.minres.coredsl.coreDsl.Variable;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -15,18 +15,18 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Variable Ref</b></em>'.
+ * An implementation of the model object '<em><b>Variable</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.VariableRefImpl#getName <em>Name</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.VariableImpl#getName <em>Name</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class VariableRefImpl extends MinimalEObjectImpl.Container implements VariableRef
+public class VariableImpl extends MinimalEObjectImpl.Container implements Variable
 {
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -53,7 +53,7 @@ public class VariableRefImpl extends MinimalEObjectImpl.Container implements Var
    * <!-- end-user-doc -->
    * @generated
    */
-  protected VariableRefImpl()
+  protected VariableImpl()
   {
     super();
   }
@@ -66,7 +66,7 @@ public class VariableRefImpl extends MinimalEObjectImpl.Container implements Var
   @Override
   protected EClass eStaticClass()
   {
-    return CoreDslPackage.Literals.VARIABLE_REF;
+    return CoreDslPackage.Literals.VARIABLE;
   }
 
   /**
@@ -91,7 +91,7 @@ public class VariableRefImpl extends MinimalEObjectImpl.Container implements Var
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.VARIABLE_REF__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.VARIABLE__NAME, oldName, name));
   }
 
   /**
@@ -104,7 +104,7 @@ public class VariableRefImpl extends MinimalEObjectImpl.Container implements Var
   {
     switch (featureID)
     {
-      case CoreDslPackage.VARIABLE_REF__NAME:
+      case CoreDslPackage.VARIABLE__NAME:
         return getName();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -120,7 +120,7 @@ public class VariableRefImpl extends MinimalEObjectImpl.Container implements Var
   {
     switch (featureID)
     {
-      case CoreDslPackage.VARIABLE_REF__NAME:
+      case CoreDslPackage.VARIABLE__NAME:
         setName((String)newValue);
         return;
     }
@@ -137,7 +137,7 @@ public class VariableRefImpl extends MinimalEObjectImpl.Container implements Var
   {
     switch (featureID)
     {
-      case CoreDslPackage.VARIABLE_REF__NAME:
+      case CoreDslPackage.VARIABLE__NAME:
         setName(NAME_EDEFAULT);
         return;
     }
@@ -154,7 +154,7 @@ public class VariableRefImpl extends MinimalEObjectImpl.Container implements Var
   {
     switch (featureID)
     {
-      case CoreDslPackage.VARIABLE_REF__NAME:
+      case CoreDslPackage.VARIABLE__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
     }
     return super.eIsSet(featureID);
@@ -177,4 +177,4 @@ public class VariableRefImpl extends MinimalEObjectImpl.Container implements Var
     return result.toString();
   }
 
-} //VariableRefImpl
+} //VariableImpl

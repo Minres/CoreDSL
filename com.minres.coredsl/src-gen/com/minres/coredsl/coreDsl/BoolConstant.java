@@ -13,7 +13,7 @@ package com.minres.coredsl.coreDsl;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.BoolConstant#isVal <em>Val</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.BoolConstant#isValue <em>Value</em>}</li>
  * </ul>
  *
  * @see com.minres.coredsl.coreDsl.CoreDslPackage#getBoolConstant()
@@ -23,25 +23,25 @@ package com.minres.coredsl.coreDsl;
 public interface BoolConstant extends Constant
 {
   /**
-   * Returns the value of the '<em><b>Val</b></em>' attribute.
+   * Returns the value of the '<em><b>Value</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Val</em>' attribute.
-   * @see #setVal(boolean)
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getBoolConstant_Val()
+   * @return the value of the '<em>Value</em>' attribute.
+   * @see #setValue(boolean)
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getBoolConstant_Value()
    * @model
    * @generated
    */
-  boolean isVal();
+  boolean isValue();
 
   /**
-   * Sets the value of the '{@link com.minres.coredsl.coreDsl.BoolConstant#isVal <em>Val</em>}' attribute.
+   * Sets the value of the '{@link com.minres.coredsl.coreDsl.BoolConstant#isValue <em>Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Val</em>' attribute.
-   * @see #isVal()
+   * @param value the new value of the '<em>Value</em>' attribute.
+   * @see #isValue()
    * @generated
    */
-  void setVal(boolean value);
+  void setValue(boolean value);
 
 } // BoolConstant

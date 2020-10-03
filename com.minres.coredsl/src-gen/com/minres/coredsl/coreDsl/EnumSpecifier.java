@@ -20,7 +20,7 @@ package com.minres.coredsl.coreDsl;
  * @model
  * @generated
  */
-public interface EnumSpecifier extends DataTypeSpecifier, EnumeratorList
+public interface EnumSpecifier extends TypeSpecifier, EnumeratorList
 {
   /**
    * Returns the value of the '<em><b>Name</b></em>' attribute.

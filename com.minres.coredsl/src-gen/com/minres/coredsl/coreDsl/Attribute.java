@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.Attribute#getType <em>Type</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.Attribute#getVal <em>Val</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.Attribute#getValue <em>Value</em>}</li>
  * </ul>
  *
  * @see com.minres.coredsl.coreDsl.CoreDslPackage#getAttribute()
@@ -50,25 +50,25 @@ public interface Attribute extends EObject
   void setType(DeclarationAttribute value);
 
   /**
-   * Returns the value of the '<em><b>Val</b></em>' containment reference.
+   * Returns the value of the '<em><b>Value</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Val</em>' containment reference.
-   * @see #setVal(Expression)
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getAttribute_Val()
+   * @return the value of the '<em>Value</em>' containment reference.
+   * @see #setValue(Expression)
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getAttribute_Value()
    * @model containment="true"
    * @generated
    */
-  Expression getVal();
+  Expression getValue();
 
   /**
-   * Sets the value of the '{@link com.minres.coredsl.coreDsl.Attribute#getVal <em>Val</em>}' containment reference.
+   * Sets the value of the '{@link com.minres.coredsl.coreDsl.Attribute#getValue <em>Value</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Val</em>' containment reference.
-   * @see #getVal()
+   * @param value the new value of the '<em>Value</em>' containment reference.
+   * @see #getValue()
    * @generated
    */
-  void setVal(Expression value);
+  void setValue(Expression value);
 
 } // Attribute

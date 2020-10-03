@@ -7,12 +7,11 @@ import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.InstructionSet
-//import com.minres.coredsl.coreDsl.TypedefDeclaration
-import com.minres.coredsl.coreDsl.VariableRef
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.Scopes
+import com.minres.coredsl.coreDsl.Variable
 
 /**
  * This class contains custom scoping description.
@@ -26,65 +25,22 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
         // We want to define the Scope for the Element's superElement cross-reference
 		// println("Context "+context.class + " in " + context.eContainer+", reference " + reference.EReferenceType.name)
 		//Context class com.minres.coredsl.coreDsl.impl.IndexedAssignmentImplin com.minres.coredsl.coreDsl.impl.ConditionalStmtImpl@9a3d0f4, reference IndexedVar
-		if(reference.EReferenceType.name=="VariableRef") {
+		if(reference.EReferenceType.name=="Variable") {
 			val isa = context.parentOfType(ISA) as ISA
-        	return Scopes.scopeFor(isa.allOfType(VariableRef))
-//    	} else if(reference.EReferenceType.name=="TypedefDeclaration") {
-//		  	val isa = context.parentOfType(ISA) as ISA
-//		  	val res = isa.allOfType(TypedefDeclaration)
-//		  	return Scopes.scopeFor(res)
+        	return Scopes.scopeFor(isa.allOfType(Variable))
     	} else if(reference.EReferenceType.name=="DirectDeclarator") {
 		  	val isa = context.parentOfType(ISA) as ISA
 		  	return Scopes.scopeFor(isa.allOfType(DirectDeclarator))
-//    	} else if(reference.EReferenceType.name=="Scalar") {
-//		  	val instr = context.parentOfType(Instruction) as Instruction
-//		  	val scope = Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(instr, Constant))
-//		  	return scope
-////    	} else if((context instanceof ValueRef || context instanceof IndexedAssignment) && reference.EReferenceType.name=="EObject") {
-////    		// ValueRef references RegisterFile | AddressSpace or Scalar | Register | RegisterAlias | Constant
-////		  	return context.eContainer.symbolsDefinedBefore(context)
+        } else if(reference.EReferenceType.name=="InstructionSet") {
+            return super.getScope(context, reference);
+        } else if(reference.EReferenceType.name=="CoreDef") {
+            return super.getScope(context, reference);
 		} else {
 			println("Unmatched: context "+context.class + " in " + context.eContainer+", reference " + reference.EReferenceType.name)
 	        return super.getScope(context, reference);
 		}
     }
 
-//	def dispatch IScope symbolsDefinedBefore(EObject cont, EObject o){
-//		cont.eContainer.symbolsDefinedBefore(o.eContainer)
-//	}
-
-//	def dispatch IScope symbolsDefinedBefore(ConditionalStmt stmt, EObject o){
-//		if(stmt.cond === o){
-//			return stmt.eContainer.symbolsDefinedBefore(o.eContainer)
-//		} else	if(stmt.thenStmts.contains(o)){
-//			return Scopes.scopeFor(
-//				stmt.thenStmts.localsDefinedBefore(o),
-//		  		stmt.eContainer.symbolsDefinedBefore(o.eContainer)
-//	  		)			
-//		} else if(stmt.elseStmts.size>0){
-//			return Scopes.scopeFor(
-//				stmt.elseStmts.localsDefinedBefore(o),
-//		  		stmt.eContainer.symbolsDefinedBefore(o.eContainer)
-//	  		)			
-//		}
-//	}
-
-//	def dispatch IScope symbolsDefinedBefore(Operation oper, EObject o){
-//	  	val isa = oper.parentOfType(ISA) as ISA
-//	  	val inst = oper.eContainer as Instruction
-//		Scopes.scopeFor(
-//			oper.statements.localsDefinedBefore(o).toList +
-//			isa.allOfType(IndexedVariable).toList + 
-//	  		isa.allOfType(RegisterVariable).toList + 
-//	  		isa.allOfType(Constant).toList + EcoreUtil2.getAllContentsOfType(inst, BitField)
-//  		)
-//	}
-//
-//	def private localsDefinedBefore(List<Statement> list, EObject o){
-//		val idx = list.indexOf(o)
-//		return list.subList(0, idx).filter(typeof(ScalarAssignment)).map[ScalarAssignment a| a.to]
-//	}
-	
 	def <T extends EObject> T parentOfType(EObject obj, Class<T> clazz){
 		if(obj.eContainer===null)
 			return null

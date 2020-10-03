@@ -23,7 +23,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface DirectDeclarator extends ParameterList, VariableRef
+public interface DirectDeclarator extends ParameterList, Variable
 {
   /**
    * Returns the value of the '<em><b>Index</b></em>' containment reference.

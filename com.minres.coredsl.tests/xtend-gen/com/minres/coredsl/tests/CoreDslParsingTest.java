@@ -6,14 +6,13 @@ package com.minres.coredsl.tests;
 import com.google.inject.Inject;
 import com.minres.coredsl.coreDsl.DescriptionContent;
 import com.minres.coredsl.tests.CoreDslInjectorProvider;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
+import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.junit.Assert;
+import org.eclipse.xtext.xbase.lib.Extension;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,9 +21,13 @@ import org.junit.runner.RunWith;
 @SuppressWarnings("all")
 public class CoreDslParsingTest {
   @Inject
+  @Extension
   private ParseHelper<DescriptionContent> parseHelper;
   
-  public String addInstructionContext(final String str) {
+  @Inject
+  private ValidationTestHelper validator;
+  
+  public CharSequence addInstructionContext(final CharSequence str) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("InstructionSet TestISA {");
     _builder.newLine();
@@ -54,19 +57,7 @@ public class CoreDslParsingTest {
     _builder.newLine();
     _builder.append("}");
     _builder.newLine();
-    return _builder.toString();
-  }
-  
-  public String addInstructionSetContext(final String str) {
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("InstructionSet TestISA {");
-    _builder.newLine();
-    _builder.append("    ");
-    _builder.append(str, "    ");
-    _builder.newLineIfNotEmpty();
-    _builder.append("}");
-    _builder.newLine();
-    return _builder.toString();
+    return _builder;
   }
   
   @Test
@@ -128,13 +119,8 @@ public class CoreDslParsingTest {
       _builder.newLine();
       _builder.append("}");
       _builder.newLine();
-      final String input = _builder.toString();
-      final DescriptionContent content = this.parseHelper.parse(this.addInstructionContext(input));
-      Assert.assertEquals(1, content.getDefinitions().size());
-      final Resource resource = content.eResource();
-      EcoreUtil.resolveAll(resource);
-      Assert.assertEquals(0, resource.getErrors().size());
-      Assert.assertEquals(0, resource.getWarnings().size());
+      final DescriptionContent content = this.parseHelper.parse(this.addInstructionContext(_builder));
+      this.validator.assertNoErrors(content);
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
@@ -175,13 +161,8 @@ public class CoreDslParsingTest {
       _builder.newLine();
       _builder.append("}");
       _builder.newLine();
-      final String input = _builder.toString();
-      final DescriptionContent content = this.parseHelper.parse(this.addInstructionContext(input));
-      Assert.assertEquals(1, content.getDefinitions().size());
-      final Resource resource = content.eResource();
-      EcoreUtil.resolveAll(resource);
-      Assert.assertEquals(0, resource.getErrors().size());
-      Assert.assertEquals(0, resource.getWarnings().size());
+      final DescriptionContent content = this.parseHelper.parse(this.addInstructionContext(_builder));
+      this.validator.assertNoErrors(content);
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
@@ -237,13 +218,8 @@ public class CoreDslParsingTest {
       _builder.newLine();
       _builder.append("}");
       _builder.newLine();
-      final String input = _builder.toString();
-      final DescriptionContent content = this.parseHelper.parse(input);
-      Assert.assertEquals(1, content.getDefinitions().size());
-      final Resource resource = content.eResource();
-      EcoreUtil.resolveAll(resource);
-      Assert.assertEquals(0, resource.getErrors().size());
-      Assert.assertEquals(0, resource.getWarnings().size());
+      final DescriptionContent content = this.parseHelper.parse(_builder);
+      this.validator.assertNoErrors(content);
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
@@ -335,13 +311,8 @@ public class CoreDslParsingTest {
       _builder.newLine();
       _builder.append("}");
       _builder.newLine();
-      final String input = _builder.toString();
-      final DescriptionContent content = this.parseHelper.parse(input);
-      Assert.assertEquals(1, content.getDefinitions().size());
-      final Resource resource = content.eResource();
-      EcoreUtil.resolveAll(resource);
-      Assert.assertEquals(0, resource.getErrors().size());
-      Assert.assertEquals(0, resource.getWarnings().size());
+      final DescriptionContent content = this.parseHelper.parse(_builder);
+      this.validator.assertNoErrors(content);
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
@@ -412,13 +383,8 @@ public class CoreDslParsingTest {
       _builder.newLine();
       _builder.append("}");
       _builder.newLine();
-      final String input = _builder.toString();
-      final DescriptionContent content = this.parseHelper.parse(input);
-      Assert.assertEquals(1, content.getDefinitions().size());
-      final Resource resource = content.eResource();
-      EcoreUtil.resolveAll(resource);
-      Assert.assertEquals(0, resource.getErrors().size());
-      Assert.assertEquals(0, resource.getWarnings().size());
+      final DescriptionContent content = this.parseHelper.parse(_builder);
+      this.validator.assertNoErrors(content);
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
@@ -525,13 +491,8 @@ public class CoreDslParsingTest {
       _builder.newLine();
       _builder.append("}");
       _builder.newLine();
-      final String input = _builder.toString();
-      final DescriptionContent content = this.parseHelper.parse(input);
-      Assert.assertEquals(1, content.getDefinitions().size());
-      final Resource resource = content.eResource();
-      EcoreUtil.resolveAll(resource);
-      Assert.assertEquals(0, resource.getErrors().size());
-      Assert.assertEquals(0, resource.getWarnings().size());
+      final DescriptionContent content = this.parseHelper.parse(_builder);
+      this.validator.assertNoErrors(content);
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }

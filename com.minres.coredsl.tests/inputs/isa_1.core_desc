@@ -4,13 +4,13 @@ InstructionSet RV32I {
         unsigned CSR_SIZE = 4096;
         unsigned REG_FILE_SIZE=32;
     }
-    address_spaces {
-        char MEM[1<<XLEN];
-        unsigned CSR[CSR_SIZE];
-    }
     registers { 
     	[[is_pc]] int PC ;
         int X[REG_FILE_SIZE];
+    }
+    address_spaces {
+        char MEM[1<<XLEN];
+        unsigned CSR[CSR_SIZE];
     }
     instructions { 
        ADDI {

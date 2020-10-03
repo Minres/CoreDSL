@@ -37,7 +37,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class EnumSpecifierImpl extends DataTypeSpecifierImpl implements EnumSpecifier
+public class EnumSpecifierImpl extends TypeSpecifierImpl implements EnumSpecifier
 {
   /**
    * The cached value of the '{@link #getEnumerators() <em>Enumerators</em>}' containment reference list.

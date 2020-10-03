@@ -6,8 +6,8 @@ package com.minres.coredsl.coreDsl.impl;
 import com.minres.coredsl.coreDsl.BitSizeSpecifier;
 import com.minres.coredsl.coreDsl.CastExpression;
 import com.minres.coredsl.coreDsl.CoreDslPackage;
-import com.minres.coredsl.coreDsl.DataTypeSpecifier;
 import com.minres.coredsl.coreDsl.PrefixExpression;
+import com.minres.coredsl.coreDsl.TypeSpecifier;
 import com.minres.coredsl.coreDsl.UnaryOperator;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -43,7 +43,7 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
    * @generated
    * @ordered
    */
-  protected DataTypeSpecifier type;
+  protected TypeSpecifier type;
 
   /**
    * The cached value of the '{@link #getSize() <em>Size</em>}' containment reference.
@@ -102,7 +102,7 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
    * @generated
    */
   @Override
-  public DataTypeSpecifier getType()
+  public TypeSpecifier getType()
   {
     return type;
   }
@@ -112,9 +112,9 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetType(DataTypeSpecifier newType, NotificationChain msgs)
+  public NotificationChain basicSetType(TypeSpecifier newType, NotificationChain msgs)
   {
-    DataTypeSpecifier oldType = type;
+    TypeSpecifier oldType = type;
     type = newType;
     if (eNotificationRequired())
     {
@@ -130,7 +130,7 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
    * @generated
    */
   @Override
-  public void setType(DataTypeSpecifier newType)
+  public void setType(TypeSpecifier newType)
   {
     if (newType != type)
     {
@@ -270,7 +270,7 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
     switch (featureID)
     {
       case CoreDslPackage.PREFIX_EXPRESSION__TYPE:
-        setType((DataTypeSpecifier)newValue);
+        setType((TypeSpecifier)newValue);
         return;
       case CoreDslPackage.PREFIX_EXPRESSION__SIZE:
         setSize((BitSizeSpecifier)newValue);
@@ -293,7 +293,7 @@ public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpres
     switch (featureID)
     {
       case CoreDslPackage.PREFIX_EXPRESSION__TYPE:
-        setType((DataTypeSpecifier)null);
+        setType((TypeSpecifier)null);
         return;
       case CoreDslPackage.PREFIX_EXPRESSION__SIZE:
         setSize((BitSizeSpecifier)null);

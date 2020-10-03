@@ -34,8 +34,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.ISAImpl#getName <em>Name</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.ISAImpl#getConstants <em>Constants</em>}</li>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.ISAImpl#getSpaces <em>Spaces</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.ISAImpl#getRegs <em>Regs</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.ISAImpl#getSpaces <em>Spaces</em>}</li>
  *   <li>{@link com.minres.coredsl.coreDsl.impl.ISAImpl#getInstr <em>Instr</em>}</li>
  * </ul>
  *
@@ -74,16 +74,6 @@ public class ISAImpl extends MinimalEObjectImpl.Container implements ISA
   protected EList<Declaration> constants;
 
   /**
-   * The cached value of the '{@link #getSpaces() <em>Spaces</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSpaces()
-   * @generated
-   * @ordered
-   */
-  protected EList<Declaration> spaces;
-
-  /**
    * The cached value of the '{@link #getRegs() <em>Regs</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -92,6 +82,16 @@ public class ISAImpl extends MinimalEObjectImpl.Container implements ISA
    * @ordered
    */
   protected EList<Declaration> regs;
+
+  /**
+   * The cached value of the '{@link #getSpaces() <em>Spaces</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSpaces()
+   * @generated
+   * @ordered
+   */
+  protected EList<Declaration> spaces;
 
   /**
    * The cached value of the '{@link #getInstr() <em>Instr</em>}' containment reference list.
@@ -170,13 +170,13 @@ public class ISAImpl extends MinimalEObjectImpl.Container implements ISA
    * @generated
    */
   @Override
-  public EList<Declaration> getSpaces()
+  public EList<Declaration> getRegs()
   {
-    if (spaces == null)
+    if (regs == null)
     {
-      spaces = new EObjectContainmentEList<Declaration>(Declaration.class, this, CoreDslPackage.ISA__SPACES);
+      regs = new EObjectContainmentEList<Declaration>(Declaration.class, this, CoreDslPackage.ISA__REGS);
     }
-    return spaces;
+    return regs;
   }
 
   /**
@@ -185,13 +185,13 @@ public class ISAImpl extends MinimalEObjectImpl.Container implements ISA
    * @generated
    */
   @Override
-  public EList<Declaration> getRegs()
+  public EList<Declaration> getSpaces()
   {
-    if (regs == null)
+    if (spaces == null)
     {
-      regs = new EObjectContainmentEList<Declaration>(Declaration.class, this, CoreDslPackage.ISA__REGS);
+      spaces = new EObjectContainmentEList<Declaration>(Declaration.class, this, CoreDslPackage.ISA__SPACES);
     }
-    return regs;
+    return spaces;
   }
 
   /**
@@ -221,10 +221,10 @@ public class ISAImpl extends MinimalEObjectImpl.Container implements ISA
     {
       case CoreDslPackage.ISA__CONSTANTS:
         return ((InternalEList<?>)getConstants()).basicRemove(otherEnd, msgs);
-      case CoreDslPackage.ISA__SPACES:
-        return ((InternalEList<?>)getSpaces()).basicRemove(otherEnd, msgs);
       case CoreDslPackage.ISA__REGS:
         return ((InternalEList<?>)getRegs()).basicRemove(otherEnd, msgs);
+      case CoreDslPackage.ISA__SPACES:
+        return ((InternalEList<?>)getSpaces()).basicRemove(otherEnd, msgs);
       case CoreDslPackage.ISA__INSTR:
         return ((InternalEList<?>)getInstr()).basicRemove(otherEnd, msgs);
     }
@@ -245,10 +245,10 @@ public class ISAImpl extends MinimalEObjectImpl.Container implements ISA
         return getName();
       case CoreDslPackage.ISA__CONSTANTS:
         return getConstants();
-      case CoreDslPackage.ISA__SPACES:
-        return getSpaces();
       case CoreDslPackage.ISA__REGS:
         return getRegs();
+      case CoreDslPackage.ISA__SPACES:
+        return getSpaces();
       case CoreDslPackage.ISA__INSTR:
         return getInstr();
     }
@@ -273,13 +273,13 @@ public class ISAImpl extends MinimalEObjectImpl.Container implements ISA
         getConstants().clear();
         getConstants().addAll((Collection<? extends Declaration>)newValue);
         return;
-      case CoreDslPackage.ISA__SPACES:
-        getSpaces().clear();
-        getSpaces().addAll((Collection<? extends Declaration>)newValue);
-        return;
       case CoreDslPackage.ISA__REGS:
         getRegs().clear();
         getRegs().addAll((Collection<? extends Declaration>)newValue);
+        return;
+      case CoreDslPackage.ISA__SPACES:
+        getSpaces().clear();
+        getSpaces().addAll((Collection<? extends Declaration>)newValue);
         return;
       case CoreDslPackage.ISA__INSTR:
         getInstr().clear();
@@ -305,11 +305,11 @@ public class ISAImpl extends MinimalEObjectImpl.Container implements ISA
       case CoreDslPackage.ISA__CONSTANTS:
         getConstants().clear();
         return;
-      case CoreDslPackage.ISA__SPACES:
-        getSpaces().clear();
-        return;
       case CoreDslPackage.ISA__REGS:
         getRegs().clear();
+        return;
+      case CoreDslPackage.ISA__SPACES:
+        getSpaces().clear();
         return;
       case CoreDslPackage.ISA__INSTR:
         getInstr().clear();
@@ -332,10 +332,10 @@ public class ISAImpl extends MinimalEObjectImpl.Container implements ISA
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case CoreDslPackage.ISA__CONSTANTS:
         return constants != null && !constants.isEmpty();
-      case CoreDslPackage.ISA__SPACES:
-        return spaces != null && !spaces.isEmpty();
       case CoreDslPackage.ISA__REGS:
         return regs != null && !regs.isEmpty();
+      case CoreDslPackage.ISA__SPACES:
+        return spaces != null && !spaces.isEmpty();
       case CoreDslPackage.ISA__INSTR:
         return instr != null && !instr.isEmpty();
     }

@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.impl.IntegerConstantImpl#getVal <em>Val</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.impl.IntegerConstantImpl#getValue <em>Value</em>}</li>
  * </ul>
  *
  * @generated
@@ -30,24 +30,24 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
 {
   /**
-   * The default value of the '{@link #getVal() <em>Val</em>}' attribute.
+   * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVal()
+   * @see #getValue()
    * @generated
    * @ordered
    */
-  protected static final BigInteger VAL_EDEFAULT = null;
+  protected static final BigInteger VALUE_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getVal() <em>Val</em>}' attribute.
+   * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVal()
+   * @see #getValue()
    * @generated
    * @ordered
    */
-  protected BigInteger val = VAL_EDEFAULT;
+  protected BigInteger value = VALUE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -76,9 +76,9 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
    * @generated
    */
   @Override
-  public BigInteger getVal()
+  public BigInteger getValue()
   {
-    return val;
+    return value;
   }
 
   /**
@@ -87,12 +87,12 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
    * @generated
    */
   @Override
-  public void setVal(BigInteger newVal)
+  public void setValue(BigInteger newValue)
   {
-    BigInteger oldVal = val;
-    val = newVal;
+    BigInteger oldValue = value;
+    value = newValue;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.INTEGER_CONSTANT__VAL, oldVal, val));
+      eNotify(new ENotificationImpl(this, Notification.SET, CoreDslPackage.INTEGER_CONSTANT__VALUE, oldValue, value));
   }
 
   /**
@@ -105,8 +105,8 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
   {
     switch (featureID)
     {
-      case CoreDslPackage.INTEGER_CONSTANT__VAL:
-        return getVal();
+      case CoreDslPackage.INTEGER_CONSTANT__VALUE:
+        return getValue();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -121,8 +121,8 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
   {
     switch (featureID)
     {
-      case CoreDslPackage.INTEGER_CONSTANT__VAL:
-        setVal((BigInteger)newValue);
+      case CoreDslPackage.INTEGER_CONSTANT__VALUE:
+        setValue((BigInteger)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -138,8 +138,8 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
   {
     switch (featureID)
     {
-      case CoreDslPackage.INTEGER_CONSTANT__VAL:
-        setVal(VAL_EDEFAULT);
+      case CoreDslPackage.INTEGER_CONSTANT__VALUE:
+        setValue(VALUE_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -155,8 +155,8 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
   {
     switch (featureID)
     {
-      case CoreDslPackage.INTEGER_CONSTANT__VAL:
-        return VAL_EDEFAULT == null ? val != null : !VAL_EDEFAULT.equals(val);
+      case CoreDslPackage.INTEGER_CONSTANT__VALUE:
+        return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
     }
     return super.eIsSet(featureID);
   }
@@ -172,8 +172,8 @@ public class IntegerConstantImpl extends ConstantImpl implements IntegerConstant
     if (eIsProxy()) return super.toString();
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (val: ");
-    result.append(val);
+    result.append(" (value: ");
+    result.append(value);
     result.append(')');
     return result.toString();
   }

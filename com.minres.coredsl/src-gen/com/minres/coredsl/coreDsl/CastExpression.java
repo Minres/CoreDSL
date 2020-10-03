@@ -28,12 +28,12 @@ public interface CastExpression extends Expression
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Type</em>' containment reference.
-   * @see #setType(DataTypeSpecifier)
+   * @see #setType(TypeSpecifier)
    * @see com.minres.coredsl.coreDsl.CoreDslPackage#getCastExpression_Type()
    * @model containment="true"
    * @generated
    */
-  DataTypeSpecifier getType();
+  TypeSpecifier getType();
 
   /**
    * Sets the value of the '{@link com.minres.coredsl.coreDsl.CastExpression#getType <em>Type</em>}' containment reference.
@@ -43,7 +43,7 @@ public interface CastExpression extends Expression
    * @see #getType()
    * @generated
    */
-  void setType(DataTypeSpecifier value);
+  void setType(TypeSpecifier value);
 
   /**
    * Returns the value of the '<em><b>Size</b></em>' containment reference.

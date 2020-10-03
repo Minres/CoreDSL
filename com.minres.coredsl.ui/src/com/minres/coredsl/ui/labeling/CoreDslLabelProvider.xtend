@@ -8,6 +8,7 @@ import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.Encoding
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider
+import org.eclipse.emf.ecore.EObject
 
 /**
  * Provides labels for EObjects.
@@ -27,61 +28,7 @@ class CoreDslLabelProvider extends DefaultEObjectLabelProvider {
         ele.name + if(ele.bitRange!==null) ("[" + ele.bitRange.left + ":" + ele.bitRange.right + "]") else ""
     }
 
-	def text(Encoding ele) {
-		'Encoding'
-	}
-
-//    def text(Operation ele) {
-//        'Description'
-//    }
-
-//	def text(Statement ele) {
-//	    switch(ele){
-//	        RegisterAssignment:	return ele.to.name+ '<=' + doGetText(ele.expression)
-//	        IndexedAssignment:  {
-//	        	if(ele.to instanceof RegisterFile)
-//	        	 	return (ele.to as RegisterFile).name + '['+doGetText(ele.index)+'] <=' + doGetText(ele.expression)
-//	        	else if(ele.to instanceof AddressSpace)
-//	        		return (ele.to as AddressSpace).name + '['+doGetText(ele.index)+'] <=' + doGetText(ele.expression)
-//        	}
-//	        ScalarAssignment:   return ele.to.name+ '<=' + doGetText(ele.expression)
-//            ConditionalStmt: 	return 'if(' + doGetText(ele.cond)+')'
-//            Procedure:          return '''«ele.name»(«FOR arg : ele.args SEPARATOR ', '»«doGetText(arg)»«ENDFOR»)'''
-//        }
-//	}
-
-//    def text(Expression ele) {
-//        switch(ele){
-//            BooleanExpr:        doGetText(ele.left)+ele.op+doGetText(ele.right)
-//            BitExpr:    	    doGetText(ele.left)+ele.op+doGetText(ele.right)
-//            ComparisonExpr:     doGetText(ele.left)+ele.op+doGetText(ele.right)
-//            ShiftExpr:          doGetText(ele.left)+ele.op+doGetText(ele.right)
-//            AdditionExpr:       doGetText(ele.left)+ele.op+doGetText(ele.right)
-//            MultiplicationExpr: doGetText(ele.left)+ele.op+doGetText(ele.right)
-//            UnitaryExpr:        ele.op +doGetText(ele.expr)
-//            TypeConv:           ele.type.toString+'ext('+doGetText(ele.expr)+')'
-//            Function:       
-//            	'''«ele.name»(«FOR arg : ele.args SEPARATOR ', '»«doGetText(arg)»«ENDFOR»)'''
-//            NumberLiteral:  ele.value.toString()
-//            ValueRef: {
-//				val ref = ele.value
-//				switch (ref) {
-//					RegisterFile: ref.name + if(ele.index !== null) '[' + doGetText(ele.index) + ']' else ''
-//					AddressSpace: ref.name + if(ele.index !== null) '[' + doGetText(ele.index) + ']' else ''
-//					Register: ref.name
-//					RegisterAlias: ref.name
-//					Scalar: ref.name
-//					Constant: ref.name
-//					BitField: ref.name
-//				}
-//			}
-//            default:        'Expression'    
-//        }
-//    }
-
-
-//  def image(Greeting ele) {
-//      'Greeting.gif'
-//  }
-
+    def text(EObject ele){
+        ele.eClass.name
+    }
 }

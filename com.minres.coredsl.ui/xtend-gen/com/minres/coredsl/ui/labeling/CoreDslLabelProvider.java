@@ -5,9 +5,9 @@ package com.minres.coredsl.ui.labeling;
 
 import com.google.inject.Inject;
 import com.minres.coredsl.coreDsl.BitField;
-import com.minres.coredsl.coreDsl.Encoding;
 import com.minres.coredsl.coreDsl.IntegerConstant;
 import com.minres.coredsl.coreDsl.RangeSpec;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
 
@@ -41,7 +41,7 @@ public class CoreDslLabelProvider extends DefaultEObjectLabelProvider {
     return (_name + _xifexpression);
   }
   
-  public String text(final Encoding ele) {
-    return "Encoding";
+  public String text(final EObject ele) {
+    return ele.eClass().getName();
   }
 }

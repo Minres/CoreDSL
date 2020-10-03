@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.util.EDataTypeEList;
  *
  * @generated
  */
-public class PodSpecifierImpl extends DataTypeSpecifierImpl implements PodSpecifier
+public class PodSpecifierImpl extends TypeSpecifierImpl implements PodSpecifier
 {
   /**
    * The cached value of the '{@link #getDataType() <em>Data Type</em>}' attribute list.

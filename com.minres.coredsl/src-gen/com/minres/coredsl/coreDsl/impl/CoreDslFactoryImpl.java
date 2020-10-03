@@ -93,14 +93,11 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
       case CoreDslPackage.JUMP_STATEMENT: return createJumpStatement();
       case CoreDslPackage.SPAWN_STATEMENT: return createSpawnStatement();
       case CoreDslPackage.DECLARATION: return createDeclaration();
-      case CoreDslPackage.TYPE_OR_VAR_DECLARATION: return createTypeOrVarDeclaration();
       case CoreDslPackage.DECLARATION_SPECIFIER: return createDeclarationSpecifier();
       case CoreDslPackage.ATTRIBUTE: return createAttribute();
       case CoreDslPackage.TYPE_SPECIFIER: return createTypeSpecifier();
-      case CoreDslPackage.DATA_TYPE_SPECIFIER: return createDataTypeSpecifier();
       case CoreDslPackage.POD_SPECIFIER: return createPodSpecifier();
       case CoreDslPackage.BIT_SIZE_SPECIFIER: return createBitSizeSpecifier();
-      case CoreDslPackage.BIT_SIZE_VALUE: return createBitSizeValue();
       case CoreDslPackage.ENUM_SPECIFIER: return createEnumSpecifier();
       case CoreDslPackage.ENUMERATOR_LIST: return createEnumeratorList();
       case CoreDslPackage.ENUMERATOR: return createEnumerator();
@@ -123,7 +120,7 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
       case CoreDslPackage.POSTFIX_EXPRESSION: return createPostfixExpression();
       case CoreDslPackage.POSTFIX_OPERATOR: return createPostfixOperator();
       case CoreDslPackage.PRIMARY_EXPRESSION: return createPrimaryExpression();
-      case CoreDslPackage.VARIABLE_REF: return createVariableRef();
+      case CoreDslPackage.VARIABLE: return createVariable();
       case CoreDslPackage.STRING_LITERAL: return createStringLiteral();
       case CoreDslPackage.ENCODING_PREFIX: return createEncodingPrefix();
       case CoreDslPackage.CONSTANT: return createConstant();
@@ -527,18 +524,6 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public TypeOrVarDeclaration createTypeOrVarDeclaration()
-  {
-    TypeOrVarDeclarationImpl typeOrVarDeclaration = new TypeOrVarDeclarationImpl();
-    return typeOrVarDeclaration;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public DeclarationSpecifier createDeclarationSpecifier()
   {
     DeclarationSpecifierImpl declarationSpecifier = new DeclarationSpecifierImpl();
@@ -575,18 +560,6 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public DataTypeSpecifier createDataTypeSpecifier()
-  {
-    DataTypeSpecifierImpl dataTypeSpecifier = new DataTypeSpecifierImpl();
-    return dataTypeSpecifier;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public PodSpecifier createPodSpecifier()
   {
     PodSpecifierImpl podSpecifier = new PodSpecifierImpl();
@@ -603,18 +576,6 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
   {
     BitSizeSpecifierImpl bitSizeSpecifier = new BitSizeSpecifierImpl();
     return bitSizeSpecifier;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public BitSizeValue createBitSizeValue()
-  {
-    BitSizeValueImpl bitSizeValue = new BitSizeValueImpl();
-    return bitSizeValue;
   }
 
   /**
@@ -887,10 +848,10 @@ public class CoreDslFactoryImpl extends EFactoryImpl implements CoreDslFactory
    * @generated
    */
   @Override
-  public VariableRef createVariableRef()
+  public Variable createVariable()
   {
-    VariableRefImpl variableRef = new VariableRefImpl();
-    return variableRef;
+    VariableImpl variable = new VariableImpl();
+    return variable;
   }
 
   /**

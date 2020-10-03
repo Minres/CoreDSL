@@ -128,7 +128,7 @@ public class CoreDslSwitch<T> extends Switch<T>
       {
         Field field = (Field)theEObject;
         T result = caseField(field);
-        if (result == null) result = caseVariableRef(field);
+        if (result == null) result = caseVariable(field);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -137,7 +137,7 @@ public class CoreDslSwitch<T> extends Switch<T>
         BitValue bitValue = (BitValue)theEObject;
         T result = caseBitValue(bitValue);
         if (result == null) result = caseField(bitValue);
-        if (result == null) result = caseVariableRef(bitValue);
+        if (result == null) result = caseVariable(bitValue);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -146,7 +146,7 @@ public class CoreDslSwitch<T> extends Switch<T>
         BitField bitField = (BitField)theEObject;
         T result = caseBitField(bitField);
         if (result == null) result = caseField(bitField);
-        if (result == null) result = caseVariableRef(bitField);
+        if (result == null) result = caseVariable(bitField);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -162,7 +162,7 @@ public class CoreDslSwitch<T> extends Switch<T>
         FunctionDefinition functionDefinition = (FunctionDefinition)theEObject;
         T result = caseFunctionDefinition(functionDefinition);
         if (result == null) result = caseParameterList(functionDefinition);
-        if (result == null) result = caseVariableRef(functionDefinition);
+        if (result == null) result = caseVariable(functionDefinition);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -289,16 +289,7 @@ public class CoreDslSwitch<T> extends Switch<T>
         Declaration declaration = (Declaration)theEObject;
         T result = caseDeclaration(declaration);
         if (result == null) result = caseBlockItem(declaration);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case CoreDslPackage.TYPE_OR_VAR_DECLARATION:
-      {
-        TypeOrVarDeclaration typeOrVarDeclaration = (TypeOrVarDeclaration)theEObject;
-        T result = caseTypeOrVarDeclaration(typeOrVarDeclaration);
-        if (result == null) result = caseDeclaration(typeOrVarDeclaration);
-        if (result == null) result = caseDeclarationSpecifier(typeOrVarDeclaration);
-        if (result == null) result = caseBlockItem(typeOrVarDeclaration);
+        if (result == null) result = caseDeclarationSpecifier(declaration);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -323,19 +314,10 @@ public class CoreDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case CoreDslPackage.DATA_TYPE_SPECIFIER:
-      {
-        DataTypeSpecifier dataTypeSpecifier = (DataTypeSpecifier)theEObject;
-        T result = caseDataTypeSpecifier(dataTypeSpecifier);
-        if (result == null) result = caseTypeSpecifier(dataTypeSpecifier);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case CoreDslPackage.POD_SPECIFIER:
       {
         PodSpecifier podSpecifier = (PodSpecifier)theEObject;
         T result = casePodSpecifier(podSpecifier);
-        if (result == null) result = caseDataTypeSpecifier(podSpecifier);
         if (result == null) result = caseTypeSpecifier(podSpecifier);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -347,20 +329,12 @@ public class CoreDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case CoreDslPackage.BIT_SIZE_VALUE:
-      {
-        BitSizeValue bitSizeValue = (BitSizeValue)theEObject;
-        T result = caseBitSizeValue(bitSizeValue);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case CoreDslPackage.ENUM_SPECIFIER:
       {
         EnumSpecifier enumSpecifier = (EnumSpecifier)theEObject;
         T result = caseEnumSpecifier(enumSpecifier);
-        if (result == null) result = caseDataTypeSpecifier(enumSpecifier);
-        if (result == null) result = caseEnumeratorList(enumSpecifier);
         if (result == null) result = caseTypeSpecifier(enumSpecifier);
+        if (result == null) result = caseEnumeratorList(enumSpecifier);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -382,7 +356,6 @@ public class CoreDslSwitch<T> extends Switch<T>
       {
         StructOrUnionSpecifier structOrUnionSpecifier = (StructOrUnionSpecifier)theEObject;
         T result = caseStructOrUnionSpecifier(structOrUnionSpecifier);
-        if (result == null) result = caseDataTypeSpecifier(structOrUnionSpecifier);
         if (result == null) result = caseTypeSpecifier(structOrUnionSpecifier);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -413,7 +386,7 @@ public class CoreDslSwitch<T> extends Switch<T>
         DirectDeclarator directDeclarator = (DirectDeclarator)theEObject;
         T result = caseDirectDeclarator(directDeclarator);
         if (result == null) result = caseParameterList(directDeclarator);
-        if (result == null) result = caseVariableRef(directDeclarator);
+        if (result == null) result = caseVariable(directDeclarator);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -536,10 +509,10 @@ public class CoreDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case CoreDslPackage.VARIABLE_REF:
+      case CoreDslPackage.VARIABLE:
       {
-        VariableRef variableRef = (VariableRef)theEObject;
-        T result = caseVariableRef(variableRef);
+        Variable variable = (Variable)theEObject;
+        T result = caseVariable(variable);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1061,22 +1034,6 @@ public class CoreDslSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Type Or Var Declaration</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Type Or Var Declaration</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseTypeOrVarDeclaration(TypeOrVarDeclaration object)
-  {
-    return null;
-  }
-
-  /**
    * Returns the result of interpreting the object as an instance of '<em>Declaration Specifier</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1125,22 +1082,6 @@ public class CoreDslSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Data Type Specifier</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Data Type Specifier</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseDataTypeSpecifier(DataTypeSpecifier object)
-  {
-    return null;
-  }
-
-  /**
    * Returns the result of interpreting the object as an instance of '<em>Pod Specifier</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1168,22 +1109,6 @@ public class CoreDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseBitSizeSpecifier(BitSizeSpecifier object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Bit Size Value</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Bit Size Value</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseBitSizeValue(BitSizeValue object)
   {
     return null;
   }
@@ -1541,17 +1466,17 @@ public class CoreDslSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Variable Ref</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Variable</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Variable Ref</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Variable</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseVariableRef(VariableRef object)
+  public T caseVariable(Variable object)
   {
     return null;
   }

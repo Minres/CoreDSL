@@ -21,7 +21,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface PodSpecifier extends DataTypeSpecifier
+public interface PodSpecifier extends TypeSpecifier
 {
   /**
    * Returns the value of the '<em><b>Data Type</b></em>' attribute list.

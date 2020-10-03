@@ -43,14 +43,14 @@ ruleInstructionSet:
 		'}'
 	)?
 	(
-		'address_spaces'
+		'registers'
 		'{'
 		ruleDeclaration
 		+
 		'}'
 	)?
 	(
-		'registers'
+		'address_spaces'
 		'{'
 		ruleDeclaration
 		+
@@ -94,14 +94,14 @@ ruleCoreDef:
 		'}'
 	)?
 	(
-		'address_spaces'
+		'registers'
 		'{'
 		ruleDeclaration
 		+
 		'}'
 	)?
 	(
-		'registers'
+		'address_spaces'
 		'{'
 		ruleDeclaration
 		+
@@ -384,11 +384,6 @@ ruleSpawnStatement:
 
 // Rule Declaration
 ruleDeclaration:
-	ruleTypeOrVarDeclaration
-;
-
-// Rule TypeOrVarDeclaration
-ruleTypeOrVarDeclaration:
 	ruleDeclarationSpecifier*
 	ruleTypeSpecifier
 	ruleBitSizeSpecifier
@@ -432,11 +427,6 @@ ruleAttribute:
 
 // Rule TypeSpecifier
 ruleTypeSpecifier:
-	ruleDataTypeSpecifier
-;
-
-// Rule DataTypeSpecifier
-ruleDataTypeSpecifier:
 	(
 		rulePodSpecifier
 		    |
@@ -845,7 +835,7 @@ ruleCastExpression:
 		rulePrefixExpression
 		    |
 		'('
-		ruleDataTypeSpecifier
+		ruleTypeSpecifier
 		ruleBitSizeSpecifier
 		?
 		')'
@@ -872,7 +862,7 @@ rulePrefixExpression:
 		(
 			rulePostfixExpression
 			    |
-			ruleDataTypeSpecifier
+			ruleTypeSpecifier
 		)
 		')'
 	)
@@ -1131,7 +1121,7 @@ RULE_BOOLEAN : ('true'|'false');
 
 RULE_FLOAT : ('0'..'9')+ '.' ('0'..'9')* (('e'|'E') ('+'|'-')? ('0'..'9')+)? ('f'|'F'|'l'|'L')?;
 
-RULE_INTEGER : (RULE_BINARYINT|RULE_HEXADECIMALINT|RULE_OCTALINT|RULE_DECIMALINT) ('u'|'U')? ('l'|'L' ('l'|'L')?)?;
+RULE_INTEGER : (RULE_BINARYINT|RULE_HEXADECIMALINT|RULE_OCTALINT|RULE_DECIMALINT|RULE_VLOGINT) ('u'|'U')? ('l'|'L' ('l'|'L')?)?;
 
 fragment RULE_BINARYINT : ('0b'|'0B') '0'..'1' ('_'? '0'..'1')*;
 

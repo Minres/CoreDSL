@@ -19,20 +19,20 @@ ISA
 
 InstructionSet :
 	'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' 
-        ('constants'      '{' constants+=Declaration+   '}')?
+        ('constants'      '{' constants+=Declaration+   '}')? 
+        ('registers'      '{' regs+=Declaration+        '}')?
         ('address_spaces' '{' spaces+=Declaration+      '}')?
-    	('registers'      '{' regs+=Declaration+        '}')?
-    	('functions'      '{' func+=FunctionDefinition+ '}')?
-    	('instructions'   '{' (instr+=Instruction)+     '}')?
+	    ('functions'      '{' func+=FunctionDefinition+ '}')?
+        ('instructions'   '{' (instr+=Instruction)+     '}')?
     '}'
 ;
 
 CoreDef:
 	'Core' name=ID ( 'provides' contributingType+=[InstructionSet] (',' contributingType+=[InstructionSet])*)? '{' 
         ('constants'      '{' constants+=Declaration+   '}')?
+        ('registers'      '{' regs+=Declaration+        '}')?
         ('address_spaces' '{' spaces+=Declaration+      '}')?
-    	('registers'      '{' regs+=Declaration+        '}')?
-    	('instructions'   '{' (instr+=Instruction)+     '}')?
+	    ('instructions'   '{' (instr+=Instruction)+     '}')?
     '}'
 ;
 
@@ -142,17 +142,8 @@ SpawnStatement
 // Declarations
 
 Declaration
-	:   TypeOrVarDeclaration
-//	|   TypedefDeclaration
-	;
-	
-TypeOrVarDeclaration
 	:	DeclarationSpecifier* type=TypeSpecifier size=BitSizeSpecifier? ptr=('*'|'&')? (init+=InitDeclarator (',' init+=InitDeclarator)*)? ';'
 	;
-	
-//TypedefDeclaration
-//	:	'typedef' DeclarationSpecifier* type=TypeSpecifier init+=InitDeclarator ';'
-//	;
 	
 fragment DeclarationSpecifier
     :   storage+=StorageClassSpecifier
@@ -165,19 +156,10 @@ Attribute
     ;
     
 TypeSpecifier
-	:	DataTypeSpecifier
-//	|	TypedefRef
-	;
-
-DataTypeSpecifier
 	:	PodSpecifier 
 	|	StructOrUnionSpecifier
 	|	EnumSpecifier
 	;
-    
-//TypedefRef
-//	:	ref=[DirectDeclarator]
-//	;
     
 PodSpecifier
 	:	dataType+=DataTypes+
@@ -185,11 +167,6 @@ PodSpecifier
 
 BitSizeSpecifier
 	:	'<' size+=PrimaryExpression (',' size+=PrimaryExpression ',' size+=PrimaryExpression ',' size+=PrimaryExpression)? '>'
-	;
-
-BitSizeValue
-	:	value+=IntegerConstant
-	|	constant+=[Constant]
 	;
 
 EnumSpecifier
@@ -334,7 +311,7 @@ MultiplicativeExpression returns Expression
 
 CastExpression
     :   PrefixExpression
-    |	'(' type=DataTypeSpecifier size=BitSizeSpecifier? ')' left=CastExpression
+    |	'(' type=TypeSpecifier size=BitSizeSpecifier? ')' left=CastExpression
     ;
 
 PrefixExpression
@@ -342,7 +319,7 @@ PrefixExpression
     |   op='++' left=PrefixExpression
     |   op='--' left=PrefixExpression
     |   UnaryOperator left=CastExpression
-    |   op='sizeof' '(' (left=PostfixExpression |  type=DataTypeSpecifier ) ')'
+    |   op='sizeof' '(' (left=PostfixExpression |  type=TypeSpecifier ) ')'
 //    |   op='_Alignof' '(' type=TypeSpecifier ')'
     ;
 
@@ -391,11 +368,11 @@ Constant
     ;
 
 IntegerConstant hidden(WS)
-    :   val=INTEGER// unsigned?=('u'|'U')? (long?=('l'|'L') longlong?=('l'|'L')?)?
+    :   value=INTEGER// unsigned?=('u'|'U')? (long?=('l'|'L') longlong?=('l'|'L')?)?
     ;
 
 FloatingConstant hidden(WS)
-    :  	val=FLOAT// (f?=('f'|'F') | l?=('l'|'L'))?
+    :  	value=FLOAT// (f?=('f'|'F') | l?=('l'|'L'))?
     ;
     
 BoolConstant
@@ -421,7 +398,6 @@ enum DataTypes
 	| 	SIGNED='signed' | UNSIGNED='unsigned'
 	|	FLOAT='float'	| DOUBLE='double' | VOID='void'
 	|	ALIAS='alias'
-//	| 	FRAC='frac' | ACCUM='accum'
 	;
 
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';
@@ -448,7 +424,7 @@ terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false' ;
 
 terminal FLOAT returns ecore::EBigDecimal:  (('0'..'9')+ '.' ('0'..'9')*) (('e' | 'E') ('+' | '-')? ('0'..'9')+)? ('f'|'F'|'l'|'L')?;
 
-terminal INTEGER returns ecore::EBigInteger:  (BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT) ('u'|'U')? ('l'|'L' ('l'|'L')?)?;
+terminal INTEGER returns ecore::EBigInteger:  (BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT | VLOGINT) ('u'|'U')? ('l'|'L' ('l'|'L')?)?;
 
 terminal fragment BINARYINT:	('0b' | '0B') '0'..'1' (('_')? '0'..'1')*;
 

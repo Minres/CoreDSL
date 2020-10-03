@@ -4,6 +4,7 @@ import java.math.BigInteger;
 
 public class BigIntegerWithRadix extends BigInteger {
 
+	public enum TYPE { UNDEF, SIGNED, UNSIGNED};
 	/**
 	 * 
 	 */
@@ -13,15 +14,13 @@ public class BigIntegerWithRadix extends BigInteger {
 	
 	private int size=0;
 	
-	public BigIntegerWithRadix(String val, int radix, int size) {
+	private TYPE type=TYPE.UNDEF;
+	
+	public BigIntegerWithRadix(String val, int radix, int size, TYPE type) {
 		super(val, radix);
 		this.radix=radix;
 		this.size=size;
-	}
-
-	public BigIntegerWithRadix(String val, int radix) {
-		super(val, radix);
-		this.radix=radix;
+		this.type = type;
 	}
 
 	public int getRadix() {
@@ -32,18 +31,20 @@ public class BigIntegerWithRadix extends BigInteger {
 		return size;
 	}
 
+	public TYPE getType() {
+		return type;
+	}
+
 	@Override
 	public String toString() {
-		if(size>0) {
-			if(radix==2)
-				return Integer.toString(size)+"'b"+super.toString(radix);
-			else if(radix==8)
-				return Integer.toString(size)+"'o"+super.toString(radix);
-			else if(radix==16)	
-				return Integer.toString(size)+"'h"+super.toString(radix);
-			else
-				return Integer.toString(size)+"'d"+super.toString(radix);
-		} else {
+		switch(size) {
+		case 1:
+			return intValue()==0?"false":"true";
+		case 0:
+		case 8:
+		case 16:
+		case 32:
+		case 64:
 			if(radix==2)
 				return "0b"+super.toString(radix);
 			else if(radix==8)
@@ -52,6 +53,15 @@ public class BigIntegerWithRadix extends BigInteger {
 				return "0x"+super.toString(radix);
 			else
 				return super.toString(radix);
+		default:		
+			if(radix==2)
+				return Integer.toString(size)+"'b"+super.toString(radix);
+			else if(radix==8)
+				return Integer.toString(size)+"'o"+super.toString(radix);
+			else if(radix==16)	
+				return Integer.toString(size)+"'h"+super.toString(radix);
+			else
+				return Integer.toString(size)+"'d"+super.toString(radix);
 		}
 	}
 

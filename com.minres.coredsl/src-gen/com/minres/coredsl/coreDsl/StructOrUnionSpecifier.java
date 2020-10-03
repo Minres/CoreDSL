@@ -23,7 +23,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface StructOrUnionSpecifier extends DataTypeSpecifier
+public interface StructOrUnionSpecifier extends TypeSpecifier
 {
   /**
    * Returns the value of the '<em><b>Compose Type</b></em>' attribute.

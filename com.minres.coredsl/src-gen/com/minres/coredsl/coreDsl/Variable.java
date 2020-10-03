@@ -7,21 +7,21 @@ import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Variable Ref</b></em>'.
+ * A representation of the model object '<em><b>Variable</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link com.minres.coredsl.coreDsl.VariableRef#getName <em>Name</em>}</li>
+ *   <li>{@link com.minres.coredsl.coreDsl.Variable#getName <em>Name</em>}</li>
  * </ul>
  *
- * @see com.minres.coredsl.coreDsl.CoreDslPackage#getVariableRef()
+ * @see com.minres.coredsl.coreDsl.CoreDslPackage#getVariable()
  * @model
  * @generated
  */
-public interface VariableRef extends EObject
+public interface Variable extends EObject
 {
   /**
    * Returns the value of the '<em><b>Name</b></em>' attribute.
@@ -29,14 +29,14 @@ public interface VariableRef extends EObject
    * <!-- end-user-doc -->
    * @return the value of the '<em>Name</em>' attribute.
    * @see #setName(String)
-   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getVariableRef_Name()
+   * @see com.minres.coredsl.coreDsl.CoreDslPackage#getVariable_Name()
    * @model
    * @generated
    */
   String getName();
 
   /**
-   * Sets the value of the '{@link com.minres.coredsl.coreDsl.VariableRef#getName <em>Name</em>}' attribute.
+   * Sets the value of the '{@link com.minres.coredsl.coreDsl.Variable#getName <em>Name</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Name</em>' attribute.
@@ -45,4 +45,4 @@ public interface VariableRef extends EObject
    */
   void setName(String value);
 
-} // VariableRef
+} // Variable

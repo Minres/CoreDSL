@@ -38,7 +38,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class StructOrUnionSpecifierImpl extends DataTypeSpecifierImpl implements StructOrUnionSpecifier
+public class StructOrUnionSpecifierImpl extends TypeSpecifierImpl implements StructOrUnionSpecifier
 {
   /**
    * The default value of the '{@link #getComposeType() <em>Compose Type</em>}' attribute.

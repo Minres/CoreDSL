@@ -16,25 +16,21 @@ import static extension com.google.common.io.CharStreams.*
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.InstructionSet
 import java.io.FileReader
+import org.eclipse.xtext.testing.validation.ValidationTestHelper
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
 class CoreDslLoadTest {
 
-	@Inject ParseHelper<DescriptionContent> parseHelper
+	@Inject extension ParseHelper<DescriptionContent> parseHelper
 
+    @Inject ValidationTestHelper validator
 
 	@Test
 	def void loadSimpleModel() {
-		val input = new FileReader('inputs/isa_1.core_desc').readLines.join('\n')
-		val content = parseHelper.parse(input)
-		assertEquals(1, content.definitions.size)
-		val resource = content.eResource
-		EcoreUtil.resolveAll(resource);
-		assertEquals(0, resource.errors.size)
-		assertEquals(0, resource.warnings.size)
-		
-		
+		val content = new FileReader('inputs/isa_1.core_desc').readLines.join('\n').parse
+        validator.assertNoErrors(content)
+				
 		val InstructionSet result = content.definitions.get(0) as InstructionSet
 		assertNotNull(result)
 		assertEquals("RV32I", result.name)
@@ -67,13 +63,8 @@ class CoreDslLoadTest {
 
 	@Test
 	def void loadSqrt() {
-		val input = new FileReader('inputs/sqrt.core_desc').readLines.join('\n')
-		val content = parseHelper.parse(input)
-		assertEquals(1, content.definitions.size)
-		val resource = content.eResource
-		EcoreUtil.resolveAll(resource);
-		assertEquals(0, resource.errors.size)
-		assertEquals(0, resource.warnings.size)
+        val content = new FileReader('inputs/sqrt.core_desc').readLines.join('\n').parse
+        validator.assertNoErrors(content)
 		
 		val InstructionSet instructionSet = content.definitions.get(0) as InstructionSet
 		assertNotNull(instructionSet)
@@ -82,13 +73,8 @@ class CoreDslLoadTest {
 	
 	@Test
 	def void loadSine(){
-		val input = new FileReader('inputs/sine.core_desc').readLines.join('\n')
-		val content = parseHelper.parse(input)
-		assertEquals(1, content.definitions.size)
-		val resource = content.eResource
-		EcoreUtil.resolveAll(resource);
-		assertEquals(0, resource.errors.size)
-		assertEquals(0, resource.warnings.size)
+        val content = new FileReader('inputs/sine.core_desc').readLines.join('\n').parse
+        validator.assertNoErrors(content)
 		
 		val InstructionSet instructionSet = content.definitions.get(0) as InstructionSet
 		assertNotNull(instructionSet)

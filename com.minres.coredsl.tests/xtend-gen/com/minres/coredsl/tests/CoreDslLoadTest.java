@@ -11,12 +11,12 @@ import com.minres.coredsl.coreDsl.Instruction;
 import com.minres.coredsl.coreDsl.InstructionSet;
 import com.minres.coredsl.tests.CoreDslInjectorProvider;
 import java.io.FileReader;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
+import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,18 +27,17 @@ import org.junit.runner.RunWith;
 @SuppressWarnings("all")
 public class CoreDslLoadTest {
   @Inject
+  @Extension
   private ParseHelper<DescriptionContent> parseHelper;
+  
+  @Inject
+  private ValidationTestHelper validator;
   
   @Test
   public void loadSimpleModel() {
     try {
-      final String input = IterableExtensions.join(CharStreams.readLines(new FileReader("inputs/isa_1.core_desc")), "\n");
-      final DescriptionContent content = this.parseHelper.parse(input);
-      Assert.assertEquals(1, content.getDefinitions().size());
-      final Resource resource = content.eResource();
-      EcoreUtil.resolveAll(resource);
-      Assert.assertEquals(0, resource.getErrors().size());
-      Assert.assertEquals(0, resource.getWarnings().size());
+      final DescriptionContent content = this.parseHelper.parse(IterableExtensions.join(CharStreams.readLines(new FileReader("inputs/isa_1.core_desc")), "\n"));
+      this.validator.assertNoErrors(content);
       ISA _get = content.getDefinitions().get(0);
       final InstructionSet result = ((InstructionSet) _get);
       Assert.assertNotNull(result);
@@ -69,13 +68,8 @@ public class CoreDslLoadTest {
   @Test
   public void loadSqrt() {
     try {
-      final String input = IterableExtensions.join(CharStreams.readLines(new FileReader("inputs/sqrt.core_desc")), "\n");
-      final DescriptionContent content = this.parseHelper.parse(input);
-      Assert.assertEquals(1, content.getDefinitions().size());
-      final Resource resource = content.eResource();
-      EcoreUtil.resolveAll(resource);
-      Assert.assertEquals(0, resource.getErrors().size());
-      Assert.assertEquals(0, resource.getWarnings().size());
+      final DescriptionContent content = this.parseHelper.parse(IterableExtensions.join(CharStreams.readLines(new FileReader("inputs/sqrt.core_desc")), "\n"));
+      this.validator.assertNoErrors(content);
       ISA _get = content.getDefinitions().get(0);
       final InstructionSet instructionSet = ((InstructionSet) _get);
       Assert.assertNotNull(instructionSet);
@@ -88,13 +82,8 @@ public class CoreDslLoadTest {
   @Test
   public void loadSine() {
     try {
-      final String input = IterableExtensions.join(CharStreams.readLines(new FileReader("inputs/sine.core_desc")), "\n");
-      final DescriptionContent content = this.parseHelper.parse(input);
-      Assert.assertEquals(1, content.getDefinitions().size());
-      final Resource resource = content.eResource();
-      EcoreUtil.resolveAll(resource);
-      Assert.assertEquals(0, resource.getErrors().size());
-      Assert.assertEquals(0, resource.getWarnings().size());
+      final DescriptionContent content = this.parseHelper.parse(IterableExtensions.join(CharStreams.readLines(new FileReader("inputs/sine.core_desc")), "\n"));
+      this.validator.assertNoErrors(content);
       ISA _get = content.getDefinitions().get(0);
       final InstructionSet instructionSet = ((InstructionSet) _get);
       Assert.assertNotNull(instructionSet);
