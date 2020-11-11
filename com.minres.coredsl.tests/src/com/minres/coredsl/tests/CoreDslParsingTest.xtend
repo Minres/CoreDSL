@@ -6,10 +6,13 @@ package com.minres.coredsl.tests
 import com.google.inject.Inject
 import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.CompoundStatement
+import com.minres.coredsl.coreDsl.DataTypes
+import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.ExpressionStatement
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.IntegerConstant
+import com.minres.coredsl.coreDsl.PodSpecifier
 import com.minres.coredsl.coreDsl.PrimaryExpression
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
@@ -19,6 +22,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertFalse
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
@@ -247,5 +251,27 @@ class CoreDslParsingTest {
 			val rhs = (expr.rights.get(0) as PrimaryExpression).constant as IntegerConstant
 			assertEquals(rhs.value.intValue, 42)
 		}
+    }
+    
+    @Test
+    def void parseCustomIntTypes() {
+    	val content = addBehaviorContext('''
+    		int<17> i17;
+    	''').parse
+    	validator.assertNoErrors(content)
+    	val decl = 
+    		(((content.definitions.get(0) as InstructionSet)
+    			.instr.get(0).behavior as CompoundStatement)
+    				.items.get(0) as Declaration)
+		val type = (decl.type as PodSpecifier).dataType.get(0)
+		val size = (decl.size.size.get(0).constant as IntegerConstant).value.intValue
+		assertEquals(type, DataTypes.INT)
+		assertEquals(size, 17)
+		
+		val content2 = addBehaviorContext('''
+			int<1,1> i_invalid;
+		''').parse
+		val issues = validator.validate(content2)
+		assertFalse(issues.isEmpty())
     }
 }
