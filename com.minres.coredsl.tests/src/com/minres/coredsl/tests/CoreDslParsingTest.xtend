@@ -4,13 +4,21 @@
 package com.minres.coredsl.tests
 
 import com.google.inject.Inject
+import com.minres.coredsl.coreDsl.AssignmentExpression
+import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.DescriptionContent
+import com.minres.coredsl.coreDsl.ExpressionStatement
+import com.minres.coredsl.coreDsl.InstructionSet
+import com.minres.coredsl.coreDsl.IntegerConstant
+import com.minres.coredsl.coreDsl.PrimaryExpression
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Test
 import org.junit.runner.RunWith
+
+import static org.junit.Assert.assertEquals
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
@@ -32,6 +40,18 @@ class CoreDslParsingTest {
             }
         }
     '''
+    
+    def CharSequence addBehaviorContext(CharSequence str) {
+    	return addInstructionContext('''
+    		FOO {
+				encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011;  
+				args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
+				behavior: {
+					«str»
+				}
+			}
+    	''')
+    }
 
     @Test
     def void parseInstrPRELU() {
@@ -201,5 +221,31 @@ class CoreDslParsingTest {
             }
         '''.parse
         validator.assertNoErrors(content)
+    }
+    
+    @Test
+    def void parseIntLiterals() {
+    	val content = addBehaviorContext('''
+			int i;
+			// C syntax
+			i = 42;
+			i = 0x2A;
+			i = 052;
+			i = 0b101010;
+			
+			// Verilog syntax
+			i = 6'd42;
+			i = 6'h2a;
+			i = 6'o52;
+			i = 6'b101010;
+    	''').parse
+    	validator.assertNoErrors(content)
+    	
+    	val compound = ((content.definitions.get(0) as InstructionSet).instr.get(0).behavior as CompoundStatement)
+		for (el : compound.items.subList(1, compound.items.size())) {
+			val expr = (el as ExpressionStatement).expr as AssignmentExpression
+			val rhs = (expr.rights.get(0) as PrimaryExpression).constant as IntegerConstant
+			assertEquals(rhs.value.intValue, 42)
+		}
     }
 }

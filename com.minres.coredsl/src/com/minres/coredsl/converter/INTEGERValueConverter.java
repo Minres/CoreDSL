@@ -33,16 +33,15 @@ public class INTEGERValueConverter extends AbstractLexerBasedConverter<BigIntege
 			if(string.endsWith("ll")) size=128;
 			else if(string.endsWith("l")) size=64;
 			if(s.contains("'")) {
-				String[] token = s.split("/'/");
+				String[] token = s.split("'");
 				size = Integer.parseInt(token[0]);
-				if(token[1].startsWith("h")){
-					return new BigIntegerWithRadix(string.substring(2), 16, size, type);
-				} else if(token[1].startsWith("b")){
-					return new BigIntegerWithRadix(string.substring(2), 2, size, type);
-				} else if(token[1].startsWith("o")){
-					return new BigIntegerWithRadix(s, 8, size, type);
-				}else 
-					return new BigIntegerWithRadix(s, 10, size, type);
+				String lit = token[1].substring(1);
+				switch (token[1].charAt(0)) {
+					case 'h': return new BigIntegerWithRadix(lit, 16, size, type);
+					case 'b': return new BigIntegerWithRadix(lit, 2, size, type);
+					case 'o': return new BigIntegerWithRadix(lit, 8, size, type);
+					default: return new BigIntegerWithRadix(lit, 10, size, type);
+				}
 			} else {
 				if(s.startsWith("0x")){
 					return new BigIntegerWithRadix(string.substring(2), 16, size, type);
