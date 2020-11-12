@@ -20,9 +20,6 @@ import org.junit.runner.RunWith
 
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
-import com.minres.coredsl.coreDsl.DirectDeclarator
-import java.math.BigInteger
-import java.beans.Expression
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
@@ -107,9 +104,6 @@ class CoreDslLiteralsTest {
 			// u64 = 42lu;  // currently not supported
 			// u128 = 42llu; // ditto
     	''').parse
-    	val issues = validator.validate(content)
-    	for (i : issues)
-    		println(i)
     	validator.assertNoErrors(content)
     	
     	val compound = ((content.definitions.get(0) as InstructionSet).instr.get(0).behavior as CompoundStatement)
@@ -132,4 +126,21 @@ class CoreDslLiteralsTest {
 //		assertIssues("int i = 42lL;") // TODO: The INTEGERValueConverter currently does not handle this case -- does it matter?
 		assertIssues("int i = 42lll;")
     }
+    
+	@Test
+	def void testSingleCharIdentifiers() {
+		var alphabet = "abcdefghijklmnopqrstuvwxyz"
+		alphabet += alphabet.toUpperCase
+		for (var i = 0; i < alphabet.length; i++) {
+			val c = alphabet.charAt(i);
+			val content = addBehaviorContext('''int «c»;''').parse
+			val issues = validator.validate(content)
+			if (! issues.isEmpty) {
+				println("Problematic identifier: " + c)
+				for (issue : issues)
+					println(issue)
+			}
+			validator.assertNoErrors(content)
+		}
+	}
 }

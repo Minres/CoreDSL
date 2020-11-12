@@ -56,7 +56,7 @@ BitValue
 	;
 
 BitField
-	:	name=ID bitRange=RangeSpec ("'"? type=BitfieldDataType)?
+	:	name=ID bitRange=RangeSpec //("'"? type=BitfieldDataType)?
 	;
 
 RangeSpec
@@ -350,10 +350,10 @@ Variable hidden()
 	;
 
 StringLiteral
-    :   EncodingPrefix? value=STRING
+    :   /*EncodingPrefix?*/ value=STRING
     ;
 
-fragment EncodingPrefix :   prefix= ('u8'|'u'|'U'|'L');
+//fragment EncodingPrefix :   prefix= ('u8'|'u'|'U'|'L');
 
 ConstantExpression returns Expression
     :   ConditionalExpression
@@ -381,9 +381,9 @@ BoolConstant
     
 CharacterConstant
     :   value=CHARCONST
-    |   enc="L" value=CHARCONST
-    |   enc="u" value=CHARCONST
-    |   enc="U" value=CHARCONST
+//    |   enc="L" value=CHARCONST
+//    |   enc="u" value=CHARCONST
+//    |   enc="U" value=CHARCONST
     ;
 
 // the follwoing 2 rules are needed so that XText does not generate a terminal symbol '[[' and '&&'
@@ -410,7 +410,7 @@ enum InstrAttribute: NONE | NO_CONT='no_cont' | COND='cond' | FLUSH='flush';
 
 enum StructOrUnion:   STRUCT='struct'|UNION='union';
 
-enum BitfieldDataType:	UNSIGNED="u" | SIGNED="s"; //| FLOAT="f" | DOUBLE="d" | QUAD="q" | BOOLEAN='b';
+//enum BitfieldDataType:	UNSIGNED="u" | SIGNED="s"; //| FLOAT="f" | DOUBLE="d" | QUAD="q" | BOOLEAN='b';
 
 terminal LEFT_BR: '[';
 

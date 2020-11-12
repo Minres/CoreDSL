@@ -49,7 +49,6 @@
   <eClassifiers xsi:type="ecore:EClass" name="BitField" eSuperTypes="#//Field">
     <eStructuralFeatures xsi:type="ecore:EReference" name="bitRange" eType="#//RangeSpec"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//BitfieldDataType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RangeSpec">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//IntegerConstant"
@@ -272,11 +271,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="Variable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="StringLiteral" eSuperTypes="#//EncodingPrefix">
+  <eClassifiers xsi:type="ecore:EClass" name="StringLiteral">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EncodingPrefix">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="prefix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Constant"/>
   <eClassifiers xsi:type="ecore:EClass" name="IntegerConstant" eSuperTypes="#//Constant">
@@ -290,7 +286,6 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="CharacterConstant" eSuperTypes="#//Constant">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="enc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="DataTypes">
     <eLiterals name="BOOL" literal="bool"/>
@@ -327,10 +322,6 @@
   <eClassifiers xsi:type="ecore:EEnum" name="StructOrUnion">
     <eLiterals name="STRUCT" literal="struct"/>
     <eLiterals name="UNION" value="1" literal="union"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="BitfieldDataType">
-    <eLiterals name="UNSIGNED" literal="u"/>
-    <eLiterals name="SIGNED" value="1" literal="s"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AssignmentExpression" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="assignment" unique="false"

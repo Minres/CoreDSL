@@ -42,10 +42,6 @@
       <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//StructOrUnion/STRUCT"/>
       <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//StructOrUnion/UNION"/>
     </genEnums>
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="CoreDsl.ecore#//BitfieldDataType">
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//BitfieldDataType/UNSIGNED"/>
-      <genEnumLiterals ecoreEnumLiteral="CoreDsl.ecore#//BitfieldDataType/SIGNED"/>
-    </genEnums>
     <genClasses ecoreClass="CoreDsl.ecore#//DescriptionContent">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DescriptionContent/imports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//DescriptionContent/definitions"/>
@@ -81,7 +77,6 @@
     <genClasses ecoreClass="CoreDsl.ecore#//BitValue"/>
     <genClasses ecoreClass="CoreDsl.ecore#//BitField">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//BitField/bitRange"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//BitField/type"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//RangeSpec">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//RangeSpec/left"/>
@@ -246,9 +241,6 @@
     <genClasses ecoreClass="CoreDsl.ecore#//StringLiteral">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//StringLiteral/value"/>
     </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//EncodingPrefix">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//EncodingPrefix/prefix"/>
-    </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//Constant"/>
     <genClasses ecoreClass="CoreDsl.ecore#//IntegerConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//IntegerConstant/value"/>
@@ -261,7 +253,6 @@
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//CharacterConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//CharacterConstant/value"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//CharacterConstant/enc"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//AssignmentExpression">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//AssignmentExpression/assignment"/>
