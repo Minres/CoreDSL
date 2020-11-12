@@ -23,7 +23,7 @@ import static org.junit.Assert.assertFalse
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
-class CoreDslLiteralsTest {
+class CoreDslTerminalsTest {
 
     @Inject extension ParseHelper<DescriptionContent> parseHelper
 

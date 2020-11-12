@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 @Suite.SuiteClasses({
     CoreDslParsingTest.class, 
     CoreDslLoadTest.class,
-    CoreDslLiteralsTest.class,
+    CoreDslTerminalsTest.class,
 })
 
 public class CoreDSLParserTests {
