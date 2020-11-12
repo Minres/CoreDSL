@@ -19,6 +19,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertFalse
+import com.minres.coredsl.coreDsl.DirectDeclarator
+import java.math.BigInteger
+import java.beans.Expression
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
@@ -47,29 +51,85 @@ class CoreDslLiteralsTest {
         }
     '''
     
+    def assertIssues(CharSequence str) {
+    	val content = addBehaviorContext(str).parse
+    	val issues = validator.validate(content)
+		assertFalse(issues.isEmpty())
+    }
+    
     @Test
     def void parseIntLiterals() {
     	val content = addBehaviorContext('''
-			int i;
 			// C syntax
-			i = 42;
-			i = 0x2A;
-			i = 052;
-			i = 0b101010;
+			unsigned c;
+			c = 42;
+			c = 0x2A;
+			c = 052;
+			c = 0b101010;
 			
 			// Verilog syntax
-			i = 6'd42;
-			i = 6'h2a;
-			i = 6'o52;
-			i = 6'b101010;
+			unsigned<6> v;
+			v = 6'd42;
+			v = 6'h2a;
+			v = 6'o52;
+			v = 6'b101010;
     	''').parse
     	validator.assertNoErrors(content)
     	
     	val compound = ((content.definitions.get(0) as InstructionSet).instr.get(0).behavior as CompoundStatement)
-		for (el : compound.items.subList(1, compound.items.size())) {
-			val expr = (el as ExpressionStatement).expr as AssignmentExpression
-			val rhs = (expr.rights.get(0) as PrimaryExpression).constant as IntegerConstant
-			assertEquals(rhs.value.intValue, 42)
+		for (el : compound.items) {
+			if (el instanceof ExpressionStatement) {
+				val expr = (el as ExpressionStatement).expr as AssignmentExpression
+				val rhs = (expr.rights.get(0) as PrimaryExpression).constant as IntegerConstant
+				assertEquals(rhs.value.intValue, 42)
+			}
 		}
+    }
+    
+    @Test
+    def void parseIntLiteralSuffixes() {
+    	val content = addBehaviorContext('''
+			unsigned u32;
+			unsigned long u64;
+			unsigned long long u128;
+			long i64;
+			long long i128;
+			u32 = 42u;
+			u32 = 42U;
+			
+			i64 = 42l;
+			i64 = 42L;
+			i128 = 42ll;
+			i128 = 42LL;
+			
+			u64 = 42ul;
+			u128 = 42ull;
+			// u64 = 42lu;  // currently not supported
+			// u128 = 42llu; // ditto
+    	''').parse
+    	val issues = validator.validate(content)
+    	for (i : issues)
+    		println(i)
+    	validator.assertNoErrors(content)
+    	
+    	val compound = ((content.definitions.get(0) as InstructionSet).instr.get(0).behavior as CompoundStatement)
+		for (el : compound.items.subList(3, compound.items.size())) {
+			if (el instanceof ExpressionStatement) {
+				val expr = (el as ExpressionStatement).expr as AssignmentExpression
+				val lhsName = (expr.left as PrimaryExpression).ref.name;
+				val rhs = (expr.rights.get(0) as PrimaryExpression).constant as IntegerConstant
+				val intValue = rhs.value.intValue
+				assertEquals(intValue, 42)
+				// FIXME: cannot check size and signedness, because the BigIntegerWithRadix class is not accessible here -- why?
+			}
+		}
+		
+		assertIssues("int i = 6'd42u;") // Verilog syntax cannot have the suffix
+		assertIssues("int i = 6'd42ul;")
+		assertIssues("int i = 42uu;")
+		assertIssues("int i = 42lul;")
+		assertIssues("int i = 42ulu;")
+//		assertIssues("int i = 42lL;") // TODO: The INTEGERValueConverter currently does not handle this case -- does it matter?
+		assertIssues("int i = 42lll;")
     }
 }
