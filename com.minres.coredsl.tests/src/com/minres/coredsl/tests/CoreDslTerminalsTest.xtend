@@ -179,7 +179,7 @@ class CoreDslTerminalsTest {
     }
     
 	@Test
-	def void testSingleCharIdentifiers() {
+	def void parseSingleCharIdentifiers() {
 		var alphabet = "abcdefghijklmnopqrstuvwxyz"
 		alphabet += alphabet.toUpperCase
 		for (var i = 0; i < alphabet.length; i++) {
