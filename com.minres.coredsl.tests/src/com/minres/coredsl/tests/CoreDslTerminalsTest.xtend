@@ -8,6 +8,7 @@ import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.ExpressionStatement
+import com.minres.coredsl.coreDsl.FloatingConstant
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.IntegerConstant
 import com.minres.coredsl.coreDsl.PrimaryExpression
@@ -20,6 +21,7 @@ import org.junit.runner.RunWith
 
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
+import static org.junit.Assert.assertTrue
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
@@ -125,6 +127,45 @@ class CoreDslTerminalsTest {
 		assertIssues("int i = 42ulu;")
 //		assertIssues("int i = 42lL;") // TODO: The INTEGERValueConverter currently does not handle this case -- does it matter?
 		assertIssues("int i = 42lll;")
+    }
+    
+    @Test
+    def void parseFloatLiterals() {
+    	val content = addBehaviorContext('''
+    		double d, d1, d0;
+    		float f;
+    		long double ld;
+    		
+    		d = 3.14;
+    		d = 0.314e1;
+    		d = 0.0314e+2;
+    		d = 3140.e-3;
+    		d1 = 1.;
+    		d1 = 1.e0;
+    		d0 = 0.0;
+    		
+    		f = 3.14f;
+    		f = 3.14F;
+    		ld = 3.14l;
+    		ld = 3.14L;
+    	''').parse
+    	validator.assertNoErrors(content)
+    	
+    	val compound = ((content.definitions.get(0) as InstructionSet).instr.get(0).behavior as CompoundStatement)
+		for (el : compound.items.subList(3, compound.items.size())) {
+			if (el instanceof ExpressionStatement) {
+				val expr = (el as ExpressionStatement).expr as AssignmentExpression
+				val lhsName = (expr.left as PrimaryExpression).ref.name;
+				val rhs = (expr.rights.get(0) as PrimaryExpression).constant as FloatingConstant
+				val floatValue = rhs.value.doubleValue
+				if (lhsName == "d" || lhsName == "f" || lhsName == "ld")
+					assertTrue(Math.abs(floatValue - 3.14) < 1e-6)
+				else if (lhsName == "d1")
+					assertTrue(floatValue == 1.0)
+				else
+					assertTrue(floatValue == 0.0)
+			}
+		}
     }
     
 	@Test
