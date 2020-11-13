@@ -168,6 +168,16 @@ class CoreDslTerminalsTest {
 		}
     }
     
+    @Test
+    def void parseBoolLiterals() {
+    	val content = addBehaviorContext('''
+    		bool b;
+    		b = true;
+    		b = false;
+    	''').parse
+    	validator.assertNoErrors(content)
+    }
+    
 	@Test
 	def void testSingleCharIdentifiers() {
 		var alphabet = "abcdefghijklmnopqrstuvwxyz"
