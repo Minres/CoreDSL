@@ -178,8 +178,42 @@ class CoreDslTerminalsTest {
     	validator.assertNoErrors(content)
     }
     
+    @Test
+    def void parseCharLiterals() {
+    	val content = addBehaviorContext('''
+    		char c;
+    		c = 'a';
+    		c = '9';
+    		c = '"';
+    		c = '\'';
+    		c = '\\';
+    		c = L'x';
+    		c = u'x';
+    		c = U'x';
+    	''').parse
+    	validator.assertNoErrors(content)
+    	
+    	// TODO: Currently, this only checks whether the syntax is accepted. No handling of encoding and escape sequences is done.
+    }
+    
+    @Test
+    def void parseStringLiterals() {
+    	val content = addBehaviorContext('''
+    		char *str;
+    		str = "hello world 1";
+    		str = u8"hello world 2";
+    		str = u"hello world 3";
+    		str = U"hello world 4";
+    		str = L"hello world 5";
+    	''').parse
+    	validator.assertNoErrors(content)
+    	
+    	// TODO: Currently, this only checks whether the syntax is accepted. No handling of encoding and escape sequences is done.
+    }
+    
 	@Test
 	def void parseSingleCharIdentifiers() {
+		// this test is here because the encoding prefixes for char- and string literals may clobber normal identifiers
 		var alphabet = "abcdefghijklmnopqrstuvwxyz"
 		alphabet += alphabet.toUpperCase
 		for (var i = 0; i < alphabet.length; i++) {
