@@ -56,7 +56,7 @@ BitValue
 	;
 
 BitField
-	:	name=ID bitRange=RangeSpec ("'"? type=BitfieldDataType)?
+	:	name=ID bitRange=RangeSpec //("'"? type=BitfieldDataType)?
 	;
 
 RangeSpec
@@ -350,10 +350,9 @@ Variable hidden()
 	;
 
 StringLiteral
-    :   EncodingPrefix? value=STRING
+    :   value=ENCSTRINGCONST
+	|   value=STRING
     ;
-
-fragment EncodingPrefix :   prefix= ('u8'|'u'|'U'|'L');
 
 ConstantExpression returns Expression
     :   ConditionalExpression
@@ -368,11 +367,11 @@ Constant
     ;
 
 IntegerConstant hidden(WS)
-    :   value=INTEGER// unsigned?=('u'|'U')? (long?=('l'|'L') longlong?=('l'|'L')?)?
+    :   value=INTEGER
     ;
 
 FloatingConstant hidden(WS)
-    :  	value=FLOAT// (f?=('f'|'F') | l?=('l'|'L'))?
+    :  	value=FLOAT
     ;
     
 BoolConstant
@@ -381,9 +380,6 @@ BoolConstant
     
 CharacterConstant
     :   value=CHARCONST
-    |   enc="L" value=CHARCONST
-    |   enc="u" value=CHARCONST
-    |   enc="U" value=CHARCONST
     ;
 
 // the follwoing 2 rules are needed so that XText does not generate a terminal symbol '[[' and '&&'
@@ -410,7 +406,7 @@ enum InstrAttribute: NONE | NO_CONT='no_cont' | COND='cond' | FLUSH='flush';
 
 enum StructOrUnion:   STRUCT='struct'|UNION='union';
 
-enum BitfieldDataType:	UNSIGNED="u" | SIGNED="s"; //| FLOAT="f" | DOUBLE="d" | QUAD="q" | BOOLEAN='b';
+//enum BitfieldDataType:	UNSIGNED="u" | SIGNED="s"; //| FLOAT="f" | DOUBLE="d" | QUAD="q" | BOOLEAN='b';
 
 terminal LEFT_BR: '[';
 
@@ -422,7 +418,7 @@ terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false' ;
 
 terminal FLOAT returns ecore::EBigDecimal:  (('0'..'9')+ '.' ('0'..'9')*) (('e' | 'E') ('+' | '-')? ('0'..'9')+)? ('f'|'F'|'l'|'L')?;
 
-terminal INTEGER returns ecore::EBigInteger:  (BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT | VLOGINT) ('u'|'U')? ('l'|'L' ('l'|'L')?)?;
+terminal INTEGER returns ecore::EBigInteger:  (BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT | VLOGINT) ('u'|'U')? (('l'|'L') ('l'|'L')?)?;
 
 terminal fragment BINARYINT:	('0b' | '0B') '0'..'1' (('_')? '0'..'1')*;
 
@@ -432,18 +428,16 @@ terminal fragment DECIMALINT:   '0' | '1'..'9' (('_')? '0'..'9')*;
 
 terminal fragment HEXADECIMALINT:   ('0x'|'0X') ('0'..'9'|'a'..'f'|'A'..'F')  (('_')? ('0'..'9'|'a'..'f'|'A'..'F'))*;
 
-terminal fragment VLOGINT: ('0'..'9')+ "'" ('b' ('01')+ | 'o' ('0'..'7')+ | 'd' ('0'..'9')+ | 'h' ('0'..'9'|'a'..'f'|'A'..'F')+); 
+terminal fragment VLOGINT: ('0'..'9')+ "'" ('b' ('0'..'1')+ | 'o' ('0'..'7')+ | 'd' ('0'..'9')+ | 'h' ('0'..'9'|'a'..'f'|'A'..'F')+); 
 
-terminal CHARCONST: "'" ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|"'") )* "'";
+terminal CHARCONST:	('u'|'U'|'L')? "'" ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|"'") )* "'";
 
 @Override 
 terminal INT returns ecore::EInt: '~this one has been deactivated';
     
 @Override 
 terminal ID : '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
-    
-@Override
-terminal STRING	:	'"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';
 
+// do we need to override the built-in STRING rule?
 
- 
+terminal ENCSTRINGCONST	:	('u8'|'u'|'U'|'L') '"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';
