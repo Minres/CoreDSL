@@ -56,11 +56,7 @@ BitValue
 	;
 
 BitField
-	:	name=ID bitRange=RangeSpec //("'"? type=BitfieldDataType)?
-	;
-
-RangeSpec
-	:	LEFT_BR left=IntegerConstant ':' right=IntegerConstant RIGHT_BR
+	:	name=ID LEFT_BR left=IntegerConstant ':' right=IntegerConstant mod=(RIGHT_BR | ']s' | ']u') 
 	;
 
 FunctionDefinition

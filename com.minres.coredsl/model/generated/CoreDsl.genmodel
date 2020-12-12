@@ -76,11 +76,9 @@
     <genClasses ecoreClass="CoreDsl.ecore#//Field"/>
     <genClasses ecoreClass="CoreDsl.ecore#//BitValue"/>
     <genClasses ecoreClass="CoreDsl.ecore#//BitField">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//BitField/bitRange"/>
-    </genClasses>
-    <genClasses ecoreClass="CoreDsl.ecore#//RangeSpec">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//RangeSpec/left"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//RangeSpec/right"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//BitField/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference CoreDsl.ecore#//BitField/right"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//BitField/mod"/>
     </genClasses>
     <genClasses ecoreClass="CoreDsl.ecore#//FunctionDefinition">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute CoreDsl.ecore#//FunctionDefinition/extern"/>

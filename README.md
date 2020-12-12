@@ -1,4 +1,4 @@
-# XText plugins for CorerDSL
+# XText plugins for CoreDSL
 
 ## References
 

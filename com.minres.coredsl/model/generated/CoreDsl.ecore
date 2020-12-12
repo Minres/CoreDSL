@@ -47,14 +47,11 @@
   <eClassifiers xsi:type="ecore:EClass" name="Field" eSuperTypes="#//Variable"/>
   <eClassifiers xsi:type="ecore:EClass" name="BitValue" eSuperTypes="#//Field"/>
   <eClassifiers xsi:type="ecore:EClass" name="BitField" eSuperTypes="#//Field">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="bitRange" eType="#//RangeSpec"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RangeSpec">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//IntegerConstant"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//IntegerConstant"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mod" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionDefinition" eSuperTypes="#//ParameterList #//Variable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="extern" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
