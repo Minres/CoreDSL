@@ -25,7 +25,7 @@ class CoreDslLabelProvider extends DefaultEObjectLabelProvider {
 	// Labels and icons can be computed like this:
 	
     def text(BitField ele) {
-        ele.name + if(ele.bitRange!==null) ("[" + ele.bitRange.left + ":" + ele.bitRange.right + "]") else ""
+        ele.name + "[" + ele.left + ":" + ele.right + "]"
     }
 
     def text(EObject ele){

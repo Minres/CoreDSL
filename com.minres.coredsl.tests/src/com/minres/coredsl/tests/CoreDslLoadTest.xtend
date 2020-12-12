@@ -4,7 +4,6 @@
 package com.minres.coredsl.tests
 
 import com.google.inject.Inject
-import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper

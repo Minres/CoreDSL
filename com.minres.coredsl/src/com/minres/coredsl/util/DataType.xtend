@@ -9,6 +9,6 @@ import org.eclipse.xtend.lib.annotations.Data
     Integer size
     
     def static get(BitField bf){
-        new DataType(DataTypes.UNSIGNED, bf.bitRange.left.value.intValue)
+        new DataType(DataTypes.UNSIGNED, bf.left.value.intValue)
     }
 }
