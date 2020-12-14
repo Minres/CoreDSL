@@ -5,7 +5,6 @@ package com.minres.coredsl.ui.labeling
 
 import com.google.inject.Inject
 import com.minres.coredsl.coreDsl.BitField
-import com.minres.coredsl.coreDsl.Encoding
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider
 import org.eclipse.emf.ecore.EObject

@@ -12,7 +12,6 @@ import com.minres.coredsl.coreDsl.CastExpression
 import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.ConditionalExpression
 import com.minres.coredsl.coreDsl.InfixExpression
-import com.minres.coredsl.coreDsl.CoreDslPackage
 import static extension com.minres.coredsl.util.TypeProvider.*
 import com.minres.coredsl.coreDsl.PodSpecifier
 import com.minres.coredsl.coreDsl.DataTypes
