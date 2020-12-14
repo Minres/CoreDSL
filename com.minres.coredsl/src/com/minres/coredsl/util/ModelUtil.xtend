@@ -8,7 +8,7 @@ import com.minres.coredsl.coreDsl.ISA
 
 class ModelUtil {
 
-    static def <T extends EObject> parentOfType(EObject obj, Class<T> clazz){
+    static def EObject parentOfType(EObject obj, Class<?> clazz){
         if(obj.eContainer===null)
             return null
         if(clazz.isInstance(obj.eContainer))

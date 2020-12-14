@@ -112,7 +112,7 @@ class CoreDslTerminalsTest {
 		for (el : compound.items.subList(3, compound.items.size())) {
 			if (el instanceof ExpressionStatement) {
 				val expr = (el as ExpressionStatement).expr as AssignmentExpression
-				val lhsName = (expr.left as PrimaryExpression).ref.name;
+				//val lhsName = (expr.left as PrimaryExpression).ref.name;
 				val rhs = (expr.rights.get(0) as PrimaryExpression).constant as IntegerConstant
 				val intValue = rhs.value.intValue
 				assertEquals(intValue, 42)
