@@ -12,6 +12,15 @@ import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.Scopes
 import com.minres.coredsl.coreDsl.Variable
+import com.minres.coredsl.coreDsl.Instruction
+import com.minres.coredsl.coreDsl.CoreDslPackage
+import com.minres.coredsl.coreDsl.Declaration
+import org.eclipse.emf.common.util.EList
+import com.google.common.collect.Lists
+import com.minres.coredsl.coreDsl.FunctionDefinition
+import java.util.Iterator
+import com.google.common.collect.Iterators
+import com.google.common.collect.Iterables
 
 /**
  * This class contains custom scoping description.
@@ -25,15 +34,16 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
         // We want to define the Scope for the Element's superElement cross-reference
 		// println("Context "+context.class + " in " + context.eContainer+", reference " + reference.EReferenceType.name)
 		//Context class com.minres.coredsl.coreDsl.impl.IndexedAssignmentImplin com.minres.coredsl.coreDsl.impl.ConditionalStmtImpl@9a3d0f4, reference IndexedVar
-		if(reference.EReferenceType.name=="Variable") {
+		if(reference.EReferenceType==CoreDslPackage.Literals.VARIABLE) {
 			val isa = context.parentOfType(ISA) as ISA
-        	return Scopes.scopeFor(isa.allOfType(Variable))
-    	} else if(reference.EReferenceType.name=="DirectDeclarator") {
-		  	val isa = context.parentOfType(ISA) as ISA
-		  	return Scopes.scopeFor(isa.allOfType(DirectDeclarator))
-        } else if(reference.EReferenceType.name=="InstructionSet") {
+			val instr = context.parentOfType(Instruction) as Instruction
+			if(instr !== null)
+	        	return Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(instr, Variable), Scopes.scopeFor(isa.allOfType(Variable)))
+			else			
+        		return Scopes.scopeFor(isa.allOfType(Variable))
+        } else if(reference.EReferenceType==CoreDslPackage.Literals.INSTRUCTION_SET) {
             return super.getScope(context, reference);
-        } else if(reference.EReferenceType.name=="CoreDef") {
+        } else if(reference.EReferenceType.name==CoreDslPackage.Literals.CORE_DEF) {
             return super.getScope(context, reference);
 		} else {
 			println("Unmatched: context "+context.class + " in " + context.eContainer+", reference " + reference.EReferenceType.name)
@@ -62,18 +72,24 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 			EcoreUtil2.resolveAll(isa)		
 		switch(isa){
 			CoreDef:{
+				val ret = isa.regs.allOfType(clazz) + isa.constants.allOfType(clazz) + isa.spaces.allOfType(clazz)
 				if(isa.contributingType === null)
-					return EcoreUtil2.getAllContentsOfType(isa, clazz)
+					return ret
 				else
-					return EcoreUtil2.getAllContentsOfType(isa, clazz) +  isa.contributingType.map[it.allOfType(clazz)].flatten
+					return ret +  isa.contributingType.map[it.allOfType(clazz)].flatten
 			}
 			InstructionSet: {
+				val ret = isa.regs.allOfType(clazz) + isa.constants.allOfType(clazz) + isa.spaces.allOfType(clazz) + isa.func as Iterable<T>
 				if(isa.superType === null)
-					return EcoreUtil2.getAllContentsOfType(isa, clazz)
+					return ret
 				else {
-					return EcoreUtil2.getAllContentsOfType(isa, clazz) +  isa.superType.allOfType(clazz)				
+					return ret +  isa.superType.allOfType(clazz)				
 				}
 			}
 		}
+	}
+	
+	def <T extends EObject> Iterable<T> allOfType(EList<Declaration> decls, Class<T> clazz){
+		decls.map[EcoreUtil2.getAllContentsOfType(it, clazz)].flatten
 	}
 }
