@@ -4,23 +4,17 @@
 package com.minres.coredsl.scoping
 
 import com.minres.coredsl.coreDsl.CoreDef
-import com.minres.coredsl.coreDsl.DirectDeclarator
+import com.minres.coredsl.coreDsl.CoreDslPackage
+import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.ISA
+import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
+import com.minres.coredsl.coreDsl.Variable
+import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.Scopes
-import com.minres.coredsl.coreDsl.Variable
-import com.minres.coredsl.coreDsl.Instruction
-import com.minres.coredsl.coreDsl.CoreDslPackage
-import com.minres.coredsl.coreDsl.Declaration
-import org.eclipse.emf.common.util.EList
-import com.google.common.collect.Lists
-import com.minres.coredsl.coreDsl.FunctionDefinition
-import java.util.Iterator
-import com.google.common.collect.Iterators
-import com.google.common.collect.Iterables
 
 /**
  * This class contains custom scoping description.

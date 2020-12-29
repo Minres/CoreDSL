@@ -19,8 +19,6 @@ import com.minres.coredsl.coreDsl.IntegerConstant
 import com.minres.coredsl.coreDsl.FloatingConstant
 import com.minres.coredsl.coreDsl.BoolConstant
 import com.minres.coredsl.coreDsl.CharacterConstant
-import com.minres.coredsl.converter.BigDecimalWithSize
-import com.minres.coredsl.converter.BigIntegerWithRadix
 import com.minres.coredsl.coreDsl.Declaration
 
 class TypeProvider {
