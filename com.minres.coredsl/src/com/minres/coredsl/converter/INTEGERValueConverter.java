@@ -7,6 +7,8 @@ import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.util.Strings;
 
+import com.minres.coredsl.util.BigIntegerWithRadix;
+
 
 public class INTEGERValueConverter extends AbstractLexerBasedConverter<BigInteger> {
 	@Override

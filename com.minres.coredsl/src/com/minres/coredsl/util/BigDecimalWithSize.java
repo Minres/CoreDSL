@@ -1,4 +1,4 @@
-package com.minres.coredsl.converter;
+package com.minres.coredsl.util;
 
 import java.math.BigDecimal;
 
