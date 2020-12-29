@@ -79,7 +79,7 @@ class CoreDslTerminalsTest {
 		for (el : compound.items) {
 			if (el instanceof ExpressionStatement) {
 				val expr = (el as ExpressionStatement).expr as AssignmentExpression
-				val rhs = (expr.rights.get(0) as PrimaryExpression).constant as IntegerConstant
+				val rhs = (expr.assignments.get(0).right as PrimaryExpression).constant as IntegerConstant
 				assertEquals(rhs.value.intValue, 42)
 			}
 		}
@@ -113,7 +113,7 @@ class CoreDslTerminalsTest {
 			if (el instanceof ExpressionStatement) {
 				val expr = (el as ExpressionStatement).expr as AssignmentExpression
 				//val lhsName = (expr.left as PrimaryExpression).ref.name;
-				val rhs = (expr.rights.get(0) as PrimaryExpression).constant as IntegerConstant
+				val rhs = (expr.assignments.get(0).right as PrimaryExpression).constant as IntegerConstant
 				val intValue = rhs.value.intValue
 				assertEquals(intValue, 42)
 				// FIXME: cannot check size and signedness, because the BigIntegerWithRadix class is not accessible here -- why?
@@ -156,7 +156,7 @@ class CoreDslTerminalsTest {
 			if (el instanceof ExpressionStatement) {
 				val expr = (el as ExpressionStatement).expr as AssignmentExpression
 				val lhsName = (expr.left as PrimaryExpression).ref.name;
-				val rhs = (expr.rights.get(0) as PrimaryExpression).constant as FloatingConstant
+				val rhs = (expr.assignments.get(0).right as PrimaryExpression).constant as FloatingConstant
 				val floatValue = rhs.value.doubleValue
 				if (lhsName == "d" || lhsName == "f" || lhsName == "ld")
 					assertTrue(Math.abs(floatValue - 3.14) < 1e-6)
