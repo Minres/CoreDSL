@@ -17,6 +17,7 @@ import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.FunctionDefinition
+import org.eclipse.emf.common.util.EList
 
 /**
  * Provides labels for EObjects.
@@ -64,5 +65,33 @@ class CoreDslLabelProvider extends DefaultEObjectLabelProvider {
 	
 	private def dispatch String getToText(BitValue value){
 		value.name
+	}
+	
+	def image(CoreDef e){
+		'application.png'
+	}
+
+	def image(InstructionSet e){
+		'package.png'
+	}
+	
+	def image(Instruction e){
+		'brick.png'
+	}
+	
+	def image(Statement e){
+		'script.png'
+	}
+	
+	def image(Encoding e){
+		'pill.png'
+	}
+
+	def image(EObject e){
+		'brick.png'
+	}
+
+	def image(EList<?> e){
+		'folder_brick.png'
 	}
 }
