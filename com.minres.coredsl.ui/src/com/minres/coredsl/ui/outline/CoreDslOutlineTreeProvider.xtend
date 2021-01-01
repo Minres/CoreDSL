@@ -3,24 +3,19 @@
  */
 package com.minres.coredsl.ui.outline
 
-import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
-import com.minres.coredsl.coreDsl.Variable
-import com.minres.coredsl.coreDsl.Encoding
-import com.minres.coredsl.coreDsl.Declaration
-import com.minres.coredsl.coreDsl.Assignment
-import org.eclipse.xtext.ui.editor.outline.IOutlineNode
-import com.minres.coredsl.coreDsl.Instruction
-import com.minres.coredsl.coreDsl.Expression
-import com.minres.coredsl.coreDsl.EmptyExpression
-import com.minres.coredsl.coreDsl.Statement
-import com.minres.coredsl.coreDsl.ISA
-import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtext.ui.editor.outline.impl.DocumentRootNode
-import com.minres.coredsl.coreDsl.DescriptionContent
-import com.google.inject.Inject
-import org.eclipse.xtext.ui.editor.outline.impl.OutlineNodeFactory
 import com.minres.coredsl.coreDsl.CoreDef
+import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.DescriptionContent
+import com.minres.coredsl.coreDsl.EmptyExpression
+import com.minres.coredsl.coreDsl.Encoding
+import com.minres.coredsl.coreDsl.ISA
+import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
+import com.minres.coredsl.coreDsl.Statement
+import com.minres.coredsl.coreDsl.Variable
+import org.eclipse.xtext.ui.editor.outline.IOutlineNode
+import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
+import org.eclipse.xtext.ui.editor.outline.impl.DocumentRootNode
 
 /**
  * Customization of the default outline structure.
