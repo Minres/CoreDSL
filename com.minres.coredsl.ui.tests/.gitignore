@@ -1,3 +1,4 @@
 /target/
 *._trace
 /.settings/
+/src-gen/

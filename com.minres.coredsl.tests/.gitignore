@@ -2,3 +2,5 @@
 *._trace
 *.xtendbin
 *.xtextbin
+/src-gen/
+/xtend-gen/
