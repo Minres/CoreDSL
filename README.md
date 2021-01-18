@@ -2,8 +2,6 @@
 
 This repo contains the XText bundles/plugins for CoreDSL.
 
-# XText plugins for CoreDSL
-
 ## References
 
 https://www.lysator.liu.se/c/ANSI-C-grammar-y.html
