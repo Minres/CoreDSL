@@ -7,8 +7,8 @@
 		<version>2.0.0-SNAPSHOT</version>
 	        <relativePath>..</relativePath>
 	</parent>
-	<artifactId>com.minres.coredsl.feature</artifactId>
-	<packaging>eclipse-feature</packaging>
+	<artifactId>com.minres.coredsl.target</artifactId>
+	<packaging>eclipse-target-definition</packaging>
 
 
 	<dependencies>

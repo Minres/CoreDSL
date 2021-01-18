@@ -6,7 +6,7 @@
 		<groupId>com.minres.coredsl</groupId>
 		<artifactId>com.minres.coredsl.parent</artifactId>
 		<version>2.0.0-SNAPSHOT</version>
-	        <relativePath>../..</relativePath>
+	        <relativePath>..</relativePath>
 	</parent>
 	<artifactId>com.minres.coredsl.repository</artifactId>
 	<packaging>eclipse-repository</packaging>
@@ -86,7 +86,7 @@
 							<!-- Local folder content to sync to the remote repo. -->
 							<sourceFolder>${project.build.directory}/repository</sourceFolder>
 							<!-- Remote folder for local content upload, relative path. -->
-							<targetFolder>CoreDSL/${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</targetFolder>
+							<targetFolder>CoreDSL/${parsedVersion.majorVersion}.${parsedVersion.minorVersion}</targetFolder>
 
 							<!-- Bintray credentials in settings.xml. -->
 							<serverId>bintray-minres-deploy</serverId>
