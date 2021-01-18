@@ -1,4 +1,6 @@
 /target/
-*.java_trace
-*.java._trace
+*._trace
 *.xtendbin
+/plugin.xml_gen
+/src-gen/
+/xtend-gen/

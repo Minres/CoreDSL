@@ -4,119 +4,202 @@
 package com.minres.coredsl.tests
 
 import com.google.inject.Inject
-import org.eclipse.emf.ecore.util.EcoreUtil
+import com.minres.coredsl.coreDsl.DescriptionContent
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
+import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import static org.junit.Assert.*
-import com.minres.coredsl.coreDsl.DescriptionContent
-import com.minres.coredsl.coreDsl.InstructionSet
-import com.minres.coredsl.coreDsl.RegisterFile
-import com.minres.coredsl.coreDsl.Register
-
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
-class CoreDslParsingTest{
-    
-    @Inject ParseHelper<DescriptionContent> parseHelper
+class CoreDslParsingTest {
 
-    val isa1 = '''
-            InsructionSet RV32I {
-                constants {
-                    XLEN, FLEN
+    @Inject extension ParseHelper<DescriptionContent> parseHelper
+
+    @Inject ValidationTestHelper validator
+
+    def CharSequence addInstructionContext(CharSequence str)'''
+        InstructionSet TestISA {
+            registers { 
+                [[is_pc]] int PC ;
+                int Xreg[32];
+                float Freg[32];
+            }
+            instructions {
+                «str»
+            }
+        }
+    '''
+
+    @Test
+    def void parseInstrPRELU() {
+        val content = '''
+        PRELU {
+            encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011;  
+            args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
+            behavior: {
+                static float alpha = 0.2;  
+                float input, new_alpha;
+                input = Freg[rs1];  // read global F register
+                if (rs2!=0) // avoid having an additional instruction for setting parameter
+                    new_alpha = Freg[rs2];
+                else 
+                    new_alpha = alpha; // use the stored alpha when rs2==0
+                if(input > 0)
+                    Freg[rd] = input;
+                else 
+                    Freg[rd] = input*new_alpha; 
+                if (rs2!=0)
+                    alpha = new_alpha; // update internal alpha register
                 }
-                address_spaces {
-                    MEMB[8], MEMH[16], MEMW[32], SFR[32]
-                }            
-                registers { 
-                    [31:0]   X[XLEN], FL[16], PC[48]
-                } 
+        }
+        '''.addInstructionContext.parse
+        validator.assertNoErrors(content)
+    }
+
+    @Test
+    def void parseInstrSBOX() {
+        val content = '''
+        SBOX {
+            encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011;  
+            args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
+            behavior: {
+                unsigned int data_i;
+                data_i = (unsigned int) Xreg[rs1];  
+                // contents of array omitted for for brevity        
+                const unsigned char sbox[256] = { 0x63, 0x7c, 0};  
+                Xreg[rd] = sbox[data_i[31:24]] :: sbox[data_i[23:16]] :: sbox[data_i[15:8]] :: sbox[data_i[7:0]];
+            }
+        }
+        '''.addInstructionContext.parse
+        validator.assertNoErrors(content)
+    }
+
+    @Test
+    def void parseInstrSQRTFloatRegs() {
+        val content = '''
+            InstructionSet TestISA {
+                registers {
+                    float F_Ext[32];}
                 instructions { 
-                    ADDI {
-                        encoding: imm[11:0] | rs1[4:0] | b000 | rd[4:0] | b0010011;
-                        X[rd] <= X[rs1] + sext(imm, XLEN);
-                    }
-                    SLTI {
-                        encoding: imm[11:0] | rs1[4:0] | b010 | rd[4:0] | b0010011;
-                        X[rd] <= choose(X[rs1] < sext(imm, XLEN), 1, 0);
-                    }
-                    SLTIU {
-                        encoding: imm[11:0] | rs1[4:0] | b011 | rd[4:0] | b0010011;
-                        X[rd] <= choose(X[rs1] < zext(imm, XLEN), 1, 0);
-                    }
-                    SW {
-                        encoding: imm[11:5] | rs2[4:0] | rs1[4:0] | b010 | imm[4:0] | b0100011;
-                        val offset[XLEN] <= X[rs1] + sext(imm, XLEN);
-                        MEMW[offset]{32} <= X[rs2];
-                    }
-                    JAL(no_cont) {
-                            encoding:imm[20:20]s | imm[10:1]s | imm[11:11]s | imm[19:12]s | rd[4:0] | b1101111;
-                            if(rd!=0) X[rd] <= zext(PC);
-                            PC<=PC+sext(imm, 48);
+                    vectorL {
+                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        args_disass:"{name(rd)}, {name(rs1)}";
+                        behavior: { 
+                        float xc = F_Ext[rs1];     
+                        float yc = F_Ext[rs1];
+                        float sqdist = xc*xc + yc*yc;
+                        //...SQRT(sqdist) computation
+                        }
                     }
                 }
             }
-        '''
-        
-    @Test 
-    def void loadModel() {
-    	val content = parseHelper.parse(isa1)
-    	assertEquals(1, content.definitions.size)
-        val InstructionSet result = content.definitions.get(0) as InstructionSet
-        assertNotNull(result)
-        val resource = result.eResource
-        EcoreUtil.resolveAll(resource);
-        assertEquals(0, resource.errors.size)
-        assertEquals(0, resource.warnings.size)
-        assertEquals("RV32I", result.name)
-        assertNull(result.superType)
-        assertEquals(result.spaces.size(), 4)
-        assertNotNull(result.regs)
-        assertNotNull(result.instr)
-
-        assertEquals(3, result.regs.size)        
-
-        assertTrue(result.regs.get(0) instanceof RegisterFile)
-        assertEquals("X", (result.regs.get(0) as RegisterFile).name)
-        assertEquals(0, (result.regs.get(0) as RegisterFile).bitSize)
-        assertNotNull((result.regs.get(0) as RegisterFile).bitSizeConst)
-        //assertEquals(32, result.regs.get(0).bitSizeConst.value)
-        val regFile = result.regs.get(0) as RegisterFile
-        assertEquals(31, regFile.range.left)
-        assertEquals(0, regFile.range.right)
-        
-        assertTrue(result.regs.get(2) instanceof Register)
-        assertEquals("PC", (result.regs.get(2) as Register).name)
-        assertEquals(48, (result.regs.get(2) as Register).bitSize)
-        assertNull((result.regs.get(2) as Register).bitSizeConst)
-        
-        assertEquals(5, result.instr.size)
-        val i0 = result.instr.get(0);
-        assertEquals("ADDI", i0.name)
-        assertEquals(5, i0.encoding.fields.size)
-        assertNotNull(i0.operation)
-        assertEquals(1,i0.operation.statements.size)
-        
-        val i1 = result.instr.get(1);
-        assertEquals("SLTI", i1.name)
-        assertEquals(5, i1.encoding.fields.size)
-        assertNotNull(i1.operation)
-        assertEquals(1,i1.operation.statements.size)
-
-        val i2 = result.instr.get(2);
-        assertEquals("SLTIU", i2.name)
-        assertEquals(5, i2.encoding.fields.size)
-        assertNotNull(i2.operation)
-        assertEquals(1,i2.operation.statements.size)
-
-        val i3 = result.instr.get(3);
-        assertEquals("SW", i3.name)
-        assertEquals(6, i3.encoding.fields.size)
-        assertNotNull(i3.operation)
-        assertEquals(2,i3.operation.statements.size)
+        '''.parse
+        validator.assertNoErrors(content)
     }
 
- }
+    @Test
+    def void parseInstrSQRTUnionRegs() {
+        val content = '''
+            InstructionSet TestISA {
+                registers {
+                    union ISAXRegFile{
+                        double doublePrec;  // for a double precision entry
+                        struct vector2d {
+                            float x_coord;
+                            float y_coord;
+                        } vector2d;         // for a 2d vector entry
+                    } ISAXRegFile[32]; 
+                }
+                instructions { 
+                    vectorL {
+                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        args_disass:"{name(rd)}, {name(rs1)}";
+                        behavior: { 
+                            float xc = ISAXRegFile[rs1].vector2d.x_coord;
+                            float yc = ISAXRegFile[rs1].vector2d.y_coord;
+                            double result;
+                            double sqdist = xc*xc + yc*yc;
+                            if((sqdist==0) || (sqdist[30:23]==0xff))
+                                result = 0; // avoid special cases
+                            else
+                                result = 1;//sqrt(sqdist);  
+                            ISAXRegFile[rd].doublePrec = result;
+                        }
+                    }
+                }
+            }
+        '''.parse
+        validator.assertNoErrors(content)
+    }
+
+    @Test
+    def void parseInstrSpawn() {
+        val content = '''
+            InstructionSet TestISA {
+                registers {
+                	[[is_pc]] int PC;
+                    float Freg[32];
+                    bool F_ready[32] [[is_interlock_for=Freg]];  // use attribute to indicate purpose of F_ready
+                }
+                instructions {
+                    SIN {
+                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        args_disass:"#{name(rd)}, {name(rs1)}";   
+                        behavior: { 
+                            double theta = Freg[rs1];
+                            F_ready[rd] = false;            // synchronously mark result as unavailable
+                            spawn {                         // asynchronously do the following block
+                                    Freg[rd] = 0.01f;     // first perform the computation        
+                                    F_ready[rd] = true;     // afterwards mark the result as ready
+                            }
+                        }
+                    }
+                }
+            }
+        '''.parse
+        validator.assertNoErrors(content)
+    }
+
+    @Test
+    def void parseInstrZOL() {
+        val content = '''
+            InstructionSet TestISA {
+                registers {
+                	int PC;
+                	int X[32];
+                    unsigned int count, endpc, startpc;
+                }
+                functions {
+                    void doZOL(){      
+                        bool zolactive = true; 
+                        while (zolactive) {         // keep executing while condition is true
+                            if (PC == endpc) {      // evaluate loop body once per clock cycle
+                                if (count != 0) {
+                                    --count;
+                                    PC = startpc;   // jump to loop start
+                                } else
+                                    zolactive = false;  // iteration limit reached, stop execution
+                            }
+                        }
+                    }
+                }
+                instructions {
+                    LP_SETUPI {
+                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        args_disass:"{name(rs1)}, {name(rs2)}";
+                        behavior: {
+                            count   = X[rs1];
+                            endpc   = PC + 4 + X[rs2]<<2; // use PC relative addressing to save bits
+                            startpc = PC + 4; 
+                            spawn doZOL(); // Keep running after LPSETUPI ends
+                        }
+                    }
+                }
+            }
+        '''.parse
+        validator.assertNoErrors(content)
+    }
+}

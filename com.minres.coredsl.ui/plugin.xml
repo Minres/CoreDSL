@@ -258,11 +258,13 @@
 			<keywordReference id="com.minres.coredsl.ui.keyword_CoreDsl"/>
 		</page>
 	</extension>
+	<!--
 	<extension point="org.eclipse.xtext.builder.participant">
 		<participant
 			class="com.minres.coredsl.ui.CoreDslExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
 			fileExtensions="core_desc"/>
 	</extension>
+	-->
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
 			category="com.minres.coredsl.CoreDsl"

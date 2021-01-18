@@ -4,36 +4,19 @@
 package com.minres.coredsl.ui.labeling
 
 import com.google.inject.Inject
-import com.minres.coredsl.coreDsl.AddressSpace
 import com.minres.coredsl.coreDsl.BitField
-import com.minres.coredsl.coreDsl.BooleanExpr
-import com.minres.coredsl.coreDsl.ConditionalStmt
-import com.minres.coredsl.coreDsl.Constant
-import com.minres.coredsl.coreDsl.ConstantDef
-import com.minres.coredsl.coreDsl.Encoding
-import com.minres.coredsl.coreDsl.Expression
-import com.minres.coredsl.coreDsl.Function
-import com.minres.coredsl.coreDsl.IndexedAssignment
-import com.minres.coredsl.coreDsl.NumberLiteral
-import com.minres.coredsl.coreDsl.Operation
-import com.minres.coredsl.coreDsl.RegisterAssignment
-import com.minres.coredsl.coreDsl.Procedure
-import com.minres.coredsl.coreDsl.Register
-import com.minres.coredsl.coreDsl.RegisterAlias
-import com.minres.coredsl.coreDsl.RegisterFile
-import com.minres.coredsl.coreDsl.Scalar
-import com.minres.coredsl.coreDsl.ScalarAssignment
-import com.minres.coredsl.coreDsl.Statement
-import com.minres.coredsl.coreDsl.TypeConv
-import com.minres.coredsl.coreDsl.ValueRef
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider
-import com.minres.coredsl.coreDsl.BitExpr
-import com.minres.coredsl.coreDsl.ComparisonExpr
-import com.minres.coredsl.coreDsl.ShiftExpr
-import com.minres.coredsl.coreDsl.AdditionExpr
-import com.minres.coredsl.coreDsl.MultiplicationExpr
-import com.minres.coredsl.coreDsl.UnitaryExpr
+import org.eclipse.emf.ecore.EObject
+import com.minres.coredsl.coreDsl.Encoding
+import com.minres.coredsl.coreDsl.BitValue
+import com.minres.coredsl.coreDsl.Instruction
+import com.minres.coredsl.coreDsl.Statement
+import com.minres.coredsl.coreDsl.CoreDef
+import com.minres.coredsl.coreDsl.InstructionSet
+import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.FunctionDefinition
+import org.eclipse.emf.common.util.EList
 
 /**
  * Provides labels for EObjects.
@@ -46,80 +29,68 @@ class CoreDslLabelProvider extends DefaultEObjectLabelProvider {
 	new(AdapterFactoryLabelProvider delegate) {
 		super(delegate);
 	}
-
-	// Labels and icons can be computed like this:
 	
-	def text(RegisterFile ele) {
-		ele.name + "[" + ele.range.left + "]" + " .. "+ ele.name + "[" + ele.range.right + "]"
-	}
-
-	def text(RegisterAlias ele) {
-		ele.name + "alias of "doGetText(ele.original)
-	}
-
-    def text(BitField ele) {
-        ele.name + if(ele.bitRange!==null) ("[" + ele.bitRange.left + ":" + ele.bitRange.right + "]") else ""
+	def text(CoreDef core) {
+		'Core ' + core.name
     }
 
-    def text(ConstantDef ele) {
-        ele.name + '='+ ele.value
+	def text(InstructionSet isa) {
+		'ISA ' + isa.name
+    }
+
+	def text(Declaration decl) {
+		decl.init.map[it.declarator.left!==null? it.declarator.left.name:it.declarator.name].join(', ')
+    }
+
+	def text(Instruction ele) {
+		ele.name
+    }
+
+	def text(FunctionDefinition ele) {
+		ele.name
     }
 
 	def text(Encoding ele) {
-		'Encoding'
-	}
-
-    def text(Operation ele) {
-        'Description'
+		'encoding: ' + ele.fields.map[it.toText].join('::')
     }
 
-	def text(Statement ele) {
-	    switch(ele){
-	        RegisterAssignment:	return ele.to.name+ '<=' + doGetText(ele.expression)
-	        IndexedAssignment:  {
-	        	if(ele.to instanceof RegisterFile)
-	        	 	return (ele.to as RegisterFile).name + '['+doGetText(ele.index)+'] <=' + doGetText(ele.expression)
-	        	else if(ele.to instanceof AddressSpace)
-	        		return (ele.to as AddressSpace).name + '['+doGetText(ele.index)+'] <=' + doGetText(ele.expression)
-        	}
-	        ScalarAssignment:   return ele.to.name+ '<=' + doGetText(ele.expression)
-            ConditionalStmt: 	return 'if(' + doGetText(ele.cond)+')'
-            Procedure:          return '''«ele.name»(«FOR arg : ele.args SEPARATOR ', '»«doGetText(arg)»«ENDFOR»)'''
-        }
+    def text(EObject ele){
+        ele.eClass.name
+    }
+		
+	private def dispatch String getToText(BitField field){
+		field.name + "[" + field.left.value.intValue + ":" + field.right.value.intValue + "]"
+	}
+	
+	private def dispatch String getToText(BitValue value){
+		value.name
+	}
+	
+	def image(CoreDef e){
+		'application.png'
 	}
 
-    def text(Expression ele) {
-        switch(ele){
-            BooleanExpr:        doGetText(ele.left)+ele.op+doGetText(ele.right)
-            BitExpr:    	    doGetText(ele.left)+ele.op+doGetText(ele.right)
-            ComparisonExpr:     doGetText(ele.left)+ele.op+doGetText(ele.right)
-            ShiftExpr:          doGetText(ele.left)+ele.op+doGetText(ele.right)
-            AdditionExpr:       doGetText(ele.left)+ele.op+doGetText(ele.right)
-            MultiplicationExpr: doGetText(ele.left)+ele.op+doGetText(ele.right)
-            UnitaryExpr:        ele.op +doGetText(ele.expr)
-            TypeConv:           ele.type.toString+'ext('+doGetText(ele.expr)+')'
-            Function:       
-            	'''«ele.name»(«FOR arg : ele.args SEPARATOR ', '»«doGetText(arg)»«ENDFOR»)'''
-            NumberLiteral:  ele.value.toString()
-            ValueRef: {
-				val ref = ele.value
-				switch (ref) {
-					RegisterFile: ref.name + if(ele.index !== null) '[' + doGetText(ele.index) + ']' else ''
-					AddressSpace: ref.name + if(ele.index !== null) '[' + doGetText(ele.index) + ']' else ''
-					Register: ref.name
-					RegisterAlias: ref.name
-					Scalar: ref.name
-					Constant: ref.name
-					BitField: ref.name
-				}
-			}
-            default:        'Expression'    
-        }
-    }
+	def image(InstructionSet e){
+		'package.png'
+	}
+	
+	def image(Instruction e){
+		'brick.png'
+	}
+	
+	def image(Statement e){
+		'script.png'
+	}
+	
+	def image(Encoding e){
+		'pill.png'
+	}
 
+	def image(EObject e){
+		'brick.png'
+	}
 
-//  def image(Greeting ele) {
-//      'Greeting.gif'
-//  }
-
+	def image(EList<?> e){
+		'folder_brick.png'
+	}
 }

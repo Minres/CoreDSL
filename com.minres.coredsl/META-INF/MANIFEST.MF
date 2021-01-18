@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Automatic-Module-Name: com.minres.coredsl
 Bundle-ManifestVersion: 2
 Bundle-Name: com.minres.coredsl
-Bundle-Vendor: My Company
-Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: MINRES Technologies GmbH
+Bundle-Version: 2.0.0.qualifier
 Bundle-SymbolicName: com.minres.coredsl; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext,
@@ -22,12 +22,11 @@ Export-Package: com.minres.coredsl,
  com.minres.coredsl.coreDsl,
  com.minres.coredsl.coreDsl.impl,
  com.minres.coredsl.coreDsl.util,
- com.minres.coredsl.generator,
  com.minres.coredsl.parser.antlr,
  com.minres.coredsl.parser.antlr.internal,
- com.minres.coredsl.preferences,
  com.minres.coredsl.scoping,
  com.minres.coredsl.serializer,
  com.minres.coredsl.services,
+ com.minres.coredsl.util,
  com.minres.coredsl.validation
 Import-Package: org.apache.log4j

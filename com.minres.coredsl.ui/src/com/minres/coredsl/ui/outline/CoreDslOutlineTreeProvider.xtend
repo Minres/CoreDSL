@@ -3,12 +3,19 @@
  */
 package com.minres.coredsl.ui.outline
 
-import com.minres.coredsl.coreDsl.BitField
-import com.minres.coredsl.coreDsl.ConditionalStmt
+import com.minres.coredsl.coreDsl.CoreDef
+import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.DescriptionContent
+import com.minres.coredsl.coreDsl.EmptyExpression
+import com.minres.coredsl.coreDsl.Encoding
+import com.minres.coredsl.coreDsl.ISA
+import com.minres.coredsl.coreDsl.Instruction
+import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.Statement
+import com.minres.coredsl.coreDsl.Variable
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
-import com.minres.coredsl.coreDsl.Variable
+import org.eclipse.xtext.ui.editor.outline.impl.DocumentRootNode
 
 /**
  * Customization of the default outline structure.
@@ -17,23 +24,62 @@ import com.minres.coredsl.coreDsl.Variable
  */
 class CoreDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
 
-	// feature nodes are leafs and not expandable
-	def boolean _isLeaf(Variable register) {
+	def void _createChildren(DocumentRootNode outlineNode,  DescriptionContent model) {
+		model.definitions.forEach[
+			createNode(outlineNode, it)
+		]
+  	}
+
+	def void _createChildren(IOutlineNode parentNode, ISA modelElement) {
+		// create a virtual nodes for the sections
+		switch(parentNode.text){
+			case 'contributing': (modelElement as CoreDef).contributingType.forEach[createNode(parentNode, it)]
+			case 'constants':    modelElement.constants.forEach[createNode(parentNode, it)]
+			case 'registers':    modelElement.regs.forEach[createNode(parentNode, it)]
+			case 'spaces':       modelElement.spaces.forEach[createNode(parentNode, it)]
+			case 'instructions': modelElement.instr.forEach[createNode(parentNode, it)]
+			case 'functions':    (modelElement as InstructionSet).func.forEach[createNode(parentNode, it)]
+			default:  {
+				val image = imageDispatcher.invoke(modelElement.constants);
+				if(modelElement instanceof CoreDef)
+				if(!modelElement.contributingType.empty)
+					createEObjectNode(parentNode, modelElement, image, 'contributing', false);
+				if(!modelElement.constants.empty)
+					createEObjectNode(parentNode, modelElement, image, 'constants', false);
+				if(!modelElement.regs.empty)
+					createEObjectNode(parentNode, modelElement, image, 'registers', false);
+				if(!modelElement.spaces.empty)
+					createEObjectNode(parentNode, modelElement, image, 'spaces', false);
+				if(modelElement instanceof InstructionSet && !(modelElement as InstructionSet).func.empty)
+					createEObjectNode(parentNode, modelElement, image, 'spaces', false);
+				if(!modelElement.instr.empty)
+					createEObjectNode(parentNode, modelElement, image, 'instructions', false);
+			}
+		}
+	}
+
+	def void _createChildren(IOutlineNode parentNode, Instruction stmt) {
+		createNode(parentNode, stmt.encoding)
+		createNode(parentNode, stmt.behavior)
+	}
+
+	def boolean _isLeaf(Variable variable) {
 		return true;
 	}
 
-    def boolean _isLeaf(BitField bitField) {
+    def boolean _isLeaf(Encoding bitField) {
         return true;
     }
     
-    def boolean _isLeaf(Statement stmt) {
-        return !(stmt instanceof ConditionalStmt);
+    def boolean _isLeaf(Declaration decls) {
+        return true;
     }
-    
-	def void _createChildren(IOutlineNode parentNode, Statement stmt) {
-		if(stmt instanceof ConditionalStmt) {
-			for (element : stmt.thenStmts) createNode(parentNode, element)
-			for (element : stmt.elseStmts) createNode(parentNode, element)
-		}
-	}
+
+    def boolean _isLeaf(EmptyExpression decls) {
+        return true;
+    }
+
+    def boolean _isLeaf(Statement decls) {
+        return true;
+    }
 }

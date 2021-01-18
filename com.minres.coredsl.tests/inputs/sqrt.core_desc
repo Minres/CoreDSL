@@ -1,0 +1,51 @@
+InstructionSet Vec2D {
+    registers{
+        union ISAXRegFile {
+            double doublePrec;  // for a double precision entry
+            struct vector2d {
+                float x_coord;
+                float y_coord;
+            } vector2d;
+        } ISAXRegFile[32];
+           struct simd{
+               unsigned a1;
+               unsigned a1;
+               unsigned a3;
+               unsigned a4;
+           };
+           struct simd reg[32];
+    }
+    functions{
+        double sqrt(float x) {
+            const double precision = 0.00001;
+            double result = 1;
+            double check = 1 - x;
+            if (check < 0)
+                check = -check;
+            while (check >= precision) {
+                result = (x / result + result) / 2.0;
+                check = result * result - x;
+                if (check < 0)
+                    check = -check;
+            }
+            return result;
+        }
+    }
+    instructions{
+        VectorL{
+            encoding: b10101 :: rd[4:0] :: rs1[4:0];
+            args_disass:"{name(rd)}, {name(rs1)}";
+            behavior: {
+                float xc = ISAXRegFile[rs1].vector2d.x_coord;
+                float yc = ISAXRegFile[rs1].vector2d.y_coord;
+                double result;
+                double sqdist = xc*xc + yc*yc;
+                if(sqdist==0 || sqdist[30:23]==0xff)
+                    result = 0; // avoid special cases
+                else
+                    result = sqrt(sqdist);
+                ISAXRegFile[rd].doublePrec = result;
+            }
+        }
+    }
+}

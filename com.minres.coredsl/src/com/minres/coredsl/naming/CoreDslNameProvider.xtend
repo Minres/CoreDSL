@@ -12,10 +12,6 @@ class CoreDslNameProvider extends IQualifiedNameProvider.AbstractImpl {
 	@Inject IQualifiedNameConverter qualifiedNameConverter
 
 	override QualifiedName getFullyQualifiedName(EObject obj) {
-//		if(obj instanceof InstructionSet){
-//			val name = obj.name
-//			println("Name is "+name)
-//		}
 		var String name = SimpleAttributeResolver.NAME_RESOLVER.apply(obj)
 		if(name === null || name.length() === 0) return null
 		return qualifiedNameConverter.toQualifiedName(name)

@@ -1,0 +1,46 @@
+InstructionSet RISCVROB {
+    constants {
+        unsigned int NR_JOINTS = 8;
+        unsigned int REGF_DEPTH = 8;
+    }
+    registers{
+        double JointsRegF[REGF_DEPTH][NR_JOINTS]; //8 joints and 8 regs in RegFile
+    }
+    functions {
+        double sin(double angle) {
+            const unsigned int NR_ITERATIONS = 17;
+            const double ARCTAN[NR_ITERATIONS] = { 45,26.565,14.0362,7.125,3.576, 1.78991,0.895,0.447, 0.2238,0.1119,0.0559,0.0279,0.013988,0.006994, 0.003497,0.001749,0.000874};
+            double sin  = 0;
+            double cos  = 0.607238280;
+            int    sign = 1;
+            double pow  = 1;
+            double tcos, tsin;
+            for (int i = 0; i < NR_ITERATIONS; i++) {
+                if (angle >= 0)
+                    sign = 1;
+                else
+                    sign = -1;
+                tcos  = cos - sign * sin * pow;
+                tsin  = sin + sign * cos * pow;
+                angle = angle - sign * ARCTAN[i];
+                pow  *= 0.5;
+                cos   = tcos;
+                sin   = tsin;
+            }
+            return sin;
+       }
+    }
+    instructions {
+        SIMDSIN {  
+            encoding: b10101 :: rd[4:0] :: rs1[4:0] ;
+            args_disass:"{name(rd)}, {name(rs1)}"; 
+            behavior: {
+                unsigned int i;
+                // given sufficient hardware area, the HLS tool can unroll this and perform SIMD processing of up to NR_JOINTS computations in parallel
+                // if constrained to smaller hardware area, the HLS tool will unroll only partially or even perform the computation sequentially
+                for (i=0;i<NR_JOINTS;i++) // 8 joints
+                    JointsRegF[rd][i] = sin(JointsRegF[rs1][i]);
+            }
+        } // other instructions...
+    }
+}

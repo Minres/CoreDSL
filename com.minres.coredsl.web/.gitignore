@@ -2,3 +2,5 @@
 *.java_trace
 *.java._trace
 *.xtendbin
+/src-gen/
+/xtend-gen/

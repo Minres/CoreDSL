@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Automatic-Module-Name: com.minres.coredsl.ui
 Bundle-ManifestVersion: 2
 Bundle-Name: com.minres.coredsl.ui
-Bundle-Vendor: My Company
-Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: MINRES Technologies GmbH
+Bundle-Version: 2.0.0.qualifier
 Bundle-SymbolicName: com.minres.coredsl.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: com.minres.coredsl,
