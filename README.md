@@ -1,4 +1,4 @@
-# CoreDSL-XText
+# CoreDSL
 
 This repo contains the XText bundles/plugins for CoreDSL.
 
