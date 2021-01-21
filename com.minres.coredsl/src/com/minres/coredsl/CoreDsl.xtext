@@ -32,6 +32,7 @@ CoreDef:
         ('constants'      '{' constants+=Declaration+   '}')?
         ('registers'      '{' regs+=Declaration+        '}')?
         ('address_spaces' '{' spaces+=Declaration+      '}')?
+	    ('functions'      '{' func+=FunctionDefinition+ '}')?
 	    ('instructions'   '{' (instr+=Instruction)+     '}')?
     '}'
 ;

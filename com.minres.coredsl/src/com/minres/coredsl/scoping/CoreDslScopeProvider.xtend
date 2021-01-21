@@ -3,14 +3,25 @@
  */
 package com.minres.coredsl.scoping
 
+import com.minres.coredsl.coreDsl.BitField
+import com.minres.coredsl.coreDsl.CompoundStatement
+import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.CoreDslPackage
+import com.minres.coredsl.coreDsl.DirectDeclarator
+import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.Instruction
+import com.minres.coredsl.coreDsl.InstructionSet
+import com.minres.coredsl.coreDsl.IterationStatement
+import com.minres.coredsl.coreDsl.Statement
 import com.minres.coredsl.coreDsl.Variable
+import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
+
 import static extension com.minres.coredsl.util.ModelUtil.*
 
 /**
@@ -20,26 +31,71 @@ import static extension com.minres.coredsl.util.ModelUtil.*
  * on how and when to use it.
  */
 class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
-		
-    override getScope(EObject context, EReference reference) {
-        // We want to define the Scope for the Element's superElement cross-reference
-		// println("Context "+context.class + " in " + context.eContainer+", reference " + reference.EReferenceType.name)
-		//Context class com.minres.coredsl.coreDsl.impl.IndexedAssignmentImplin com.minres.coredsl.coreDsl.impl.ConditionalStmtImpl@9a3d0f4, reference IndexedVar
-		if(reference.EReferenceType==CoreDslPackage.Literals.VARIABLE) {
-			val isa = context.parentOfType(ISA) as ISA
-			val instr = context.parentOfType(Instruction) as Instruction
-			if(instr !== null)
-	        	return Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(instr, Variable), Scopes.scopeFor(isa.allOfType(Variable)))
-			else			
-        		return Scopes.scopeFor(isa.allOfType(Variable))
-        } else if(reference.EReferenceType==CoreDslPackage.Literals.INSTRUCTION_SET) {
-            return super.getScope(context, reference);
-        } else if(reference.EReferenceType.name==CoreDslPackage.Literals.CORE_DEF) {
-            return super.getScope(context, reference);
-		} else {
-			println("Unmatched: context "+context.class + " in " + context.eContainer+", reference " + reference.EReferenceType.name)
-	        return super.getScope(context, reference);
-		}
-    }
 
+	override getScope(EObject context, EReference reference) {
+		val scope = switch (reference.EReferenceType) {
+			case CoreDslPackage.Literals.VARIABLE:
+				// variable, constant, and function name references in expressions 
+				blockScope(context.parentOfType(Statement) as Statement)
+
+			case CoreDslPackage.Literals.DIRECT_DECLARATOR:
+				// references to struct and union members
+				IScope.NULLSCOPE // TODO: implement!
+
+			case CoreDslPackage.Literals.INSTRUCTION_SET,
+			case CoreDslPackage.Literals.CORE_DEF:
+				// instruction sets and core definitions are in the global scope, which is handled by Xtext
+				super.getScope(context, reference)
+
+			default: {
+				println("Unmatched: context " + context.class + " in " + context.eContainer + ", reference " +
+					reference.EReferenceType.name)
+				IScope.NULLSCOPE
+			}
+		}
+		// println(scope)
+		return scope
+	}
+
+	def IScope blockScope(Statement stmt) {
+		return switch (parent : stmt.eContainer) {
+			CompoundStatement: {
+				val idx = parent.items.indexOf(stmt)
+				val sl = parent.items.subList(0, idx)
+				val decls = sl.flatMap[x|EcoreUtil2.getAllContentsOfType(x, DirectDeclarator)]
+				Scopes.scopeFor(decls, blockScope(parent))
+			}
+			IterationStatement:
+				Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, DirectDeclarator), blockScope(parent))
+			Instruction:
+				Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, BitField),
+					globalScope(parent.parentOfType(ISA) as ISA))
+			FunctionDefinition:
+				Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, DirectDeclarator),
+					globalScope(parent.parentOfType(ISA) as ISA))
+			default:
+				IScope.NULLSCOPE
+		}
+	}
+
+	def IScope globalScope(ISA isa) {
+		val decls = new ArrayList<Variable>()
+		for (component : #[isa.constants, isa.regs, isa.spaces]) {
+			if (component !== null)
+				decls.addAll(component.flatMap[c|EcoreUtil2.getAllContentsOfType(c, DirectDeclarator)])
+		}
+		if (isa.func !== null)
+			decls.addAll(isa.func)
+
+		val outerScope = if (isa instanceof InstructionSet) {
+				if (isa.superType !== null)
+					globalScope(isa.superType)
+				else
+					IScope.NULLSCOPE
+			} else if (isa instanceof CoreDef) {
+				// TODO: not sure if how to handle the contributingTypes here
+				IScope.NULLSCOPE
+			}
+		return Scopes.scopeFor(decls, outerScope)
+	}
 }
