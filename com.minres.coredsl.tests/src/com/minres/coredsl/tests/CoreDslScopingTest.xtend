@@ -192,4 +192,33 @@ class CoreDslScopingTest {
     	val issues = validator.validate(content)
     	assertTrue(issues.isEmpty())
     }
+    
+        @Test
+    def void structMembers() {
+    	val content = '''
+		InstructionSet TestISA {
+			constants {
+				unsigned N_REGS = 4;
+			}
+			registers {
+				struct {
+					float real;
+					float imag;
+				} complex[N_REGS];
+			}
+			
+            instructions {
+            	Inst1 {
+            		encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+            		args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
+            		behavior: {
+            			float x = complex[1].real * complex[1].imag;
+            		}
+            	}
+            }
+        }
+    	'''.parse
+    	val issues = validator.validate(content)
+    	assertTrue(issues.isEmpty())
+    }
 }
