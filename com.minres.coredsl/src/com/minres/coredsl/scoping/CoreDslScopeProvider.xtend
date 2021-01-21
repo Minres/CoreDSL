@@ -23,6 +23,9 @@ import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 
 import static extension com.minres.coredsl.util.ModelUtil.*
+import java.util.List
+import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.InitDeclarator
 
 /**
  * This class contains custom scoping description.
@@ -34,9 +37,16 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 
 	override getScope(EObject context, EReference reference) {
 		val scope = switch (reference.EReferenceType) {
-			case CoreDslPackage.Literals.VARIABLE:
-				// variable, constant, and function name references in expressions 
-				blockScope(context.parentOfType(Statement) as Statement)
+			case CoreDslPackage.Literals.VARIABLE: {
+				val stmt = context.parentOfType(Statement) as Statement
+				if (stmt !== null) {
+					// variable, constant, and function name references in "normal" expressions 
+					blockScope(context.parentOfType(Statement) as Statement)
+				} else {
+					// no surrounding statement, so this must be an expression in a declaration in the top-level sections
+					globalScope(context.parentOfType(ISA) as ISA)
+				}
+			}
 
 			case CoreDslPackage.Literals.DIRECT_DECLARATOR:
 				// references to struct and union members
@@ -82,7 +92,8 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 		val decls = new ArrayList<Variable>()
 		for (component : #[isa.constants, isa.regs, isa.spaces]) {
 			if (component !== null)
-				decls.addAll(component.flatMap[c|EcoreUtil2.getAllContentsOfType(c, DirectDeclarator)])
+				// be careful here to only add top-level declarators, i.e. _NOT_ struct-members etc.
+				decls.addAll(component.flatMap[init].flatMap[i|EcoreUtil2.getAllContentsOfType(i, DirectDeclarator)])
 		}
 		if (isa.func !== null)
 			decls.addAll(isa.func)
@@ -93,7 +104,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 				else
 					IScope.NULLSCOPE
 			} else if (isa instanceof CoreDef) {
-				// TODO: not sure if how to handle the contributingTypes here
+				// TODO: not sure yet how to handle the contributingTypes here
 				IScope.NULLSCOPE
 			}
 		return Scopes.scopeFor(decls, outerScope)
