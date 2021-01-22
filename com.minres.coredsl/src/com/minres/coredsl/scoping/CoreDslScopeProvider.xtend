@@ -26,6 +26,7 @@ import static extension com.minres.coredsl.util.ModelUtil.*
 import java.util.List
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.InitDeclarator
+import com.minres.coredsl.coreDsl.SelectionStatement
 
 /**
  * This class contains custom scoping description.
@@ -75,6 +76,8 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 				val decls = sl.flatMap[x|EcoreUtil2.getAllContentsOfType(x, DirectDeclarator)]
 				Scopes.scopeFor(decls, blockScope(parent))
 			}
+			SelectionStatement:
+				blockScope(parent)
 			IterationStatement:
 				Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, DirectDeclarator), blockScope(parent))
 			Instruction:
