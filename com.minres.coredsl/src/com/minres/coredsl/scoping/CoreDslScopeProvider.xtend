@@ -4,6 +4,7 @@
 package com.minres.coredsl.scoping
 
 import com.minres.coredsl.coreDsl.BitField
+import com.minres.coredsl.coreDsl.BlockItem
 import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.CoreDslPackage
@@ -13,7 +14,7 @@ import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.IterationStatement
-import com.minres.coredsl.coreDsl.Statement
+import com.minres.coredsl.coreDsl.SelectionStatement
 import com.minres.coredsl.coreDsl.Variable
 import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
@@ -23,10 +24,6 @@ import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 
 import static extension com.minres.coredsl.util.ModelUtil.*
-import java.util.List
-import com.minres.coredsl.coreDsl.Declaration
-import com.minres.coredsl.coreDsl.InitDeclarator
-import com.minres.coredsl.coreDsl.SelectionStatement
 
 /**
  * This class contains custom scoping description.
@@ -38,16 +35,9 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 
 	override getScope(EObject context, EReference reference) {
 		val scope = switch (reference.EReferenceType) {
-			case CoreDslPackage.Literals.VARIABLE: {
-				val stmt = context.parentOfType(Statement) as Statement
-				if (stmt !== null) {
-					// variable, constant, and function name references in "normal" expressions 
-					blockScope(context.parentOfType(Statement) as Statement)
-				} else {
-					// no surrounding statement, so this must be an expression in a declaration in the top-level sections
-					globalScope(context.parentOfType(ISA) as ISA)
-				}
-			}
+			case CoreDslPackage.Literals.VARIABLE:
+				// every variable reference is either contained in a Statement or Declaration
+				localScope(context.parentOfType(BlockItem) as BlockItem)
 
 			case CoreDslPackage.Literals.DIRECT_DECLARATOR:
 				// references to struct and union members
@@ -68,24 +58,28 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 		return scope
 	}
 
-	def IScope blockScope(Statement stmt) {
-		return switch (parent : stmt.eContainer) {
+	def IScope localScope(BlockItem stmtOrDecl) {
+		return switch (parent : stmtOrDecl.eContainer) {
 			CompoundStatement: {
-				val idx = parent.items.indexOf(stmt)
+				val idx = parent.items.indexOf(stmtOrDecl)
 				val sl = parent.items.subList(0, idx)
 				val decls = sl.flatMap[x|EcoreUtil2.getAllContentsOfType(x, DirectDeclarator)]
-				Scopes.scopeFor(decls, blockScope(parent))
+				Scopes.scopeFor(decls, localScope(parent))
 			}
 			SelectionStatement:
-				blockScope(parent)
+				localScope(parent)
 			IterationStatement:
-				Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, DirectDeclarator), blockScope(parent))
+				Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, DirectDeclarator), localScope(parent))
+			
 			Instruction:
 				Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, BitField),
 					globalScope(parent.parentOfType(ISA) as ISA))
 			FunctionDefinition:
 				Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, DirectDeclarator),
 					globalScope(parent.parentOfType(ISA) as ISA))
+			ISA:
+				globalScope(parent)
+			
 			default:
 				IScope.NULLSCOPE
 		}

@@ -13,6 +13,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import static org.junit.Assert.assertTrue
 import static org.junit.Assert.assertFalse
+import java.io.FileReader
+import static extension com.google.common.io.CharStreams.*
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
@@ -193,7 +195,13 @@ class CoreDslScopingTest {
     	assertTrue(issues.isEmpty())
     }
     
-        @Test
+    @Test
+    def void firExample() {
+        val content = new FileReader('inputs/fir.core_desc').readLines.join('\n').parse
+        validator.assertNoErrors(content)
+    }
+    
+    @Test
     def void structMembers() {
     	val content = '''
 		InstructionSet TestISA {
