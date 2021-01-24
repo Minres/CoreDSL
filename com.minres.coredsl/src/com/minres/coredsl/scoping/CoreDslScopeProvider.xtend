@@ -7,21 +7,24 @@ import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BlockItem
 import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.CoreDef
-import com.minres.coredsl.coreDsl.CoreDslPackage
+import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
-import com.minres.coredsl.coreDsl.IterationStatement
-import com.minres.coredsl.coreDsl.SelectionStatement
-import com.minres.coredsl.coreDsl.Variable
-import java.util.ArrayList
+import com.minres.coredsl.coreDsl.PostfixExpression
+import com.minres.coredsl.coreDsl.Postfix
+import com.minres.coredsl.coreDsl.PrimaryExpression
+import com.minres.coredsl.coreDsl.StructDeclaration
+import com.minres.coredsl.coreDsl.StructOrUnionSpecifier
+import com.minres.coredsl.coreDsl.TypeSpecifier
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
+import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
 
 import static extension com.minres.coredsl.util.ModelUtil.*
 
@@ -31,79 +34,223 @@ import static extension com.minres.coredsl.util.ModelUtil.*
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#scoping
  * on how and when to use it.
  */
-class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
+class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //AbstractCoreDslScopeProvider {
 
-	override getScope(EObject context, EReference reference) {
-		val scope = switch (reference.EReferenceType) {
-			case CoreDslPackage.Literals.VARIABLE:
-				// every variable reference is either contained in a Statement or Declaration
-				localScope(context.parentOfType(BlockItem) as BlockItem)
+    def IScope scope_Variable(CoreDef coreDef, EReference reference) {
+        val decls = #[coreDef.constants, coreDef.regs, coreDef.spaces].filter[it !== null].map [
+            it.flatMap[init].flatMap[EcoreUtil2.getAllContentsOfType(it, DirectDeclarator)]
+        ].flatten + coreDef.func
 
-			case CoreDslPackage.Literals.DIRECT_DECLARATOR:
-				// references to struct and union members
-				IScope.NULLSCOPE // TODO: implement!
+        val outerScopeElems = coreDef.contributingType.map [
+            #[it.constants, it.regs, it.spaces].filter[it !== null].map [
+                it.flatMap[init].flatMap[EcoreUtil2.getAllContentsOfType(it, DirectDeclarator)]
+            ].flatten + it.func
+        ].flatten
+        Scopes.scopeFor(decls, Scopes.scopeFor(outerScopeElems))
+    }
 
-			case CoreDslPackage.Literals.INSTRUCTION_SET,
-			case CoreDslPackage.Literals.CORE_DEF:
-				// instruction sets and core definitions are in the global scope, which is handled by Xtext
-				super.getScope(context, reference)
+    def IScope scope_Variable(InstructionSet isa, EReference reference) {
+        val decls = #[isa.constants, isa.regs, isa.spaces].filter[it !== null].map [
+            it.flatMap[init].flatMap[EcoreUtil2.getAllContentsOfType(it, DirectDeclarator)]
+        ].flatten + isa.func
 
-			default: {
-				println("Unmatched: context " + context.class + " in " + context.eContainer + ", reference " +
-					reference.EReferenceType.name)
-				IScope.NULLSCOPE
-			}
-		}
-		// println(scope)
-		return scope
-	}
+        val outerScope = if (isa.superType !== null)
+                isa.superType.scope_Variable(reference)
+            else
+                IScope.NULLSCOPE
+        Scopes.scopeFor(decls, outerScope)
+    }
 
-	def IScope localScope(BlockItem stmtOrDecl) {
-		return switch (parent : stmtOrDecl.eContainer) {
-			CompoundStatement: {
-				val idx = parent.items.indexOf(stmtOrDecl)
-				val sl = parent.items.subList(0, idx)
-				val decls = sl.flatMap[x|EcoreUtil2.getAllContentsOfType(x, DirectDeclarator)]
-				Scopes.scopeFor(decls, localScope(parent))
-			}
-			SelectionStatement:
-				localScope(parent)
-			IterationStatement:
-				Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, DirectDeclarator), localScope(parent))
-			
-			Instruction:
-				Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, BitField),
-					globalScope(parent.parentOfType(ISA) as ISA))
-			FunctionDefinition:
-				Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, DirectDeclarator),
-					globalScope(parent.parentOfType(ISA) as ISA))
-			ISA:
-				globalScope(parent)
-			
-			default:
-				IScope.NULLSCOPE
-		}
-	}
+    def IScope scope_Variable(BlockItem context, EReference reference) {
+        val parent = context.eContainer
+        if(parent!==null)
+            switch (parent) {
+                CompoundStatement:
+                    Scopes.scopeFor(parent.variablesDeclaredBefore(context), parent.scope_Variable(reference))
+                Instruction:
+                    Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, BitField),
+                        parent.parentOfType(ISA).getScope(reference))
+                FunctionDefinition:
+                    Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, DirectDeclarator),
+                        parent.parentOfType(ISA).getScope(reference))
+                default:
+                    parent.getScope(reference)
+            }
+        else
+            IScope.NULLSCOPE
+    }
+ 
+    def IScope scope_DirectDeclarator(Postfix context, EReference reference) {
+        val parent = context.eContainer
+        if(parent instanceof PostfixExpression) {
+            val type = parent.directDeclarator.type
+            if( type instanceof StructOrUnionSpecifier) {
+                val decls = type.directDeclarations;
+                return Scopes.scopeFor(decls)
+            }                
+        } else if(parent instanceof Postfix) {
+            val decl = parent.declarator.eContainer
+            if(decl instanceof StructDeclaration){
+                if( decl.specifier.type instanceof StructOrUnionSpecifier) {
+                    val decls = decl.specifier.type.directDeclarations;
+                    return Scopes.scopeFor(decls)
+                }                
+            }
+        }
+        IScope.NULLSCOPE
+    }
 
-	def IScope globalScope(ISA isa) {
-		val decls = new ArrayList<Variable>()
-		for (component : #[isa.constants, isa.regs, isa.spaces]) {
-			if (component !== null)
-				// be careful here to only add top-level declarators, i.e. _NOT_ struct-members etc.
-				decls.addAll(component.flatMap[init].flatMap[i|EcoreUtil2.getAllContentsOfType(i, DirectDeclarator)])
-		}
-		if (isa.func !== null)
-			decls.addAll(isa.func)
+    /************************************************************************
+     * declarationsBefore extension methods begin
+     */
+    def dispatch Iterable<Declaration> declarationsBefore(CompoundStatement compound, BlockItem decl){
+        compound.items.takeWhile[
+            it!==decl
+        ].filter[it instanceof Declaration].map[it as Declaration]
+    }
+    
+    def dispatch Iterable<Declaration> declarationsBefore(InstructionSet isa, Declaration o) {
+        isa.allDeclarations.takeWhile[it!==o]
+    }
 
-		val outerScope = if (isa instanceof InstructionSet) {
-				if (isa.superType !== null)
-					globalScope(isa.superType)
-				else
-					IScope.NULLSCOPE
-			} else if (isa instanceof CoreDef) {
-				// TODO: not sure yet how to handle the contributingTypes here
-				IScope.NULLSCOPE
-			}
-		return Scopes.scopeFor(decls, outerScope)
-	}
+    def dispatch Iterable<Declaration> declarationsBefore(CoreDef coreDef, Declaration o) {
+        coreDef.allDeclarations.takeWhile[it!==o]
+    }
+
+    def dispatch Iterable<Declaration> declarationsBefore(EObject object, Declaration decl){
+        #[]
+    }
+    /*
+     * declarationsBefore extension methods end
+     ************************************************************************/
+
+    /************************************************************************
+     * directDeclarations extension methods begin
+     */
+    def dispatch Iterable<Declaration> allDeclarations(InstructionSet isa) {
+        val declsSuper = isa.superType!==null?isa.superType.allDeclarations:#[]
+        #[declsSuper, isa.constants, isa.regs, isa.spaces]
+            .flatten
+    }
+
+    def dispatch Iterable<Declaration> allDeclarations(CoreDef coreDef) {
+        val declsSuper = coreDef.contributingType.map[it.allDeclarations].flatten
+        #[declsSuper, coreDef.constants, coreDef.regs, coreDef.spaces]
+            .flatten
+    }
+    /*
+     * directDeclarations extension methods end
+     ************************************************************************/
+
+    /************************************************************************
+     * directDeclarations extension methods begin
+     */
+    def dispatch Iterable<DirectDeclarator> variablesDeclaredBefore(EObject stmt, BlockItem o) {
+        stmt.declarationsBefore(o).flatMap[
+            it.init.map[it.declarator]
+        ]
+    }
+
+    def dispatch Iterable<DirectDeclarator> variablesDeclaredBefore(EObject isa, EObject o) {
+        #[]
+    }
+    /*
+     * directDeclarations extension methods end
+     ************************************************************************/
+
+    /************************************************************************
+     * directDeclarations extension methods begin
+     */
+    def dispatch Iterable<DirectDeclarator> directDeclarations(Iterable<StructDeclaration> decls) {
+        decls.map[it.declarator].flatten
+    }
+
+    def dispatch Iterable<DirectDeclarator> directDeclarations(Declaration decl) {
+        decl.init.map[it.declarator]
+    }
+
+    def dispatch Iterable<DirectDeclarator> directDeclarations(StructOrUnionSpecifier spec) {
+        if (spec.declaration.size > 0)
+            spec.declaration.directDeclarations
+        else {
+            val specifier = spec.eContainer.findStructOrUnionSpecifier([
+                StructOrUnionSpecifier d|d.name!==null?d.name==spec.name:false
+            ])
+            specifier===null?#[]:specifier.declaration.directDeclarations
+        }
+    }
+    
+    def dispatch Iterable<DirectDeclarator> directDeclarations(EObject decl) {
+        #[]
+    }
+    /*
+     * directDeclarations extension methods end
+     ************************************************************************/
+
+    /************************************************************************
+     * type extension methods begin
+     */
+    def dispatch StructOrUnionSpecifier findStructOrUnionSpecifier(Declaration object, (StructOrUnionSpecifier)=>boolean predicate){
+        val res = object.eContainer.declarationsBefore(object as Declaration)
+            .map[it.type]
+            .filter[it instanceof StructOrUnionSpecifier]
+            .map[it as StructOrUnionSpecifier]
+            .findFirst(predicate)
+        res ?: object.eContainer.eContainer.findStructOrUnionSpecifier(predicate)
+    }
+        
+    def dispatch StructOrUnionSpecifier findStructOrUnionSpecifier(ISA isa, (StructOrUnionSpecifier)=>boolean predicate){
+        isa.allDeclarations
+            .map[it.type]
+            .filter[it instanceof StructOrUnionSpecifier]
+            .map[it as StructOrUnionSpecifier]
+            .findFirst(predicate)
+    }
+
+    def dispatch StructOrUnionSpecifier findStructOrUnionSpecifier(EObject object, (StructOrUnionSpecifier)=>boolean predicate){
+        object.eContainer.findStructOrUnionSpecifier(predicate)
+    }
+    /*
+     * type extension methods end
+     ************************************************************************/
+    
+    /************************************************************************
+     * type extension methods begin
+     */
+    def dispatch TypeSpecifier getType(Declaration declaration) {
+        declaration.type
+    }
+
+    def dispatch TypeSpecifier getType(EObject object) {
+        object!==null?object.eContainer.type:null
+    }
+    /*
+     * type extension methods end
+     ************************************************************************/
+
+    /************************************************************************
+     * directDeclarator extension methods begin
+     */
+    def dispatch DirectDeclarator directDeclarator(PrimaryExpression expression) {
+        expression.ref instanceof DirectDeclarator?
+                expression.ref as DirectDeclarator : 
+                null
+    }
+
+    def dispatch DirectDeclarator directDeclarator(Postfix expression) {
+        expression.declarator
+    }
+
+    def dispatch DirectDeclarator directDeclarator(PostfixExpression expression) {
+        expression.left.directDeclarator
+    }
+
+    def dispatch DirectDeclarator directDeclarator(EObject object) {
+        // dummy implementation as fall back
+        println("No implementation of getDeclaration() for " + object.class)
+        null
+    }
+    /*
+     * directDeclarator extension methods end
+     ************************************************************************/
 }

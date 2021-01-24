@@ -86,13 +86,13 @@ Statement
     ;
 
 LabeledStatement
-    :   'case' constExpr=ConstantExpression ':' stmt=Statement
-    |   'default' ':' stmt=Statement
+    :   'case' constExpr=ConstantExpression ':' items+=Statement*
+    |   {LabeledStatement} 'default' ':' items+=Statement*
     ;
 
     
 CompoundStatement
-    :   {CompoundStatement} '{' items+=BlockItem* '}'
+    :   {CompoundStatement} '{' items+=Declaration* items+=Statement* '}'
     ;
 
 BlockItem
@@ -179,12 +179,12 @@ Enumerator
     ;
 
 StructOrUnionSpecifier
-    :   composeType=StructOrUnion name=ID? '{' (decls += StructDeclaration)* '}'
+    :   composeType=StructOrUnion name=ID? '{' (declaration += StructDeclaration)* '}'
     |   composeType=StructOrUnion name=ID
     ;
 
 StructDeclaration
-    :   specifier=StructDeclarationSpecifier decls += DirectDeclarator(',' decls+=DirectDeclarator)* ';'
+    :   specifier=StructDeclarationSpecifier declarator += DirectDeclarator(',' declarator+=DirectDeclarator)* ';'
     ;
 
 StructDeclarationSpecifier
@@ -198,9 +198,9 @@ InitDeclarator
 
 DirectDeclarator
     :   name=ID ( ':' index=IntegerConstant)? 
-    	(  	{DirectDeclarator.left=current} (LEFT_BR size+=ConditionalExpression RIGHT_BR)+    		
-//    	|   {DirectDeclarator.left=current} '[' (qualifiers+=TypeQualifier)? '*' ']'
-    	|   {DirectDeclarator.left=current} '(' ParameterList ')'
+    	(  (LEFT_BR size+=ConditionalExpression RIGHT_BR)+    		
+//    	|   '[' (qualifiers+=TypeQualifier)? '*' ']'
+    	|   '(' ParameterList ')'
     	)?
     ;
     
@@ -327,18 +327,20 @@ PrefixExpression
 fragment UnaryOperator:	op=('&' | '*' | '+' | '-' | '~' | '!');
 
 PostfixExpression
-    :   PrimaryExpression ({PostfixExpression.left=current} ops+=PostfixOperator)*
+    :   PrimaryExpression ({PostfixExpression.left=current} right=Postfix)?
     ;
 
-PostfixOperator
-	:  	op=LEFT_BR args+=ConditionalExpression (':' args+=ConditionalExpression)? RIGHT_BR
-	|  	op='(' (args+=ConditionalExpression (',' args+=ConditionalExpression)*)?')' //function call
-	|   op='.' member=[DirectDeclarator]  //member=PostfixExpression
-	|   op='->' member=[DirectDeclarator] //member=PostfixExpression
-	|   op='++'
-	|  	op='--'
-	;
-	
+Postfix
+    :   (   op=LEFT_BR args+=ConditionalExpression (':' args+=ConditionalExpression)? RIGHT_BR
+        |   op='(' (args+=ConditionalExpression (',' args+=ConditionalExpression)*)?')' //function call
+        |   op='.'  declarator=[DirectDeclarator]  //member=PostfixExpression
+        |   op='->' declarator=[DirectDeclarator] //member=PostfixExpression
+        |   op='++'
+        |   op='--'
+        )
+        right=Postfix?
+    ;
+
 PrimaryExpression
     :	ref=[Variable]
     |   constant=Constant
