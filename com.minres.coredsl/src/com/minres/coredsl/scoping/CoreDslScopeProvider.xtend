@@ -191,7 +191,7 @@ class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //Abstract
      * type extension methods begin
      */
     def dispatch StructOrUnionSpecifier findStructOrUnionSpecifier(Declaration object, (StructOrUnionSpecifier)=>boolean predicate){
-        val res = object.eContainer.declarationsBefore(object as Declaration)
+        val res = object.eContainer.declarationsBefore(object)
             .map[it.type]
             .filter[it instanceof StructOrUnionSpecifier]
             .map[it as StructOrUnionSpecifier]
