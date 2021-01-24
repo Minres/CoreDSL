@@ -26,173 +26,173 @@ class CoreDslScopingTest {
 
     @Test
     def void useBeforeDeclaration() {
-    	val content = '''
+        val content = '''
         InstructionSet TestISA {
             instructions {
-            	Inst1 {
-            		encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
-            		args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
-            		behavior: {
-            			x = 0;
-            			int x;
-            		}
-            	}
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
+                    behavior: {
+                        x = 0;
+                        int x;
+                    }
+                }
             }
         }
-    	'''.parse
-    	val issues = validator.validate(content)
-    	assertFalse(issues.isEmpty())
+        '''.parse
+        val issues = validator.validate(content)
+        assertFalse(issues.isEmpty())
     }
     
     @Test
     def void declarationBeforeUse() {
-    	val content = '''
+        val content = '''
         InstructionSet TestISA {
             instructions {
-            	Inst1 {
-            		encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
-            		args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
-            		behavior: {
-            			int x;
-            			x = 0;
-            		}
-            	}
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
+                    behavior: {
+                        int x;
+                        x = 0;
+                    }
+                }
             }
         }
-    	'''.parse
-    	val issues = validator.validate(content)
-    	assertTrue(issues.isEmpty())
+        '''.parse
+        val issues = validator.validate(content)
+        assertTrue(issues.isEmpty())
     }
     
     @Test
     def void useBeforeDeclarationNested() {
-    	val content = '''
+        val content = '''
         InstructionSet TestISA {
             instructions {
-            	Inst1 {
-            		encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
-            		args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
-            		behavior: {
-            			{
-            				x = 0;
-        				}
-            			int x;
-            		}
-            	}
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
+                    behavior: {
+                        {
+                            x = 0;
+                        }
+                        int x;
+                    }
+                }
             }
         }
-    	'''.parse
-    	val issues = validator.validate(content)
-    	assertFalse(issues.isEmpty())
+        '''.parse
+        val issues = validator.validate(content)
+        assertFalse(issues.isEmpty())
     }
     
     @Test
     def void declarationBeforeUseNested() {
-    	val content = '''
+        val content = '''
         InstructionSet TestISA {
             instructions {
-            	Inst1 {
-            		encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
-            		args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
-            		behavior: {
-            			int x;
-            			{
-            				x = 0;
-        				}
-            		}
-            	}
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
+                    behavior: {
+                        int x;
+                        {
+                            x = 0;
+                        }
+                    }
+                }
             }
         }
-    	'''.parse
-    	val issues = validator.validate(content)
-    	assertTrue(issues.isEmpty())
+        '''.parse
+        val issues = validator.validate(content)
+        assertTrue(issues.isEmpty())
     }
     
     @Test
     def void globalScope() {
-    	val content = '''
-        InstructionSet TestISA {
-        	constants {
-        		int CCC = 42;
-    		}
-			registers {
-    			unsigned X[32];
-			}
+        val content = '''
+            InstructionSet TestISA {
+            constants {
+                int CCC = 42;
+            }
+            registers {
+                unsigned X[32];
+            }
 
-			functions {
-				int foo(int arg) {
-					return arg;
-				}
-			}
+            functions {
+                int foo(int arg) {
+                    return arg;
+                }
+            }
 
             instructions {
-            	Inst1 {
-            		encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
-            		args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
-            		behavior: {
-            			X[rd] = X[rs1] + X[rs2] + foo(CCC);
-            		}
-            	}
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
+                    behavior: {
+                        X[rd] = X[rs1] + X[rs2] + foo(CCC);
+                    }
+                }
             }
         }
-    	'''.parse
-    	val issues = validator.validate(content)
-    	assertTrue(issues.isEmpty())
+        '''.parse
+        val issues = validator.validate(content)
+        assertTrue(issues.isEmpty())
     }
     
     @Test
     def void globalScopeExtended() {
-    	val content = '''
+        val content = '''
         InstructionSet TestISA {
-        	constants {
-        		int CCC = 42;
-    		}
-			registers {
-    			unsigned X[32];
-			}
+            constants {
+                int CCC = 42;
+            }
+            registers {
+                unsigned X[32];
+            }
 
-			functions {
-				int foo(int arg) {
-					return arg;
-				}
-			}
-		}
-		
-		InstructionSet TestISA2 extends TestISA {
-            instructions {
-            	Inst1 {
-            		encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
-            		args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
-            		behavior: {
-            			X[rd] = X[rs1] + X[rs2] + foo(CCC);
-            		}
-            	}
+            functions {
+                int foo(int arg) {
+                    return arg;
+                }
             }
         }
-    	'''.parse
-    	val issues = validator.validate(content)
-    	assertTrue(issues.isEmpty())
+        
+        InstructionSet TestISA2 extends TestISA {
+            instructions {
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
+                    behavior: {
+                        X[rd] = X[rs1] + X[rs2] + foo(CCC);
+                    }
+                }
+            }
+        }
+        '''.parse
+        val issues = validator.validate(content)
+        assertTrue(issues.isEmpty())
     }
     
     @Test
     def void globalScopeFromFile() {
-    	val content = '''
+        val content = '''
         import "inputs/isa_1.core_desc"
-		
-		InstructionSet TestISA2 extends RV32I {
+        
+        InstructionSet TestISA2 extends RV32I {
             instructions {
-            	Inst1 {
-            		encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
-            		args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
-            		behavior: {
-            			X[rd] = X[rs1] + X[rs2] + XLEN;
-            		}
-            	}
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
+                    behavior: {
+                        X[rd] = X[rs1] + X[rs2] + XLEN;
+                    }
+                }
             }
         }
-    	'''.parse
-    	val issues = validator.validate(content)
-    	assertTrue(issues.isEmpty())
+        '''.parse
+        val issues = validator.validate(content)
+        assertTrue(issues.isEmpty())
     }
     
     @Test
@@ -202,31 +202,138 @@ class CoreDslScopingTest {
     }
     
     @Test
-    def void structMembers() {
-    	val content = '''
-		InstructionSet TestISA {
-			constants {
-				unsigned N_REGS = 4;
-			}
-			registers {
-				struct {
-					float real;
-					float imag;
-				} complex[N_REGS];
-			}
-			
+    def void structMembersDirect() {
+        val content = '''
+        InstructionSet TestISA {
+            registers {
+                struct {
+                    unsigned x, y;
+                } point;
+            }
+            
             instructions {
-            	Inst1 {
-            		encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
-            		args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
-            		behavior: {
-            			float x = complex[1].real * complex[1].imag;
-            		}
-            	}
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    behavior: {
+                        unsigned sum = point.x + point.y;
+                    }
+                }
             }
         }
-    	'''.parse
-    	val issues = validator.validate(content)
-    	assertTrue(issues.isEmpty())
+        '''.parse
+        val issues = validator.validate(content)
+        assertTrue(issues.isEmpty())
     }
+
+    @Test
+    def void structMembersIndirect() {
+        val content = '''
+        InstructionSet TestISA {
+            registers {
+                struct point_s {
+                    unsigned x, y;
+                };
+            }
+            
+            instructions {
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    behavior: {
+                        struct point_s  point;
+                        unsigned sum = point.x + point.y;
+                    }
+                }
+            }
+        }
+        '''.parse
+        val issues = validator.validate(content)
+        assertTrue(issues.isEmpty())
+    }
+    
+    @Test
+    def void structMembersDirectSub() {
+        val content = '''
+        InstructionSet TestISA {
+            constants {
+                unsigned N_REGS = 4;
+            }
+            registers {
+                struct {
+                    float real;
+                    float imag;
+                } complex[N_REGS];
+            }
+            
+            instructions {
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
+                    behavior: {
+                        float x = complex[1].real * complex[1].imag;
+                    }
+                }
+            }
+        }
+        '''.parse
+        val issues = validator.validate(content)
+        assertTrue(issues.isEmpty())
+    }
+    
+    @Test
+    def void structMembersIndirectSub() {
+        val content = '''
+        InstructionSet TestISA {
+            constants {
+                unsigned N_REGS = 4;
+            }
+            registers {
+                struct point_s {
+                    unsigned x, y;
+                };
+            }
+            
+            instructions {
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    behavior: {
+                        struct point_s  point[N_REGS];
+                        unsigned sum = point[0].x + point[0].y;
+                    }
+                }
+            }
+        }
+        '''.parse
+        val issues = validator.validate(content)
+        assertTrue(issues.isEmpty())
+    }
+    
+    @Test
+    def void structMembersDirectNested() {
+        val content = '''
+        InstructionSet TestISA {
+            registers {
+                struct rect_s {
+                    struct origin_s {
+                        unsigned x, y;
+                    } origin;
+                    struct size_s {
+                        unsigned x, y;
+                    } size;
+                } rect;
+            }
+            
+            instructions {
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    behavior: {
+                        unsigned sum = rect.origin.x;// + rect.size.x;
+                    }
+                }
+            }
+        }
+        '''.parse
+        val issues = validator.validate(content)
+        assertTrue(issues.isEmpty())
+    }
+    
 }
