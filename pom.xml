@@ -338,4 +338,9 @@
 
 	<dependencies>
 	</dependencies>
+	<name>CoreDSL</name>
+	<url>https://github.com/Minres/CoreDSL</url>
+	<scm>
+		<url>https://github.com/Minres/CoreDSL.git</url>
+	</scm>
 </project>
