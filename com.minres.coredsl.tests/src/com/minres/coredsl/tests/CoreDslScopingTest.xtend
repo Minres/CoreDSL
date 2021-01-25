@@ -365,4 +365,38 @@ class CoreDslScopingTest {
         val issues = validator.validate(content)
         assertTrue(issues.isEmpty())
     }
+    
+    @Test
+    def void spawn() {
+        val content = '''
+        InstructionSet TestISA {
+            registers {
+                int X[32];
+                int PC;
+            }
+            functions {
+                void maybe_corrupt_PC(int i) {
+                    if ((i & 17) > 3)
+                        PC = 0xdeadbeef;
+                }
+            }
+            instructions {
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    behavior: {
+                        int incr = X[rs1] * X[rs2];
+                        spawn {
+                            int i;
+                            for (i = 0; i < 42; i += incr) {
+                                maybe_corrupt_PC(i % X[rd]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        '''.parse
+        val issues = validator.validate(content)
+        assertTrue(issues.isEmpty())
+    }
 }
