@@ -13,6 +13,7 @@ import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
+import com.minres.coredsl.coreDsl.IterationStatement
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.Postfix
 import com.minres.coredsl.coreDsl.PrimaryExpression
@@ -78,6 +79,14 @@ class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //Abstract
             }
         else
             IScope.NULLSCOPE
+    }
+    
+    def IScope scope_Variable(IterationStatement context, EReference reference) {
+        val surrScope = (context as BlockItem).scope_Variable(reference)
+        if (context.startDecl !== null)
+            return Scopes.scopeFor(context.startDecl.init.map[it.declarator], surrScope)
+        else
+            return surrScope
     }
  
     def IScope scope_DirectDeclarator(Postfix context, EReference reference) {

@@ -399,4 +399,47 @@ class CoreDslScopingTest {
         val issues = validator.validate(content)
         assertTrue(issues.isEmpty())
     }
+    
+    @Test
+    def void forLoopDecl() {
+        val content = '''
+        InstructionSet TestISA {
+            instructions {
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    behavior: {
+                        for (int y = 0, z = -1; y < 0 && z != 5; ++y) {}
+                    }
+                }
+            }
+        }
+        '''.parse
+        val issues = validator.validate(content)
+        for (iss : issues)
+            println(iss)
+        assertTrue(issues.isEmpty())
+    }
+    
+    @Test
+    def void doWhile() {
+        val content = '''
+        InstructionSet TestISA {
+            instructions {
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    behavior: {
+                        int z = 0;
+                        do {
+                            z++;
+                        } while (z < 10);
+                    }
+                }
+            }
+        }
+        '''.parse
+        val issues = validator.validate(content)
+        for (iss : issues)
+            println(iss)
+        assertTrue(issues.isEmpty())
+    }
 }
