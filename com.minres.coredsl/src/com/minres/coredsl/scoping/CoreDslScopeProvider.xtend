@@ -64,31 +64,24 @@ class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //Abstract
 
     def IScope scope_Variable(BlockItem context, EReference reference) {
         val parent = context.eContainer
-        if(parent!==null)
-            switch (parent) {
-                CompoundStatement:
-                    Scopes.scopeFor(parent.variablesDeclaredBefore(context), parent.scope_Variable(reference))
-                Instruction:
-                    Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, BitField),
-                        parent.parentOfType(ISA).getScope(reference))
-                FunctionDefinition:
-                    Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, DirectDeclarator),
-                        parent.parentOfType(ISA).getScope(reference))
-                default:
-                    parent.getScope(reference)
-            }
-        else
-            IScope.NULLSCOPE
+        val parentScope = switch (parent) {
+            CompoundStatement:
+                Scopes.scopeFor(parent.variablesDeclaredBefore(context), parent.scope_Variable(reference))
+            Instruction:
+                Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, BitField),
+                    parent.parentOfType(ISA).getScope(reference))
+            FunctionDefinition:
+                Scopes.scopeFor(EcoreUtil2.getAllContentsOfType(parent, DirectDeclarator),
+                    parent.parentOfType(ISA).getScope(reference))
+            default:
+                parent.getScope(reference)
+        }
+        if (context instanceof IterationStatement)
+            if (context.startDecl !== null)
+                return Scopes.scopeFor(context.startDecl.init.map[it.declarator], parentScope)
+        return parentScope
     }
-    
-    def IScope scope_Variable(IterationStatement context, EReference reference) {
-        val surrScope = (context as BlockItem).scope_Variable(reference)
-        if (context.startDecl !== null)
-            return Scopes.scopeFor(context.startDecl.init.map[it.declarator], surrScope)
-        else
-            return surrScope
-    }
- 
+
     def IScope scope_DirectDeclarator(Postfix context, EReference reference) {
         val parent = context.eContainer
         if(parent instanceof PostfixExpression) {
