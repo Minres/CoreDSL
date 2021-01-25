@@ -442,4 +442,35 @@ class CoreDslScopingTest {
             println(iss)
         assertTrue(issues.isEmpty())
     }
+    
+    @Test
+    def void switches() {
+        val content = '''
+        InstructionSet TestISA {
+            instructions {
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    behavior: {
+                        int foobar;
+                        switch(rs1) {
+                            case 1:
+                                foobar = rs2;
+                                break;
+«««                         TODO: un-comment once switch grammar is fixed
+«««                            case 2: {
+«««                                int foobar = rs2;
+«««                                int baz = foobar;
+«««                                break;
+«««                            }
+                        }
+                    }
+                }
+            }
+        }
+        '''.parse
+        val issues = validator.validate(content)
+        for (iss : issues)
+            println(iss)
+        assertTrue(issues.isEmpty())
+    }
 }
