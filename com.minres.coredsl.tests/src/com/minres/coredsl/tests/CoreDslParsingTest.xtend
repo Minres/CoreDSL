@@ -202,4 +202,21 @@ class CoreDslParsingTest {
         '''.parse
         validator.assertNoErrors(content)
     }
+    
+    @Test
+    def void parseInstrSwitch() {
+        val content = '''
+        FOO {
+            encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011;  
+            args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
+            behavior: {
+                switch(rs1) {
+                    case 1: break;
+                    case 2: break;
+                }
+            }
+        }
+        '''.addInstructionContext.parse
+        validator.assertNoErrors(content)
+    }
 }
