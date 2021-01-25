@@ -92,7 +92,7 @@ LabeledStatement
 
     
 CompoundStatement
-    :   {CompoundStatement} '{' items+=Declaration* items+=Statement* '}'
+    :   {CompoundStatement} '{' items+=BlockItem* '}'
     ;
 
 BlockItem
