@@ -336,4 +336,33 @@ class CoreDslScopingTest {
         assertTrue(issues.isEmpty())
     }
     
+    @Test
+    def void unions() {
+        val content = '''
+        InstructionSet TestISA {
+            registers {
+                union un1 {
+                    long l;
+                    int i;
+                    short s;
+                    char c;
+                    int arr[10];
+                    struct {float f; double d;} strct;
+                };
+                union un1 UR;
+            }
+            instructions {
+                Inst1 {
+                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    behavior: {
+                        UR.l = UR.s * UR.c / UR.i;
+                        UR.strct.d = UR.arr[10];
+                    }
+                }
+            }
+        }
+        '''.parse
+        val issues = validator.validate(content)
+        assertTrue(issues.isEmpty())
+    }
 }
