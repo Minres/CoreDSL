@@ -10,11 +10,11 @@ import org.eclipse.emf.common.util.EList
 
 class ModelUtil {
 
-    static def EObject parentOfType(EObject obj, Class<?> clazz){
+    static def <T extends EObject> T parentOfType(EObject obj, Class<T> clazz){
         if(obj.eContainer===null)
             return null
         if(clazz.isInstance(obj.eContainer))
-            return obj.eContainer
+            return obj.eContainer as T
         return obj.eContainer.parentOfType(clazz)
     }
         

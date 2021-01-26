@@ -61,7 +61,7 @@ class TypeProvider {
     }
 
     def static dispatch TypeSpecifier typeOf(FunctionDefinition e) {
-        return e.type as TypeSpecifier
+        return e.type
     }
 
     def static dispatch TypeSpecifier typeOf(DirectDeclarator e) {

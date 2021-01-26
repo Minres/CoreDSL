@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
     CoreDslParsingTest.class, 
     CoreDslLoadTest.class,
     CoreDslTerminalsTest.class,
+    CoreDslScopingTest.class
 })
 
 public class CoreDSLParserTests {
