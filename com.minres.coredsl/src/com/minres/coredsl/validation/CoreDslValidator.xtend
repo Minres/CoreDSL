@@ -12,9 +12,9 @@ import com.minres.coredsl.coreDsl.CastExpression
 import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.ConditionalExpression
 import com.minres.coredsl.coreDsl.InfixExpression
-import static extension com.minres.coredsl.util.TypeProvider.*
-import com.minres.coredsl.coreDsl.PodSpecifier
+import static extension com.minres.coredsl.typing.TypeProvider.*
 import com.minres.coredsl.coreDsl.DataTypes
+import com.minres.coredsl.coreDsl.PrimitiveType
 
 /**
  * This class contains custom validation rules. 
@@ -41,7 +41,7 @@ class CoreDslValidator extends AbstractCoreDslValidator {
     		}
             ConditionalExpression: {
                 val type = e.cond.typeOf
-                if(type instanceof PodSpecifier) {
+                if(type instanceof PrimitiveType) {
                     if(type.dataType.contains(DataTypes.BOOL))
                     return
                 }

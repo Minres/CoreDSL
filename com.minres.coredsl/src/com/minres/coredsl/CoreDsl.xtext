@@ -153,20 +153,20 @@ Attribute
     ;
     
 TypeSpecifier
-	:	PodSpecifier 
-	|	StructOrUnionSpecifier
-	|	EnumSpecifier
+	:	PrimitiveType 
+	|	CompositeType
+	|	EnumType
 	;
     
-PodSpecifier
-	:	dataType+=DataTypes+ size=BitSizeSpecifier? 
+PrimitiveType
+	:	dataType+=DataTypes+ BitSizeSpecifier? 
 	;
 
-BitSizeSpecifier
+fragment BitSizeSpecifier
 	:	'<' size+=PrimaryExpression (',' size+=PrimaryExpression ',' size+=PrimaryExpression ',' size+=PrimaryExpression)? '>'
 	;
 
-EnumSpecifier
+EnumType
     :   'enum' name=ID? '{' EnumeratorList ','? '}'
     |   'enum' name=ID
     ;
@@ -178,7 +178,7 @@ Enumerator
     |   name=ID '=' expression=ConstantExpression
     ;
 
-StructOrUnionSpecifier
+CompositeType
     :   composeType=StructOrUnion name=ID? '{' (declaration += StructDeclaration)* '}'
     |   composeType=StructOrUnion name=ID
     ;

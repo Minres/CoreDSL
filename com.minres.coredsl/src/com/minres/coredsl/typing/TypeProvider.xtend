@@ -1,4 +1,4 @@
-package com.minres.coredsl.util
+package com.minres.coredsl.typing
 
 import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.BitField
@@ -20,6 +20,8 @@ import com.minres.coredsl.coreDsl.FloatingConstant
 import com.minres.coredsl.coreDsl.BoolConstant
 import com.minres.coredsl.coreDsl.CharacterConstant
 import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.util.BigIntegerWithRadix
+import com.minres.coredsl.util.BigDecimalWithSize
 
 class TypeProvider {
 
@@ -73,14 +75,14 @@ class TypeProvider {
     }
 
     def static dispatch TypeSpecifier typeOf(BitField e) {
-        val elem = CoreDslFactory.eINSTANCE.createPodSpecifier
+        val elem = CoreDslFactory.eINSTANCE.createPrimitiveType
         elem.dataType.add(DataTypes.UNSIGNED)
         return elem as TypeSpecifier
     }
 
     def static dispatch TypeSpecifier typeOf(IntegerConstant e) {
         val value = e.value as BigIntegerWithRadix
-        val elem = CoreDslFactory.eINSTANCE.createPodSpecifier
+        val elem = CoreDslFactory.eINSTANCE.createPrimitiveType
         elem.dataType.add(value.type==BigIntegerWithRadix.TYPE.UNSIGNED?DataTypes.UNSIGNED:DataTypes.SIGNED)
         if(value.size>64)      elem.dataType.addAll(DataTypes.LONG, DataTypes.LONG)
         else if(value.size>64) elem.dataType.add(DataTypes.LONG)
@@ -92,7 +94,7 @@ class TypeProvider {
 
     def static dispatch TypeSpecifier typeOf(FloatingConstant e) {
         val value = e.value as BigDecimalWithSize
-        val elem = CoreDslFactory.eINSTANCE.createPodSpecifier
+        val elem = CoreDslFactory.eINSTANCE.createPrimitiveType
         switch(value.size==32){
             case 32:elem.dataType.add(DataTypes.FLOAT)
             default:elem.dataType.add(DataTypes.DOUBLE)
@@ -101,14 +103,14 @@ class TypeProvider {
     }
 
     def static dispatch TypeSpecifier typeOf(BoolConstant e) {
-        val elem = CoreDslFactory.eINSTANCE.createPodSpecifier
+        val elem = CoreDslFactory.eINSTANCE.createPrimitiveType
         elem.dataType.add(DataTypes.UNSIGNED)
         elem.dataType.add(DataTypes.INT)
         return elem as TypeSpecifier
     }
 
     def static dispatch TypeSpecifier typeOf(CharacterConstant e) {
-        val elem = CoreDslFactory.eINSTANCE.createPodSpecifier
+        val elem = CoreDslFactory.eINSTANCE.createPrimitiveType
         elem.dataType.add(DataTypes.CHAR)
         return elem as TypeSpecifier
     }
