@@ -67,9 +67,10 @@ class CoreDslParsingTest {
             args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
             behavior: {
                 unsigned int data_i;
-                data_i = (unsigned int) Xreg[rs1];  
                 // contents of array omitted for for brevity        
                 const unsigned char sbox[256] = { 0x63, 0x7c, 0};  
+
+                data_i = (unsigned int) Xreg[rs1];  
                 Xreg[rd] = sbox[data_i[31:24]] :: sbox[data_i[23:16]] :: sbox[data_i[15:8]] :: sbox[data_i[7:0]];
             }
         }
