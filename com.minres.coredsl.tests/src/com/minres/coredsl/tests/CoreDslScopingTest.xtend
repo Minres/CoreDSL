@@ -456,12 +456,11 @@ class CoreDslScopingTest {
                             case 1:
                                 foobar = rs2;
                                 break;
-«««                         TODO: un-comment once switch grammar is fixed
-«««                            case 2: {
-«««                                int foobar = rs2;
-«««                                int baz = foobar;
-«««                                break;
-«««                            }
+                            case 2: {
+                                int foobar = rs2;
+                                int baz = foobar;
+                                break;
+                            }
                         }
                     }
                 }
