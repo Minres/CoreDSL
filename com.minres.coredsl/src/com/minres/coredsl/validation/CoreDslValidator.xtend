@@ -16,6 +16,13 @@ import static extension com.minres.coredsl.typing.TypeProvider.*
  */
 class CoreDslValidator extends AbstractCoreDslValidator {
 	
+	/*TODO: 
+	 * * check for cycles in structs
+	 * * check for member selection
+	 * * check for return statements
+	 * * check for duplicate fields
+	 * 
+	 */
 	protected static val ISSUE_CODE_PREFIX = "com.minres.coredsl."
 	public static val TYPE_MISMATCH = ISSUE_CODE_PREFIX + "TypeMismatch"
 		

@@ -28,6 +28,10 @@ import com.minres.coredsl.coreDsl.Variable
 
 class TypeProvider {
 
+    /* TODO: 
+     * * sub typing
+     * 
+     */
     public static val boolType = new DataType(DataTypes.BOOL,  null, 1)
 
     def static Boolean isIntegral(DataType dt) {
