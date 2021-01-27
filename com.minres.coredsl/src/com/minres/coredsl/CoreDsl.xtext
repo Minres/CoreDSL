@@ -112,7 +112,7 @@ IfStatement
     :   'if' '(' cond=ConditionalExpression ')' thenStmt=Statement (=> 'else' elseStmt=Statement)?
     ;
 SwitchStatement
-    :   'switch' '(' cond=ConditionalExpression ')' '{' items+=LabeledStatement '}'
+    :   'switch' '(' cond=ConditionalExpression ')' '{' items+=LabeledStatement+ '}'
     ;
 
 IterationStatement
