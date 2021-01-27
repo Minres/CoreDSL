@@ -101,7 +101,8 @@ BlockItem
     ;
 
 ExpressionStatement
-    :   {ExpressionStatement} expr=AssignmentExpression? ';'
+    :   {ExpressionStatement} expr=ExpressionList? ';'
+        
     ;
 
 SelectionStatement
@@ -122,7 +123,7 @@ IterationStatement
     ;
 
 fragment ForCondition
-	:   (startDecl=Declaration | startExpr=AssignmentExpression2? ';') endExpr=ConditionalExpression? ';'  (loopExprs+=AssignmentExpression (',' loopExprs+=AssignmentExpression)*)?
+	:   (startDecl=Declaration | startExpr=AssignmentExpression? ';') endExpr=ConditionalExpression? ';'  (loopExprs+=AssignmentExpression (',' loopExprs+=AssignmentExpression)*)?
 	;
 
 JumpStatement
@@ -204,8 +205,6 @@ DirectDeclarator
     	)?
     ;
     
-EmptyExpression: {Expression};
-
 Initializer
     :   expr=ConditionalExpression
     |   '{' InitializerList ','? '}'
@@ -225,20 +224,7 @@ Designator
 AbstractDeclarator
     :	DirectAbstractDeclarator
     ;
-/*
- direct_abstract_declarator
-	: '(' abstract_declarator ')'
-	| '(' parameter_type_list ')'
-	| '(' ')'
-	| '[' constant_expression ']'
-	| '[' ']'
-	| direct_abstract_declarator '[' ']'
-	| direct_abstract_declarator '[' constant_expression ']'
-	| direct_abstract_declarator '(' ')'
-	| direct_abstract_declarator '(' parameter_type_list ')'
-	;
-*/
- 
+
 DirectAbstractDeclarator 
     :   {DirectAbstractDeclarator} '(' (declarator=AbstractDeclarator? | ParameterList) ')'
     |	{DirectAbstractDeclarator} LEFT_BR expr=ConstantExpression? RIGHT_BR
@@ -246,16 +232,12 @@ DirectAbstractDeclarator
 
 ///////////////////////////////////////////////////////////////////////////////
 // Expressions
-Expression 
-    :   AssignmentExpression ({Expression.left=current} ',' right=AssignmentExpression)?
+ExpressionList  returns Expression
+    :   AssignmentExpression ({Expression.expressions+=current} (',' expressions+=AssignmentExpression)*)
     ;
 
 AssignmentExpression returns Expression // this is right associative
     :   PrefixExpression ({AssignmentExpression.left=current} assignments+=Assignment)*
-    ;
-
-AssignmentExpression2 returns Expression
-    :   PrefixExpression ({AssignmentExpression.left=current} assignments+=Assignment)+
     ;
 
 Assignment:

@@ -19,15 +19,12 @@ import com.minres.coredsl.coreDsl.Postfix
 import com.minres.coredsl.coreDsl.PrimaryExpression
 import com.minres.coredsl.coreDsl.StructDeclaration
 import com.minres.coredsl.coreDsl.CompositeType
-import com.minres.coredsl.coreDsl.TypeSpecifier
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
-
-import static extension com.minres.coredsl.util.ModelUtil.*
 
 /**
  * This class contains custom scoping description.
@@ -36,6 +33,14 @@ import static extension com.minres.coredsl.util.ModelUtil.*
  * on how and when to use it.
  */
 class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //AbstractCoreDslScopeProvider {
+
+    static def <T extends EObject> T parentOfType(EObject obj, Class<T> clazz){
+        if(obj.eContainer===null)
+            return null
+        if(clazz.isInstance(obj.eContainer))
+            return obj.eContainer as T
+        return obj.eContainer.parentOfType(clazz)
+    }
 
     def IScope scope_Variable(CoreDef coreDef, EReference reference) {
         val decls = #[coreDef.constants, coreDef.regs, coreDef.spaces].filter[it !== null].map [
@@ -131,14 +136,12 @@ class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //Abstract
      */
     def dispatch Iterable<Declaration> allDeclarations(InstructionSet isa) {
         val declsSuper = isa.superType!==null?isa.superType.allDeclarations:#[]
-        #[declsSuper, isa.constants, isa.regs, isa.spaces]
-            .flatten
+        #[declsSuper, isa.constants, isa.regs, isa.spaces].flatten
     }
 
     def dispatch Iterable<Declaration> allDeclarations(CoreDef coreDef) {
         val declsSuper = coreDef.contributingType.map[it.allDeclarations].flatten
-        #[declsSuper, coreDef.constants, coreDef.regs, coreDef.spaces]
-            .flatten
+        #[declsSuper, coreDef.constants, coreDef.regs, coreDef.spaces].flatten
     }
     /*
      * directDeclarations extension methods end
@@ -220,9 +223,7 @@ class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //Abstract
      * directDeclarator extension methods begin
      */
     def dispatch DirectDeclarator directDeclarator(PrimaryExpression expression) {
-        expression.ref instanceof DirectDeclarator?
-                expression.ref as DirectDeclarator : 
-                null
+        expression.ref instanceof DirectDeclarator? expression.ref as DirectDeclarator : null
     }
 
     def dispatch DirectDeclarator directDeclarator(Postfix expression) {

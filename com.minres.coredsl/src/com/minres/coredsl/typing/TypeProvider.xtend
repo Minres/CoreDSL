@@ -2,124 +2,188 @@ package com.minres.coredsl.typing
 
 import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.BitField
+import com.minres.coredsl.coreDsl.BitValue
+import com.minres.coredsl.coreDsl.BoolConstant
 import com.minres.coredsl.coreDsl.CastExpression
+import com.minres.coredsl.coreDsl.CharacterConstant
 import com.minres.coredsl.coreDsl.ConditionalExpression
-import com.minres.coredsl.coreDsl.CoreDslFactory
 import com.minres.coredsl.coreDsl.DataTypes
+import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.Expression
+import com.minres.coredsl.coreDsl.FloatingConstant
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.InitDeclarator
+import com.minres.coredsl.coreDsl.IntegerConstant
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
-import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.coreDsl.PrimaryExpression
-import com.minres.coredsl.coreDsl.IntegerConstant
-import com.minres.coredsl.coreDsl.FloatingConstant
-import com.minres.coredsl.coreDsl.BoolConstant
-import com.minres.coredsl.coreDsl.CharacterConstant
-import com.minres.coredsl.coreDsl.Declaration
-import com.minres.coredsl.util.BigIntegerWithRadix
+import com.minres.coredsl.coreDsl.StringLiteral
 import com.minres.coredsl.util.BigDecimalWithSize
+import com.minres.coredsl.util.BigIntegerWithRadix
+import com.minres.coredsl.coreDsl.TypeSpecifier
+import com.minres.coredsl.coreDsl.Postfix
+import com.minres.coredsl.coreDsl.Variable
 
 class TypeProvider {
 
-    def static dispatch TypeSpecifier typeOf(PrimaryExpression e) {
+    public static val boolType = new DataType(DataTypes.BOOL,  null, 1)
+
+    def static Boolean isIntegral(DataType dt) {
+        switch (dt.type) {
+            case DataTypes.BOOL,
+            case DataTypes.CHAR,
+            case DataTypes.SHORT,
+            case DataTypes.INT,
+            case DataTypes.LONG: true
+            default: false
+        }
+    }
+ 
+    def static dispatch DataType typeFor(TypeSpecifier e) {
+        return new DataType(null, null, 0)
+    }
+
+    def dispatch static DataType typeFor(Expression e) {
+        return null
+    }
+
+    def static dispatch DataType typeFor(AssignmentExpression e) {
+        return e.assignments.last.typeFor
+    }
+
+    def static dispatch DataType typeFor(ConditionalExpression e) {
+        return e.left.typeFor
+    }
+
+    def static dispatch DataType typeFor(InfixExpression e) {
+        switch(e.op){
+            case "||", case "&&", 
+            case "==", case "!=", case "<", case ">", case "<=", case ">=": boolType
+            case '|', case "&", case "^",
+            case "<<", case ">>": {
+                val l = e.left.typeFor
+                l.isIntegral ? l : null
+            }
+            case '+', case '-',
+            case '*', case '/': {
+                val l = e.left.typeFor
+                l == e.right.typeFor ? l : null
+            }
+            case '%': {
+                val l = e.left.typeFor
+                l.isIntegral && l == e.right.typeFor ? l : null
+            }
+            default: null
+        }
+    }
+
+    def static dispatch DataType typeFor(CastExpression e) {
+        return e.type.typeFor
+    }
+
+    def static dispatch DataType typeFor(PrefixExpression e) {
+        switch(e.op){
+            case "++",
+            case "--": e.left.typeFor
+            case "~": e.left.typeFor
+            case "!": boolType
+            case "sizeof": new DataType(DataTypes.INT, DataTypes.UNSIGNED, 32)
+            default: // missing 'case "&", case "*", case "+" , case "-":'
+                null
+        }
+    }
+
+    def static dispatch DataType typeFor(PostfixExpression e) {
+        switch(e.right.op){
+            case ".",
+            case "->":e.right.typeFor
+            default:
+                e.left.typeFor?:e.right.typeFor
+        }
+    }
+
+    def static dispatch DataType typeFor(Postfix e) {
+        if(e.right!==null)
+            switch(e.right.op){
+                case ".", case "->": return e.right.typeFor
+            }
+        switch(e.op){
+            case ".", case "->":e.declarator.typeFor
+            default:
+                null
+        }
+    }
+
+    def static dispatch DataType typeFor(PrimaryExpression e) {
         if(e.constant !== null) {
-            
+            e.constant.typeFor
         } else if(e.ref !== null ){
-            
+            e.ref.typeFor
         } else
             return null
     }
     
-    def static dispatch TypeSpecifier typeOf(PostfixExpression e) {
-        return null
+    def static dispatch DataType typeFor(Variable e) {
+        null
     }
 
-    def static dispatch TypeSpecifier typeOf(PrefixExpression e) {
-        return null
+    def static dispatch DataType typeFor(FunctionDefinition e) {
+        e.type.typeFor
     }
 
-    def static dispatch TypeSpecifier typeOf(CastExpression e) {
-        return null
-    }
-
-    def static dispatch TypeSpecifier typeOf(InfixExpression e) {
-        return null
-    }
-
-    def static dispatch TypeSpecifier typeOf(AssignmentExpression e) {
-        return null
-    }
-
-    def static dispatch TypeSpecifier typeOf(ConditionalExpression e) {
-        return null
-    }
-
-    def dispatch static TypeSpecifier typeOf(Expression e) {
-        return null
-    }
-
-    def static dispatch TypeSpecifier typeOf(FunctionDefinition e) {
-        return e.type
-    }
-
-    def static dispatch TypeSpecifier typeOf(DirectDeclarator e) {
+    def static dispatch DataType typeFor(DirectDeclarator e) {
         if (e.eContainer instanceof InitDeclarator && e.eContainer.eContainer instanceof Declaration) {
             var decl = e.eContainer.eContainer as Declaration
-            return decl.type
-        }
-        return null
+            decl.type.typeFor
+        } else
+            null
     }
 
-    def static dispatch TypeSpecifier typeOf(BitField e) {
-        val elem = CoreDslFactory.eINSTANCE.createPrimitiveType
-        elem.dataType.add(DataTypes.UNSIGNED)
-        return elem as TypeSpecifier
+    def static dispatch DataType typeFor(BitField e) {
+        new DataType(DataTypes.INT, DataTypes.UNSIGNED, e.left.value.intValue)
     }
 
-    def static dispatch TypeSpecifier typeOf(IntegerConstant e) {
+    def static dispatch DataType typeFor(BitValue e) {
+        new DataType(DataTypes.INT, DataTypes.UNSIGNED, 1)
+    }
+
+    def static dispatch DataType typeFor(IntegerConstant e) {
         val value = e.value as BigIntegerWithRadix
-        val elem = CoreDslFactory.eINSTANCE.createPrimitiveType
-        elem.dataType.add(value.type==BigIntegerWithRadix.TYPE.UNSIGNED?DataTypes.UNSIGNED:DataTypes.SIGNED)
-        if(value.size>64)      elem.dataType.addAll(DataTypes.LONG, DataTypes.LONG)
-        else if(value.size>64) elem.dataType.add(DataTypes.LONG)
-        else if(value.size>32) elem.dataType.add(DataTypes.INT)
-        else if(value.size>16) elem.dataType.add(DataTypes.SHORT)
-        else if(value.size>8) elem.dataType.add(DataTypes.CHAR)
-        return elem as TypeSpecifier
+        val type = if(value.size>64) DataTypes.LONG
+        else if(value.size>32) DataTypes.INT
+        else if(value.size>16) DataTypes.SHORT
+        else if(value.size>8) DataTypes.CHAR
+        new DataType(type,  value.type==BigIntegerWithRadix.TYPE.UNSIGNED?DataTypes.UNSIGNED:DataTypes.SIGNED, value.size)
     }
 
-    def static dispatch TypeSpecifier typeOf(FloatingConstant e) {
+    def static dispatch DataType typeFor(FloatingConstant e) {
         val value = e.value as BigDecimalWithSize
-        val elem = CoreDslFactory.eINSTANCE.createPrimitiveType
-        switch(value.size==32){
-            case 32:elem.dataType.add(DataTypes.FLOAT)
-            default:elem.dataType.add(DataTypes.DOUBLE)
-        } 
-        return elem as TypeSpecifier
+        val type=value.size==32?DataTypes.FLOAT : DataTypes.DOUBLE
+        new DataType(type, null, value.size)
     }
 
-    def static dispatch TypeSpecifier typeOf(BoolConstant e) {
-        val elem = CoreDslFactory.eINSTANCE.createPrimitiveType
-        elem.dataType.add(DataTypes.UNSIGNED)
-        elem.dataType.add(DataTypes.INT)
-        return elem as TypeSpecifier
+    def static dispatch DataType typeFor(BoolConstant e) {
+        boolType
     }
 
-    def static dispatch TypeSpecifier typeOf(CharacterConstant e) {
-        val elem = CoreDslFactory.eINSTANCE.createPrimitiveType
-        elem.dataType.add(DataTypes.CHAR)
-        return elem as TypeSpecifier
+    def static dispatch DataType typeFor(CharacterConstant e) {
+        new DataType(DataTypes.CHAR, DataTypes.SIGNED, 1)
     }
     
-    def static boolean isComparable(TypeSpecifier left, TypeSpecifier right){
-        return true
+    def static dispatch DataType typeFor(StringLiteral e) {
+        new DataType(DataTypes.CHAR, DataTypes.UNSIGNED, 0)
+    }
+    def static boolean isComparable(DataType left, DataType right){
+        true
     }
 
-    def static boolean isAssignable(TypeSpecifier to, TypeSpecifier from){
-        return true
+    def static boolean isAssignable(DataType to, DataType from){
+        true
+    }
+    
+    def static boolean isComputable(DataType left, DataType right){
+        left==right
     }
 }

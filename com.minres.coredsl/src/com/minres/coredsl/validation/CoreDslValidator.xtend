@@ -3,18 +3,11 @@
  */
 package com.minres.coredsl.validation
 
+import com.minres.coredsl.coreDsl.CoreDslPackage
 import com.minres.coredsl.coreDsl.Expression
 import org.eclipse.xtext.validation.Check
-import com.minres.coredsl.coreDsl.PrimaryExpression
-import com.minres.coredsl.coreDsl.PostfixExpression
-import com.minres.coredsl.coreDsl.PrefixExpression
-import com.minres.coredsl.coreDsl.CastExpression
-import com.minres.coredsl.coreDsl.AssignmentExpression
-import com.minres.coredsl.coreDsl.ConditionalExpression
-import com.minres.coredsl.coreDsl.InfixExpression
+
 import static extension com.minres.coredsl.typing.TypeProvider.*
-import com.minres.coredsl.coreDsl.DataTypes
-import com.minres.coredsl.coreDsl.PrimitiveType
 
 /**
  * This class contains custom validation rules. 
@@ -28,31 +21,10 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 		
 	@Check
 	def checkType(Expression e) {
-        switch(e){
-            PrimaryExpression:{
-            } 
-            PostfixExpression: {
-    		}
-            PrefixExpression:{                
-            }
-            CastExpression: {
-    		}
-            AssignmentExpression: {
-    		}
-            ConditionalExpression: {
-                val type = e.cond.typeOf
-                if(type instanceof PrimitiveType) {
-                    if(type.dataType.contains(DataTypes.BOOL))
-                    return
-                }
-//                error("Condition is not a boolean type",
-//                    CoreDslPackage.Literals.CONDITIONAL_EXPRESSION__COND,
-//                    TYPE_MISMATCH
-//                )                 
-    		}
-            InfixExpression:{
-    		} 
-        }
+	    if(e.typeFor===null)
+                error("incompatible types used",
+                    CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
+                    TYPE_MISMATCH
+                )                 
 	}
-
 }
