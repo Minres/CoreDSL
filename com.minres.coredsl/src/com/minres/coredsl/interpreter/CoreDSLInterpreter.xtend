@@ -188,7 +188,7 @@ class CoreDSLInterpreter {
     }
     
     def static boolean isComputable(Value left, Value right){
-        left.type==right.type
+        left!==null && right!==null &&  left.type==right.type
     }
     
     def static dispatch Number add_(BigDecimal a, BigDecimal b){
