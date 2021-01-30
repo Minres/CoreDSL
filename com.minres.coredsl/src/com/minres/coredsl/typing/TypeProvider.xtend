@@ -155,11 +155,11 @@ class TypeProvider {
 
     def static dispatch DataType typeFor(IntegerConstant e) {
         val value = e.value as BigIntegerWithRadix
-        val type = if(value.size>64) DataTypes.LONG
-        else if(value.size>32) DataTypes.INT
-        else if(value.size>16) DataTypes.SHORT
-        else if(value.size>8) DataTypes.CHAR
-        new DataType(type,  value.type==BigIntegerWithRadix.TYPE.UNSIGNED?DataTypes.UNSIGNED:DataTypes.SIGNED, value.size)
+        val type = if(value.size>32) DataTypes.LONG
+        else if(value.size>16) DataTypes.INT
+        else if(value.size>8) DataTypes.SHORT
+        else DataTypes.CHAR
+        new DataType(type, value.type==BigIntegerWithRadix.TYPE.UNSIGNED?DataTypes.UNSIGNED:DataTypes.SIGNED, value.size)
     }
 
     def static dispatch DataType typeFor(FloatingConstant e) {
