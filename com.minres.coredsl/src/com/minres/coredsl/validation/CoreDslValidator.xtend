@@ -26,12 +26,12 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 	protected static val ISSUE_CODE_PREFIX = "com.minres.coredsl."
 	public static val TYPE_MISMATCH = ISSUE_CODE_PREFIX + "TypeMismatch"
 		
-	@Check
-	def checkType(Expression e) {
-	    if(e.typeFor===null)
-                error("incompatible types used",
-                    CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
-                    TYPE_MISMATCH
-                )                 
-	}
+//	@Check
+//	def checkType(Expression e) {
+//	    if(e.typeFor===null)
+//                error("incompatible types used",
+//                    CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
+//                    TYPE_MISMATCH
+//                )                 
+//	}
 }
