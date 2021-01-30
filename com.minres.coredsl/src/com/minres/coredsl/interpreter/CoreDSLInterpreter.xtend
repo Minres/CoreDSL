@@ -143,8 +143,10 @@ class CoreDSLInterpreter {
     }
 
     def static dispatch Value valueFor(DirectDeclarator e, EvaluationContext ctx) {
-        if (e.eContainer instanceof InitDeclarator) {
-            (e.eContainer as InitDeclarator).initializer.expr.valueFor(ctx)
+        ctx.getValue(e) ?: if (e.eContainer instanceof InitDeclarator) {
+            val value = (e.eContainer as InitDeclarator).initializer.expr.valueFor(ctx)
+            ctx.newValue(e, value)
+            value
         } else
             null
     }

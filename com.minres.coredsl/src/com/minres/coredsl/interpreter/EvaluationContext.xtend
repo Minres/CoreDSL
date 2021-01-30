@@ -3,14 +3,14 @@ package com.minres.coredsl.interpreter
 import java.util.Set
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.typing.DataType
-import java.util.HashSet
 import java.util.HashMap
+import com.minres.coredsl.coreDsl.DirectDeclarator
 
 class EvaluationContext {
 
     final EvaluationContext parent
     
-    final HashMap<String, Value> values = newHashMap
+    final HashMap<DirectDeclarator, Value> values = newHashMap
     
     final Set<Expression> alreadyEvaluating
     
@@ -63,16 +63,17 @@ class EvaluationContext {
         return alreadyEvaluating;
     }
     
-    def Value getValue(String qualifiedName){
-        values.get(qualifiedName)
+    def Value getValue(DirectDeclarator decl){
+        values.get(decl)
     }
     
-    def newValue(String qualifiedName, Value value){
-        values.put(qualifiedName, value)
+    def newValue(DirectDeclarator decl, Value value){
+        values.put(decl, value)
     }
-    def assignValue(String qualifiedName, Value value){
-        if(values.containsKey(qualifiedName)){
-            values.put(qualifiedName, value)            
+    
+    def assignValue(DirectDeclarator decl, Value value){
+        if(values.containsKey(decl)){
+            values.put(decl, value)            
         }
     }
     
