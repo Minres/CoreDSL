@@ -7,8 +7,6 @@ import com.minres.coredsl.coreDsl.BoolConstant
 import com.minres.coredsl.coreDsl.CastExpression
 import com.minres.coredsl.coreDsl.CharacterConstant
 import com.minres.coredsl.coreDsl.ConditionalExpression
-import com.minres.coredsl.coreDsl.DataTypes
-import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.FloatingConstant
@@ -26,9 +24,10 @@ import com.minres.coredsl.coreDsl.Variable
 import com.minres.coredsl.typing.DataType
 import com.minres.coredsl.util.BigDecimalWithSize
 import com.minres.coredsl.util.BigIntegerWithRadix
-import java.math.BigInteger
-import static extension com.minres.coredsl.typing.TypeProvider.*
 import java.math.BigDecimal
+import java.math.BigInteger
+
+import static extension com.minres.coredsl.typing.TypeProvider.*
 
 class CoreDSLInterpreter {
 
@@ -73,16 +72,16 @@ class CoreDSLInterpreter {
                 val l = e.left.valueFor(ctx)
                 val r = e.right.valueFor(ctx)
                 !l.isComputable(r)? null : switch(e.op){
-                case '+': new Value(l.type, l.value.add_(r.value))
-                case '-': new Value(l.type, l.value.sub_(r.value))
-                case '*': new Value(l.type, l.value.mul_(r.value))
-                case '/': new Value(l.type, l.value.div_(r.value))
+                case '+': new Value(l.type, l.value.add(r.value))
+                case '-': new Value(l.type, l.value.sub(r.value))
+                case '*': new Value(l.type, l.value.mul(r.value))
+                case '/': new Value(l.type, l.value.div(r.value))
                 }
             }
             case '%': {
                 val l = e.left.valueFor(ctx)
                 val r = e.right.valueFor(ctx)
-                l.type.isIntegral && l.type.isIntegral ? new Value(l.type, l.value.mod_(r.value)) : null
+                l.type.isIntegral && l.type.isIntegral ? new Value(l.type, l.value.mod(r.value)) : null
             }
             default: null
         }
@@ -98,7 +97,7 @@ class CoreDSLInterpreter {
             case "--": e.left.valueFor(ctx)
             case "~": e.left.valueFor(ctx)
             case "!": new Value(boolType, e.left.valueFor(ctx).value)
-            case "sizeof": new Value(new DataType(DataTypes.INT, DataTypes.UNSIGNED, 32), -1) // TODO: fix it
+            case "sizeof": new Value(new DataType(DataType.INTEGRAL_UNSIGNED, 32), -1) // TODO: fix it
             default: // missing 'case "&", case "*", case "+" , case "-":'
                 null
         }
@@ -152,11 +151,11 @@ class CoreDSLInterpreter {
     }
 
     def static dispatch Value valueFor(BitField e, EvaluationContext ctx) {
-        new Value( new DataType(DataTypes.INT, DataTypes.UNSIGNED, e.left.value.intValue), null) // bitfield cannot be evaluated
+        new Value( new DataType(DataType.INTEGRAL_UNSIGNED, e.left.value.intValue), null) // bitfield cannot be evaluated
     }
 
     def static dispatch Value valueFor(BitValue e, EvaluationContext ctx) {
-        new Value( new DataType(DataTypes.INT, DataTypes.UNSIGNED, 1), 0)
+        new Value( new DataType(DataType.INTEGRAL_UNSIGNED, 1), 0)
     }
 
     def static dispatch Value valueFor(IntegerConstant e, EvaluationContext ctx) {
@@ -172,11 +171,11 @@ class CoreDSLInterpreter {
     }
 
     def static dispatch Value valueFor(CharacterConstant e, EvaluationContext ctx) {
-        new Value(new DataType(DataTypes.CHAR, DataTypes.SIGNED, 8), BigInteger.valueOf(e.value.charAt(0)))
+        new Value(new DataType(DataType.INTEGRAL_SIGNED, 8), BigInteger.valueOf(e.value.charAt(0)))
     }
     
     def static dispatch Value valueFor(StringLiteral e, EvaluationContext ctx) {
-        new Value(new DataType(DataTypes.CHAR, DataTypes.SIGNED, 0), null)
+        new Value(new DataType(DataType.INTEGRAL_SIGNED, 0), null)
     }
     
     def static boolean isComparable(Value left, Value right){
@@ -191,34 +190,48 @@ class CoreDSLInterpreter {
         left!==null && right!==null &&  left.type==right.type
     }
     
-    def static dispatch Number add_(BigDecimal a, BigDecimal b){
-        a.add(b)
+    def static Number add(Number a, Number b) {
+        if (a instanceof BigDecimal && b instanceof BigDecimal)
+            (a as BigDecimal).add(b as BigDecimal)
+        else if (a instanceof BigInteger && b instanceof BigInteger)
+            (a as BigInteger).add(b as BigInteger)
+        else
+            null
     }
-    def static dispatch Number add_(BigInteger a, BigInteger b){
-        a.add(b)
+
+    def static Number sub(Number a, Number b) {
+        if (a instanceof BigDecimal && b instanceof BigDecimal)
+            (a as BigDecimal).subtract(b as BigDecimal)
+        else if (a instanceof BigInteger && b instanceof BigInteger)
+            (a as BigInteger).subtract(b as BigInteger)
+        else
+            null
     }
-    def static dispatch Number sub_(BigDecimal a, BigDecimal b){
-        a.subtract(b)
+
+    def static Number mul(Number a, Number b) {
+        if (a instanceof BigDecimal && b instanceof BigDecimal)
+            (a as BigDecimal).multiply(b as BigDecimal)
+        else if (a instanceof BigInteger && b instanceof BigInteger)
+            (a as BigInteger).multiply(b as BigInteger)
+        else
+            null
     }
-    def static dispatch Number sub_(BigInteger a, BigInteger b){
-        a.subtract(b)
+
+    def static Number div(Number a, Number b) {
+        if (a instanceof BigDecimal && b instanceof BigDecimal)
+            (a as BigDecimal).divide(b as BigDecimal)
+        else if (a instanceof BigInteger && b instanceof BigInteger)
+            (a as BigInteger).divide(b as BigInteger)
+        else
+            null
     }
-    def static dispatch Number mul_(BigDecimal a, BigDecimal b){
-        a.multiply(b)
-    }
-    def static dispatch Number mul_(BigInteger a, BigInteger b){
-        a.multiply(b)
-    }
-    def static dispatch Number div_(BigDecimal a, BigDecimal b){
-        a.divide(b)
-    }
-    def static dispatch Number div_(BigInteger a, BigInteger b){
-        a.divide(b)
-    }
-    def static dispatch Number mod_(BigDecimal a, BigDecimal b){
-        null
-    }
-    def static dispatch Number mod_(BigInteger a, BigInteger b){
-        a.mod(b)
+
+    def static Number mod(Number a, Number b) {
+        if (a instanceof BigDecimal && b instanceof BigDecimal)
+            (a as BigDecimal).mod(b as BigDecimal)
+        else if (a instanceof BigInteger && b instanceof BigInteger)
+            (a as BigInteger).mod(b as BigInteger)
+        else
+            null
     }
 }

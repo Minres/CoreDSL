@@ -8,30 +8,116 @@ import com.minres.coredsl.coreDsl.Expression
 import org.eclipse.xtext.validation.Check
 
 import static extension com.minres.coredsl.typing.TypeProvider.*
+import com.minres.coredsl.coreDsl.TypeSpecifier
+import com.minres.coredsl.coreDsl.CompositeType
+import com.minres.coredsl.coreDsl.EnumType
+import com.minres.coredsl.coreDsl.PrimitiveType
+import com.minres.coredsl.coreDsl.AssignmentExpression
+import com.minres.coredsl.coreDsl.PrimaryExpression
+import com.minres.coredsl.coreDsl.PostfixExpression
+import com.minres.coredsl.coreDsl.PrefixExpression
+import com.minres.coredsl.coreDsl.InfixExpression
+import com.minres.coredsl.coreDsl.CastExpression
+import com.minres.coredsl.coreDsl.ConditionalExpression
+import com.minres.coredsl.typing.DataType
 
 /**
  * This class contains custom validation rules. 
- *
+ * 
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
 class CoreDslValidator extends AbstractCoreDslValidator {
-	
-	/*TODO: 
-	 * * check for cycles in structs
-	 * * check for member selection
-	 * * check for return statements
-	 * * check for duplicate fields
-	 * 
-	 */
-	protected static val ISSUE_CODE_PREFIX = "com.minres.coredsl."
-	public static val TYPE_MISMATCH = ISSUE_CODE_PREFIX + "TypeMismatch"
-		
-//	@Check
-//	def checkType(Expression e) {
-//	    if(e.typeFor===null)
-//                error("incompatible types used",
-//                    CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
-//                    TYPE_MISMATCH
-//                )                 
-//	}
+
+    /*TODO: 
+     * * check for cycles in structs
+     * * check for member selection
+     * * check for return statements
+     * * check for duplicate fields
+     * 
+     */
+    protected static val ISSUE_CODE_PREFIX = "com.minres.coredsl."
+    public static val TYPE_MISMATCH = ISSUE_CODE_PREFIX + "TypeMismatch"
+    public static val TYPE_ILLEGAL = ISSUE_CODE_PREFIX + "TypeIllegal"
+
+    //@Check
+    def checkType(Expression e) {
+        switch (e) {
+            case PrimaryExpression,
+            case PostfixExpression,
+            case PrefixExpression:
+                if (e.typeFor === null)
+                    error(
+                        "incompatible types used",
+                        CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
+                        TYPE_MISMATCH
+                    )
+            case CastExpression: {
+                if ((e as CastExpression).type.typeFor === null)
+                    error(
+                        "illegal type used",
+                        CoreDslPackage.Literals.CAST_EXPRESSION__TYPE,
+                        TYPE_ILLEGAL
+                    )
+            }
+            case InfixExpression: {
+                val infix = e as InfixExpression
+                switch (infix.op) {
+                    case '<',
+                    case '>',
+                    case '<=',
+                    case '>=',
+                    case '==',
+                    case '!=':
+                        if (!e.left.typeFor.isComparable((e as InfixExpression).right.typeFor))
+                            error(
+                                "incompatible types used",
+                                CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
+                                TYPE_MISMATCH
+                            )
+                    case '||',
+                    case '&&',
+                    case '<<',
+                    case '>>',
+                    case '+',
+                    case '-',
+                    case '*',
+                    case '/',
+                    case '%',
+                    case '|',
+                    case '^',
+                    case '&':
+                        if (!e.left.typeFor.isComputable((e as InfixExpression).right.typeFor))
+                            error(
+                                "incompatible types used",
+                                CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
+                                TYPE_MISMATCH
+                            )
+                    default: {
+                    } // '::'
+                }
+            }
+//            case ConditionalExpression: {
+//            }
+//            case AssignmentExpression: {
+//            }
+        }
+    }
+
+    //@Check
+    def checkType(TypeSpecifier e) {
+        switch (e) {
+//            case CompositeType: {
+//            }
+//            case EnumType: {
+//            }
+            case PrimitiveType: {
+                if (e.typeFor === new DataType(0, 0))
+                    error(
+                        "incompatible types used",
+                        CoreDslPackage.Literals.PRIMITIVE_TYPE__DATA_TYPE,
+                        TYPE_MISMATCH
+                    )
+            }
+        }
+    }
 }
