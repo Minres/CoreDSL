@@ -309,7 +309,7 @@ PrefixExpression
 fragment UnaryOperator:	op=('&' | '*' | '+' | '-' | '~' | '!');
 
 PostfixExpression
-    :   PrimaryExpression ({PostfixExpression.left=current} right=Postfix)?
+    :   PrimaryExpression ({PostfixExpression.left=current} postOp=Postfix)?
     ;
 
 Postfix

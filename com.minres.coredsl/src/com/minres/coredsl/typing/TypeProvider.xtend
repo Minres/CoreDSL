@@ -160,11 +160,11 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(PostfixExpression e) {
-        switch(e.right.op){
+        switch(e.postOp.op){
             case ".",
-            case "->":e.right.typeFor
+            case "->":e.postOp.typeFor
             default:
-                e.left.typeFor?:e.right.typeFor
+                e.left.typeFor?:e.postOp.typeFor
         }
     }
 

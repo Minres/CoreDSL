@@ -104,11 +104,11 @@ class CoreDSLInterpreter {
     }
 
     def static dispatch Value valueFor(PostfixExpression e, EvaluationContext ctx) {
-        switch(e.right.op){
+        switch(e.postOp.op){
             case ".",
-            case "->":e.right.valueFor(ctx)
+            case "->":e.postOp.valueFor(ctx)
             default:
-                e.left.valueFor(ctx)?:e.right.valueFor(ctx)
+                e.left.valueFor(ctx)?:e.postOp.valueFor(ctx)
         }
     }
 
