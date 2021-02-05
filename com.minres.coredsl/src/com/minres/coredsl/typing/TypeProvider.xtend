@@ -31,6 +31,8 @@ import com.minres.coredsl.util.BigIntegerWithRadix
 import static extension com.minres.coredsl.interpreter.CoreDSLInterpreter.*
 import com.minres.coredsl.interpreter.EvaluationContext
 import java.math.BigInteger
+import com.minres.coredsl.coreDsl.Encoding
+import com.minres.coredsl.coreDsl.Field
 
 class TypeProvider {
 
@@ -205,12 +207,22 @@ class TypeProvider {
             null
     }
 
+    def static dispatch DataType  typeFor(Encoding list) {
+        var size=0
+        for(Field f:list.fields)
+            switch(f){
+                BitField:{size += f.left.value.intValue-f.right.value.intValue+1}
+                BitValue:{size += f.name.length-1}
+            }
+        new DataType(DataType.INTEGRAL_UNSIGNED, size)
+    }
+
     def static dispatch DataType typeFor(BitField e) {
         new DataType(DataType.INTEGRAL_UNSIGNED, e.left.value.intValue)
     }
 
     def static dispatch DataType typeFor(BitValue e) {
-        new DataType(DataType.INTEGRAL_UNSIGNED, 1)
+        new DataType(DataType.INTEGRAL_UNSIGNED, e.name.length-1)
     }
 
     def static dispatch DataType typeFor(IntegerConstant e) {
