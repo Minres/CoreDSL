@@ -24,15 +24,19 @@ import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
 import com.minres.coredsl.coreDsl.PrimitiveType
 import com.minres.coredsl.coreDsl.StringLiteral
+import com.minres.coredsl.coreDsl.Encoding
+import com.minres.coredsl.coreDsl.Field
+import com.minres.coredsl.coreDsl.ISA
+import com.minres.coredsl.coreDsl.TypeSpecifier
+import com.minres.coredsl.coreDsl.Constant
 import com.minres.coredsl.coreDsl.Variable
 import com.minres.coredsl.util.BigDecimalWithSize
 import com.minres.coredsl.util.BigIntegerWithRadix
 
 import static extension com.minres.coredsl.interpreter.CoreDSLInterpreter.*
+import static extension com.minres.coredsl.util.ModelUtil.*
 import com.minres.coredsl.interpreter.EvaluationContext
 import java.math.BigInteger
-import com.minres.coredsl.coreDsl.Encoding
-import com.minres.coredsl.coreDsl.Field
 
 class TypeProvider {
 
@@ -56,15 +60,31 @@ class TypeProvider {
         return false
     }
  
-    def static dispatch DataType typeFor(CompositeType e) {
+    def static DataType typeFor(TypeSpecifier e) {
+        e.typeFor(e.parentOfType(ISA))
+    }
+ 
+    def static DataType typeFor(DirectDeclarator e) {
+        e.typeFor(e.parentOfType(ISA))
+    }
+ 
+    def static DataType typeFor(Expression e) {
+        e.typeFor(e.parentOfType(ISA))
+    }
+ 
+    def static DataType typeFor(Constant e) {
+        e.typeFor(e.parentOfType(ISA))
+    }
+
+    def static dispatch DataType typeFor(CompositeType e, ISA ctx) {
         return new DataType(0, 0)
     }
 
-    def static dispatch DataType typeFor(EnumType e) {
+    def static dispatch DataType typeFor(EnumType e, ISA ctx) {
         return new DataType(DataType.INTEGRAL_SIGNED, 32)
     }
 
-    def static dispatch DataType typeFor(PrimitiveType e) {
+    def static dispatch DataType typeFor(PrimitiveType e, ISA ctx) {
         if (e.dataType.findFirst[it == DataTypes.FLOAT] !== null)
             return new DataType(DataType.FLOAT, 32)
         val longCount = e.dataType.filter[it === DataTypes.LONG].size
@@ -74,7 +94,7 @@ class TypeProvider {
             return new DataType(DataType.INTEGRAL_SIGNED, 1)
         val isUnsigned = e.dataType.findFirst[it === DataTypes.UNSIGNED] !== null
         if (e.size.size > 0) {
-            val sizeValue = e.size.get(0).valueFor(EvaluationContext.root)
+            val sizeValue = e.size.get(0).valueFor(EvaluationContext.root(ctx))
             if(sizeValue === null || !(sizeValue.value instanceof BigInteger)) return null
             val sizeInt = (sizeValue.value as BigInteger).intValue
             return isUnsigned
@@ -107,53 +127,53 @@ class TypeProvider {
         return new DataType(0, 0)
     }
 
-    def dispatch static DataType typeFor(Expression e) {
-        val types =  e.expressions.map[expr|expr.typeFor]
+    def dispatch static DataType typeFor(Expression e, ISA ctx) {
+        val types =  e.expressions.map[expr|expr.typeFor(ctx)]
         val first = types.findFirst[it===null]
         if(first !== null)
             return null
         return types.head
     }
 
-    def static dispatch DataType typeFor(AssignmentExpression e) {
-        return e.assignments.last.right.typeFor
+    def static dispatch DataType typeFor(AssignmentExpression e, ISA ctx) {
+        return e.assignments.last.right.typeFor(ctx)
     }
 
-    def static dispatch DataType typeFor(ConditionalExpression e) {
-        return e.left.typeFor
+    def static dispatch DataType typeFor(ConditionalExpression e, ISA ctx) {
+        return e.left.typeFor(ctx)
     }
 
-    def static dispatch DataType typeFor(InfixExpression e) {
+    def static dispatch DataType typeFor(InfixExpression e, ISA ctx) {
         switch(e.op){
             case "||", case "&&", 
             case "==", case "!=", case "<", case ">", case "<=", case ">=": boolType
             case '|', case "&", case "^",
             case "<<", case ">>": {
-                val l = e.left.typeFor
+                val l = e.left.typeFor(ctx)
                 l.isIntegral ? l : null
             }
             case '+', case '-',
             case '*', case '/': {
-                val l = e.left.typeFor
-                l == e.right.typeFor ? l : null
+                val l = e.left.typeFor(ctx)
+                l == e.right.typeFor(ctx) ? l : null
             }
             case '%': {
-                val l = e.left.typeFor
-                l.isIntegral && l == e.right.typeFor ? l : null
+                val l = e.left.typeFor(ctx)
+                l.isIntegral && l == e.right.typeFor(ctx) ? l : null
             }
             default: null
         }
     }
 
-    def static dispatch DataType typeFor(CastExpression e) {
-        return e.type.typeFor
+    def static dispatch DataType typeFor(CastExpression e, ISA ctx) {
+        return e.type.typeFor(ctx)
     }
 
-    def static dispatch DataType typeFor(PrefixExpression e) {
+    def static dispatch DataType typeFor(PrefixExpression e, ISA ctx) {
         switch(e.op){
             case "++",
-            case "--": e.left.typeFor
-            case "~": e.left.typeFor
+            case "--": e.left.typeFor(ctx)
+            case "~": e.left.typeFor(ctx)
             case "!": boolType
             case "sizeof": new DataType(DataType.INTEGRAL_UNSIGNED, 32)
             default: // missing 'case "&", case "*", case "+" , case "-":'
@@ -161,53 +181,53 @@ class TypeProvider {
         }
     }
 
-    def static dispatch DataType typeFor(PostfixExpression e) {
+    def static dispatch DataType typeFor(PostfixExpression e, ISA ctx) {
         switch(e.postOp.op){
             case ".",
-            case "->":e.postOp.typeFor
+            case "->":e.postOp.typeFor(ctx)
             default:
-                e.left.typeFor?:e.postOp.typeFor
+                e.left.typeFor(ctx)?:e.postOp.typeFor(ctx)
         }
     }
 
-    def static dispatch DataType typeFor(Postfix e) {
+    def static dispatch DataType typeFor(Postfix e, ISA ctx) {
         if(e.right!==null)
             switch(e.right.op){
-                case ".", case "->": return e.right.typeFor
+                case ".", case "->": return e.right.typeFor(ctx)
             }
         switch(e.op){
-            case ".", case "->":e.declarator.typeFor
+            case ".", case "->":e.declarator.typeFor(ctx)
             default:
                 null
         }
     }
 
-    def static dispatch DataType typeFor(PrimaryExpression e) {
+    def static dispatch DataType typeFor(PrimaryExpression e, ISA ctx) {
         if(e.constant !== null) {
-            e.constant.typeFor
+            e.constant.typeFor(ctx)
         } else if(e.ref !== null ){
-            e.ref.typeFor
+            e.ref.typeFor(ctx)
         } else
             return null
     }
     
-    def static dispatch DataType typeFor(Variable e) {
+    def static dispatch DataType typeFor(Variable e, ISA ctx) {
         null
     }
 
-    def static dispatch DataType typeFor(FunctionDefinition e) {
-        e.type.typeFor
+    def static dispatch DataType typeFor(FunctionDefinition e, ISA ctx) {
+        e.type.typeFor(ctx)
     }
 
-    def static dispatch DataType typeFor(DirectDeclarator e) {
+    def static dispatch DataType typeFor(DirectDeclarator e, ISA ctx) {
         if (e.eContainer instanceof InitDeclarator && e.eContainer.eContainer instanceof Declaration) {
             var decl = e.eContainer.eContainer as Declaration
-            decl.type.typeFor
+            decl.type.typeFor(ctx)
         } else
             null
     }
 
-    def static dispatch DataType  typeFor(Encoding list) {
+    def static dispatch DataType  typeFor(Encoding list, ISA ctx) {
         var size=0
         for(Field f:list.fields)
             switch(f){
@@ -217,34 +237,35 @@ class TypeProvider {
         new DataType(DataType.INTEGRAL_UNSIGNED, size)
     }
 
-    def static dispatch DataType typeFor(BitField e) {
+    def static dispatch DataType typeFor(BitField e, ISA ctx) {
         new DataType(DataType.INTEGRAL_UNSIGNED, e.left.value.intValue)
     }
 
-    def static dispatch DataType typeFor(BitValue e) {
+    def static dispatch DataType typeFor(BitValue e, ISA ctx) {
         new DataType(DataType.INTEGRAL_UNSIGNED, e.name.length-1)
     }
 
-    def static dispatch DataType typeFor(IntegerConstant e) {
+    def static dispatch DataType typeFor(IntegerConstant e, ISA ctx) {
         val value = e.value as BigIntegerWithRadix
         new DataType(value.type==BigIntegerWithRadix.TYPE.UNSIGNED?DataType.INTEGRAL_UNSIGNED:DataType.INTEGRAL_SIGNED, value.size)
     }
 
-    def static dispatch DataType typeFor(FloatingConstant e) {
+    def static dispatch DataType typeFor(FloatingConstant e, ISA ctx) {
         new DataType(DataType.FLOAT, (e.value as BigDecimalWithSize).size)
     }
 
-    def static dispatch DataType typeFor(BoolConstant e) {
+    def static dispatch DataType typeFor(BoolConstant e, ISA ctx) {
         boolType
     }
 
-    def static dispatch DataType typeFor(CharacterConstant e) {
+    def static dispatch DataType typeFor(CharacterConstant e, ISA ctx) {
         new DataType(DataType.INTEGRAL_SIGNED, 8)
     }
     
-    def static dispatch DataType typeFor(StringLiteral e) {
+    def static dispatch DataType typeFor(StringLiteral e, ISA ctx) {
         new DataType(DataType.INTEGRAL_SIGNED, 0)
     }
+    
     def static boolean isComparable(DataType left, DataType right){
         if (left.size > 0 && right.size > 0) {
             if ((left.type == DataTypes.FLOAT || left.type == DataTypes.DOUBLE) &&

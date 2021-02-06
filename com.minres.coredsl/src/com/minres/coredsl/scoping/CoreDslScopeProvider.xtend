@@ -25,6 +25,7 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
+import static extension com.minres.coredsl.util.ModelUtil.*
 
 /**
  * This class contains custom scoping description.
@@ -33,14 +34,6 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
  * on how and when to use it.
  */
 class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //AbstractCoreDslScopeProvider {
-
-    static def <T extends EObject> T parentOfType(EObject obj, Class<T> clazz){
-        if(obj.eContainer===null)
-            return null
-        if(clazz.isInstance(obj.eContainer))
-            return obj.eContainer as T
-        return obj.eContainer.parentOfType(clazz)
-    }
 
     def IScope scope_Variable(CoreDef coreDef, EReference reference) {
         val decls = #[coreDef.constants, coreDef.regs, coreDef.spaces].filter[it !== null].map [

@@ -5,6 +5,7 @@ import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.typing.DataType
 import java.util.HashMap
 import com.minres.coredsl.coreDsl.DirectDeclarator
+import com.minres.coredsl.coreDsl.ISA
 
 class EvaluationContext {
 
@@ -15,6 +16,8 @@ class EvaluationContext {
     final Set<Expression> alreadyEvaluating
     
     final DataType expectedType
+    
+    final ISA definitionContext
 
     def EvaluationContext cloneWithExpectation(DataType newExpectation) {
         new EvaluationContext(newExpectation, alreadyEvaluating)
@@ -24,18 +27,28 @@ class EvaluationContext {
        parent=context
        expectedType=parent.expectedType
        alreadyEvaluating=parent.alreadyEvaluating
+       definitionContext=null
     }
 
     new(DataType expectedType, Set<Expression> alreadyEvaluating) {
         this.parent=null
         this.expectedType = expectedType;
         this.alreadyEvaluating = alreadyEvaluating;
+        this.definitionContext=null
     }
     
     new(EvaluationContext context, DataType expectedType, Set<Expression> alreadyEvaluating) {
         this.parent=context
         this.expectedType = expectedType;
         this.alreadyEvaluating = alreadyEvaluating;
+        this.definitionContext=null
+    }
+
+    new(EvaluationContext context, DataType expectedType, Set<Expression> alreadyEvaluating, ISA isa) {
+        this.parent=context
+        this.expectedType = expectedType;
+        this.alreadyEvaluating = alreadyEvaluating;
+        this.definitionContext=isa
     }
 
     override boolean equals(Object obj) {
@@ -59,6 +72,15 @@ class EvaluationContext {
         return true;
     }
 
+    def ISA getDefinitionContext() {
+        if (definitionContext !== null)
+            definitionContext
+        else if (parent !== null)
+            parent.getDefinitionContext
+        else
+            null
+    }
+    
     def Set<Expression> getAlreadyEvaluating() {
         return alreadyEvaluating;
     }
@@ -67,8 +89,9 @@ class EvaluationContext {
         values.get(decl)
     }
     
-    def newValue(DirectDeclarator decl, Value value){
+    def Value newValue(DirectDeclarator decl, Value value){
         values.put(decl, value)
+        value
     }
     
     def assignValue(DirectDeclarator decl, Value value){
@@ -87,6 +110,10 @@ class EvaluationContext {
     
     def static root(){
         return new EvaluationContext(null, null, #{})
+    }
+    
+    def static root(ISA isa){
+        return new EvaluationContext(null, null, #{}, isa)
     }
     
 }

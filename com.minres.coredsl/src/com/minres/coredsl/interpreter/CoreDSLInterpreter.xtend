@@ -28,6 +28,8 @@ import java.math.BigDecimal
 import java.math.BigInteger
 
 import static extension com.minres.coredsl.typing.TypeProvider.*
+import static extension com.minres.coredsl.util.ModelUtil.*
+import com.minres.coredsl.coreDsl.ISA
 
 class CoreDSLInterpreter {
 
@@ -43,7 +45,7 @@ class CoreDSLInterpreter {
     }
     
     def static dispatch Value valueFor(TypeSpecifier e, EvaluationContext ctx) {
-        return new Value(e.typeFor, null)
+        return new Value(e.typeFor(ctx.definitionContext), null)
     }
 
     def dispatch static Value valueFor(Expression e, EvaluationContext ctx) {
@@ -142,14 +144,22 @@ class CoreDSLInterpreter {
     }
 
     def static dispatch Value valueFor(DirectDeclarator e, EvaluationContext ctx) {
-        ctx.getValue(e) ?: if (e.eContainer instanceof InitDeclarator) {
-            val value = (e.eContainer as InitDeclarator).initializer.expr.valueFor(ctx)
-            ctx.newValue(e, value)
-            value
-        } else
-            null
+        ctx.getValue(e) ?: calculateValue(e, ctx)
     }
 
+    private static def Value calculateValue(DirectDeclarator e, EvaluationContext ctx) {
+    	if (e.eContainer instanceof InitDeclarator) {
+            if((e.eContainer as InitDeclarator).initializer!==null){
+                return ctx.newValue(e, (e.eContainer as InitDeclarator).initializer.expr.valueFor(ctx))
+            } else if(e.eContainer.eContainer.eContainer instanceof ISA){
+                val directDecl = ctx.definitionContext .effectiveDeclarator(e.name)
+                if((directDecl.eContainer as InitDeclarator).initializer!==null)
+                    return ctx.newValue(e, (directDecl.eContainer as InitDeclarator).initializer.expr.valueFor(ctx))
+            }
+        }
+        null
+    }
+    
     def static dispatch Value valueFor(BitField e, EvaluationContext ctx) {
         new Value( new DataType(DataType.INTEGRAL_UNSIGNED, e.left.value.intValue), null) // bitfield cannot be evaluated
     }
@@ -159,11 +169,11 @@ class CoreDSLInterpreter {
     }
 
     def static dispatch Value valueFor(IntegerConstant e, EvaluationContext ctx) {
-        new Value(e.typeFor, e.value as BigIntegerWithRadix)
+        new Value(e.typeFor(ctx.definitionContext), e.value as BigIntegerWithRadix)
     }
 
     def static dispatch Value valueFor(FloatingConstant e, EvaluationContext ctx) {
-        new Value(e.typeFor, e.value as BigDecimalWithSize)
+        new Value(e.typeFor(ctx.definitionContext), e.value as BigDecimalWithSize)
     }
 
     def static dispatch Value valueFor(BoolConstant e, EvaluationContext ctx) {
