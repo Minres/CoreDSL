@@ -3,23 +3,18 @@
  */
 package com.minres.coredsl.validation
 
+import com.minres.coredsl.coreDsl.CastExpression
 import com.minres.coredsl.coreDsl.CoreDslPackage
 import com.minres.coredsl.coreDsl.Expression
-import org.eclipse.xtext.validation.Check
-
-import static extension com.minres.coredsl.typing.TypeProvider.*
-import com.minres.coredsl.coreDsl.TypeSpecifier
-import com.minres.coredsl.coreDsl.CompositeType
-import com.minres.coredsl.coreDsl.EnumType
-import com.minres.coredsl.coreDsl.PrimitiveType
-import com.minres.coredsl.coreDsl.AssignmentExpression
-import com.minres.coredsl.coreDsl.PrimaryExpression
+import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
-import com.minres.coredsl.coreDsl.InfixExpression
-import com.minres.coredsl.coreDsl.CastExpression
-import com.minres.coredsl.coreDsl.ConditionalExpression
+import com.minres.coredsl.coreDsl.PrimaryExpression
+import com.minres.coredsl.coreDsl.PrimitiveType
+import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.typing.DataType
+
+import static extension com.minres.coredsl.typing.TypeProvider.*
 
 /**
  * This class contains custom validation rules. 
