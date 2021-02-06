@@ -6,7 +6,6 @@ package com.minres.coredsl.ui.outline
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.DescriptionContent
-import com.minres.coredsl.coreDsl.EmptyExpression
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.Instruction
@@ -72,10 +71,6 @@ class CoreDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
     }
     
     def boolean _isLeaf(Declaration decls) {
-        return true;
-    }
-
-    def boolean _isLeaf(EmptyExpression decls) {
         return true;
     }
 

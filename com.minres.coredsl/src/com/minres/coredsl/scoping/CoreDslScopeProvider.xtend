@@ -18,15 +18,13 @@ import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.Postfix
 import com.minres.coredsl.coreDsl.PrimaryExpression
 import com.minres.coredsl.coreDsl.StructDeclaration
-import com.minres.coredsl.coreDsl.StructOrUnionSpecifier
-import com.minres.coredsl.coreDsl.TypeSpecifier
+import com.minres.coredsl.coreDsl.CompositeType
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
-
 import static extension com.minres.coredsl.util.ModelUtil.*
 
 /**
@@ -85,15 +83,15 @@ class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //Abstract
     def IScope scope_DirectDeclarator(Postfix context, EReference reference) {
         val parent = context.eContainer
         if(parent instanceof PostfixExpression) {
-            val type = parent.directDeclarator.type
-            if( type instanceof StructOrUnionSpecifier) {
+            val type = (parent.directDeclarator .eContainer.eContainer as Declaration).type
+            if( type instanceof CompositeType) {
                 val decls = type.directDeclarations;
                 return Scopes.scopeFor(decls)
             }                
         } else if(parent instanceof Postfix) {
             val decl = parent.declarator.eContainer
             if(decl instanceof StructDeclaration){
-                if( decl.specifier.type instanceof StructOrUnionSpecifier) {
+                if( decl.specifier.type instanceof CompositeType) {
                     val decls = decl.specifier.type.directDeclarations;
                     return Scopes.scopeFor(decls)
                 }                
@@ -131,14 +129,12 @@ class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //Abstract
      */
     def dispatch Iterable<Declaration> allDeclarations(InstructionSet isa) {
         val declsSuper = isa.superType!==null?isa.superType.allDeclarations:#[]
-        #[declsSuper, isa.constants, isa.regs, isa.spaces]
-            .flatten
+        #[declsSuper, isa.constants, isa.regs, isa.spaces].flatten
     }
 
     def dispatch Iterable<Declaration> allDeclarations(CoreDef coreDef) {
         val declsSuper = coreDef.contributingType.map[it.allDeclarations].flatten
-        #[declsSuper, coreDef.constants, coreDef.regs, coreDef.spaces]
-            .flatten
+        #[declsSuper, coreDef.constants, coreDef.regs, coreDef.spaces].flatten
     }
     /*
      * directDeclarations extension methods end
@@ -171,12 +167,12 @@ class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //Abstract
         decl.init.map[it.declarator]
     }
 
-    def dispatch Iterable<DirectDeclarator> directDeclarations(StructOrUnionSpecifier spec) {
+    def dispatch Iterable<DirectDeclarator> directDeclarations(CompositeType spec) {
         if (spec.declaration.size > 0)
             spec.declaration.directDeclarations
         else {
-            val specifier = spec.eContainer.findStructOrUnionSpecifier([
-                StructOrUnionSpecifier d|d.name!==null?d.name==spec.name:false
+            val specifier = spec.eContainer.findCompositeType([
+                CompositeType d|d.name!==null?d.name==spec.name:false
             ])
             specifier===null?#[]:specifier.declaration.directDeclarations
         }
@@ -192,51 +188,35 @@ class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //Abstract
     /************************************************************************
      * type extension methods begin
      */
-    def dispatch StructOrUnionSpecifier findStructOrUnionSpecifier(Declaration object, (StructOrUnionSpecifier)=>boolean predicate){
+    def dispatch CompositeType findCompositeType(Declaration object, (CompositeType)=>boolean predicate){
         val res = object.eContainer.declarationsBefore(object)
             .map[it.type]
-            .filter[it instanceof StructOrUnionSpecifier]
-            .map[it as StructOrUnionSpecifier]
+            .filter[it instanceof CompositeType]
+            .map[it as CompositeType]
             .findFirst(predicate)
-        res ?: object.eContainer.eContainer.findStructOrUnionSpecifier(predicate)
+        res ?: object.eContainer.eContainer.findCompositeType(predicate)
     }
         
-    def dispatch StructOrUnionSpecifier findStructOrUnionSpecifier(ISA isa, (StructOrUnionSpecifier)=>boolean predicate){
+    def dispatch CompositeType findCompositeType(ISA isa, (CompositeType)=>boolean predicate){
         isa.allDeclarations
             .map[it.type]
-            .filter[it instanceof StructOrUnionSpecifier]
-            .map[it as StructOrUnionSpecifier]
+            .filter[it instanceof CompositeType]
+            .map[it as CompositeType]
             .findFirst(predicate)
     }
 
-    def dispatch StructOrUnionSpecifier findStructOrUnionSpecifier(EObject object, (StructOrUnionSpecifier)=>boolean predicate){
-        object.eContainer.findStructOrUnionSpecifier(predicate)
+    def dispatch CompositeType findCompositeType(EObject object, (CompositeType)=>boolean predicate){
+        object.eContainer.findCompositeType(predicate)
     }
     /*
      * type extension methods end
      ************************************************************************/
     
     /************************************************************************
-     * type extension methods begin
-     */
-    def dispatch TypeSpecifier getType(Declaration declaration) {
-        declaration.type
-    }
-
-    def dispatch TypeSpecifier getType(EObject object) {
-        object!==null?object.eContainer.type:null
-    }
-    /*
-     * type extension methods end
-     ************************************************************************/
-
-    /************************************************************************
      * directDeclarator extension methods begin
      */
     def dispatch DirectDeclarator directDeclarator(PrimaryExpression expression) {
-        expression.ref instanceof DirectDeclarator?
-                expression.ref as DirectDeclarator : 
-                null
+        expression.ref instanceof DirectDeclarator? expression.ref as DirectDeclarator : null
     }
 
     def dispatch DirectDeclarator directDeclarator(Postfix expression) {
