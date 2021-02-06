@@ -47,17 +47,7 @@ class TypeProvider {
     public static val boolType = new DataType(DataType.INTEGRAL_SIGNED, 1)
 
     def static Boolean isIntegral(DataType dt) {
-        if (dt.size > 0) {
-            return switch (dt.type) {
-                case DataTypes.BOOL,
-                case DataTypes.CHAR,
-                case DataTypes.SHORT,
-                case DataTypes.INT,
-                case DataTypes.LONG: true
-                default: false
-            }
-        }
-        return false
+		dt.size > 0 && (dt.type == DataType.INTEGRAL_SIGNED || dt.type==DataType.INTEGRAL_UNSIGNED)
     }
  
     def static DataType typeFor(TypeSpecifier e) {
@@ -147,10 +137,15 @@ class TypeProvider {
         switch(e.op){
             case "||", case "&&", 
             case "==", case "!=", case "<", case ">", case "<=", case ">=": boolType
-            case '|', case "&", case "^",
+            case '|', case "&", case "^": {
+                val l = e.left.typeFor(ctx)
+                val r = e.right.typeFor(ctx)
+                l !==null && r!==null && l.isIntegral && l.type== r.type? 
+                	new DataType(l.type, l.size>r.size?l.size:r.size) : null
+            }
             case "<<", case ">>": {
                 val l = e.left.typeFor(ctx)
-                l.isIntegral ? l : null
+                l !==null && l.isIntegral ? l : null
             }
             case '+', case '-',
             case '*', case '/': {
@@ -207,6 +202,10 @@ class TypeProvider {
             e.constant.typeFor(ctx)
         } else if(e.ref !== null ){
             e.ref.typeFor(ctx)
+        } else if(e.left !== null ){
+            e.left.typeFor(ctx)
+        } else if(e.literal.size>0 ){
+        	throw new UnsupportedOperationException
         } else
             return null
     }
@@ -238,7 +237,7 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(BitField e, ISA ctx) {
-        new DataType(DataType.INTEGRAL_UNSIGNED, e.left.value.intValue)
+        new DataType(DataType.INTEGRAL_UNSIGNED, e.left.value.intValue - e.right.value.intValue+1)
     }
 
     def static dispatch DataType typeFor(BitValue e, ISA ctx) {
