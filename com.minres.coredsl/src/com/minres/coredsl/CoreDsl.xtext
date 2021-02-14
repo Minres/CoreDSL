@@ -18,19 +18,33 @@ ISA
 	;
 
 InstructionSet :
-	'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{'
-        ('architectural_state' '{' state+=(Declaration | ExpressionStatement)+  '}')? 
-        ('functions'           '{' func+=FunctionDefinition+ '}')?
-        ('instructions'        '{' instr+=Instruction+     '}')?
+	'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' 
+        ( SectionArchState (SectionFunctions SectionInstructions? | SectionInstructions)?
+        | SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions)?
+        | SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions)?
+        )
     '}'
 ;
 
 CoreDef:
 	'Core' name=ID ( 'provides' contributingType+=[InstructionSet] (',' contributingType+=[InstructionSet])*)? '{' 
-        ('architectural_state' '{' state+=(Declaration | ExpressionStatement)+  '}')? 
-        ('functions'           '{' func+=FunctionDefinition+ '}')?
-        ('instructions'        '{' instr+=Instruction+     '}')?
+	    ( SectionArchState (SectionFunctions SectionInstructions? | SectionInstructions)?
+        | SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions)?
+        | SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions)?
+        )
     '}'
+;
+
+fragment SectionArchState returns ISA:
+    'architectural_state' '{' state+=(Declaration | ExpressionStatement)+ '}'
+;
+
+fragment SectionFunctions returns ISA:
+    'functions' '{' func+=FunctionDefinition+ '}'
+;
+
+fragment SectionInstructions returns ISA:
+    'instructions' '{' instr+=Instruction+     '}'
 ;
 
 Instruction:
