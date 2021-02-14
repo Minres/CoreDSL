@@ -18,22 +18,18 @@ ISA
 	;
 
 InstructionSet :
-	'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' 
-        ('constants'      '{' constants+=Declaration+   '}')? 
-        ('registers'      '{' regs+=Declaration+        '}')?
-        ('address_spaces' '{' spaces+=Declaration+      '}')?
-	    ('functions'      '{' func+=FunctionDefinition+ '}')?
-        ('instructions'   '{' (instr+=Instruction)+     '}')?
+	'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{'
+        ('architectural_state' '{' state+=(Declaration | ExpressionStatement)+  '}')? 
+        ('functions'           '{' func+=FunctionDefinition+ '}')?
+        ('instructions'        '{' instr+=Instruction+     '}')?
     '}'
 ;
 
 CoreDef:
 	'Core' name=ID ( 'provides' contributingType+=[InstructionSet] (',' contributingType+=[InstructionSet])*)? '{' 
-        ('constants'      '{' constants+=Declaration+   '}')?
-        ('registers'      '{' regs+=Declaration+        '}')?
-        ('address_spaces' '{' spaces+=Declaration+      '}')?
-	    ('functions'      '{' func+=FunctionDefinition+ '}')?
-	    ('instructions'   '{' (instr+=Instruction)+     '}')?
+        ('architectural_state' '{' state+=(Declaration | ExpressionStatement)+  '}')? 
+        ('functions'           '{' func+=FunctionDefinition+ '}')?
+        ('instructions'        '{' instr+=Instruction+     '}')?
     '}'
 ;
 

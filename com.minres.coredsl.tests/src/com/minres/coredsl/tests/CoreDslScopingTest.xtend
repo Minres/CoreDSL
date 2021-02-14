@@ -112,10 +112,8 @@ class CoreDslScopingTest {
     def void globalScope() {
         val content = '''
             InstructionSet TestISA {
-            constants {
+            architectural_state {
                 int CCC = 42;
-            }
-            registers {
                 unsigned X[32];
             }
 
@@ -144,10 +142,8 @@ class CoreDslScopingTest {
     def void globalScopeExtended() {
         val content = '''
         InstructionSet TestISA {
-            constants {
+            architectural_state {
                 int CCC = 42;
-            }
-            registers {
                 unsigned X[32];
             }
 
@@ -205,7 +201,7 @@ class CoreDslScopingTest {
     def void structMembersDirect() {
         val content = '''
         InstructionSet TestISA {
-            registers {
+            architectural_state {
                 struct {
                     unsigned x, y;
                 } point;
@@ -229,7 +225,7 @@ class CoreDslScopingTest {
     def void structMembersIndirect() {
         val content = '''
         InstructionSet TestISA {
-            registers {
+            architectural_state {
                 struct point_s {
                     unsigned x, y;
                 };
@@ -254,10 +250,8 @@ class CoreDslScopingTest {
     def void structMembersDirectSub() {
         val content = '''
         InstructionSet TestISA {
-            constants {
+            architectural_state {
                 unsigned N_REGS = 4;
-            }
-            registers {
                 struct {
                     float real;
                     float imag;
@@ -283,10 +277,8 @@ class CoreDslScopingTest {
     def void structMembersIndirectSub() {
         val content = '''
         InstructionSet TestISA {
-            constants {
+            architectural_state {
                 unsigned N_REGS = 4;
-            }
-            registers {
                 struct point_s {
                     unsigned x, y;
                 };
@@ -311,7 +303,7 @@ class CoreDslScopingTest {
     def void structMembersDirectNested() {
         val content = '''
         InstructionSet TestISA {
-            registers {
+            architectural_state {
                 struct rect_s {
                     struct origin_s {
                         unsigned x, y;
@@ -340,7 +332,7 @@ class CoreDslScopingTest {
     def void unions() {
         val content = '''
         InstructionSet TestISA {
-            registers {
+            architectural_state {
                 union un1 {
                     long l;
                     int i;
@@ -370,7 +362,7 @@ class CoreDslScopingTest {
     def void spawn() {
         val content = '''
         InstructionSet TestISA {
-            registers {
+            architectural_state {
                 int X[32];
                 int PC;
             }

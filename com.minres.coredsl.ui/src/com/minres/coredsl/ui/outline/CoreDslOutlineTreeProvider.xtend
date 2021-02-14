@@ -33,22 +33,16 @@ class CoreDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
 		// create a virtual nodes for the sections
 		switch(parentNode.text){
 			case 'contributing': (modelElement as CoreDef).contributingType.forEach[createNode(parentNode, it)]
-			case 'constants':    modelElement.constants.forEach[createNode(parentNode, it)]
-			case 'registers':    modelElement.regs.forEach[createNode(parentNode, it)]
-			case 'spaces':       modelElement.spaces.forEach[createNode(parentNode, it)]
+			case 'constants':    modelElement.state.forEach[createNode(parentNode, it)]
 			case 'instructions': modelElement.instr.forEach[createNode(parentNode, it)]
 			case 'functions':    (modelElement as InstructionSet).func.forEach[createNode(parentNode, it)]
 			default:  {
-				val image = imageDispatcher.invoke(modelElement.constants);
+				val image = imageDispatcher.invoke(modelElement.state);
 				if(modelElement instanceof CoreDef)
 				if(!modelElement.contributingType.empty)
 					createEObjectNode(parentNode, modelElement, image, 'contributing', false);
-				if(!modelElement.constants.empty)
+				if(!modelElement.state.empty)
 					createEObjectNode(parentNode, modelElement, image, 'constants', false);
-				if(!modelElement.regs.empty)
-					createEObjectNode(parentNode, modelElement, image, 'registers', false);
-				if(!modelElement.spaces.empty)
-					createEObjectNode(parentNode, modelElement, image, 'spaces', false);
 				if(modelElement instanceof InstructionSet && !(modelElement as InstructionSet).func.empty)
 					createEObjectNode(parentNode, modelElement, image, 'spaces', false);
 				if(!modelElement.instr.empty)

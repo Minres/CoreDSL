@@ -40,7 +40,11 @@ class CoreDSLInterpreter {
      
     def static Value evaluate(DirectDeclarator decl, EvaluationContext ctx){
         if(decl.eContainer instanceof InitDeclarator){
-            (decl.eContainer as InitDeclarator).initializer.expr.valueFor(ctx)
+            val initDecl = (decl.eContainer as InitDeclarator)
+            if(initDecl.initializer!==null)
+                initDecl.initializer.expr.valueFor(ctx)
+            else
+                null
         }    
     }
     

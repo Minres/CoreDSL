@@ -22,7 +22,7 @@ class CoreDslParsingTest {
 
     def CharSequence addInstructionContext(CharSequence str)'''
         InstructionSet TestISA {
-            registers { 
+            architectural_state { 
                 [[is_pc]] int PC ;
                 int Xreg[32];
                 float Freg[32];
@@ -82,7 +82,7 @@ class CoreDslParsingTest {
     def void parseInstrSQRTFloatRegs() {
         val content = '''
             InstructionSet TestISA {
-                registers {
+                architectural_state {
                     float F_Ext[32];}
                 instructions { 
                     vectorL {
@@ -105,7 +105,7 @@ class CoreDslParsingTest {
     def void parseInstrSQRTUnionRegs() {
         val content = '''
             InstructionSet TestISA {
-                registers {
+                architectural_state {
                     union ISAXRegFile{
                         double doublePrec;  // for a double precision entry
                         struct vector2d {
@@ -140,7 +140,7 @@ class CoreDslParsingTest {
     def void parseInstrSpawn() {
         val content = '''
             InstructionSet TestISA {
-                registers {
+                architectural_state {
                 	[[is_pc]] int PC;
                     float Freg[32];
                     bool F_ready[32] [[is_interlock_for=Freg]];  // use attribute to indicate purpose of F_ready
@@ -168,7 +168,7 @@ class CoreDslParsingTest {
     def void parseInstrZOL() {
         val content = '''
             InstructionSet TestISA {
-                registers {
+                architectural_state {
                 	int PC;
                 	int X[32];
                     unsigned int count, endpc, startpc;

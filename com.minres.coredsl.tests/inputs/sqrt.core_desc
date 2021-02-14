@@ -1,5 +1,5 @@
 InstructionSet Vec2D {
-    registers{
+    architectural_state {
         union ISAXRegFile {
             double doublePrec;  // for a double precision entry
             struct vector2d {

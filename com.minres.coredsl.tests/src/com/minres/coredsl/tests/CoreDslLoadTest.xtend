@@ -34,11 +34,8 @@ class CoreDslLoadTest {
 		assertNotNull(result)
 		assertEquals("RV32I", result.name)
 		assertNull(result.superType)
-		assertEquals(2, result.spaces.size())
-		assertNotNull(result.regs)
+		assertEquals(7, result.state.size())
 		assertNotNull(result.instr)
-
-		assertEquals(2, result.regs.size)
 
 		assertEquals(5, result.instr.size)
 		val i0 = result.instr.get(0);

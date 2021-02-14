@@ -5,8 +5,14 @@ import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.InstructionSet
+import com.minres.coredsl.coreDsl.Declaration
 
 class ModelUtil {
+
+    static def Iterable<Declaration> getStateDeclarations(ISA isa) {
+        isa.state.filter[it instanceof Declaration].map[it as Declaration]
+    }
+
 
     static def <T extends EObject> T parentOfType(EObject obj, Class<T> clazz) {
         if (obj.eContainer === null)
@@ -18,7 +24,7 @@ class ModelUtil {
     
     static def DirectDeclarator effectiveDeclarator(ISA isa, String name){
         if(isa instanceof CoreDef) {
-            val decl = isa.constants.findFirst[it.init.findFirst[it.declarator.name==name && it.initializer!==null]!==null]
+            val decl = isa.stateDeclarations.findFirst[it.init.findFirst[it.declarator.name==name && it.initializer!==null]!==null]
             if(decl!==null)
                 return decl.init.findFirst[it.declarator.name==name].declarator
             for(contrib:isa.contributingType.reverse) {
@@ -27,7 +33,7 @@ class ModelUtil {
                     return contribDecl
             }
         } else if(isa instanceof InstructionSet){
-            val decl = isa.constants.findFirst[it.init.findFirst[it.declarator.name==name && it.initializer!==null]!==null]
+            val decl = isa.stateDeclarations.findFirst[it.init.findFirst[it.declarator.name==name && it.initializer!==null]!==null]
             if(decl!==null)
                 return decl.init.findFirst[it.declarator.name==name].declarator
             val baseDecl = isa.superType.effectiveDeclarator(name)

@@ -36,12 +36,12 @@ import static extension com.minres.coredsl.util.ModelUtil.*
 class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //AbstractCoreDslScopeProvider {
 
     def IScope scope_Variable(CoreDef coreDef, EReference reference) {
-        val decls = #[coreDef.constants, coreDef.regs, coreDef.spaces].filter[it !== null].map [
+        val decls = #[coreDef.stateDeclarations].filter[it !== null].map [
             it.flatMap[init].flatMap[EcoreUtil2.getAllContentsOfType(it, DirectDeclarator)]
         ].flatten + coreDef.func
 
         val outerScopeElems = coreDef.contributingType.map [
-            #[it.constants, it.regs, it.spaces].filter[it !== null].map [
+            #[it.stateDeclarations].filter[it !== null].map [
                 it.flatMap[init].flatMap[EcoreUtil2.getAllContentsOfType(it, DirectDeclarator)]
             ].flatten + it.func
         ].flatten
@@ -49,7 +49,7 @@ class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //Abstract
     }
 
     def IScope scope_Variable(InstructionSet isa, EReference reference) {
-        val decls = #[isa.constants, isa.regs, isa.spaces].filter[it !== null].map [
+        val decls = #[isa.stateDeclarations].filter[it !== null].map [
             it.flatMap[init].flatMap[EcoreUtil2.getAllContentsOfType(it, DirectDeclarator)]
         ].flatten + isa.func
 
@@ -129,12 +129,12 @@ class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //Abstract
      */
     def dispatch Iterable<Declaration> allDeclarations(InstructionSet isa) {
         val declsSuper = isa.superType!==null?isa.superType.allDeclarations:#[]
-        #[declsSuper, isa.constants, isa.regs, isa.spaces].flatten
+        #[declsSuper, isa.stateDeclarations.filter[it instanceof Declaration]].flatten
     }
 
     def dispatch Iterable<Declaration> allDeclarations(CoreDef coreDef) {
         val declsSuper = coreDef.contributingType.map[it.allDeclarations].flatten
-        #[declsSuper, coreDef.constants, coreDef.regs, coreDef.spaces].flatten
+        #[declsSuper, coreDef.stateDeclarations.filter[it instanceof Declaration]].flatten
     }
     /*
      * directDeclarations extension methods end

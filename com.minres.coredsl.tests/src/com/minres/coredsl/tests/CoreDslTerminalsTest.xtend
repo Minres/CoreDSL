@@ -33,7 +33,7 @@ class CoreDslTerminalsTest {
 
     def CharSequence addBehaviorContext(CharSequence str) '''
         InstructionSet TestISA {
-            registers { 
+            architectural_state { 
                 [[is_pc]] int PC ;
                 int Xreg[32];
                 float Freg[32];

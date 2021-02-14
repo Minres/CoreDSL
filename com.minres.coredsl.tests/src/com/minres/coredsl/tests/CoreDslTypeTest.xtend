@@ -17,6 +17,7 @@ import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertTrue
 
 import static extension com.minres.coredsl.typing.TypeProvider.*
+import static extension com.minres.coredsl.util.ModelUtil.*
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
@@ -30,15 +31,13 @@ class CoreDslTypeTest {
     def void deferedConstantDefinition() {
         val content = '''
         InstructionSet TestISA {
-            constants {
+            architectural_state {
                 unsigned XLEN;
-            }
-            registers { 
                 unsigned<XLEN>  X[32];
             }
         }
         Core TestCore provides TestISA {
-            constants {
+            architectural_state {
                 unsigned XLEN=32;
             }
         }
@@ -47,7 +46,7 @@ class CoreDslTypeTest {
         for (iss : issues)
             println(iss)
         assertTrue(issues.isEmpty())
-        val decl = content.definitions.get(0).regs.get(0).init.get(0).declarator
+        val decl = content.definitions.get(0).stateDeclarations.get(1).init.get(0).declarator
         assertEquals("X", decl.name)
         val dataType = decl.typeFor(content.definitions.last)
         assertNotNull(dataType)

@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static extension com.minres.coredsl.interpreter.CoreDSLInterpreter.*
+import static extension com.minres.coredsl.util.ModelUtil.*
 import java.math.BigInteger
 import static org.junit.Assert.*
 
@@ -29,12 +30,10 @@ class CoreDslInterpreterTest {
     def void simpleConstants() {
         val content = '''
         InstructionSet Test {
-            constants {
+            architectural_state {
                 int a = 42;
                 int b = a + 5;
                 int XLEN = a + b;
-            }
-            registers { 
                 [[is_pc]] int PC ;
                 int Xreg[XLEN];
                 float Freg[a];
@@ -43,7 +42,7 @@ class CoreDslInterpreterTest {
         '''.parse
         val issues = validator.validate(content)
         assertTrue(issues.isEmpty())
-        val constants = content.definitions.get(0).constants
+        val constants = content.definitions.get(0).stateDeclarations
         val rootContext = EvaluationContext.root
         val values  = constants.flatMap[declaration |
             declaration.init.map[initDecl|
