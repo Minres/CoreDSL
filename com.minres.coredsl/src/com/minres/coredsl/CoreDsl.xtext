@@ -393,7 +393,7 @@ enum DataTypes
 
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';
 
-enum StorageClassSpecifier: EXTERN='extern' | STATIC='static';
+enum StorageClassSpecifier: EXTERN='extern' | STATIC='static' | REGISTER='register';
 
 enum DeclarationAttribute: NONE | IS_PC='is_pc' | IS_INTERLOCK_FOR='is_interlock_for';
 	
