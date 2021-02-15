@@ -6,6 +6,7 @@ import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.StorageClassSpecifier
 
 class ModelUtil {
 
@@ -13,6 +14,22 @@ class ModelUtil {
         isa.state.filter[it instanceof Declaration].map[it as Declaration]
     }
 
+
+    static def Iterable<Declaration> getStateConstDeclarations(ISA isa) {
+        isa.state.filter[
+        	it instanceof Declaration && 
+        	!(it as Declaration).storage.contains(StorageClassSpecifier.EXTERN) && 
+        	!(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER)
+        ].map[it as Declaration]
+    }
+
+    static def Iterable<Declaration> getStateExternDeclarations(ISA isa) {
+        isa.state.filter[it instanceof Declaration && (it as Declaration).storage.contains(StorageClassSpecifier.EXTERN)].map[it as Declaration]
+    }
+    
+    static def Iterable<Declaration> getStateRegisterDeclarations(ISA isa) {
+        isa.state.filter[it instanceof Declaration && (it as Declaration).storage.contains(StorageClassSpecifier.REGISTER)].map[it as Declaration]
+    }
 
     static def <T extends EObject> T parentOfType(EObject obj, Class<T> clazz) {
         if (obj.eContainer === null)
