@@ -22,6 +22,7 @@ import org.junit.runner.RunWith
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
+import com.minres.coredsl.coreDsl.DirectDeclarator
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
@@ -155,7 +156,7 @@ class CoreDslTerminalsTest {
         for (el : compound.items.subList(3, compound.items.size())) {
             if (el instanceof ExpressionStatement) {
                 val expr = el.expr.expressions.get(0) as AssignmentExpression
-                val lhsName = (expr.left as PrimaryExpression).ref.name;
+                val lhsName = ((expr.left as PrimaryExpression).ref as DirectDeclarator).name;
                 val rhs = (expr.assignments.get(0).right as PrimaryExpression).constant as FloatingConstant
                 val floatValue = rhs.value.doubleValue
                 if (lhsName == "d" || lhsName == "f" || lhsName == "ld")

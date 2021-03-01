@@ -63,7 +63,7 @@ class CoreDslLabelProvider extends DefaultEObjectLabelProvider {
 	}
 	
 	private def dispatch String getToText(BitValue value){
-		value.name
+		value.value.toString(2)
 	}
 	
 	def image(CoreDef e){

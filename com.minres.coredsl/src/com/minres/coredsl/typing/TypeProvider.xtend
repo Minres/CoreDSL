@@ -231,7 +231,7 @@ class TypeProvider {
         for(Field f:list.fields)
             switch(f){
                 BitField:{size += f.left.value.intValue-f.right.value.intValue+1}
-                BitValue:{size += f.name.length-1}
+                BitValue:{size += (f.value as BigIntegerWithRadix).size}
             }
         new DataType(DataType.INTEGRAL_UNSIGNED, size)
     }
@@ -241,7 +241,7 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(BitValue e, ISA ctx) {
-        new DataType(DataType.INTEGRAL_UNSIGNED, e.name.length-1)
+        new DataType(DataType.INTEGRAL_UNSIGNED, (e.value as BigIntegerWithRadix).size)
     }
 
     def static dispatch DataType typeFor(IntegerConstant e, ISA ctx) {

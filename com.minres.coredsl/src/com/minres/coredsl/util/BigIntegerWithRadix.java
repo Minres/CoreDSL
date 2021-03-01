@@ -64,5 +64,26 @@ public class BigIntegerWithRadix extends BigInteger {
 				return Integer.toString(size)+"'d"+super.toString(radix);
 		}
 	}
-
+	
+	public String toCString() {
+		switch(size) {
+		case 1:
+			return intValue()==0?"false":"true";
+		case 0:
+		case 8:
+		case 16:
+		case 32:
+		case 64:
+			if(radix==2)
+				return "0b"+super.toString(radix);
+			else if(radix==8)
+				return "0"+super.toString(radix);
+			else if(radix==16)	
+				return "0x"+super.toString(radix);
+			else
+				return super.toString(radix);
+		default:		
+			return "0b"+super.toString(2);
+		}
+	}
 }

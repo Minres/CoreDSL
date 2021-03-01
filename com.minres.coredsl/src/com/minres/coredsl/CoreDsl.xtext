@@ -63,11 +63,11 @@ Field
 	;
 
 BitValue
-	: 	name=BVAL
+	: 	value=INTEGER
 	;
 
 BitField
-	:	name=ID LEFT_BR left=IntegerConstant ':' right=IntegerConstant mod=(RIGHT_BR | ']s' | ']u') 
+	:	name=ID LEFT_BR left=IntegerConstant ':' right=IntegerConstant RIGHT_BR 
 	;
 
 FunctionDefinition
@@ -401,13 +401,9 @@ enum InstrAttribute: NONE | NO_CONT='no_cont' | COND='cond' | FLUSH='flush';
 
 enum StructOrUnion:   STRUCT='struct'|UNION='union';
 
-//enum BitfieldDataType:	UNSIGNED="u" | SIGNED="s"; //| FLOAT="f" | DOUBLE="d" | QUAD="q" | BOOLEAN='b';
-
 terminal LEFT_BR: '[';
 
 terminal RIGHT_BR: ']';
-
-terminal BVAL : 'b'('0'..'9')+;
 
 terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false' ;
 

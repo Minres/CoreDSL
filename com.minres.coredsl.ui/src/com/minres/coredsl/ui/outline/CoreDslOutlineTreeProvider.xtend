@@ -7,7 +7,6 @@ import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.Encoding
-import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.Statement
