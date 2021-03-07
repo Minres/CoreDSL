@@ -31,7 +31,7 @@ class CoreDslResourceTest {
     def void resourceDefinition() {
         val content = '''
         ResourceKind {
-            Multiplier{Multiplier1(3) | Multiplier2(4)}
+            Multiplier{ Multiplier1(3) | Multiplier2(4) }
         }
 
         ResourceSets {

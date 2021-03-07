@@ -5,26 +5,31 @@ package com.minres.coredsl.scoping
 
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BlockItem
+import com.minres.coredsl.coreDsl.CompositeType
 import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.Instruction
+import com.minres.coredsl.coreDsl.InstructionGroup
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.IterationStatement
-import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.Postfix
+import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
+import com.minres.coredsl.coreDsl.ResourceElement
+import com.minres.coredsl.coreDsl.Stage
 import com.minres.coredsl.coreDsl.StructDeclaration
-import com.minres.coredsl.coreDsl.CompositeType
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
+
 import static extension com.minres.coredsl.util.ModelUtil.*
 
 /**
@@ -100,6 +105,24 @@ class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //Abstract
         IScope.NULLSCOPE
     }
 
+    def IScope scope_ResourceRef(InstructionGroup context, EReference reference) {
+		val res = EcoreUtil2.getAllContentsOfType(context.content, ResourceElement) 
+		return Scopes.scopeFor(res)   	
+    }
+
+    def IScope scope_ResourceRef(Stage context, EReference reference) {
+		val res = EcoreUtil2.getAllContentsOfType(context.content, ResourceElement) 
+		return Scopes.scopeFor(res)   	
+    }
+    
+    def DescriptionContent getContent(EObject o){
+    	if(o instanceof DescriptionContent)
+    		o
+    	else if(o!==null && o.eContainer !== null)
+    		o.eContainer.content
+    	else
+    		null
+    } 
     /************************************************************************
      * declarationsBefore extension methods begin
      */

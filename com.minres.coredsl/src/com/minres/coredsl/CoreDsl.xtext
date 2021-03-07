@@ -22,11 +22,11 @@ fragment ResourceKindDecl:
 ;
 
 ResourceKind:
-	name=ID '{' time+=ResourceTime ('|' time+=ResourceTime)* '}'
+	name=ID '{' time+=TimedResource ('|' time+=TimedResource)* '}'
 ;
 
-ResourceTime:
-	res=ID ('(' ti=INTEGER ')')?
+TimedResource:
+	name=ID ('(' ti=INTEGER ')')?
 ;
 
 fragment ResourceSets:
@@ -41,8 +41,8 @@ Resource:
 	name=ID
 ;
 
-ResourceRef:
-	ResourceKind | ResourceSet | Resource
+ResourceElement:
+	ResourceKind | TimedResource | ResourceSet | Resource
 ;
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ ResourcesAssignments:
 
 InstructionGroup: 
 	 (special=('[*]' | '[ALL]') | (ins+=[Instruction] (',' ins+=[Instruction])*)) '{'
-		resources+=[ResourceRef] ('|' resources+=[ResourceRef])* '}'
+		resources+=[ResourceElement] ('|' resources+=[ResourceElement])* '}'
 ;
 
 PipelineDefinition:	 
@@ -100,7 +100,7 @@ PipelineDefinition:
 ;
 
 Stage:
-	name=ID '{' resources+=[ResourceRef] ('|' resources+=[ResourceRef])* '}'
+	name=ID '{' resources+=[ResourceElement] ('|' resources+=[ResourceElement])* '}'
 ;
 //
 ///////////////////////////////////////////////////////////////////////////////
