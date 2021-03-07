@@ -4,13 +4,48 @@ import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
 generate coreDsl "http://www.minres.com/coredsl/CoreDsl/2.0"
 
-DescriptionContent
-	: (imports+=Import)* definitions+=ISA+ 
+DescriptionContent:
+	(imports+=Import)*
+	ResourceKindDecl?
+	ResourceSets?
+	definitions+=ISA+
 	;
 
 Import
 	: 'import' importURI=STRING
 	;
+
+///////////////////////////////////////////////////////////////////////////////
+// Resource extension 
+fragment ResourceKindDecl:
+	'ResourceKind' '{' kinds+=ResourceKind+'}'
+;
+
+ResourceKind:
+	name=ID '{' time+=ResourceTime ('|' time+=ResourceTime)* '}'
+;
+
+ResourceTime:
+	res=ID ('(' ti=INTEGER ')')?
+;
+
+fragment ResourceSets:
+	'ResourceSets' '{' sets+=ResourceSet+'}'
+;
+
+ResourceSet:
+	name=ID '{' resources+=Resource ('|' resources+=Resource)* '}'
+;
+
+Resource:
+	name=ID
+;
+
+ResourceRef:
+	ResourceKind | ResourceSet | Resource
+;
+//
+///////////////////////////////////////////////////////////////////////////////
 
 ISA
 	: InstructionSet
@@ -32,6 +67,8 @@ CoreDef:
         | SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions)?
         | SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions)?
         )
+        resource=ResourcesAssignments?
+        pipelines+=PipelineDefinition*
     '}'
 ;
 
@@ -44,8 +81,29 @@ fragment SectionFunctions returns ISA:
 ;
 
 fragment SectionInstructions returns ISA:
-    'instructions' '{' instr+=Instruction+     '}'
+    'instructions' '{' instr+=Instruction+ '}'
 ;
+
+///////////////////////////////////////////////////////////////////////////////
+// Resource extension per CoreDef
+ResourcesAssignments:
+	'resources' '{' groups+=InstructionGroup+'}'
+;
+
+InstructionGroup: 
+	 (special=('[*]' | '[ALL]') | (ins+=[Instruction] (',' ins+=[Instruction])*)) '{'
+		resources+=[ResourceRef] ('|' resources+=[ResourceRef])* '}'
+;
+
+PipelineDefinition:	 
+	'pipeline' name=ID '{' stages+=Stage+ '}'
+;
+
+Stage:
+	name=ID '{' resources+=[ResourceRef] ('|' resources+=[ResourceRef])* '}'
+;
+//
+///////////////////////////////////////////////////////////////////////////////
 
 Instruction:
 	name=ID (DoubleLeftBracket attributes+=InstrAttribute DoubleRightBracket )* '{' 
@@ -69,6 +127,7 @@ BitValue
 BitField
 	:	name=ID LEFT_BR left=IntegerConstant ':' right=IntegerConstant RIGHT_BR 
 	;
+
 
 FunctionDefinition
 	:   extern?='extern' type=TypeSpecifier name=ID '(' ParameterList? ')' ';'
