@@ -15,6 +15,12 @@ import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.typing.DataType
 
 import static extension com.minres.coredsl.typing.TypeProvider.*
+import org.eclipse.xtext.validation.Check
+import com.minres.coredsl.coreDsl.ISA
+import com.minres.coredsl.coreDsl.Attribute
+import com.minres.coredsl.coreDsl.Instruction
+import com.minres.coredsl.coreDsl.InitDeclarator
+import com.minres.coredsl.coreDsl.Declaration
 
 /**
  * This class contains custom validation rules. 
@@ -33,7 +39,7 @@ class CoreDslValidator extends AbstractCoreDslValidator {
     protected static val ISSUE_CODE_PREFIX = "com.minres.coredsl."
     public static val TYPE_MISMATCH = ISSUE_CODE_PREFIX + "TypeMismatch"
     public static val TYPE_ILLEGAL = ISSUE_CODE_PREFIX + "TypeIllegal"
-
+	
     //@Check
     def checkType(Expression e) {
         switch (e) {
@@ -114,5 +120,80 @@ class CoreDslValidator extends AbstractCoreDslValidator {
                     )
             }
         }
+    }
+    @Check
+    def checkAttributeNames(ISA isa) {
+    	for(Attribute a: isa.attributes) {
+    		switch(a.type) {
+    			case ENABLE: if(a.value===null)
+                    error(
+                        "enable requires a condition",
+                        CoreDslPackage.Literals.ISA__ATTRIBUTES,
+                        ISSUE_CODE_PREFIX + "MissingValue"
+                    )
+    			default:
+    			    error(
+                        "illegal attribute name",
+                        CoreDslPackage.Literals.ISA__ATTRIBUTES,
+                        ISSUE_CODE_PREFIX + "IllegalAttribute"
+                    )
+    		}
+    	}
+    	
+    }
+    
+    @Check
+    def checkAttributeNames(Instruction instr) {
+    	for(Attribute a: instr.attributes) {
+    		switch(a.type) {
+    			case NO_CONT,
+    			case COND,
+    			case FLUSH:
+    				return
+    			default:
+    			    error(
+                        "illegal attribute name",
+                        CoreDslPackage.Literals.INSTRUCTION__ATTRIBUTES,
+                        ISSUE_CODE_PREFIX + "IllegalAttribute"
+                    )
+    		}
+    	}
+    	
+    }
+    
+    @Check
+    def checkAttributeNames(Declaration decl) {
+    	for(Attribute a: decl.attrs) {
+    		switch(a.type) {
+    			case IS_PC,
+    			case IS_INTERLOCK_FOR:
+    				return
+    			default:
+    			    error(
+                        "illegal attribute name",
+                        CoreDslPackage.Literals.INIT_DECLARATOR__ATTRS,
+                        ISSUE_CODE_PREFIX + "IllegalAttribute"
+                    )
+    		}
+    	}
+    	
+    }
+
+    @Check
+    def checkAttributeNames(InitDeclarator decl) {
+    	for(Attribute a: decl.attrs) {
+    		switch(a.type) {
+    			case IS_PC,
+    			case IS_INTERLOCK_FOR:
+    				return
+    			default:
+    			    error(
+                        "illegal attribute name",
+                        CoreDslPackage.Literals.INIT_DECLARATOR__ATTRS,
+                        ISSUE_CODE_PREFIX + "IllegalAttribute"
+                    )
+    		}
+    	}
+    	
     }
 }
