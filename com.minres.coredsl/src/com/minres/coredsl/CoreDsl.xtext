@@ -72,7 +72,7 @@ BitField
 
 FunctionDefinition
 	:   extern?='extern' type=TypeSpecifier name=ID '(' ParameterList? ')' ';'
-	|   type=TypeSpecifier name=ID '(' ParameterList? ')' statement=CompoundStatement
+	|   type=TypeSpecifier name=ID '(' ParameterList? ')' attributes+=Attribute* statement=CompoundStatement
 	;
 
 fragment ParameterList: params+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*;
@@ -156,7 +156,7 @@ Declaration
 fragment DeclarationSpecifier
     :   storage+=StorageClassSpecifier
     |   qualifiers+=TypeQualifier
-    |   attrs+=Attribute
+    |   attributes+=Attribute
     ;
 
 Attribute
@@ -204,7 +204,7 @@ StructDeclarationSpecifier
     ;
 
 InitDeclarator
-    :   declarator=DirectDeclarator attrs+=Attribute* ('=' initializer=Initializer)?
+    :   declarator=DirectDeclarator attributes+=Attribute* ('=' initializer=Initializer)?
     ;
 
 DirectDeclarator
@@ -395,7 +395,7 @@ enum TypeQualifier: CONST='const' | VOLATILE='volatile';
 
 enum StorageClassSpecifier: EXTERN='extern' | STATIC='static' | REGISTER='register';
 
-enum AttributeName: NONE | IS_PC='is_pc' | IS_INTERLOCK_FOR='is_interlock_for' | ENABLE="enable" | NO_CONT='no_cont' | COND='cond' | FLUSH='flush';
+enum AttributeName: NONE | IS_PC='is_pc' | IS_INTERLOCK_FOR='is_interlock_for' | DO_NOT_SYNTHESIZE="do_not_synthesize" | ENABLE="enable" | NO_CONT='no_cont' | COND='cond' | FLUSH='flush';
 
 enum StructOrUnion:   STRUCT='struct'|UNION='union';
 

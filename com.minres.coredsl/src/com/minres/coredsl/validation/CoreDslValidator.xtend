@@ -21,6 +21,7 @@ import com.minres.coredsl.coreDsl.Attribute
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.FunctionDefinition
 
 /**
  * This class contains custom validation rules. 
@@ -163,7 +164,7 @@ class CoreDslValidator extends AbstractCoreDslValidator {
     
     @Check
     def checkAttributeNames(Declaration decl) {
-    	for(Attribute a: decl.attrs) {
+    	for(Attribute a: decl.attributes) {
     		switch(a.type) {
     			case IS_PC,
     			case IS_INTERLOCK_FOR:
@@ -171,7 +172,7 @@ class CoreDslValidator extends AbstractCoreDslValidator {
     			default:
     			    error(
                         "illegal attribute name",
-                        CoreDslPackage.Literals.INIT_DECLARATOR__ATTRS,
+                        CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES,
                         ISSUE_CODE_PREFIX + "IllegalAttribute"
                     )
     		}
@@ -181,7 +182,7 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 
     @Check
     def checkAttributeNames(InitDeclarator decl) {
-    	for(Attribute a: decl.attrs) {
+    	for(Attribute a: decl.attributes) {
     		switch(a.type) {
     			case IS_PC,
     			case IS_INTERLOCK_FOR:
@@ -189,11 +190,29 @@ class CoreDslValidator extends AbstractCoreDslValidator {
     			default:
     			    error(
                         "illegal attribute name",
-                        CoreDslPackage.Literals.INIT_DECLARATOR__ATTRS,
+                        CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES,
                         ISSUE_CODE_PREFIX + "IllegalAttribute"
                     )
     		}
     	}
     	
     }
+
+    @Check
+    def checkAttributeNames(FunctionDefinition decl) {
+    	for(Attribute a: decl.attributes) {
+    		switch(a.type) {
+    			case DO_NOT_SYNTHESIZE:
+    				return
+    			default:
+    			    error(
+                        "illegal attribute name",
+                        CoreDslPackage.Literals.FUNCTION_DEFINITION__ATTRIBUTES,
+                        ISSUE_CODE_PREFIX + "IllegalAttribute"
+                    )
+    		}
+    	}
+    	
+    }
+    
 }
