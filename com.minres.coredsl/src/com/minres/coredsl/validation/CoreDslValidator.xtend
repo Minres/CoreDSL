@@ -113,7 +113,7 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 //            case EnumType: {
 //            }
             case PrimitiveType: {
-                if (e.typeFor === new DataType(0, 0))
+                if (e.typeFor === new DataType(DataType.Type.COMPOSITE, 0))
                     error(
                         "incompatible types used",
                         CoreDslPackage.Literals.PRIMITIVE_TYPE__DATA_TYPE,

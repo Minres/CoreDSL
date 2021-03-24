@@ -44,10 +44,14 @@ class TypeProvider {
      * * sub typing
      * 
      */
-    public static val boolType = new DataType(DataType.INTEGRAL_SIGNED, 1)
+    public static val boolType = new DataType(DataType.Type.INTEGRAL_SIGNED, 1)
+
+	def static Boolean isAligned(DataType dt) {
+    	dt.size==8 || dt.size==16 || dt.size==32 || dt.size==64 || dt.size==128
+    }
 
     def static Boolean isIntegral(DataType dt) {
-		dt.size > 0 && (dt.type == DataType.INTEGRAL_SIGNED || dt.type==DataType.INTEGRAL_UNSIGNED)
+		dt.size > 0 && (dt.type == DataType.Type.INTEGRAL_SIGNED || dt.type==DataType.Type.INTEGRAL_UNSIGNED)
     }
  
     def static DataType typeFor(TypeSpecifier e) {
@@ -67,54 +71,52 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(CompositeType e, ISA ctx) {
-        return new DataType(0, 0)
+        return new DataType(DataType.Type.COMPOSITE, 0)
     }
 
     def static dispatch DataType typeFor(EnumType e, ISA ctx) {
-        return new DataType(DataType.INTEGRAL_SIGNED, 32)
+        return new DataType(DataType.Type.INTEGRAL_SIGNED, 32)
     }
 
     def static dispatch DataType typeFor(PrimitiveType e, ISA ctx) {
         if (e.dataType.findFirst[it == DataTypes.FLOAT] !== null)
-            return new DataType(DataType.FLOAT, 32)
+            return new DataType(DataType.Type.FLOAT, 32)
         val longCount = e.dataType.filter[it === DataTypes.LONG].size
         if (e.dataType.findFirst[it === DataTypes.DOUBLE] !== null)
-            return longCount == 1 ? new DataType(DataType.FLOAT, 80) : new DataType(DataType.FLOAT, 64)
+            return longCount == 1 ? new DataType(DataType.Type.FLOAT, 80) : new DataType(DataType.Type.FLOAT, 64)
         if (e.dataType.findFirst[it === DataTypes.BOOL] !== null)
-            return new DataType(DataType.INTEGRAL_SIGNED, 1)
+            return new DataType(DataType.Type.INTEGRAL_SIGNED, 1)
         val isUnsigned = e.dataType.findFirst[it === DataTypes.UNSIGNED] !== null
         if (e.size.size > 0) {
             val sizeValue = e.size.get(0).valueFor(EvaluationContext.root(ctx))
             if(sizeValue === null || !(sizeValue.value instanceof BigInteger)) return null
             val sizeInt = (sizeValue.value as BigInteger).intValue
             return isUnsigned
-                ? new DataType(DataType.INTEGRAL_UNSIGNED, sizeInt)
-                : new DataType(DataType.INTEGRAL_SIGNED, sizeInt)
+                ? new DataType(DataType.Type.INTEGRAL_UNSIGNED, sizeInt)
+                : new DataType(DataType.Type.INTEGRAL_SIGNED, sizeInt)
         } else {
             if (longCount == 2)
                 return isUnsigned
-                    ? new DataType(DataType.INTEGRAL_UNSIGNED, 128)
-                    : new DataType(DataType.INTEGRAL_SIGNED, 128)
+                    ? new DataType(DataType.Type.INTEGRAL_UNSIGNED, 128)
+                    : new DataType(DataType.Type.INTEGRAL_SIGNED, 128)
             else if (longCount == 1)
                 return isUnsigned
-                    ? new DataType(DataType.INTEGRAL_UNSIGNED, 128)
-                    : new DataType(DataType.INTEGRAL_SIGNED, 128)
+                    ? new DataType(DataType.Type.INTEGRAL_UNSIGNED, 128)
+                    : new DataType(DataType.Type.INTEGRAL_SIGNED, 128)
             else if (longCount == 0) {
                 if (e.dataType.findFirst[it === DataTypes.SHORT] !== null)
                     return isUnsigned
-                        ? new DataType(DataType.INTEGRAL_UNSIGNED, 16)
-                        : new DataType(DataType.INTEGRAL_SIGNED, 16)
+                        ? new DataType(DataType.Type.INTEGRAL_UNSIGNED, 16)
+                        : new DataType(DataType.Type.INTEGRAL_SIGNED, 16)
                 if (e.dataType.findFirst[it === DataTypes.CHAR] !== null)
                     return isUnsigned
-                        ? new DataType(DataType.INTEGRAL_UNSIGNED, 8)
-                        : new DataType(DataType.INTEGRAL_SIGNED, 8)
-                if (e.dataType.findFirst[it === DataTypes.INT] !== null)
-                    return isUnsigned
-                        ? new DataType(DataType.INTEGRAL_UNSIGNED, 32)
-                        : new DataType(DataType.INTEGRAL_SIGNED, 32)
+                        ? new DataType(DataType.Type.INTEGRAL_UNSIGNED, 8)
+                        : new DataType(DataType.Type.INTEGRAL_SIGNED, 8)
+                return isUnsigned
+                    ? new DataType(DataType.Type.INTEGRAL_UNSIGNED, 32)
+                    : new DataType(DataType.Type.INTEGRAL_SIGNED, 32)
             }
         }
-        return new DataType(0, 0)
     }
 
     def dispatch static DataType typeFor(Expression e, ISA ctx) {
@@ -170,7 +172,7 @@ class TypeProvider {
             case "--": e.left.typeFor(ctx)
             case "~": e.left.typeFor(ctx)
             case "!": boolType
-            case "sizeof": new DataType(DataType.INTEGRAL_UNSIGNED, 32)
+            case "sizeof": new DataType(DataType.Type.INTEGRAL_UNSIGNED, 32)
             default: // missing 'case "&", case "*", case "+" , case "-":'
                 null
         }
@@ -233,24 +235,24 @@ class TypeProvider {
                 BitField:{size += f.left.value.intValue-f.right.value.intValue+1}
                 BitValue:{size += (f.value as BigIntegerWithRadix).size}
             }
-        new DataType(DataType.INTEGRAL_UNSIGNED, size)
+        new DataType(DataType.Type.INTEGRAL_UNSIGNED, size)
     }
 
     def static dispatch DataType typeFor(BitField e, ISA ctx) {
-        new DataType(DataType.INTEGRAL_UNSIGNED, e.left.value.intValue - e.right.value.intValue+1)
+        new DataType(DataType.Type.INTEGRAL_UNSIGNED, e.left.value.intValue + 1)
     }
 
     def static dispatch DataType typeFor(BitValue e, ISA ctx) {
-        new DataType(DataType.INTEGRAL_UNSIGNED, (e.value as BigIntegerWithRadix).size)
+        new DataType(DataType.Type.INTEGRAL_UNSIGNED, (e.value as BigIntegerWithRadix).size)
     }
 
     def static dispatch DataType typeFor(IntegerConstant e, ISA ctx) {
         val value = e.value as BigIntegerWithRadix
-        new DataType(value.type==BigIntegerWithRadix.TYPE.UNSIGNED?DataType.INTEGRAL_UNSIGNED:DataType.INTEGRAL_SIGNED, value.size)
+        new DataType(value.type==BigIntegerWithRadix.TYPE.UNSIGNED?DataType.Type.INTEGRAL_UNSIGNED:DataType.Type.INTEGRAL_SIGNED, value.size)
     }
 
     def static dispatch DataType typeFor(FloatingConstant e, ISA ctx) {
-        new DataType(DataType.FLOAT, (e.value as BigDecimalWithSize).size)
+        new DataType(DataType.Type.FLOAT, (e.value as BigDecimalWithSize).size)
     }
 
     def static dispatch DataType typeFor(BoolConstant e, ISA ctx) {
@@ -258,11 +260,11 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(CharacterConstant e, ISA ctx) {
-        new DataType(DataType.INTEGRAL_SIGNED, 8)
+        new DataType(DataType.Type.INTEGRAL_SIGNED, 8)
     }
     
     def static dispatch DataType typeFor(StringLiteral e, ISA ctx) {
-        new DataType(DataType.INTEGRAL_SIGNED, 0)
+        new DataType(DataType.Type.INTEGRAL_SIGNED, 0)
     }
     
     def static boolean isComparable(DataType left, DataType right){

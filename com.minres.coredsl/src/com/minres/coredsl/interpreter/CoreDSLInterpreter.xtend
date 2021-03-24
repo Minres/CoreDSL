@@ -103,7 +103,7 @@ class CoreDSLInterpreter {
             case "--": e.left.valueFor(ctx)
             case "~": e.left.valueFor(ctx)
             case "!": new Value(boolType, e.left.valueFor(ctx).value)
-            case "sizeof": new Value(new DataType(DataType.INTEGRAL_UNSIGNED, 32), -1) // TODO: fix it
+            case "sizeof": new Value(new DataType(DataType.Type.INTEGRAL_UNSIGNED, 32), -1) // TODO: fix it
             default: // missing 'case "&", case "*", case "+" , case "-":'
                 null
         }
@@ -165,11 +165,11 @@ class CoreDSLInterpreter {
     }
     
     def static dispatch Value valueFor(BitField e, EvaluationContext ctx) {
-        new Value( new DataType(DataType.INTEGRAL_UNSIGNED, e.left.value.intValue), null) // bitfield cannot be evaluated
+        new Value( new DataType(DataType.Type.INTEGRAL_UNSIGNED, e.left.value.intValue), null) // bitfield cannot be evaluated
     }
 
     def static dispatch Value valueFor(BitValue e, EvaluationContext ctx) {
-        new Value( new DataType(DataType.INTEGRAL_UNSIGNED, 1), 0)
+        new Value( new DataType(DataType.Type.INTEGRAL_UNSIGNED, 1), 0)
     }
 
     def static dispatch Value valueFor(IntegerConstant e, EvaluationContext ctx) {
@@ -185,11 +185,11 @@ class CoreDSLInterpreter {
     }
 
     def static dispatch Value valueFor(CharacterConstant e, EvaluationContext ctx) {
-        new Value(new DataType(DataType.INTEGRAL_SIGNED, 8), BigInteger.valueOf(e.value.charAt(0)))
+        new Value(new DataType(DataType.Type.INTEGRAL_SIGNED, 8), BigInteger.valueOf(e.value.charAt(0)))
     }
     
     def static dispatch Value valueFor(StringLiteral e, EvaluationContext ctx) {
-        new Value(new DataType(DataType.INTEGRAL_SIGNED, 0), null)
+        new Value(new DataType(DataType.Type.INTEGRAL_SIGNED, 0), null)
     }
     
     def static boolean isComparable(Value left, Value right){
