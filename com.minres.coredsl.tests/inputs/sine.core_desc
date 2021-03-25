@@ -30,7 +30,7 @@ InstructionSet RISCVROB {
     }
     instructions {
         SIMDSIN {  
-            encoding: b10101 :: rd[4:0] :: rs1[4:0] ;
+            encoding: 0b10101 :: rd[4:0] :: rs1[4:0] ;
             args_disass:"{name(rd)}, {name(rs1)}"; 
             behavior: {
                 unsigned int i;

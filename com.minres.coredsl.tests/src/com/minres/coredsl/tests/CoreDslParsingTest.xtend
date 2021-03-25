@@ -37,7 +37,7 @@ class CoreDslParsingTest {
     def void parseInstrPRELU() {
         val content = '''
         PRELU {
-            encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011;  
+            encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  
             args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
             behavior: {
                 static float alpha = 0.2;  
@@ -63,7 +63,7 @@ class CoreDslParsingTest {
     def void parseInstrSBOX() {
         val content = '''
         SBOX {
-            encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011;  
+            encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  
             args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
             behavior: {
                 unsigned int data_i;
@@ -86,7 +86,7 @@ class CoreDslParsingTest {
                     float F_Ext[32];}
                 instructions { 
                     vectorL {
-                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011 ;
                         args_disass:"{name(rd)}, {name(rs1)}";
                         behavior: { 
                         float xc = F_Ext[rs1];     
@@ -116,7 +116,7 @@ class CoreDslParsingTest {
                 }
                 instructions { 
                     vectorL {
-                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011 ;
                         args_disass:"{name(rd)}, {name(rs1)}";
                         behavior: { 
                             float xc = ISAXRegFile[rs1].vector2d.x_coord;
@@ -147,7 +147,7 @@ class CoreDslParsingTest {
                 }
                 instructions {
                     SIN {
-                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011 ;
                         args_disass:"#{name(rd)}, {name(rs1)}";   
                         behavior: { 
                             double theta = Freg[rs1];
@@ -189,7 +189,7 @@ class CoreDslParsingTest {
                 }
                 instructions {
                     LP_SETUPI {
-                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011 ;
                         args_disass:"{name(rs1)}, {name(rs2)}";
                         behavior: {
                             count   = X[rs1];
@@ -208,7 +208,7 @@ class CoreDslParsingTest {
     def void parseInstrSwitch() {
         val content = '''
         FOO {
-            encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011;  
+            encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  
             args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
             behavior: {
                 switch(rs1) {

@@ -18,7 +18,7 @@ import static extension com.google.common.io.CharStreams.*
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)
-class CoreDslScopingTest {
+class CoreDslISAScopingTest {
 
     @Inject extension ParseHelper<DescriptionContent> parseHelper
 
@@ -30,7 +30,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         x = 0;
@@ -50,7 +50,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         int x;
@@ -70,7 +70,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         {
@@ -92,7 +92,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         int x;
@@ -125,7 +125,7 @@ class CoreDslScopingTest {
 
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         X[rd] = X[rs1] + X[rs2] + foo(CCC);
@@ -157,7 +157,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA2 extends TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         X[rd] = X[rs1] + X[rs2] + foo(CCC);
@@ -178,7 +178,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA2 extends RV32I {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         X[rd] = X[rs1] + X[rs2] + XLEN;
@@ -209,7 +209,7 @@ class CoreDslScopingTest {
             
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         unsigned sum = point.x + point.y;
                     }
@@ -233,7 +233,7 @@ class CoreDslScopingTest {
             
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         struct point_s  point;
                         unsigned sum = point.x + point.y;
@@ -260,7 +260,7 @@ class CoreDslScopingTest {
             
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         float x = complex[1].real * complex[1].imag;
@@ -286,7 +286,7 @@ class CoreDslScopingTest {
             
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         struct point_s  point[N_REGS];
                         unsigned sum = point[0].x + point[0].y;
@@ -316,7 +316,7 @@ class CoreDslScopingTest {
             
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         unsigned sum = rect.origin.x;// + rect.size.x;
                     }
@@ -345,7 +345,7 @@ class CoreDslScopingTest {
             }
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         UR.l = UR.s * UR.c / UR.i;
                         UR.strct.d = UR.arr[10];
@@ -374,7 +374,7 @@ class CoreDslScopingTest {
             }
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         int incr = X[rs1] * X[rs2];
                         spawn {
@@ -398,7 +398,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         for (int y = 0, z = -1; y < 0 && z != 5; ++y) {}
                     }
@@ -418,7 +418,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         int z = 0;
                         do {
@@ -441,7 +441,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         int foobar;
                         switch(rs1) {
@@ -464,4 +464,5 @@ class CoreDslScopingTest {
             println(iss)
         assertTrue(issues.isEmpty())
     }
+    
 }

@@ -41,7 +41,7 @@ class CoreDslTerminalsTest {
             }
             instructions {
             	FOO {
-            		encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011;  
+            		encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  
             		args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
             		behavior: {
             			«str»
