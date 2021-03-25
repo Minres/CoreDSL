@@ -11,10 +11,8 @@ import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Test
 import org.junit.runner.RunWith
+
 import static org.junit.Assert.assertTrue
-import static org.junit.Assert.assertFalse
-import java.io.FileReader
-import static extension com.google.common.io.CharStreams.*
 
 @RunWith(XtextRunner)
 @InjectWith(CoreDslInjectorProvider)

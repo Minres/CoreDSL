@@ -1,8 +1,8 @@
             InstructionSet TestISA {
-                registers {
-                	int PC;
-                	int X[32];
-                    unsigned int count, endpc, startpc;
+                architectural_state {
+                	register int PC;
+                	register int X[32];
+                    register unsigned int count, endpc, startpc;
                 }
                 functions {
                     void doZOL(){      
@@ -20,7 +20,7 @@
                 }
                 instructions {
                     LP_SETUPI {
-                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011 ;
                         args_disass:"{name(rs1)}, {name(rs2)}";
                         behavior: {
                             count   = X[rs1];

@@ -26,6 +26,9 @@ import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
 import static extension com.minres.coredsl.util.ModelUtil.*
+import java.util.List
+import java.util.Set
+import com.minres.coredsl.coreDsl.Variable
 
 /**
  * This class contains custom scoping description.
@@ -35,30 +38,44 @@ import static extension com.minres.coredsl.util.ModelUtil.*
  */
 class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //AbstractCoreDslScopeProvider {
 
-    def IScope scope_Variable(CoreDef coreDef, EReference reference) {
-        val decls = #[coreDef.stateDeclarations].filter[it !== null].map [
+     private def Iterable<Variable> variables(ISA isa) {
+        #[isa.stateDeclarations].filter[it !== null].map [
             it.flatMap[init].flatMap[EcoreUtil2.getAllContentsOfType(it, DirectDeclarator)]
-        ].flatten + coreDef.func
-
-        val outerScopeElems = coreDef.contributingType.map [
-            #[it.stateDeclarations].filter[it !== null].map [
-                it.flatMap[init].flatMap[EcoreUtil2.getAllContentsOfType(it, DirectDeclarator)]
-            ].flatten + it.func
-        ].flatten
-        Scopes.scopeFor(decls, Scopes.scopeFor(outerScopeElems))
+        ].flatten + isa.func
     }
 
     def IScope scope_Variable(InstructionSet isa, EReference reference) {
-        val decls = #[isa.stateDeclarations].filter[it !== null].map [
-            it.flatMap[init].flatMap[EcoreUtil2.getAllContentsOfType(it, DirectDeclarator)]
-        ].flatten + isa.func
-
-        val outerScope = if (isa.superType !== null)
-                isa.superType.scope_Variable(reference)
-            else
-                IScope.NULLSCOPE
-        Scopes.scopeFor(decls, outerScope)
+        Scopes.scopeFor(isa.variables, isa.superType !== null? isa.superType.scope_Variable(reference) : IScope.NULLSCOPE)
     }
+
+    def IScope scope_Variable(CoreDef coreDef, EReference reference) {
+        Scopes.scopeFor(coreDef.variables, coreDef.contributingType.outerScope)
+    }
+
+    private def IScope outerScope(List<InstructionSet> isas) {
+    	val Set<String> seen = newHashSet
+        val declsList = isas.map[
+        	it.variablesList((seen))
+        ].flatten.filter[it.size>0].toList
+        declsList.asScopes
+    }
+		
+	def IScope asScopes(Iterable<Iterable<Variable>> list){
+		if(list.empty)
+			IScope.NULLSCOPE
+		else
+			Scopes.scopeFor(list.last, list.take(list.size-1).asScopes)
+	}
+		
+	def List<Iterable<Variable>> variablesList(InstructionSet isa, Set<String> seen){
+		seen.add(isa.name)
+		if(isa.superType !== null && !seen.contains(isa.superType.name)) {
+			val ret = isa.superType.variablesList(seen)
+			ret.add(isa.variables)
+			return ret
+		} else
+			newLinkedList(isa.variables)
+	}
 
     def IScope scope_Variable(BlockItem context, EReference reference) {
         val parent = context.eContainer
