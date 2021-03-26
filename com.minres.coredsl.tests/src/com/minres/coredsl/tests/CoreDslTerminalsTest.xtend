@@ -76,7 +76,7 @@ class CoreDslTerminalsTest {
          	''').parse
         validator.assertNoErrors(content)
 
-        val compound = ((content.definitions.get(0) as InstructionSet).instr.get(0).behavior as CompoundStatement)
+        val compound = ((content.definitions.get(0) as InstructionSet).instructions.get(0).behavior as CompoundStatement)
         for (el : compound.items) {
             if (el instanceof ExpressionStatement) {
                 val expr = el.expr.expressions.get(0) as AssignmentExpression
@@ -109,7 +109,7 @@ class CoreDslTerminalsTest {
          	''').parse
         validator.assertNoErrors(content)
 
-        val compound = ((content.definitions.get(0) as InstructionSet).instr.get(0).behavior as CompoundStatement)
+        val compound = ((content.definitions.get(0) as InstructionSet).instructions.get(0).behavior as CompoundStatement)
         for (el : compound.items.subList(3, compound.items.size())) {
             if (el instanceof ExpressionStatement) {
                 val expr = el.expr.expressions.get(0) as AssignmentExpression
@@ -152,7 +152,7 @@ class CoreDslTerminalsTest {
         ''').parse
         validator.assertNoErrors(content)
 
-        val compound = ((content.definitions.get(0) as InstructionSet).instr.get(0).behavior as CompoundStatement)
+        val compound = ((content.definitions.get(0) as InstructionSet).instructions.get(0).behavior as CompoundStatement)
         for (el : compound.items.subList(3, compound.items.size())) {
             if (el instanceof ExpressionStatement) {
                 val expr = el.expr.expressions.get(0) as AssignmentExpression

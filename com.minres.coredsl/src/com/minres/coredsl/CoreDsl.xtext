@@ -36,15 +36,15 @@ CoreDef:
 ;
 
 fragment SectionArchState returns ISA:
-    'architectural_state' '{' state+=(Declaration | ExpressionStatement)+ '}'
+    'architectural_state' '{' declarations+=(Declaration | ExpressionStatement)+ '}'
 ;
 
 fragment SectionFunctions returns ISA:
-    'functions' '{' func+=FunctionDefinition+ '}'
+    'functions' '{' functions+=FunctionDefinition+ '}'
 ;
 
 fragment SectionInstructions returns ISA:
-    'instructions' attributes+=Attribute*  '{' instr+=Instruction+     '}'
+    'instructions' attributes+=Attribute*  '{' instructions+=Instruction+     '}'
 ;
 
 Instruction:

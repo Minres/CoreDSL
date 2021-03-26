@@ -41,7 +41,7 @@ class CoreDslScopeProvider extends AbstractDeclarativeScopeProvider { //Abstract
      private def Iterable<Variable> variables(ISA isa) {
         #[isa.stateDeclarations].filter[it !== null].map [
             it.flatMap[init].flatMap[EcoreUtil2.getAllContentsOfType(it, DirectDeclarator)]
-        ].flatten + isa.func
+        ].flatten + isa.functions
     }
 
     def IScope scope_Variable(InstructionSet isa, EReference reference) {

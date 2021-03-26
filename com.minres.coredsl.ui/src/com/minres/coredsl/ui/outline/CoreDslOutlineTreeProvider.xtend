@@ -30,33 +30,33 @@ class CoreDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
 	}
 
 	def void _createChildren(IOutlineNode parentNode, InstructionSet modelElement) {
-		val image = imageDispatcher.invoke(modelElement.state)
+		val image = imageDispatcher.invoke(modelElement.declarations)
 		if(modelElement.superType !==null)
 		  	createEObjectNode(parentNode, modelElement.superType);
-		if(modelElement.state.size>0)
-		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__STATE,
+		if(modelElement.declarations.size>0)
+		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__DECLARATIONS,
 			image, "State", false)
-		if(modelElement.func.size>0)
-		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__FUNC,
+		if(modelElement.functions.size>0)
+		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__FUNCTIONS,
 			image, "Functions", false)
-		if(modelElement.instr.size>0)
-		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__INSTR,
+		if(modelElement.instructions.size>0)
+		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__INSTRUCTIONS,
 			image, "Instructions", false)
 	}
 
 	def void _createChildren(IOutlineNode parentNode, CoreDef modelElement) {
-		val image = imageDispatcher.invoke(modelElement.state)
+		val image = imageDispatcher.invoke(modelElement.declarations)
 		if(modelElement.contributingType.size>0)
       	createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.CORE_DEF__CONTRIBUTING_TYPE, 
 	        image, "Contributing", false)
-		if(modelElement.state.size>0)
-		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__STATE,
+		if(modelElement.declarations.size>0)
+		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__DECLARATIONS,
 			image, "State", false)
-		if(modelElement.func.size>0)
-		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__FUNC,
+		if(modelElement.functions.size>0)
+		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__FUNCTIONS,
 			image, "Functions", false)
-		if(modelElement.instr.size>0)
-		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__INSTR,
+		if(modelElement.instructions.size>0)
+		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__INSTRUCTIONS,
 			image, "Instructions", false)
 	}
 
