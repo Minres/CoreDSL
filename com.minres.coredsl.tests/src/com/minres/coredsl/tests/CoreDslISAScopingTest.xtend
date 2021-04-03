@@ -296,6 +296,7 @@ class CoreDslISAScopingTest {
         }
         '''.parse
         val issues = validator.validate(content)
+        for (iss : issues) println(iss)
         assertTrue(issues.isEmpty())
     }
     
@@ -407,8 +408,7 @@ class CoreDslISAScopingTest {
         }
         '''.parse
         val issues = validator.validate(content)
-        for (iss : issues)
-            println(iss)
+        for (iss : issues) println(iss)
         assertTrue(issues.isEmpty())
     }
     
@@ -430,8 +430,7 @@ class CoreDslISAScopingTest {
         }
         '''.parse
         val issues = validator.validate(content)
-        for (iss : issues)
-            println(iss)
+        for (iss : issues) println(iss)
         assertTrue(issues.isEmpty())
     }
     
@@ -460,9 +459,8 @@ class CoreDslISAScopingTest {
         }
         '''.parse
         val issues = validator.validate(content)
-        for (iss : issues)
-            println(iss)
+        for (iss : issues) println(iss)
         assertTrue(issues.isEmpty())
     }
     
-}
+}   
