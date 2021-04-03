@@ -47,7 +47,7 @@ Workflow {
 				generateDeprecationValidation = true
 			}
 			parserGenerator = {
-				debugGrammar=true
+				debugGrammar = true
 			}
 			generator = {
 				generateStub = false
