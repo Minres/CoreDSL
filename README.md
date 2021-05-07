@@ -1,6 +1,6 @@
 # CoreDSL
 
-This repo contains the XText bundles/plugins for CoreDSL.
+This repo contains the XText bundles/plugins for CoreDSL. The bundles can be installed from https://minres.com/download/repository/CoreDSL
 
 ## References
 
