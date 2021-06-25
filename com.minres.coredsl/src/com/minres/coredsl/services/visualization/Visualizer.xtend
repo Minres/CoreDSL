@@ -1,44 +1,29 @@
 package com.minres.coredsl.services.visualization
 
-import com.minres.coredsl.coreDsl.AbstractDeclarator
 import com.minres.coredsl.coreDsl.Assignment
 import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.Attribute
 import com.minres.coredsl.coreDsl.BitField
-import com.minres.coredsl.coreDsl.BitSizeSpecifier
 import com.minres.coredsl.coreDsl.BitValue
-import com.minres.coredsl.coreDsl.BlockItem
 import com.minres.coredsl.coreDsl.BoolConstant
-import com.minres.coredsl.coreDsl.CastExpression
-import com.minres.coredsl.coreDsl.CharacterConstant
 import com.minres.coredsl.coreDsl.CompositeType
 import com.minres.coredsl.coreDsl.CompoundStatement
-import com.minres.coredsl.coreDsl.ConditionalExpression
-import com.minres.coredsl.coreDsl.Constant
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.Declaration
-import com.minres.coredsl.coreDsl.DeclarationSpecifier
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.DesignatedInitializer
 import com.minres.coredsl.coreDsl.Designator
-import com.minres.coredsl.coreDsl.DirectAbstractDeclarator
+import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.Encoding
-import com.minres.coredsl.coreDsl.EnumType
-import com.minres.coredsl.coreDsl.Enumerator
-import com.minres.coredsl.coreDsl.EnumeratorList
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.ExpressionStatement
-import com.minres.coredsl.coreDsl.Field
 import com.minres.coredsl.coreDsl.FloatingConstant
-import com.minres.coredsl.coreDsl.ForCondition
 import com.minres.coredsl.coreDsl.FunctionDefinition
-import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.IfStatement
 import com.minres.coredsl.coreDsl.Import
 import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.Initializer
-import com.minres.coredsl.coreDsl.InitializerList
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.IntegerConstant
@@ -52,16 +37,12 @@ import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
 import com.minres.coredsl.coreDsl.PrimitiveType
-import com.minres.coredsl.coreDsl.SelectionStatement
 import com.minres.coredsl.coreDsl.SpawnStatement
-import com.minres.coredsl.coreDsl.Statement
 import com.minres.coredsl.coreDsl.StringLiteral
 import com.minres.coredsl.coreDsl.StructDeclaration
 import com.minres.coredsl.coreDsl.StructDeclarationSpecifier
+import com.minres.coredsl.coreDsl.StructOrUnion
 import com.minres.coredsl.coreDsl.SwitchStatement
-import com.minres.coredsl.coreDsl.TypeSpecifier
-import com.minres.coredsl.coreDsl.UnaryOperator
-import com.minres.coredsl.coreDsl.Variable
 import com.minres.coredsl.services.visualization.VisualElement.DeclarationLiteral
 import com.minres.coredsl.services.visualization.VisualElement.Literal
 import com.minres.coredsl.services.visualization.VisualElement.NodeElement
@@ -69,19 +50,13 @@ import com.minres.coredsl.services.visualization.VisualElement.Port
 import com.minres.coredsl.services.visualization.VisualElement.PortGroup
 import com.minres.coredsl.services.visualization.VisualElement.PortNode
 import com.minres.coredsl.services.visualization.VisualElement.ReferenceLiteral
-import com.minres.coredsl.services.visualization.VisualElement.SimpleNode
 import com.minres.coredsl.services.visualization.VisualElement.VisualNode
 import java.util.ArrayList
-import java.util.Arrays
+import java.util.IdentityHashMap
 import java.util.List
 import java.util.Map
 import java.util.function.Supplier
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.xtext.generator.AbstractGenerator
-import org.eclipse.xtext.generator.IFileSystemAccess2
-import org.eclipse.xtext.generator.IGeneratorContext
-import java.util.IdentityHashMap
 
 class Visualizer {
 	
@@ -128,17 +103,26 @@ class Visualizer {
 	}
 	
 	private def VisualNode makeNode(EObject astNode, String label, NodeElement... children) {
-		var VisualNode node = new PortNode(label, new ArrayList(Arrays.asList(children)));
+		if(astNode === null) return null;
+		var list = new ArrayList(children.length);
+		for (child : children) {
+			if(child !== null)
+				list.add(child);
+		}
+		var VisualNode node = new PortNode(label, list);
 		registerNode(node, astNode);
 		return node;
 	}
 	
 	private def VisualNode makeNode(EObject astNode, String label, List<? extends EObject> children) {
+		if(astNode === null) return null;
 		var List<NodeElement> elements = new ArrayList(children.size());
 		for(var int i = 0; i < children.size(); i++) {
-			elements.add(makeChild(Integer.toString(i + 1), children.get(i)));
+			var child = children.get(i);
+			if(child !== null)
+				elements.add(makeChild(Integer.toString(i + 1), child));
 		}
-		var VisualNode node = new PortNode(label, elements);
+		var node = new PortNode(label, elements);
 		registerNode(node, astNode);
 		return node;
 	}
@@ -150,12 +134,14 @@ class Visualizer {
 	}
 	
 	private def NodeElement makeNamedLiteral(String label, String content) {
+		if(content === null) return null;
 		var Literal literal = new Literal(content);
 		registerNode(literal, null);
 		return new Port(label, literal);
 	}
 	
 	private def NodeElement makeDeclaration(String label, String content, EObject owner) {
+		if(content === null) return null;
 		var DeclarationLiteral literal = new DeclarationLiteral(content);
 		registerNode(literal, null);
 		declarationLiterals.put(owner, literal);
@@ -163,21 +149,36 @@ class Visualizer {
 	}
 	
 	private def NodeElement makeReference(String label, String content, Supplier<EObject> referenceResolver) {
+		if(content === null) return null;
 		var ReferenceLiteral literal = new ReferenceLiteral(content, referenceResolver);
 		registerNode(literal, null);
 		return new Port(label, literal);
 	}
 	
 	private def NodeElement makeChild(String label, EObject node) {
-		if(node !== null)
-			return new Port(label, visit(node));
-		return new Port(label, makeImmediateLiteral("<null>"));
+		if(node === null) return null;
+		return new Port(label, visit(node));
+		//return new Port(label, makeImmediateLiteral("<null>"));
 	}
 	
 	private def NodeElement makeGroup(String label, List<? extends EObject> children) {
+		if(children === null || children.size == 0) return null;
 		var List<NodeElement> elements = new ArrayList(children.size());
 		for(var int i = 0; i < children.size(); i++) {
-			elements.add(makeChild(Integer.toString(i + 1), children.get(i)));
+			var child = children.get(i);
+			if(child !== null)
+				elements.add(makeChild(Integer.toString(i + 1), child));
+		}
+		return new PortGroup(label, elements);
+	}
+	
+	private def NodeElement makePortGroup(String label, List<? extends VisualNode> children) {
+		if(children === null || children.size == 0) return null;
+		var List<NodeElement> elements = new ArrayList(children.size());
+		for(var int i = 0; i < children.size(); i++) {
+			var child = children.get(i);
+			if(child !== null)
+				elements.add(new Port(Integer.toString(i + 1), child));
 		}
 		return new PortGroup(label, elements);
 	}
@@ -187,254 +188,346 @@ class Visualizer {
 	 ***************** */
 	
 	private def dispatch VisualNode genNode(EObject node) {
+		//return makeImmediateLiteral(node.getClass.getSimpleName);
 		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
 	}
 	
-	private def dispatch VisualNode genNode(AbstractDeclarator node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(Assignment node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(AssignmentExpression node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(Attribute node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(BitField node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(BitSizeSpecifier node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(BitValue node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(BlockItem node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(BoolConstant node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(CastExpression node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(CharacterConstant node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(CompositeType node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(CompoundStatement node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(ConditionalExpression node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(Constant node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(CoreDef node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(Declaration node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(DeclarationSpecifier node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
+	// module
 	
 	private def dispatch VisualNode genNode(DescriptionContent node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(DesignatedInitializer node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(Designator node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(DirectAbstractDeclarator node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(Encoding node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(Enumerator node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(EnumeratorList node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(EnumType node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(Expression node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(ExpressionStatement node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(Field node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(FloatingConstant node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(ForCondition node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(FunctionDefinition node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(IfStatement node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+		return makeNode(node, "Core Description",
+			makeGroup("Imports", node.imports),
+			makeGroup("Definitions", node.definitions)
+		)
 	}
 	
 	private def dispatch VisualNode genNode(Import node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(InfixExpression node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(InitDeclarator node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(Initializer node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(InitializerList node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(Instruction node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+		return makeNode(node, "Import",
+			makeNamedLiteral("URI", node.importURI)
+		);
 	}
 	
 	private def dispatch VisualNode genNode(InstructionSet node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+		return makeNode(node, "Instruction Set",
+			makeNamedLiteral("Name", node.name),
+			makeNamedLiteral("Super Type", node.superType?.name),
+			makeGroup("Declarations", node.declarations),
+			makeGroup("Functions", node.functions),
+			makeGroup("Attributes", node.attributes),
+			makeGroup("Instructions", node.instructions)
+		);
 	}
 	
-	private def dispatch VisualNode genNode(IntegerConstant node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+	private def dispatch VisualNode genNode(CoreDef node) {
+		return makeNode(node, "Instruction Set",
+			makeNamedLiteral("Name", node.name),
+			makeGroup("Contributing Type", node.contributingType),
+			makeGroup("Declarations", node.declarations),
+			makeGroup("Functions", node.functions),
+			makeGroup("Attributes", node.attributes),
+			makeGroup("Instructions", node.instructions)
+		)
 	}
 	
-	private def dispatch VisualNode genNode(ISA node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+	private def dispatch VisualNode genNode(Instruction node) {
+		return makeNode(node, "Instruction", 
+			makeNamedLiteral("Name", node.name),
+			makeChild("Encoding", node.encoding),
+			makeNamedLiteral("Disassembly Format", node.disass),
+			makeChild("Behavior", node.behavior)
+		);
 	}
 	
-	private def dispatch VisualNode genNode(IterationStatement node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+	private def dispatch VisualNode genNode(Encoding node) {
+		return makeNode(node, "Encoding", node.fields);
 	}
 	
-	private def dispatch VisualNode genNode(JumpStatement node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+	private def dispatch VisualNode genNode(BitField node) {
+		return makeNode(node, "Bit Field",
+			makeNamedLiteral("Name", node.name),
+			makeChild("Left", node.left),
+			makeChild("Right", node.right)
+		)
 	}
 	
-	private def dispatch VisualNode genNode(LabeledStatement node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+	private def dispatch VisualNode genNode(BitValue node) {
+		return makeNode(node, "Bit Value",
+			makeNamedLiteral("Value", node.value.toString)
+		)
 	}
 	
-	private def dispatch VisualNode genNode(ParameterDeclaration node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+	private def dispatch VisualNode genNode(FunctionDefinition node) {
+		return node.extern
+		? makeNode(node, "Function (extern)",
+			makeChild("Return Type", node.type),
+			makeNamedLiteral("Name", node.name),
+			makeGroup("Parameters", node.params)
+		)
+		: makeNode(node, "Function",
+			makeChild("Return Type", node.type),
+			makeNamedLiteral("Name", node.name),
+			makeGroup("Parameters", node.params),
+			makeChild("Body", node.statement)
+		);
 	}
 	
 	private def dispatch VisualNode genNode(ParameterList node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+		return makeNode(node, "Parameter List",  node.params);
 	}
 	
-	private def dispatch VisualNode genNode(Postfix node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+	private def dispatch VisualNode genNode(ParameterDeclaration node) {
+		return makeNode(node, "Parameter",
+			makeChild("Type", node.type),
+			makeChild("Declarator", node.declarator)
+		);
 	}
 	
-	private def dispatch VisualNode genNode(PostfixExpression node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+	// statements
+	
+	private def dispatch VisualNode genNode(LabeledStatement node) {
+		return makeNode(node, node.constExpr !== null ? "Case" : "Default", node.items);
 	}
 	
-	private def dispatch VisualNode genNode(PrefixExpression node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+	private def dispatch VisualNode genNode(CompoundStatement node) {
+		return makeNode(node, "Compound Statement", node.items);
 	}
 	
-	private def dispatch VisualNode genNode(PrimaryExpression node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+	private def dispatch VisualNode genNode(ExpressionStatement node) {
+		return makeNode(node, "Expression Statement", 
+			makeChild("Expression", node.expr)
+		);
 	}
 	
-	private def dispatch VisualNode genNode(PrimitiveType node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(SelectionStatement node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(SpawnStatement node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(Statement node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(StringLiteral node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(StructDeclaration node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
-	}
-	
-	private def dispatch VisualNode genNode(StructDeclarationSpecifier node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+	private def dispatch VisualNode genNode(IfStatement node) {
+		return makeNode(node, "If Statement", 
+			makeChild("Condition", node.cond),
+			makeChild("Then Branch", node.thenStmt),
+			makeChild("Else Branch", node.elseStmt)
+		);
 	}
 	
 	private def dispatch VisualNode genNode(SwitchStatement node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+		return makeNode(node, "Switch Statement", 
+			makeChild("Condition", node.cond),
+			makeGroup("Branches", node.items)
+		);
 	}
 	
-	private def dispatch VisualNode genNode(TypeSpecifier node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+	private def dispatch VisualNode genNode(IterationStatement node) {
+		return makeNode(node, "Loop (" + node.type + ")",
+			makeChild("Condition", node.cond),
+			makeChild("Start Declaration", node.startDecl),
+			makeChild("Start Assignment", node.startExpr),
+			makeChild("Condition", node.endExpr),
+			makeGroup("Loop Assignments", node.loopExprs),
+			makeChild("Body", node.stmt)
+		);
 	}
 	
-	private def dispatch VisualNode genNode(UnaryOperator node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+	private def dispatch VisualNode genNode(JumpStatement node) {
+		return makeNode(node, "Jump (" + node.type + ")",
+			makeChild("Return Value", node.expr)
+		);
 	}
 	
-	private def dispatch VisualNode genNode(Variable node) {
-		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
+	private def dispatch VisualNode genNode(SpawnStatement node) {
+		return makeNode(node, "Spawn Statement",
+			makeChild("Body", node.stmt)
+		);
+	}
+	
+	// declarations
+	
+	private def dispatch VisualNode genNode(Declaration node) {
+		return makeNode(node, "Declaration",
+			makePortGroup("Storage", node.storage.map[specifier | makeImmediateLiteral(specifier.toString)]),
+			makePortGroup("Qualifiers", node.qualifiers.map[qualifier | makeImmediateLiteral(qualifier.toString)]),
+			makeGroup("Attributes", node.attributes),
+			makeChild("Type", node.type),
+			makeNamedLiteral("Ptr", node.ptr),
+			makeGroup("Declarators", node.init)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(Attribute node) {
+		return makeNode(node, "Attribute",
+			makeNamedLiteral("Type", node.type.toString),
+			makeChild("Value", node.value)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(PrimitiveType node) {
+		return node.dataType.size == 1
+		? makeNode(node, "Primitive Type",
+			makeNamedLiteral("Data Type", node.dataType.get(0).toString),
+			makeGroup("Bit Size", node.size)
+		)
+		: makeNode(node, "Primitive Type",
+			makePortGroup("Data Type", node.dataType.map[type | makeImmediateLiteral(type.toString)]),
+			makeGroup("Bit Size", node.size)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(CompositeType node) {
+		return makeNode(node, node.composeType == StructOrUnion.STRUCT ? "Struct Type" : "Union Type",
+			makeNamedLiteral("Name", node.name),
+			makeGroup("Declarations", node.declaration)
+		)
+	}
+	
+	private def dispatch VisualNode genNode(StructDeclaration node) {
+		return makeNode(node, "Struct Declaration",
+			makeChild("Specifier", node.specifier),
+			makeGroup("Declarators", node.declarator)
+		)
+	}
+	
+	private def dispatch VisualNode genNode(StructDeclarationSpecifier node) {
+		return makeNode(node, "Struct Declaration Specifier",
+			makeChild("Type", node.type),
+			makePortGroup("Qualifiers", node.qualifiers.map[qualifier | makeImmediateLiteral(qualifier.toString)])
+		)
+	}
+	
+	private def dispatch VisualNode genNode(InitDeclarator node) {
+		return makeNode(node, "Init Declarator",
+			makeChild("Declarator", node.declarator),
+			makeGroup("Attributes", node.attributes),
+			makeChild("Initializer", node.initializer)
+		)
+	}
+	
+	private def dispatch VisualNode genNode(DirectDeclarator node) {
+		return makeNode(node, "Direct Declarator",
+			makeDeclaration("Name", node.name, node),
+			makeChild("Index", node.index),
+			makeGroup("Size", node.size),
+			//makeGroup("Qualifiers", node.qualifiers),
+			makeGroup("Parameters", node.params)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(Initializer node) {
+		return node.expr !== null
+		? visit(node.expr)
+		: makeNode(node, "Initializer", node.init);
+	}
+	
+	private def dispatch VisualNode genNode(DesignatedInitializer node) {
+		return makeNode(node, "Designated Initializer",
+			makeGroup("Designators", node.designators),
+			makeChild("Initializer", node.init)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(Designator node) {
+		return makeNode(node, "Designator",
+			makeChild("Index", node.idx),
+			makeNamedLiteral("Property", node.prop)
+		);
+	}
+	
+	// expressions
+	
+	private def dispatch VisualNode genNode(IntegerConstant node) {
+		return makeImmediateLiteral(node.value.toString)
+		/*return makeNode(node, "Integer",
+			makeNamedLiteral("Value", node.value.toString)
+		);*/
+	}
+	
+	private def dispatch VisualNode genNode(FloatingConstant node) {
+		return makeImmediateLiteral(node.value.toString)
+		/*return makeNode(node, "Float",
+			makeNamedLiteral("Value", node.value.toString)
+		);*/
+	}
+	
+	private def dispatch VisualNode genNode(BoolConstant node) {
+		return makeImmediateLiteral(node.value.toString)
+		/*return makeNode(node, "Bool",
+			makeNamedLiteral("Value", node.value.toString)
+		);*/
+	}
+	
+	private def dispatch VisualNode genNode(StringLiteral node) {
+		return makeImmediateLiteral(node.value)
+	}
+	
+	private def dispatch VisualNode genNode(InfixExpression node) {
+		return makeNode(node, "Infix Expression (" + node.op + ")",
+			makeChild("Left", node.left),
+			makeChild("Right", node.right)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(PrefixExpression node) {
+		return makeNode(node, "Prefix Expression (" + node.op + ")",
+			makeChild("Operand", node.left)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(PostfixExpression node) {
+		return makeNode(node, "Postfix Expression",
+			makeChild("Operand", node.left),
+			makeChild("Operator", node.postOp)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(Postfix node) {
+		return switch node.op {
+			case "(":
+				makeNode(node, "Method Invocation", node.args)
+			case "[":
+				makeNode(node, "Indexer", node.args)
+			case ".",
+			case "->":
+				makeNode(node, "Member Access (" + node.op + ")", 
+					makeReference("Member", node.declarator?.name, [node.declarator])
+				)
+			case "++",
+			case "--":
+				makeNode(node, "Postfix Operator (" + node.op + ")")
+		}
+	}
+	
+	private def dispatch VisualNode genNode(PrimaryExpression node) {
+		if(node.left !== null)
+			return visit(node.left);
+			
+		if(node.ref instanceof FunctionDefinition)
+			return makeNode(node, "Function Reference", makeReference("Function", (node.ref as FunctionDefinition).name, [node.ref]));
+			
+		if(node.ref instanceof DirectDeclarator)
+			return makeNode(node, "Declarator Reference", makeReference("Declarator", (node.ref as DirectDeclarator).name, [node.ref]));
+			
+		if(node.ref instanceof BitField)
+			return makeNode(node, "Field Reference", makeReference("Field", (node.ref as BitField).name, [node.ref]));
+		
+		if(node.constant !== null)
+			return visit(node.constant);
+		
+		if(node.literal.size == 1)
+			return visit(node.literal.get(0));
+		
+		return makeNode(node, "Compound String Literal",
+			makeGroup("Literals", node.literal)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(Expression node) {
+		if(node.expressions.size != 1)
+			throw new RuntimeException("Expected exactly one expression");
+		return visit(node.expressions.get(0));
+	}
+	
+	private def dispatch VisualNode genNode(AssignmentExpression node) {
+		return makeNode(node, "Assignment Expression", node.assignments);
+	}
+	
+	private def dispatch VisualNode genNode(Assignment node) {
+		return makeNode(node, "Assignment (" + node.type + ")",
+			makeChild("Value", node.right)
+		);
 	}
 }
