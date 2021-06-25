@@ -30,5 +30,6 @@ Export-Package: com.minres.coredsl,
  com.minres.coredsl.util,
  com.minres.coredsl.validation,
  com.minres.coredsl.parser.antlr,
- com.minres.coredsl.coreDsl.impl
+ com.minres.coredsl.coreDsl.impl,
+ com.minres.coredsl.generator
 Import-Package: org.apache.log4j
