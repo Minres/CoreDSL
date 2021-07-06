@@ -18,4 +18,4 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
     - name: Build and test with Maven
-      run: mvn -pl "\!com.minres.coredsl.ui.tests" -B verify --file pom.xml
+      run: mvn -pl "!com.minres.coredsl.ui.tests" -B verify --file pom.xml
