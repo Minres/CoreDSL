@@ -7,24 +7,24 @@ import com.google.inject.Inject
 import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.DescriptionContent
+import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.ExpressionStatement
 import com.minres.coredsl.coreDsl.FloatingConstant
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.IntegerConstant
 import com.minres.coredsl.coreDsl.PrimaryExpression
 import org.eclipse.xtext.testing.InjectWith
-import org.eclipse.xtext.testing.XtextRunner
+import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.^extension.ExtendWith
 
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertTrue
-import com.minres.coredsl.coreDsl.DirectDeclarator
+import static org.junit.jupiter.api.Assertions.assertEquals
+import static org.junit.jupiter.api.Assertions.assertFalse
+import static org.junit.jupiter.api.Assertions.assertTrue
 
-@RunWith(XtextRunner)
+@ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
 class CoreDslTerminalsTest {
 

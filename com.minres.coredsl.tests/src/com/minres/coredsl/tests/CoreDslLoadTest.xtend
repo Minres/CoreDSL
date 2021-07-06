@@ -4,20 +4,23 @@
 package com.minres.coredsl.tests
 
 import com.google.inject.Inject
-import org.eclipse.xtext.testing.InjectWith
-import org.eclipse.xtext.testing.XtextRunner
-import org.eclipse.xtext.testing.util.ParseHelper
-import org.junit.Test
-import org.junit.runner.RunWith
-
-import static org.junit.Assert.*
-import static extension com.google.common.io.CharStreams.*
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.InstructionSet
 import java.io.FileReader
+import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.extensions.InjectionExtension
+import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.^extension.ExtendWith
 
-@RunWith(XtextRunner)
+import static org.junit.jupiter.api.Assertions.assertEquals
+import static org.junit.jupiter.api.Assertions.assertNotNull
+import static org.junit.jupiter.api.Assertions.assertNull
+
+import static extension com.google.common.io.CharStreams.*
+
+@ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
 class CoreDslLoadTest {
 
