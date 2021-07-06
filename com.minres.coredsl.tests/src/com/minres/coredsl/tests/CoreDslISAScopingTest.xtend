@@ -5,18 +5,20 @@ package com.minres.coredsl.tests
 
 import com.google.inject.Inject
 import com.minres.coredsl.coreDsl.DescriptionContent
+import java.io.FileReader
 import org.eclipse.xtext.testing.InjectWith
-import org.eclipse.xtext.testing.XtextRunner
+import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
-import org.junit.Test
-import org.junit.runner.RunWith
-import static org.junit.Assert.assertTrue
-import static org.junit.Assert.assertFalse
-import java.io.FileReader
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.^extension.ExtendWith
+
+import static org.junit.jupiter.api.Assertions.assertFalse
+import static org.junit.jupiter.api.Assertions.assertTrue
+
 import static extension com.google.common.io.CharStreams.*
 
-@RunWith(XtextRunner)
+@ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
 class CoreDslISAScopingTest {
 
