@@ -1,15 +1,13 @@
 import "inputs/isa_1.core_desc"
 
 InstructionSet X_FIR_1 extends RV32I {
-	constants {
+	architectural_state {
 		unsigned N_ACC = 4;
-	}
-	registers {
 		int ACC[N_ACC];
 	}
 	instructions {
 		get_acc {
-			encoding: acc[6:0] :: rs2[4:0] :: rs1[4:0] :: b001 :: rd[4:0] :: b0010111;
+			encoding: acc[6:0] :: rs2[4:0] :: rs1[4:0] :: 0b001 :: rd[4:0] :: 0b0010111;
 			behavior: {
 				if (acc < N_ACC)
 					X[rd] = ACC[acc];
@@ -19,7 +17,7 @@ InstructionSet X_FIR_1 extends RV32I {
 		}
 		
 		set_acc {
-			encoding: acc[6:0] :: rs2[4:0] :: rs1[4:0] :: b010 :: rd[4:0] :: b0010111;
+			encoding: acc[6:0] :: rs2[4:0] :: rs1[4:0] :: 0b010 :: rd[4:0] :: 0b0010111;
 			behavior: {
 				if (acc < N_ACC)
 					ACC[acc] = X[rs1];
@@ -27,7 +25,7 @@ InstructionSet X_FIR_1 extends RV32I {
 		}
 		
 		mac {
-			encoding: acc[6:0] :: rs2[4:0] :: rs1[4:0] :: b011 :: rd[4:0] :: b0010111;
+			encoding: acc[6:0] :: rs2[4:0] :: rs1[4:0] :: 0b011 :: rd[4:0] :: 0b0010111;
 			behavior: {
 				if (acc < N_ACC)
 					ACC[acc] += X[rs1] * X[rs2];
@@ -35,7 +33,7 @@ InstructionSet X_FIR_1 extends RV32I {
 		}
 		
 		mac_packed {
-			encoding: acc[6:0] :: rs2[4:0] :: rs1[4:0] :: b100 :: rd[4:0] :: b0010111;
+			encoding: acc[6:0] :: rs2[4:0] :: rs1[4:0] :: 0b100 :: rd[4:0] :: 0b0010111;
 			behavior: {
 				if (acc < N_ACC) {
 					int<32> lhs = X[rs1];
@@ -48,7 +46,7 @@ InstructionSet X_FIR_1 extends RV32I {
 		}
 		
 		mod_incr {
-			encoding: funct7[6:0] :: rs2[4:0] :: rs1[4:0] :: b101 :: rd[4:0] :: b0010111;
+			encoding: funct7[6:0] :: rs2[4:0] :: rs1[4:0] :: 0b101 :: rd[4:0] :: 0b0010111;
 			behavior: {
 				int incr = X[rs1] + 1;
 				if (incr == X[rs2])

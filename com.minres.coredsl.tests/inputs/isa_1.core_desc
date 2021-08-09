@@ -1,48 +1,44 @@
 InstructionSet RV32I {
-    constants {
+    architectural_state {
         unsigned int XLEN, FLEN;
         unsigned CSR_SIZE = 4096;
         unsigned REG_FILE_SIZE=32;
-    }
-    registers { 
     	[[is_pc]] int PC ;
         int X[REG_FILE_SIZE];
-    }
-    address_spaces {
-        char MEM[1<<XLEN];
-        unsigned CSR[CSR_SIZE];
+        extern char MEM[1<<XLEN];
+        extern unsigned CSR[CSR_SIZE];
     }
     instructions { 
        ADDI {
-            encoding: imm[11:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0010011;
+            encoding: imm[11:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0010011;
             behavior: {
             	X[rd] = X[rs1] + (int)imm;            
             }
         }
         SLTI {
-            encoding: imm[11:0] :: rs1[4:0] :: b010 :: rd[4:0] :: b0010011;
+            encoding: imm[11:0] :: rs1[4:0] :: 0b010 :: rd[4:0] :: 0b0010011;
             behavior: {
 	            X[rd] = X[rs1] < (int)imm? 1 : 0;	            
             }
         }
         SLTIU {
-            encoding: imm[11:0] :: rs1[4:0] :: b011 :: rd[4:0] :: b0010011;
+            encoding: imm[11:0] :: rs1[4:0] :: 0b011 :: rd[4:0] :: 0b0010011;
             behavior: {
 	            X[rd] = X[rs1] < (int)imm? 1 : 0;
             }
         }
         SW {
-            encoding: imm[11:5] :: rs2[4:0] :: rs1[4:0] :: b010 :: imm[4:0] :: b0100011;
+            encoding: imm[11:5] :: rs2[4:0] :: rs1[4:0] :: 0b010 :: imm[4:0] :: 0b0100011;
             behavior: {
 	            int offset =  X[rs1] + (int)imm;
 	            MEM[offset] = X[rs2];
             }
         }
         JAL[[no_cont]] {
-            encoding:imm[20:20]s :: imm[10:1]s :: imm[11:11]s :: imm[19:12]s :: rd[4:0] :: b1101111;
+            encoding:imm[20:20] :: imm[10:1] :: imm[11:11] :: imm[19:12] :: rd[4:0] :: 0b1101111;
             behavior: {
                 if(rd!=0) X[rd] = (unsigned)PC;
-                PC = PC+imm;
+                PC = PC+(signed)imm;
             }
         }
     }

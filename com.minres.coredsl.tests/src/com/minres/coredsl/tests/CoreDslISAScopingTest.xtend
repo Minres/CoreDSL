@@ -5,20 +5,22 @@ package com.minres.coredsl.tests
 
 import com.google.inject.Inject
 import com.minres.coredsl.coreDsl.DescriptionContent
+import java.io.FileReader
 import org.eclipse.xtext.testing.InjectWith
-import org.eclipse.xtext.testing.XtextRunner
+import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
-import org.junit.Test
-import org.junit.runner.RunWith
-import static org.junit.Assert.assertTrue
-import static org.junit.Assert.assertFalse
-import java.io.FileReader
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.^extension.ExtendWith
+
+import static org.junit.jupiter.api.Assertions.assertFalse
+import static org.junit.jupiter.api.Assertions.assertTrue
+
 import static extension com.google.common.io.CharStreams.*
 
-@RunWith(XtextRunner)
+@ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
-class CoreDslScopingTest {
+class CoreDslISAScopingTest {
 
     @Inject extension ParseHelper<DescriptionContent> parseHelper
 
@@ -30,7 +32,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         x = 0;
@@ -50,7 +52,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         int x;
@@ -70,7 +72,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         {
@@ -92,7 +94,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         int x;
@@ -112,10 +114,8 @@ class CoreDslScopingTest {
     def void globalScope() {
         val content = '''
             InstructionSet TestISA {
-            constants {
+            architectural_state {
                 int CCC = 42;
-            }
-            registers {
                 unsigned X[32];
             }
 
@@ -127,7 +127,7 @@ class CoreDslScopingTest {
 
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         X[rd] = X[rs1] + X[rs2] + foo(CCC);
@@ -144,10 +144,8 @@ class CoreDslScopingTest {
     def void globalScopeExtended() {
         val content = '''
         InstructionSet TestISA {
-            constants {
+            architectural_state {
                 int CCC = 42;
-            }
-            registers {
                 unsigned X[32];
             }
 
@@ -161,7 +159,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA2 extends TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         X[rd] = X[rs1] + X[rs2] + foo(CCC);
@@ -182,7 +180,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA2 extends RV32I {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         X[rd] = X[rs1] + X[rs2] + XLEN;
@@ -205,7 +203,7 @@ class CoreDslScopingTest {
     def void structMembersDirect() {
         val content = '''
         InstructionSet TestISA {
-            registers {
+            architectural_state {
                 struct {
                     unsigned x, y;
                 } point;
@@ -213,7 +211,7 @@ class CoreDslScopingTest {
             
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         unsigned sum = point.x + point.y;
                     }
@@ -229,7 +227,7 @@ class CoreDslScopingTest {
     def void structMembersIndirect() {
         val content = '''
         InstructionSet TestISA {
-            registers {
+            architectural_state {
                 struct point_s {
                     unsigned x, y;
                 };
@@ -237,7 +235,7 @@ class CoreDslScopingTest {
             
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         struct point_s  point;
                         unsigned sum = point.x + point.y;
@@ -254,10 +252,8 @@ class CoreDslScopingTest {
     def void structMembersDirectSub() {
         val content = '''
         InstructionSet TestISA {
-            constants {
+            architectural_state {
                 unsigned N_REGS = 4;
-            }
-            registers {
                 struct {
                     float real;
                     float imag;
@@ -266,7 +262,7 @@ class CoreDslScopingTest {
             
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
                         float x = complex[1].real * complex[1].imag;
@@ -283,10 +279,8 @@ class CoreDslScopingTest {
     def void structMembersIndirectSub() {
         val content = '''
         InstructionSet TestISA {
-            constants {
+            architectural_state {
                 unsigned N_REGS = 4;
-            }
-            registers {
                 struct point_s {
                     unsigned x, y;
                 };
@@ -294,7 +288,7 @@ class CoreDslScopingTest {
             
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         struct point_s  point[N_REGS];
                         unsigned sum = point[0].x + point[0].y;
@@ -304,6 +298,7 @@ class CoreDslScopingTest {
         }
         '''.parse
         val issues = validator.validate(content)
+        for (iss : issues) println(iss)
         assertTrue(issues.isEmpty())
     }
     
@@ -311,7 +306,7 @@ class CoreDslScopingTest {
     def void structMembersDirectNested() {
         val content = '''
         InstructionSet TestISA {
-            registers {
+            architectural_state {
                 struct rect_s {
                     struct origin_s {
                         unsigned x, y;
@@ -324,7 +319,7 @@ class CoreDslScopingTest {
             
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         unsigned sum = rect.origin.x;// + rect.size.x;
                     }
@@ -340,7 +335,7 @@ class CoreDslScopingTest {
     def void unions() {
         val content = '''
         InstructionSet TestISA {
-            registers {
+            architectural_state {
                 union un1 {
                     long l;
                     int i;
@@ -353,7 +348,7 @@ class CoreDslScopingTest {
             }
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         UR.l = UR.s * UR.c / UR.i;
                         UR.strct.d = UR.arr[10];
@@ -370,7 +365,7 @@ class CoreDslScopingTest {
     def void spawn() {
         val content = '''
         InstructionSet TestISA {
-            registers {
+            architectural_state {
                 int X[32];
                 int PC;
             }
@@ -382,7 +377,7 @@ class CoreDslScopingTest {
             }
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         int incr = X[rs1] * X[rs2];
                         spawn {
@@ -406,7 +401,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         for (int y = 0, z = -1; y < 0 && z != 5; ++y) {}
                     }
@@ -415,8 +410,7 @@ class CoreDslScopingTest {
         }
         '''.parse
         val issues = validator.validate(content)
-        for (iss : issues)
-            println(iss)
+        for (iss : issues) println(iss)
         assertTrue(issues.isEmpty())
     }
     
@@ -426,7 +420,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         int z = 0;
                         do {
@@ -438,8 +432,7 @@ class CoreDslScopingTest {
         }
         '''.parse
         val issues = validator.validate(content)
-        for (iss : issues)
-            println(iss)
+        for (iss : issues) println(iss)
         assertTrue(issues.isEmpty())
     }
     
@@ -449,7 +442,7 @@ class CoreDslScopingTest {
         InstructionSet TestISA {
             instructions {
                 Inst1 {
-                    encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
                         int foobar;
                         switch(rs1) {
@@ -468,8 +461,8 @@ class CoreDslScopingTest {
         }
         '''.parse
         val issues = validator.validate(content)
-        for (iss : issues)
-            println(iss)
+        for (iss : issues) println(iss)
         assertTrue(issues.isEmpty())
     }
-}
+    
+}   

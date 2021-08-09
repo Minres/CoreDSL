@@ -19,26 +19,36 @@ ISA
 
 InstructionSet :
 	'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' 
-        ('constants'      '{' constants+=Declaration+   '}')? 
-        ('registers'      '{' regs+=Declaration+        '}')?
-        ('address_spaces' '{' spaces+=Declaration+      '}')?
-	    ('functions'      '{' func+=FunctionDefinition+ '}')?
-        ('instructions'   '{' (instr+=Instruction)+     '}')?
+        ( SectionArchState (SectionFunctions SectionInstructions? | SectionInstructions)?
+        | SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions)?
+        | SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions)?
+        )
     '}'
 ;
 
 CoreDef:
 	'Core' name=ID ( 'provides' contributingType+=[InstructionSet] (',' contributingType+=[InstructionSet])*)? '{' 
-        ('constants'      '{' constants+=Declaration+   '}')?
-        ('registers'      '{' regs+=Declaration+        '}')?
-        ('address_spaces' '{' spaces+=Declaration+      '}')?
-	    ('functions'      '{' func+=FunctionDefinition+ '}')?
-	    ('instructions'   '{' (instr+=Instruction)+     '}')?
+	    ( SectionArchState (SectionFunctions SectionInstructions? | SectionInstructions)?
+        | SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions)?
+        | SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions)?
+        )
     '}'
 ;
 
+fragment SectionArchState returns ISA:
+    'architectural_state' '{' declarations+=(Declaration | ExpressionStatement)+ '}'
+;
+
+fragment SectionFunctions returns ISA:
+    'functions' '{' functions+=FunctionDefinition+ '}'
+;
+
+fragment SectionInstructions returns ISA:
+    'instructions' attributes+=Attribute*  '{' instructions+=Instruction+     '}'
+;
+
 Instruction:
-	name=ID (DoubleLeftBracket attributes+=InstrAttribute DoubleRightBracket )* '{' 
+	name=ID attributes+=Attribute* '{' 
 		('encoding' ':' encoding=Encoding ';') ('args_disass' ':' disass=STRING ';')? ('behavior' ':' behavior=Statement)
 	'}'
 ;
@@ -53,16 +63,16 @@ Field
 	;
 
 BitValue
-	: 	name=BVAL
+	: 	value=INTEGER
 	;
 
 BitField
-	:	name=ID LEFT_BR left=IntegerConstant ':' right=IntegerConstant mod=(RIGHT_BR | ']s' | ']u') 
+	:	name=ID LEFT_BR left=IntegerConstant ':' right=IntegerConstant RIGHT_BR 
 	;
 
 FunctionDefinition
 	:   extern?='extern' type=TypeSpecifier name=ID '(' ParameterList? ')' ';'
-	|   type=TypeSpecifier name=ID '(' ParameterList? ')' statement=CompoundStatement
+	|   type=TypeSpecifier name=ID '(' ParameterList? ')' attributes+=Attribute* statement=CompoundStatement
 	;
 
 fragment ParameterList: params+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*;
@@ -101,7 +111,8 @@ BlockItem
     ;
 
 ExpressionStatement
-    :   {ExpressionStatement} expr=AssignmentExpression? ';'
+    :   {ExpressionStatement} expr=ExpressionList? ';'
+        
     ;
 
 SelectionStatement
@@ -122,7 +133,7 @@ IterationStatement
     ;
 
 fragment ForCondition
-	:   (startDecl=Declaration | startExpr=AssignmentExpression2? ';') endExpr=ConditionalExpression? ';'  (loopExprs+=AssignmentExpression (',' loopExprs+=AssignmentExpression)*)?
+	:   (startDecl=Declaration | startExpr=AssignmentExpression? ';') endExpr=ConditionalExpression? ';'  (loopExprs+=AssignmentExpression (',' loopExprs+=AssignmentExpression)*)?
 	;
 
 JumpStatement
@@ -145,28 +156,28 @@ Declaration
 fragment DeclarationSpecifier
     :   storage+=StorageClassSpecifier
     |   qualifiers+=TypeQualifier
-    |   attrs+=Attribute
+    |   attributes+=Attribute
     ;
 
 Attribute
-    :  	DoubleLeftBracket type=DeclarationAttribute ('=' value=ConditionalExpression)? DoubleRightBracket
+    :  	DoubleLeftBracket type=AttributeName ('=' value=ConditionalExpression)? DoubleRightBracket
     ;
     
 TypeSpecifier
-	:	PodSpecifier 
-	|	StructOrUnionSpecifier
-	|	EnumSpecifier
+	:	PrimitiveType 
+	|	CompositeType
+	|	EnumType
 	;
     
-PodSpecifier
-	:	dataType+=DataTypes+ size=BitSizeSpecifier? 
+PrimitiveType
+	:	dataType+=DataTypes+ BitSizeSpecifier? 
 	;
 
-BitSizeSpecifier
+fragment BitSizeSpecifier
 	:	'<' size+=PrimaryExpression (',' size+=PrimaryExpression ',' size+=PrimaryExpression ',' size+=PrimaryExpression)? '>'
 	;
 
-EnumSpecifier
+EnumType
     :   'enum' name=ID? '{' EnumeratorList ','? '}'
     |   'enum' name=ID
     ;
@@ -178,7 +189,7 @@ Enumerator
     |   name=ID '=' expression=ConstantExpression
     ;
 
-StructOrUnionSpecifier
+CompositeType
     :   composeType=StructOrUnion name=ID? '{' (declaration += StructDeclaration)* '}'
     |   composeType=StructOrUnion name=ID
     ;
@@ -193,7 +204,7 @@ StructDeclarationSpecifier
     ;
 
 InitDeclarator
-    :   declarator=DirectDeclarator attrs+=Attribute* ('=' initializer=Initializer)?
+    :   declarator=DirectDeclarator attributes+=Attribute* ('=' initializer=Initializer)?
     ;
 
 DirectDeclarator
@@ -204,8 +215,6 @@ DirectDeclarator
     	)?
     ;
     
-EmptyExpression: {Expression};
-
 Initializer
     :   expr=ConditionalExpression
     |   '{' InitializerList ','? '}'
@@ -225,20 +234,7 @@ Designator
 AbstractDeclarator
     :	DirectAbstractDeclarator
     ;
-/*
- direct_abstract_declarator
-	: '(' abstract_declarator ')'
-	| '(' parameter_type_list ')'
-	| '(' ')'
-	| '[' constant_expression ']'
-	| '[' ']'
-	| direct_abstract_declarator '[' ']'
-	| direct_abstract_declarator '[' constant_expression ']'
-	| direct_abstract_declarator '(' ')'
-	| direct_abstract_declarator '(' parameter_type_list ')'
-	;
-*/
- 
+
 DirectAbstractDeclarator 
     :   {DirectAbstractDeclarator} '(' (declarator=AbstractDeclarator? | ParameterList) ')'
     |	{DirectAbstractDeclarator} LEFT_BR expr=ConstantExpression? RIGHT_BR
@@ -246,16 +242,12 @@ DirectAbstractDeclarator
 
 ///////////////////////////////////////////////////////////////////////////////
 // Expressions
-Expression 
-    :   AssignmentExpression ({Expression.left=current} ',' right=AssignmentExpression)?
+ExpressionList  returns Expression
+    :   AssignmentExpression ({Expression.expressions+=current} (',' expressions+=AssignmentExpression)*)
     ;
 
 AssignmentExpression returns Expression // this is right associative
     :   PrefixExpression ({AssignmentExpression.left=current} assignments+=Assignment)*
-    ;
-
-AssignmentExpression2 returns Expression
-    :   PrefixExpression ({AssignmentExpression.left=current} assignments+=Assignment)+
     ;
 
 Assignment:
@@ -327,7 +319,7 @@ PrefixExpression
 fragment UnaryOperator:	op=('&' | '*' | '+' | '-' | '~' | '!');
 
 PostfixExpression
-    :   PrimaryExpression ({PostfixExpression.left=current} right=Postfix)?
+    :   PrimaryExpression ({PostfixExpression.left=current} postOp=Postfix)?
     ;
 
 Postfix
@@ -401,21 +393,15 @@ enum DataTypes
 
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';
 
-enum StorageClassSpecifier: EXTERN='extern' | STATIC='static';
+enum StorageClassSpecifier: EXTERN='extern' | STATIC='static' | REGISTER='register';
 
-enum DeclarationAttribute: NONE | IS_PC='is_pc' | IS_INTERLOCK_FOR='is_interlock_for';
-	
-enum InstrAttribute: NONE | NO_CONT='no_cont' | COND='cond' | FLUSH='flush';
+enum AttributeName: NONE | IS_PC='is_pc' | IS_INTERLOCK_FOR='is_interlock_for' | DO_NOT_SYNTHESIZE="do_not_synthesize" | ENABLE="enable" | NO_CONT='no_cont' | COND='cond' | FLUSH='flush';
 
 enum StructOrUnion:   STRUCT='struct'|UNION='union';
-
-//enum BitfieldDataType:	UNSIGNED="u" | SIGNED="s"; //| FLOAT="f" | DOUBLE="d" | QUAD="q" | BOOLEAN='b';
 
 terminal LEFT_BR: '[';
 
 terminal RIGHT_BR: ']';
-
-terminal BVAL : 'b'('0'..'9')+;
 
 terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false' ;
 

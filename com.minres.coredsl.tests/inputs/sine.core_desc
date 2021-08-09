@@ -1,9 +1,7 @@
 InstructionSet RISCVROB {
-    constants {
+    architectural_state {
         unsigned int NR_JOINTS = 8;
         unsigned int REGF_DEPTH = 8;
-    }
-    registers{
         double JointsRegF[REGF_DEPTH][NR_JOINTS]; //8 joints and 8 regs in RegFile
     }
     functions {
@@ -32,7 +30,7 @@ InstructionSet RISCVROB {
     }
     instructions {
         SIMDSIN {  
-            encoding: b10101 :: rd[4:0] :: rs1[4:0] ;
+            encoding: 0b10101 :: rd[4:0] :: rs1[4:0] ;
             args_disass:"{name(rd)}, {name(rs1)}"; 
             behavior: {
                 unsigned int i;

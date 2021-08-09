@@ -37,16 +37,17 @@ public class BigIntegerWithRadix extends BigInteger {
 
 	@Override
 	public String toString() {
+		return toString(radix);
+	}
+	@Override
+	public String toString(int radix) {
 		switch(size) {
-		case 1:
-			return intValue()==0?"false":"true";
-		case 0:
 		case 8:
 		case 16:
 		case 32:
 		case 64:
 			if(radix==2)
-				return "0b"+super.toString(radix);
+				return String.format("0b%1$" + size + "s", super.toString(radix)).replace(' ', '0');
 			else if(radix==8)
 				return "0"+super.toString(radix);
 			else if(radix==16)	
@@ -55,14 +56,35 @@ public class BigIntegerWithRadix extends BigInteger {
 				return super.toString(radix);
 		default:		
 			if(radix==2)
-				return Integer.toString(size)+"'b"+super.toString(radix);
+				return Integer.toString(size)+"'b"+super.toString(2);
 			else if(radix==8)
-				return Integer.toString(size)+"'o"+super.toString(radix);
+				return Integer.toString(size)+"'o"+super.toString(8);
 			else if(radix==16)	
-				return Integer.toString(size)+"'h"+super.toString(radix);
+				return Integer.toString(size)+"'h"+super.toString(16);
 			else
 				return Integer.toString(size)+"'d"+super.toString(radix);
 		}
 	}
-
+	
+	public String toCString() {
+		return toCString(radix);
+	}
+	public String toCString(int radix) {
+		switch(size) {
+		case 8:
+		case 16:
+		case 32:
+		case 64:
+			if(radix==2)
+				return String.format("0b%1$" + size + "s", super.toString(2)).replace(' ', '0');
+			else if(radix==8)
+				return "0"+super.toString(8);
+			else if(radix==16)	
+				return "0x"+super.toString(16);
+			else
+				return super.toString(radix);
+		default:
+			return String.format("0b%1$" + size + "s", super.toString(2)).replace(' ', '0');
+		}
+	}
 }

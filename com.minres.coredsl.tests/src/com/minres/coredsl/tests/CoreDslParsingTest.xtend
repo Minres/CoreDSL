@@ -6,13 +6,13 @@ package com.minres.coredsl.tests
 import com.google.inject.Inject
 import com.minres.coredsl.coreDsl.DescriptionContent
 import org.eclipse.xtext.testing.InjectWith
-import org.eclipse.xtext.testing.XtextRunner
+import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.^extension.ExtendWith
 
-@RunWith(XtextRunner)
+@ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
 class CoreDslParsingTest {
 
@@ -22,7 +22,7 @@ class CoreDslParsingTest {
 
     def CharSequence addInstructionContext(CharSequence str)'''
         InstructionSet TestISA {
-            registers { 
+            architectural_state { 
                 [[is_pc]] int PC ;
                 int Xreg[32];
                 float Freg[32];
@@ -37,7 +37,7 @@ class CoreDslParsingTest {
     def void parseInstrPRELU() {
         val content = '''
         PRELU {
-            encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011;  
+            encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  
             args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
             behavior: {
                 static float alpha = 0.2;  
@@ -63,7 +63,7 @@ class CoreDslParsingTest {
     def void parseInstrSBOX() {
         val content = '''
         SBOX {
-            encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011;  
+            encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  
             args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
             behavior: {
                 unsigned int data_i;
@@ -82,11 +82,11 @@ class CoreDslParsingTest {
     def void parseInstrSQRTFloatRegs() {
         val content = '''
             InstructionSet TestISA {
-                registers {
+                architectural_state {
                     float F_Ext[32];}
                 instructions { 
                     vectorL {
-                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011 ;
                         args_disass:"{name(rd)}, {name(rs1)}";
                         behavior: { 
                         float xc = F_Ext[rs1];     
@@ -105,7 +105,7 @@ class CoreDslParsingTest {
     def void parseInstrSQRTUnionRegs() {
         val content = '''
             InstructionSet TestISA {
-                registers {
+                architectural_state {
                     union ISAXRegFile{
                         double doublePrec;  // for a double precision entry
                         struct vector2d {
@@ -116,7 +116,7 @@ class CoreDslParsingTest {
                 }
                 instructions { 
                     vectorL {
-                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011 ;
                         args_disass:"{name(rd)}, {name(rs1)}";
                         behavior: { 
                             float xc = ISAXRegFile[rs1].vector2d.x_coord;
@@ -140,14 +140,14 @@ class CoreDslParsingTest {
     def void parseInstrSpawn() {
         val content = '''
             InstructionSet TestISA {
-                registers {
+                architectural_state {
                 	[[is_pc]] int PC;
                     float Freg[32];
                     bool F_ready[32] [[is_interlock_for=Freg]];  // use attribute to indicate purpose of F_ready
                 }
                 instructions {
                     SIN {
-                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011 ;
                         args_disass:"#{name(rd)}, {name(rs1)}";   
                         behavior: { 
                             double theta = Freg[rs1];
@@ -168,7 +168,7 @@ class CoreDslParsingTest {
     def void parseInstrZOL() {
         val content = '''
             InstructionSet TestISA {
-                registers {
+                architectural_state {
                 	int PC;
                 	int X[32];
                     unsigned int count, endpc, startpc;
@@ -189,7 +189,7 @@ class CoreDslParsingTest {
                 }
                 instructions {
                     LP_SETUPI {
-                        encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011 ;
+                        encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011 ;
                         args_disass:"{name(rs1)}, {name(rs2)}";
                         behavior: {
                             count   = X[rs1];
@@ -208,7 +208,7 @@ class CoreDslParsingTest {
     def void parseInstrSwitch() {
         val content = '''
         FOO {
-            encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011;  
+            encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  
             args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
             behavior: {
                 switch(rs1) {

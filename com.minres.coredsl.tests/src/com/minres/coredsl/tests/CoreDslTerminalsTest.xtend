@@ -7,23 +7,24 @@ import com.google.inject.Inject
 import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.DescriptionContent
+import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.ExpressionStatement
 import com.minres.coredsl.coreDsl.FloatingConstant
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.IntegerConstant
 import com.minres.coredsl.coreDsl.PrimaryExpression
 import org.eclipse.xtext.testing.InjectWith
-import org.eclipse.xtext.testing.XtextRunner
+import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.^extension.ExtendWith
 
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertTrue
+import static org.junit.jupiter.api.Assertions.assertEquals
+import static org.junit.jupiter.api.Assertions.assertFalse
+import static org.junit.jupiter.api.Assertions.assertTrue
 
-@RunWith(XtextRunner)
+@ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
 class CoreDslTerminalsTest {
 
@@ -33,14 +34,14 @@ class CoreDslTerminalsTest {
 
     def CharSequence addBehaviorContext(CharSequence str) '''
         InstructionSet TestISA {
-            registers { 
+            architectural_state { 
                 [[is_pc]] int PC ;
                 int Xreg[32];
                 float Freg[32];
             }
             instructions {
             	FOO {
-            		encoding: b0000000 :: rs2[4:0] :: rs1[4:0] :: b000 :: rd[4:0] :: b1111011;  
+            		encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  
             		args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
             		behavior: {
             			«str»
@@ -75,10 +76,10 @@ class CoreDslTerminalsTest {
          	''').parse
         validator.assertNoErrors(content)
 
-        val compound = ((content.definitions.get(0) as InstructionSet).instr.get(0).behavior as CompoundStatement)
+        val compound = ((content.definitions.get(0) as InstructionSet).instructions.get(0).behavior as CompoundStatement)
         for (el : compound.items) {
             if (el instanceof ExpressionStatement) {
-                val expr = el.expr as AssignmentExpression
+                val expr = el.expr.expressions.get(0) as AssignmentExpression
                 val rhs = (expr.assignments.get(0).right as PrimaryExpression).constant as IntegerConstant
                 assertEquals(rhs.value.intValue, 42)
             }
@@ -108,10 +109,10 @@ class CoreDslTerminalsTest {
          	''').parse
         validator.assertNoErrors(content)
 
-        val compound = ((content.definitions.get(0) as InstructionSet).instr.get(0).behavior as CompoundStatement)
+        val compound = ((content.definitions.get(0) as InstructionSet).instructions.get(0).behavior as CompoundStatement)
         for (el : compound.items.subList(3, compound.items.size())) {
             if (el instanceof ExpressionStatement) {
-                val expr = el.expr as AssignmentExpression
+                val expr = el.expr.expressions.get(0) as AssignmentExpression
                 // val lhsName = (expr.left as PrimaryExpression).ref.name;
                 val rhs = (expr.assignments.get(0).right as PrimaryExpression).constant as IntegerConstant
                 val intValue = rhs.value.intValue
@@ -151,11 +152,11 @@ class CoreDslTerminalsTest {
         ''').parse
         validator.assertNoErrors(content)
 
-        val compound = ((content.definitions.get(0) as InstructionSet).instr.get(0).behavior as CompoundStatement)
+        val compound = ((content.definitions.get(0) as InstructionSet).instructions.get(0).behavior as CompoundStatement)
         for (el : compound.items.subList(3, compound.items.size())) {
             if (el instanceof ExpressionStatement) {
-                val expr = el.expr as AssignmentExpression
-                val lhsName = (expr.left as PrimaryExpression).ref.name;
+                val expr = el.expr.expressions.get(0) as AssignmentExpression
+                val lhsName = ((expr.left as PrimaryExpression).ref as DirectDeclarator).name;
                 val rhs = (expr.assignments.get(0).right as PrimaryExpression).constant as FloatingConstant
                 val floatValue = rhs.value.doubleValue
                 if (lhsName == "d" || lhsName == "f" || lhsName == "ld")

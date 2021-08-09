@@ -49,13 +49,19 @@ public class INTEGERValueConverter extends AbstractLexerBasedConverter<BigIntege
 				if(string.contains("u") || string.contains("U"))
 					type = BigIntegerWithRadix.TYPE.UNSIGNED;
 
-				int size = 32;
-				if(string.endsWith("ll") || string.endsWith("LL")) 
-					size = 128;
-				else if(string.endsWith("l") || string.endsWith("L")) 
-					size = 64;
-				
 				String s = string.toLowerCase().replaceAll("[ul]", "");
+
+				int size = 32;
+				if(s.endsWith("ll")) 
+					size = 128;
+				else if(s.endsWith("l")) 
+					size = 64;
+				else if(s.startsWith("0x"))
+					size = (s.length()-2) * 4; 
+				else if(s.startsWith("0b"))
+					size = s.length() - 2;
+				else if(s.length()>1 && s.startsWith("0"))
+					size =(s.length()-1) * 3;
 				
 				if(s.startsWith("0x")){
 					return new BigIntegerWithRadix(string.substring(2), 16, size, type);

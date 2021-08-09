@@ -1,5 +1,5 @@
 InstructionSet Vec2D {
-    registers{
+    architectural_state {
         union ISAXRegFile {
             double doublePrec;  // for a double precision entry
             struct vector2d {
@@ -33,7 +33,7 @@ InstructionSet Vec2D {
     }
     instructions{
         VectorL{
-            encoding: b10101 :: rd[4:0] :: rs1[4:0];
+            encoding: 0b10101 :: rd[4:0] :: rs1[4:0];
             args_disass:"{name(rd)}, {name(rs1)}";
             behavior: {
                 float xc = ISAXRegFile[rs1].vector2d.x_coord;

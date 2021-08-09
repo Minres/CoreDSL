@@ -5,8 +5,11 @@ package com.minres.coredsl
 
 import org.eclipse.xtext.conversion.IValueConverterService
 import org.eclipse.xtext.scoping.IGlobalScopeProvider
-import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
 import com.minres.coredsl.converter.CoreDslTerminalConverters
+import com.minres.coredsl.scoping.CoreDslResourceDescriptionStrategy
+import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy
+import com.minres.coredsl.scoping.CoreDslGlobalScopeProvider
+import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
 
 /** 
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
@@ -19,4 +22,8 @@ class CoreDslRuntimeModule extends AbstractCoreDslRuntimeModule {
 	override Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
 		return ImportUriGlobalScopeProvider
 	}
+	
+	def Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
+        return CoreDslResourceDescriptionStrategy
+    }
 }

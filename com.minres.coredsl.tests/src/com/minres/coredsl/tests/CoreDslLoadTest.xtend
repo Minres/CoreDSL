@@ -4,20 +4,23 @@
 package com.minres.coredsl.tests
 
 import com.google.inject.Inject
-import org.eclipse.xtext.testing.InjectWith
-import org.eclipse.xtext.testing.XtextRunner
-import org.eclipse.xtext.testing.util.ParseHelper
-import org.junit.Test
-import org.junit.runner.RunWith
-
-import static org.junit.Assert.*
-import static extension com.google.common.io.CharStreams.*
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.InstructionSet
 import java.io.FileReader
+import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.extensions.InjectionExtension
+import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.^extension.ExtendWith
 
-@RunWith(XtextRunner)
+import static org.junit.jupiter.api.Assertions.assertEquals
+import static org.junit.jupiter.api.Assertions.assertNotNull
+import static org.junit.jupiter.api.Assertions.assertNull
+
+import static extension com.google.common.io.CharStreams.*
+
+@ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
 class CoreDslLoadTest {
 
@@ -34,26 +37,23 @@ class CoreDslLoadTest {
 		assertNotNull(result)
 		assertEquals("RV32I", result.name)
 		assertNull(result.superType)
-		assertEquals(2, result.spaces.size())
-		assertNotNull(result.regs)
-		assertNotNull(result.instr)
+		assertEquals(7, result.declarations.size())
+		assertNotNull(result.instructions)
 
-		assertEquals(2, result.regs.size)
-
-		assertEquals(5, result.instr.size)
-		val i0 = result.instr.get(0);
+		assertEquals(5, result.instructions.size)
+		val i0 = result.instructions.get(0);
 		assertEquals("ADDI", i0.name)
 		assertEquals(5, i0.encoding.fields.size)
 
-		val i1 = result.instr.get(1);
+		val i1 = result.instructions.get(1);
 		assertEquals("SLTI", i1.name)
 		assertEquals(5, i1.encoding.fields.size)
 
-		val i2 = result.instr.get(2);
+		val i2 = result.instructions.get(2);
 		assertEquals("SLTIU", i2.name)
 		assertEquals(5, i2.encoding.fields.size)
 
-		val i3 = result.instr.get(3);
+		val i3 = result.instructions.get(3);
 		assertEquals("SW", i3.name)
 		assertEquals(6, i3.encoding.fields.size)
 
