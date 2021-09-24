@@ -86,7 +86,6 @@ class Visualizer {
 				reference.declaration = declarationLiterals.get(targetNode);
 			}
 		}
-		System.out.println();
 	}
 	
 	private def VisualNode visit(EObject node) {
