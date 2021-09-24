@@ -157,7 +157,6 @@ class Visualizer {
 	private def NodeElement makeChild(String label, EObject node) {
 		if(node === null) return null;
 		return new Port(label, visit(node));
-		//return new Port(label, makeImmediateLiteral("<null>"));
 	}
 	
 	private def NodeElement makeGroup(String label, List<? extends EObject> children) {
@@ -187,7 +186,6 @@ class Visualizer {
 	 ***************** */
 	
 	private def dispatch VisualNode genNode(EObject node) {
-		//return makeImmediateLiteral(node.getClass.getSimpleName);
 		throw new RuntimeException("generator for type " + node.getClass().getSimpleName() + " not implemented");
 	}
 	
@@ -401,7 +399,6 @@ class Visualizer {
 			makeDeclaration("Name", node.name, node),
 			makeChild("Index", node.index),
 			makeGroup("Size", node.size),
-			//makeGroup("Qualifiers", node.qualifiers),
 			makeGroup("Parameters", node.params)
 		);
 	}

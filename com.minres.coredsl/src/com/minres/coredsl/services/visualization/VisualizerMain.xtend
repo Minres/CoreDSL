@@ -27,8 +27,6 @@ class VisualizerMain {
 
 	@Inject JavaIoFileSystemAccess fileAccess
 
-	// It's mind boggling to me that the Java runtime doesn't provide basic
-	// facilities like C#'s Path.GetFileNameWithoutExtension or Path.ChangeExtension.
 	def private static String changeExtension(String path, String ext) {
 		val full = Paths.get(path)
 		var name = full.fileName.toString()
@@ -37,15 +35,6 @@ class VisualizerMain {
 			name = name.substring(0, pos)
 		}
 		if (ext !== null && ext.length > 0) {
-			// This mess is necessary because someone thought treating
-			// character literals as string was a good idea.
-			// The documentation claims that it is treated as a char,
-			// "where a primitive char is expected", which *apparently*
-			// is not the case when comparing it to another character.
-			// But at the same time, comparing a char and a String does
-			// not even generate a warning, even though the result is
-			// always false. So <ext.charAt(0) == '.'> just silently
-			// fails every time and is a mess to debug. 
 			val char period = '.'
 			if (ext.charAt(0) == period) {
 				name += ext
