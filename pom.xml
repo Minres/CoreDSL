@@ -283,6 +283,11 @@
 						<useUIHarness>false</useUIHarness>
 					</configuration>
 				</plugin>
+				<plugin>
+                    <groupId>com.devexperts.bintray</groupId>
+                    <artifactId>bintray-maven-plugin</artifactId>
+                    <version>1.2</version>
+                </plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -311,6 +316,11 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</pluginRepository>
+        <pluginRepository>
+            <id>bintray-devexperts-Maven</id>
+            <name>bintray-plugins</name>
+            <url>https://dl.bintray.com/devexperts/Maven</url>
+        </pluginRepository>
 	</pluginRepositories>
 	<profiles>
 		<profile>

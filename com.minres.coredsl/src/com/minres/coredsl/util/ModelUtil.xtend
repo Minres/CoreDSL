@@ -13,6 +13,7 @@ import java.util.List
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
+import com.minres.coredsl.coreDsl.Statement
 
 class ModelUtil {
     
@@ -22,6 +23,9 @@ class ModelUtil {
         isa.declarations.filter[it instanceof Declaration].map[it as Declaration]
     }
 
+    static def Iterable<Statement> getStateStatements(ISA isa) {
+        isa.declarations.filter[it instanceof Statement].map[it as Statement]
+    }
 
     static def Iterable<Declaration> getStateConstDeclarations(ISA isa) {
         isa.declarations.filter[
@@ -67,7 +71,11 @@ class ModelUtil {
     
     static def DirectDeclarator effectiveDeclarator(ISA isa, String name){
         if(isa instanceof CoreDef) {
-            val decl = isa.stateDeclarations.findFirst[it.init.findFirst[it.declarator.name==name && it.initializer!==null]!==null]
+            val decl = isa.stateDeclarations.findFirst[
+            	it.init.findFirst[
+            		it.declarator.name==name && it.initializer!==null
+            	]!==null
+            ]
             if(decl!==null)
                 return decl.init.findFirst[it.declarator.name==name].declarator
             for(contrib:isa.contributingType.reverse) {

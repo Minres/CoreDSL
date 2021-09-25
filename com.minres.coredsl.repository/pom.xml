@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -6,7 +7,7 @@
 		<groupId>com.minres.coredsl</groupId>
 		<artifactId>com.minres.coredsl.parent</artifactId>
 		<version>2.0.1-SNAPSHOT</version>
-	        <relativePath>..</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>com.minres.coredsl.repository</artifactId>
 	<packaging>eclipse-repository</packaging>
@@ -37,7 +38,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
@@ -46,6 +47,15 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+
+		<extensions>
+			<!-- Enabling the use of FTP -->
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ftp</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+		</extensions>
 	</build>
 	<profiles>
 		<profile>
@@ -54,6 +64,14 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
+			<properties>
+				<!-- Properties relative to the distant host where to upload the repo -->
+				<ftp.url>ftp://your.server.com</ftp.url>
+				<ftp.toDir>/yourpath</ftp.toDir>
+				<!-- Relative path to the repo being uploaded -->
+				<repo.path>${project.build.directory}/repository/</repo.path>
+			</properties>
+
 			<build>
 				<plugins>
 					<plugin>
@@ -69,43 +87,38 @@
 							</execution>
 						</executions>
 					</plugin>
-					<plugin>
-						<groupId>com.carrotgarden.maven</groupId>
-						<artifactId>bintray-maven-plugin</artifactId>
-						<version>1.5.20191113165555</version>
-						<configuration>
-							<skip>false</skip>
-							<!-- Bintray organization name. -->
-							<subject>minres</subject>
-							<!-- Bintray target repository. -->
-							<repository>eclipse</repository>
-							<!-- Bintray package name. -->
-							<bintrayPackage>CoreDSL</bintrayPackage>
-							<bintrayVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</bintrayVersion>
-							<packageVcsUrl>https://github.com/Minres/CoreDSL.git</packageVcsUrl>
-							<!-- Local folder content to sync to the remote repo. -->
-							<sourceFolder>${project.build.directory}/repository</sourceFolder>
-							<!-- Remote folder for local content upload, relative path. -->
-							<targetFolder>CoreDSL/${parsedVersion.majorVersion}.${parsedVersion.minorVersion}</targetFolder>
-
-							<!-- Bintray credentials in settings.xml. -->
-							<serverId>bintray-minres-deploy</serverId>
-						</configuration>
+<!-- 					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>wagon-maven-plugin</artifactId>
+						<version>1.0-beta-4</version>
 						<executions>
-							<!-- Activate "bintray:upload" during "package" -->
 							<execution>
-								<phase>package</phase>
+								<id>upload-repo</id>
+								<phase>install</phase>
 								<goals>
 									<goal>upload</goal>
 								</goals>
+								<configuration>
+									<fromDir>${repo.path}</fromDir>
+									<includes>**</includes>
+									<toDir>${ftp.toDir}</toDir>
+									<url>${ftp.url}</url>
+									<serverId>p2Repo</serverId>
+									Points to your settings.xml where the connection settings are stored as shown below
+									<server>
+									<id>p2Repo</id>
+									<username>username</username>
+									<password>password</password>
+									</server>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
-				</plugins>
+ -->				</plugins>
 			</build>
 		</profile>
 	</profiles>
 
-	<dependencies>
-	</dependencies>
+	<dependencies />
+
 </project>

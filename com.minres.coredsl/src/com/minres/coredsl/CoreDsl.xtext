@@ -395,7 +395,16 @@ enum TypeQualifier: CONST='const' | VOLATILE='volatile';
 
 enum StorageClassSpecifier: EXTERN='extern' | STATIC='static' | REGISTER='register';
 
-enum AttributeName: NONE | IS_PC='is_pc' | IS_INTERLOCK_FOR='is_interlock_for' | DO_NOT_SYNTHESIZE="do_not_synthesize" | ENABLE="enable" | NO_CONT='no_cont' | COND='cond' | FLUSH='flush';
+enum AttributeName: NONE 
+	| IS_PC='is_pc' 
+	| IS_INTERLOCK_FOR='is_interlock_for' 
+	| DO_NOT_SYNTHESIZE="do_not_synthesize" 
+	| ENABLE="enable" 
+	| NO_CONT='no_cont' 
+	| COND='cond' 
+	| FLUSH='flush'
+	| HLS='hls'
+;
 
 enum StructOrUnion:   STRUCT='struct'|UNION='union';
 
