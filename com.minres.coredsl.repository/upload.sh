@@ -23,7 +23,7 @@ for artifact_name in $file_list; do
   	  -H "X-Checksum-Sha256:${sha256}" \
   	  -H "X-Checksum-Sha1:${sha1}" \
   	  -H "X-Checksum-md5:${md5}" \
-  	  ${artifactory_url}/${repo_module}/${version}/$f > /dev/null
+  	  ${artifactory_url}/${repo_module}/${version}/$artifact_name > /dev/null
   done
 done
 
