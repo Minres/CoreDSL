@@ -19,6 +19,7 @@
 		<moduleProperties></moduleProperties>
 		<systemProperties></systemProperties>
 		<additionalTestArguments></additionalTestArguments>
+		<maven.deploy.skip>true</maven.deploy.skip>
 	</properties>
 	<modules>
 		<module>com.minres.coredsl.target</module>

@@ -70,6 +70,7 @@
 				<ftp.toDir>/yourpath</ftp.toDir>
 				<!-- Relative path to the repo being uploaded -->
 				<repo.path>${project.build.directory}/repository/</repo.path>
+				<maven.deploy.skip>false</maven.deploy.skip>
 			</properties>
 
 			<build>
@@ -87,7 +88,7 @@
 							</execution>
 						</executions>
 					</plugin>
-<!-- 					<plugin>
+					<!--<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>wagon-maven-plugin</artifactId>
 						<version>1.0-beta-4</version>
@@ -104,17 +105,37 @@
 									<toDir>${ftp.toDir}</toDir>
 									<url>${ftp.url}</url>
 									<serverId>p2Repo</serverId>
-									Points to your settings.xml where the connection settings are stored as shown below
 									<server>
-									<id>p2Repo</id>
-									<username>username</username>
-									<password>password</password>
+										<id>p2Repo</id>
+										<username>username</username>
+										<password>password</password>
 									</server>
 								</configuration>
 							</execution>
 						</executions>
+					</plugin>-->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.2.1</version>
+						<executions>
+							<execution>
+								<id>deploy-to-artifactory</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<includeProjectDependencies>false</includeProjectDependencies>
+									<includePluginDependencies>false</includePluginDependencies>
+									<workingDirectory>${project.basedir}</workingDirectory>
+									<executable>sh</executable>
+									<argument>${project.basedir}/upload.sh</argument>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
- -->				</plugins>
+				</plugins>
 			</build>
 		</profile>
 	</profiles>
