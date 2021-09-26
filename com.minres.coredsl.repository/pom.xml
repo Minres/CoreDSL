@@ -11,13 +11,6 @@
 	</parent>
 	<artifactId>com.minres.coredsl.repository</artifactId>
 	<packaging>eclipse-repository</packaging>
-  <distributionManagement>
-    <repository>
-      <id>artifactory</id>
-      <url>https://artifactory.minres.com/artifactory</url>
-    </repository>
-  </distributionManagement>
-
 	<build>
 		<pluginManagement>
 			<plugins>
