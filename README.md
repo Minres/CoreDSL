@@ -1,6 +1,12 @@
 # CoreDSL
 
-This repo contains the XText bundles/plugins for CoreDSL. The bundles can be installed from https://minres.com/download/repository/CoreDSL
+This repo contains the XText bundles/plugins for CoreDSL. The bundles can be installed from 
+
+| Version | URL                                                               |
+|---------|-------------------------------------------------------------------|
+| Latest  | https://artifactory.minres.com/artifactory/eclipse/CoreDSL/latest |
+| 2.0.x   | https://artifactory.minres.com/artifactory/eclipse/CoreDSL/2.0    | 
+
 
 ## References
 
