@@ -38,7 +38,7 @@ class CoreDslTypeTest {
         }
         Core TestCore provides TestISA {
             architectural_state {
-                unsigned XLEN=32;
+                XLEN=32;
             }
         }
         '''.parse
