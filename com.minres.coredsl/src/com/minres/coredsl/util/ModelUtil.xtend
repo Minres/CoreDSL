@@ -72,14 +72,13 @@ class ModelUtil {
     
     static def DirectDeclarator effectiveDeclarator(ISA isa, String name){
         if(isa instanceof CoreDef) {
-            val decl = isa.stateDeclarations.findFirst[
-            	it.init.findFirst[
-            		it.declarator.name==name && it.initializer!==null
-            	]!==null
+            val decl = isa.allDefinitions.filter[it instanceof Declaration].findFirst[
+	           	(it as Declaration).init.findFirst[it.declarator.name==name]!==null
             ]
-            if(decl!==null)
-                return decl.init.findFirst[it.declarator.name==name].declarator
-            for(contrib:isa.contributingType.reverse) {
+            if(decl!==null) {
+                return (decl as Declaration).init.findFirst[it.declarator.name==name].declarator
+            }
+            for(contrib:isa.contributingType.reverseView) {
                 val contribDecl = contrib.effectiveDeclarator(name)
                 if(contribDecl!==null)
                     return contribDecl

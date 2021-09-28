@@ -210,8 +210,7 @@ class CoreDSLInterpreter {
 				return ctx.newValue(e, (e.eContainer as InitDeclarator).initializer.expr.valueFor(ctx))
 			} else if (e.eContainer.eContainer.eContainer instanceof ISA) {
 				val directDecl = ctx.definitionContext.effectiveDeclarator(e.name)
-				if ((directDecl.eContainer as InitDeclarator).initializer !== null)
-					return ctx.newValue(e, (directDecl.eContainer as InitDeclarator).initializer.expr.valueFor(ctx))
+				return directDecl.evaluate(ctx);
 			}
 		}
 		null
