@@ -14,6 +14,7 @@ import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.Statement
+import com.minres.coredsl.coreDsl.BlockItem
 
 class ModelUtil {
     
@@ -95,6 +96,22 @@ class ModelUtil {
     }
     
     
+    static def Iterable<BlockItem> allDefinitions(CoreDef core){
+        val blockItemList = if(core.contributingType.size == 0) core.declarations else {
+            val instrSets = core.contributingType?.map[InstructionSet i| i.allInstructionSets].flatten
+            val seen = newLinkedHashSet
+            seen.addAll(instrSets)
+            seen.add(core)
+            seen.map[ISA i| i.declarations].flatten
+        }
+        return blockItemList
+    }
+
+    static def Iterable<BlockItem> allDefinitions(InstructionSet core){
+        val blockItemList = core.allInstructionSets.map[ISA i| i.declarations].flatten
+        return blockItemList
+    }
+
     static def Iterable<Instruction> allInstr(CoreDef core){
         val unique = newLinkedHashMap
         val instrList = if(core.contributingType.size == 0) core.instructions else {
