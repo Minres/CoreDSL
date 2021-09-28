@@ -43,6 +43,13 @@ class CoreDSLInterpreter {
 	def static Value evaluate(DirectDeclarator decl, EvaluationContext ctx) {
 		if (decl.eContainer instanceof InitDeclarator) {
 			val context = ctx.definitionContext
+			if(context === null){
+				val initDecl = (decl.eContainer as InitDeclarator)
+	            return if(initDecl.initializer!==null)
+	                initDecl.initializer.expr.valueFor(ctx)
+	            else
+	                null
+			}
 			val stmts = switch (context) {
 				CoreDef: {
 					context.allDefinitions
@@ -50,7 +57,7 @@ class CoreDSLInterpreter {
 				InstructionSet: {
 					context.allDefinitions
 				}
-			}
+			}.toList
 			val assignments = stmts
 				.filter[it instanceof ExpressionStatement]
 				.map [(it as ExpressionStatement).expr.expressions
@@ -68,7 +75,7 @@ class CoreDSLInterpreter {
 			} else
 				(declAssignment as AssignmentExpression).assignments.get(0).right.valueFor(ctx)
 		} else
-			new Value(new DataType(DataType.Type.COMPOSITE, 0), 0)
+			null
 	}
 
 	def static dispatch Value valueFor(TypeSpecifier e, EvaluationContext ctx) {
