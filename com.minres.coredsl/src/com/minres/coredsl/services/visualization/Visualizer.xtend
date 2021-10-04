@@ -429,23 +429,14 @@ class Visualizer {
 	
 	private def dispatch VisualNode genNode(IntegerConstant node) {
 		return makeImmediateLiteral(node.value.toString)
-		/*return makeNode(node, "Integer",
-			makeNamedLiteral("Value", node.value.toString)
-		);*/
 	}
 	
 	private def dispatch VisualNode genNode(FloatingConstant node) {
 		return makeImmediateLiteral(node.value.toString)
-		/*return makeNode(node, "Float",
-			makeNamedLiteral("Value", node.value.toString)
-		);*/
 	}
 	
 	private def dispatch VisualNode genNode(BoolConstant node) {
 		return makeImmediateLiteral(node.value.toString)
-		/*return makeNode(node, "Bool",
-			makeNamedLiteral("Value", node.value.toString)
-		);*/
 	}
 	
 	private def dispatch VisualNode genNode(StringLiteral node) {
