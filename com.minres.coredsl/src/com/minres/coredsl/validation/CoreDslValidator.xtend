@@ -22,6 +22,9 @@ import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.FunctionDefinition
+import com.minres.coredsl.validation.KnownAttributes.AttributeUsage
+import org.eclipse.emf.common.util.EList
+import org.eclipse.emf.ecore.EStructuralFeature
 
 /**
  * This class contains custom validation rules. 
@@ -124,102 +127,41 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 			}
 		}
 	}
+	
+	def checkAttributes(EList<Attribute> attributes, KnownAttributes.AttributeUsage expectedUsage, EStructuralFeature feature) {
+		for(Attribute attribute : attributes) {
+			val info = KnownAttributes.byName(attribute.type);
+			
+			if(info === null || !info.allowedUsage.contains(expectedUsage))
+				error("unexpected attribute '" + attribute.type + "'", feature, ILLEGAL_ATTRIBUTE);
+			
+			if(attribute.params.size() !== info.paramCount)
+				error("attribute '" + info.name + "' requires exactly " + info.paramCount + " parameter(s)", feature, INVALID_ATTRIBUTE_PARAMETERS);
+		}
+	}
 
 	@Check
 	def checkAttributeNames(ISA isa) {
-		for (Attribute a : isa.attributes) {
-			switch (a.type) {
-    			case "enable": {
-    				if(a.params.size() !== 1)
-						error(
-							"enable attribute requires exactly one parameter",
-							CoreDslPackage.Literals.ISA__ATTRIBUTES,
-							INVALID_ATTRIBUTE_PARAMETERS
-						)
-				}
-				case "hls":
-					return
-				default:
-					error(
-						"illegal attribute name",
-						CoreDslPackage.Literals.ISA__ATTRIBUTES,
-						ILLEGAL_ATTRIBUTE
-					)
-			}
-		}
-
+		checkAttributes(isa.attributes, KnownAttributes.AttributeUsage.isa, CoreDslPackage.Literals.ISA__ATTRIBUTES);
 	}
 
 	@Check
 	def checkAttributeNames(Instruction instr) {
-		for (Attribute a : instr.attributes) {
-			switch (a.type) {
-    			case "no_cont",
-    			case "cond",
-    			case "hls",
-    			case "flush":
-					return
-				default:
-					error(
-						"illegal attribute name",
-						CoreDslPackage.Literals.INSTRUCTION__ATTRIBUTES,
-						ILLEGAL_ATTRIBUTE
-					)
-			}
-		}
-
+		checkAttributes(instr.attributes, KnownAttributes.AttributeUsage.instruction, CoreDslPackage.Literals.INSTRUCTION__ATTRIBUTES);
 	}
 
 	@Check
 	def checkAttributeNames(Declaration decl) {
-		for (Attribute a : decl.attributes) {
-			switch (a.type) {
-    			case "is_pc",
-    			case "is_interlock_for":
-					return
-				default:
-					error(
-						"illegal attribute name",
-						CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES,
-						ILLEGAL_ATTRIBUTE
-					)
-			}
-		}
-
+		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES);
 	}
 
 	@Check
 	def checkAttributeNames(InitDeclarator decl) {
-		for (Attribute a : decl.attributes) {
-			switch (a.type) {
-    			case "is_pc",
-    			case "is_interlock_for":
-					return
-				default:
-					error(
-						"illegal attribute name",
-						CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES,
-						ILLEGAL_ATTRIBUTE
-					)
-			}
-		}
-
+		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES);
 	}
 
 	@Check
 	def checkAttributeNames(FunctionDefinition decl) {
-		for (Attribute a : decl.attributes) {
-			switch (a.type) {
-    			case "do_not_synthesize":
-					return
-				default:
-					error(
-						"illegal attribute name",
-						CoreDslPackage.Literals.FUNCTION_DEFINITION__ATTRIBUTES,
-						ILLEGAL_ATTRIBUTE
-					)
-			}
-		}
-
+		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.function, CoreDslPackage.Literals.FUNCTION_DEFINITION__ATTRIBUTES);
 	}
 }
