@@ -258,13 +258,15 @@ class Visualizer {
 		? makeNode(node, "Function (extern)",
 			makeChild("Return Type", node.type),
 			makeNamedLiteral("Name", node.name),
-			makeGroup("Parameters", node.params)
+			makeGroup("Parameters", node.params),
+			makeGroup("Attributes", node.attributes)
 		)
 		: makeNode(node, "Function",
 			makeChild("Return Type", node.type),
 			makeNamedLiteral("Name", node.name),
 			makeGroup("Parameters", node.params),
-			makeChild("Body", node.statement)
+			makeChild("Body", node.statement),
+			makeGroup("Attributes", node.attributes)
 		);
 	}
 	
@@ -349,7 +351,7 @@ class Visualizer {
 	private def dispatch VisualNode genNode(Attribute node) {
 		return makeNode(node, "Attribute",
 			makeNamedLiteral("Type", node.type.toString),
-			makeChild("Value", node.value)
+			makeGroup("Params", node.params)
 		);
 	}
 	

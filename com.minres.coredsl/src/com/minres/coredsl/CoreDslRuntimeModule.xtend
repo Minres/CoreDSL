@@ -8,7 +8,6 @@ import org.eclipse.xtext.scoping.IGlobalScopeProvider
 import com.minres.coredsl.converter.CoreDslTerminalConverters
 import com.minres.coredsl.scoping.CoreDslResourceDescriptionStrategy
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy
-import com.minres.coredsl.scoping.CoreDslGlobalScopeProvider
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
 
 /** 
