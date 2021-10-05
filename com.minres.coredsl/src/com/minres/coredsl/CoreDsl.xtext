@@ -44,7 +44,7 @@ fragment SectionFunctions returns ISA:
 ;
 
 fragment SectionInstructions returns ISA:
-    'instructions' attributes+=Attribute*  '{' instructions+=Instruction+     '}'
+    'instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}'
 ;
 
 Instruction:

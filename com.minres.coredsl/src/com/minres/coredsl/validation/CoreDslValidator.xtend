@@ -142,7 +142,7 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 
 	@Check
 	def checkAttributeNames(ISA isa) {
-		checkAttributes(isa.attributes, KnownAttributes.AttributeUsage.isa, CoreDslPackage.Literals.ISA__ATTRIBUTES);
+		checkAttributes(isa.commonInstructionAttributes, KnownAttributes.AttributeUsage.instruction, CoreDslPackage.Literals.ISA__COMMON_INSTRUCTION_ATTRIBUTES);
 	}
 
 	@Check

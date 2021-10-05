@@ -28,21 +28,28 @@ class CoreDslAttributeValidationTest {
 	@Inject ValidationTestHelper validator
 
 	@Test
-	def void validAttributePlacement() {
+	def void validAttributes() {
+		val createValidAttribString = [ KnownAttributes.AttributeUsage usage |
+			KnownAttributes.all.filter[it.allowedUsage.contains(usage)].map [
+				"[[" + it.name + (it.paramCount > 0 ? "(" + ", 0".repeat(it.paramCount).substring(2) + ")" : "") + "]]"
+			].join(" ")
+		];
+
+		val funcAttribString = createValidAttribString.apply(KnownAttributes.AttributeUsage.function);
+		val declAttribString = createValidAttribString.apply(KnownAttributes.AttributeUsage.declaration);
+		val instrAttribString = createValidAttribString.apply(KnownAttributes.AttributeUsage.instruction);
+
 		val content = '''
 			InstructionSet AttributeValidationTestInstructionSet {
 			    architectural_state {
 			        unsigned XLEN;
-			        unsigned<XLEN> reg[32] [[is_main_reg]];
-			        unsigned<XLEN> mem[1024] [[is_main_mem]];
-			        unsigned<XLEN> pc [[is_pc]];
-			        unsigned<XLEN> lock [[is_interlock_for(pc)]];
+			        unsigned<XLEN> field «declAttribString»;
 			    }
 			    functions {
-			    	void fun() [[do_not_synthesize]] {}
+			    	void fun() «funcAttribString» {}
 			    }
-			    instructions [[enable=true]] [[hls]] {
-			    	test [[hls]] [[no_cont]] [[cond]] [[flush]] {
+			    instructions «instrAttribString» {
+			    	test «instrAttribString» {
 			    		encoding: 0;
 			    		args_disass: "";
 			    		behavior: {}
@@ -103,53 +110,10 @@ class CoreDslAttributeValidationTest {
 
 		// Every attribute appears in every possible location, so we expect
 		// <location count> * <attribute count> - <valid placement count> issues.
-		val expectedIssueCount = KnownAttributes.all.map[4 - it.allowedUsage.size].reduce[a, b|a + b];
-		assertEquals(issues.size, expectedIssueCount);
-	}
-
-	@Test
-	def void validAttributeParameters() {
-		val createValidAttribString = [ KnownAttributes.AttributeUsage usage |
-			KnownAttributes.all.filter[it.allowedUsage.contains(usage)].map [
-				"[[" + it.name + (it.paramCount > 0 ? "(" + ", 0".repeat(it.paramCount).substring(2) + ")" : "") + "]]"
-			].join(" ")
-		];
-
-		val isaAttribString = createValidAttribString.apply(KnownAttributes.AttributeUsage.isa);
-		val funcAttribString = createValidAttribString.apply(KnownAttributes.AttributeUsage.function);
-		val declAttribString = createValidAttribString.apply(KnownAttributes.AttributeUsage.declaration);
-		val instrAttribString = createValidAttribString.apply(KnownAttributes.AttributeUsage.instruction);
-
-		val content = '''
-			InstructionSet AttributeValidationTestInstructionSet {
-			    architectural_state {
-			        unsigned XLEN;
-			        unsigned<XLEN> field «declAttribString»;
-			    }
-			    functions {
-			    	void fun() «funcAttribString» {}
-			    }
-			    instructions «isaAttribString» {
-			    	test «instrAttribString» {
-			    		encoding: 0;
-			    		args_disass: "";
-			    		behavior: {}
-			    	}
-			    }
-			}
-			Core AttributeValidationTestCore provides AttributeValidationTestInstructionSet {
-			    architectural_state {
-			        XLEN=32;
-			    }
-			}
-		'''.parse();
-
-		val issues = validator.validate(content);
-		for (issue : issues) {
-			println(issue);
-		}
-
-		assertTrue(issues.isEmpty());
+		val validPlacementCount =
+			KnownAttributes.all.map[it.allowedUsage.size].reduce[a, b|a + b] +
+			KnownAttributes.all.filter[it.allowedUsage.contains(KnownAttributes.AttributeUsage.instruction)].size;
+		assertEquals(issues.size, 4 * KnownAttributes.all.size - validPlacementCount);
 	}
 
 	@Test
@@ -160,7 +124,6 @@ class CoreDslAttributeValidationTest {
 			].join(" ")
 		];
 
-		val isaAttribString = createInvalidAttribString.apply(KnownAttributes.AttributeUsage.isa);
 		val funcAttribString = createInvalidAttribString.apply(KnownAttributes.AttributeUsage.function);
 		val declAttribString = createInvalidAttribString.apply(KnownAttributes.AttributeUsage.declaration);
 		val instrAttribString = createInvalidAttribString.apply(KnownAttributes.AttributeUsage.instruction);
@@ -174,7 +137,7 @@ class CoreDslAttributeValidationTest {
 			    functions {
 			    	void fun() «funcAttribString» {}
 			    }
-			    instructions «isaAttribString» {
+			    instructions «instrAttribString» {
 			    	test «instrAttribString» {
 			    		encoding: 0;
 			    		args_disass: "";
@@ -196,7 +159,9 @@ class CoreDslAttributeValidationTest {
 		}
 
 		// we expect an issue for every valid attribute placement
-		val expectedIssueCount = KnownAttributes.all.map[it.allowedUsage.size].reduce[a, b|a + b];
-		assertEquals(issues.size, expectedIssueCount);
+		val validPlacementCount =
+			KnownAttributes.all.map[it.allowedUsage.size].reduce[a, b|a + b] +
+			KnownAttributes.all.filter[it.allowedUsage.contains(KnownAttributes.AttributeUsage.instruction)].size;
+		assertEquals(issues.size, validPlacementCount);
 	}
 }

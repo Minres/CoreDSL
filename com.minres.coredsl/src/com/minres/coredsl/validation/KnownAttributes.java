@@ -1,12 +1,13 @@
 package com.minres.coredsl.validation;
 
+import static com.minres.coredsl.validation.KnownAttributes.AttributeUsage.*;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static com.minres.coredsl.validation.KnownAttributes.AttributeUsage.*;
 
 public final class KnownAttributes {
 	private KnownAttributes() {}
@@ -14,8 +15,8 @@ public final class KnownAttributes {
 	private static final Map<String, AttributeInfo> registeredAttributes = new HashMap<String, AttributeInfo>();
 	
 	static {
-		register("enable", 1, isa);
-		register("hls", 0, isa, instruction);
+		register("enable", 1, instruction);
+		register("hls", 0, instruction);
 		register("no_cont", 0, instruction);
 		register("cond", 0, instruction);
 		register("flush", 0, instruction);
@@ -43,7 +44,7 @@ public final class KnownAttributes {
 	}
 	
 	public enum AttributeUsage {
-		isa, instruction, function, declaration 
+		instruction, function, declaration
 	}
 	
 	public static final class AttributeInfo {
