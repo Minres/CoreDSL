@@ -210,7 +210,7 @@ class Visualizer {
 			makeNamedLiteral("Super Type", node.superType?.name),
 			makeGroup("Declarations", node.declarations),
 			makeGroup("Functions", node.functions),
-			makeGroup("Attributes", node.attributes),
+			makeGroup("Attributes", node.commonInstructionAttributes),
 			makeGroup("Instructions", node.instructions)
 		);
 	}
@@ -221,7 +221,7 @@ class Visualizer {
 			makeGroup("Contributing Type", node.contributingType),
 			makeGroup("Declarations", node.declarations),
 			makeGroup("Functions", node.functions),
-			makeGroup("Attributes", node.attributes),
+			makeGroup("Attributes", node.commonInstructionAttributes),
 			makeGroup("Instructions", node.instructions)
 		)
 	}
@@ -258,13 +258,15 @@ class Visualizer {
 		? makeNode(node, "Function (extern)",
 			makeChild("Return Type", node.type),
 			makeNamedLiteral("Name", node.name),
-			makeGroup("Parameters", node.params)
+			makeGroup("Parameters", node.params),
+			makeGroup("Attributes", node.attributes)
 		)
 		: makeNode(node, "Function",
 			makeChild("Return Type", node.type),
 			makeNamedLiteral("Name", node.name),
 			makeGroup("Parameters", node.params),
-			makeChild("Body", node.statement)
+			makeChild("Body", node.statement),
+			makeGroup("Attributes", node.attributes)
 		);
 	}
 	
@@ -349,7 +351,7 @@ class Visualizer {
 	private def dispatch VisualNode genNode(Attribute node) {
 		return makeNode(node, "Attribute",
 			makeNamedLiteral("Type", node.type.toString),
-			makeChild("Value", node.value)
+			makeGroup("Params", node.params)
 		);
 	}
 	
@@ -427,23 +429,14 @@ class Visualizer {
 	
 	private def dispatch VisualNode genNode(IntegerConstant node) {
 		return makeImmediateLiteral(node.value.toString)
-		/*return makeNode(node, "Integer",
-			makeNamedLiteral("Value", node.value.toString)
-		);*/
 	}
 	
 	private def dispatch VisualNode genNode(FloatingConstant node) {
 		return makeImmediateLiteral(node.value.toString)
-		/*return makeNode(node, "Float",
-			makeNamedLiteral("Value", node.value.toString)
-		);*/
 	}
 	
 	private def dispatch VisualNode genNode(BoolConstant node) {
 		return makeImmediateLiteral(node.value.toString)
-		/*return makeNode(node, "Bool",
-			makeNamedLiteral("Value", node.value.toString)
-		);*/
 	}
 	
 	private def dispatch VisualNode genNode(StringLiteral node) {
