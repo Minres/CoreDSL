@@ -160,7 +160,7 @@ fragment DeclarationSpecifier
     ;
 
 Attribute
-    :  	DoubleLeftBracket type=ID ('=' params+=ConditionalExpression | params+=ConditionalExpression (',' params+=ConditionalExpression)*)? DoubleRightBracket
+    :  	DoubleLeftBracket type=ID ('=' params+=ConditionalExpression | '(' params+=ConditionalExpression (',' params+=ConditionalExpression)* ')')? DoubleRightBracket
     ;
     
 TypeSpecifier
