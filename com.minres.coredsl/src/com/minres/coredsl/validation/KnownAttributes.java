@@ -22,6 +22,7 @@ public final class KnownAttributes {
 		register("do_not_synthesize", 0, function);
 		register("is_pc", 0, declaration);
 		register("is_main_reg", 0, declaration);
+		register("is_main_mem", 0, declaration);
 		register("is_interlock_for", 1, declaration);
 	}
 	
