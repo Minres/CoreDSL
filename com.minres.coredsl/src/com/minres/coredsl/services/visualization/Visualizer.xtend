@@ -210,7 +210,7 @@ class Visualizer {
 			makeNamedLiteral("Super Type", node.superType?.name),
 			makeGroup("Declarations", node.declarations),
 			makeGroup("Functions", node.functions),
-			makeGroup("Attributes", node.attributes),
+			makeGroup("Attributes", node.commonInstructionAttributes),
 			makeGroup("Instructions", node.instructions)
 		);
 	}
@@ -221,7 +221,7 @@ class Visualizer {
 			makeGroup("Contributing Type", node.contributingType),
 			makeGroup("Declarations", node.declarations),
 			makeGroup("Functions", node.functions),
-			makeGroup("Attributes", node.attributes),
+			makeGroup("Attributes", node.commonInstructionAttributes),
 			makeGroup("Instructions", node.instructions)
 		)
 	}
