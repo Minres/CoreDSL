@@ -8,10 +8,10 @@ InstructionSet Vec2D {
             } vector2d;
         } ISAXRegFile[32];
            struct simd{
-               unsigned a1;
-               unsigned a2;
-               unsigned a3;
-               unsigned a4;
+               unsigned int a1;
+               unsigned int a2;
+               unsigned int a3;
+               unsigned int a4;
            };
            struct simd reg[32];
     }

@@ -91,7 +91,7 @@ class CoreDslTerminalsTest {
         val content = addBehaviorContext('''
             unsigned u32;
             unsigned long u64;
-            unsigned long long u128;
+            //unsigned long long u128;
             long i64;
             long long i128;
             u32 = 42u;
@@ -103,7 +103,7 @@ class CoreDslTerminalsTest {
             i128 = 42LL;
             
             u64 = 42ul;
-            u128 = 42ull;
+            //u128 = 42ull;
             // u64 = 42lu;  // currently not supported
             // u128 = 42llu; // ditto
          	''').parse
@@ -127,7 +127,7 @@ class CoreDslTerminalsTest {
         assertIssues("int i = 42lul;")
         assertIssues("int i = 42ulu;")
 //		assertIssues("int i = 42lL;") // TODO: The INTEGERValueConverter currently does not handle this case -- does it matter?
-        assertIssues("int i = 42lll;")
+//      assertIssues("int i = 42lll;")
     }
 
     @Test

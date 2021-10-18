@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue
 
 import static extension com.minres.coredsl.typing.TypeProvider.*
 import static extension com.minres.coredsl.util.ModelUtil.*
+import com.minres.coredsl.typing.IntegerType
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -48,8 +49,8 @@ class CoreDslTypeTest {
         assertTrue(issues.isEmpty())
         val decl = content.definitions.get(0).stateDeclarations.get(1).init.get(0).declarator
         assertEquals("X", decl.name)
-        val dataType = decl.typeFor(content.definitions.last)
+        val dataType = decl.resolveType(content.definitions.last) as IntegerType;
         assertNotNull(dataType)
-        assertEquals(32, dataType.size)
+        assertEquals(32, dataType.bitSize)
     }
 }
