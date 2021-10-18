@@ -19,18 +19,18 @@ ISA
 
 InstructionSet :
 	'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' 
-        ( SectionArchState (SectionFunctions SectionInstructions? | SectionInstructions)?
-        | SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions)?
-        | SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions)?
+        ( SectionArchState (SectionFunctions SectionInstructions? | SectionInstructions SectionFunctions?)?
+        | SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions SectionArchState?)?
+        | SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions SectionArchState?)?
         )
     '}'
 ;
 
 CoreDef:
 	'Core' name=ID ( 'provides' contributingType+=[InstructionSet] (',' contributingType+=[InstructionSet])*)? '{' 
-	    ( SectionArchState (SectionFunctions SectionInstructions? | SectionInstructions)?
-        | SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions)?
-        | SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions)?
+        ( SectionArchState (SectionFunctions SectionInstructions? | SectionInstructions SectionFunctions?)?
+        | SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions SectionArchState?)?
+        | SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions SectionArchState?)?
         )
     '}'
 ;
@@ -207,16 +207,16 @@ Enumerator
     |   name=ID '=' expression=ConstantExpression
     ;
 
-CompositeType
-    :   composeType=StructOrUnion name=ID? '{' (declaration += StructDeclaration)* '}'
+CompositeTypeSpecifier
+    :   composeType=StructOrUnion name=ID? '{' (declaration += StructFieldDeclaration)* '}'
     |   composeType=StructOrUnion name=ID
     ;
 
-StructDeclaration
-    :   specifier=StructDeclarationSpecifier declarator += DirectDeclarator(',' declarator+=DirectDeclarator)* ';'
+StructFieldDeclaration
+    :   specifier=StructFieldDeclarationSpecifier declarator+=DirectDeclarator (',' declarator+=DirectDeclarator)* ';'
     ;
 
-StructDeclarationSpecifier
+StructFieldDeclarationSpecifier
     :   type=TypeSpecifier
     |   qualifiers+=TypeQualifier
     ;
