@@ -150,7 +150,7 @@ SpawnStatement
 // Declarations
 
 Declaration
-	:	DeclarationSpecifier* type=TypeSpecifier ptr=('*'|'&')? (init+=InitDeclarator (',' init+=InitDeclarator)*)? ';'
+	:	DeclarationSpecifier* type=TypeSpecifier (init+=InitDeclarator (',' init+=InitDeclarator)*)? ';'
 	;
 	
 fragment DeclarationSpecifier
@@ -163,21 +163,39 @@ Attribute
     :  	DoubleLeftBracket type=ID ('=' params+=ConditionalExpression | '(' params+=ConditionalExpression (',' params+=ConditionalExpression)* ')')? DoubleRightBracket
     ;
     
-TypeSpecifier
-	:	PrimitiveType 
-	|	CompositeType
-	|	EnumType
+TypeSpecifier : PointerOrReferenceTypeSpecifier;
+	
+PointerOrReferenceTypeSpecifier returns TypeSpecifier
+	:	ValueTypeSpecifier ({PointerTypeSpecifier.baseType=current} '*' | {ReferenceTypeSpecifier.baseType=current} '&')*;	
+	
+ValueTypeSpecifier
+	:	PrimitiveTypeSpecifier
+	|	CompositeTypeSpecifier
+	|	EnumTypeSpecifier
 	;
     
-PrimitiveType
-	:	dataType+=DataTypes+ BitSizeSpecifier? 
+PrimitiveTypeSpecifier
+	:	IntegerTypeSpecifier
+	|	FloatTypeSpecifier
+	|	BoolTypeSpecifier
+	|	VoidTypeSpecifier
 	;
-
-fragment BitSizeSpecifier
-	:	'<' size+=PrimaryExpression (',' size+=PrimaryExpression ',' size+=PrimaryExpression ',' size+=PrimaryExpression)? '>'
+    
+IntegerTypeSpecifier
+	:	signedness=IntegerSignedness (shorthand=IntegerSizeShorthand | '<' size=PrimaryExpression '>')
+	|	shorthand=IntegerSizeShorthand
 	;
+	
+FloatTypeSpecifier
+	:	shorthand=FloatSizeShorthand; // todo allow arbitrary float sizes?
+	
+BoolTypeSpecifier
+	:	{BoolTypeSpecifier} 'bool';
+	
+VoidTypeSpecifier
+	:	{VoidTypeSpecifier} 'void';
 
-EnumType
+EnumTypeSpecifier
     :   'enum' name=ID? '{' EnumeratorList ','? '}'
     |   'enum' name=ID
     ;
@@ -384,12 +402,11 @@ DoubleRightBracket hidden(WS, ML_COMMENT, SL_COMMENT): RIGHT_BR RIGHT_BR;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-enum DataTypes
-	: 	BOOL='bool' | CHAR='char' | SHORT='short' | INT='int' | LONG='long'
-	| 	SIGNED='signed' | UNSIGNED='unsigned'
-	|	FLOAT='float'	| DOUBLE='double' | VOID='void'
-	|	ALIAS='alias'
-	;
+enum IntegerSizeShorthand : CHAR='char' | SHORT='short' | INT='int' | LONG='long';
+	
+enum FloatSizeShorthand : FLOAT='float' | DOUBLE='double';
+	
+enum IntegerSignedness : SIGNED='signed' | UNSIGNED='unsigned';
 
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';
 
@@ -405,7 +422,7 @@ terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false' ;
 
 terminal FLOAT returns ecore::EBigDecimal:  (('0'..'9')+ '.' ('0'..'9')*) (('e' | 'E') ('+' | '-')? ('0'..'9')+)? ('f'|'F'|'l'|'L')?;
 
-terminal INTEGER returns ecore::EBigInteger:  (BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT | VLOGINT) ('u'|'U')? (('l'|'L') ('l'|'L')?)?;
+terminal INTEGER returns ecore::EBigInteger:  (BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT | VLOGINT) ('u'|'U')? ('l'|'L')?;
 
 terminal fragment BINARYINT:	('0b' | '0B') '0'..'1' (('_')? '0'..'1')*;
 
