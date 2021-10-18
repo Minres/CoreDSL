@@ -9,6 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
+
+import com.minres.coredsl.coreDsl.Expression;
+
 public final class KnownAttributes {
 	private KnownAttributes() {}
 
@@ -28,7 +33,11 @@ public final class KnownAttributes {
 	}
 	
 	public static void register(String name, int paramCount, AttributeUsage... allowedUsage) {
-		register(new AttributeInfo(name, paramCount, allowedUsage));
+		register(name, paramCount, null, allowedUsage);
+	}
+	
+	public static void register(String name, int paramCount, AttributeValidator validator, AttributeUsage... allowedUsage) {
+		register(new AttributeInfo(name, paramCount, validator, allowedUsage));
 	}
 	
 	public static void register(AttributeInfo attrib) {
@@ -44,18 +53,28 @@ public final class KnownAttributes {
 	}
 	
 	public enum AttributeUsage {
-		instruction, function, declaration
+		instruction, function, declaration 
 	}
 	
 	public static final class AttributeInfo {
 		public final String name;
 		public final int paramCount; // TODO allow multiple signatures?
 		public final List<AttributeUsage> allowedUsage;
+		public final AttributeValidator validator;
 		
-		public AttributeInfo(String name, int paramCount, AttributeUsage... allowedUsage) {
+		public AttributeInfo(String name, int paramCount, AttributeValidator validator, AttributeUsage... allowedUsage) {
 			this.name = name;
 			this.paramCount = paramCount;
+			this.validator = validator;
 			this.allowedUsage = Collections.unmodifiableList(Arrays.asList(allowedUsage));
 		}
+		
+		public boolean validate(EObject node, EList<Expression> params) {
+			return validator == null || validator.validate(node, params);
+		}
+	}
+	
+	public interface AttributeValidator {
+		boolean validate(EObject node, EList<Expression> params);
 	}
 }

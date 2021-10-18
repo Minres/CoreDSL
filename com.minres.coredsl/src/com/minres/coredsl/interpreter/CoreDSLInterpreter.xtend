@@ -21,7 +21,6 @@ import com.minres.coredsl.coreDsl.PrimaryExpression
 import com.minres.coredsl.coreDsl.StringLiteral
 import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.coreDsl.Variable
-import com.minres.coredsl.typing.DataType
 import com.minres.coredsl.util.BigDecimalWithSize
 import com.minres.coredsl.util.BigIntegerWithRadix
 import java.math.BigDecimal
@@ -33,6 +32,8 @@ import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.ExpressionStatement
+import com.minres.coredsl.typing.CompositeType
+import com.minres.coredsl.typing.IntegerType
 
 class CoreDSLInterpreter {
 
@@ -71,7 +72,7 @@ class CoreDSLInterpreter {
 				if (initDecl.initializer !== null)
 					initDecl.initializer.expr.valueFor(ctx)
 				else 
-					new Value(new DataType(DataType.Type.COMPOSITE, 0), 0)
+					new Value(new CompositeType(), 0)
 			} else
 				(declAssignment as AssignmentExpression).assignments.get(0).right.valueFor(ctx)
 		} else
@@ -79,7 +80,7 @@ class CoreDSLInterpreter {
 	}
 
 	def static dispatch Value valueFor(TypeSpecifier e, EvaluationContext ctx) {
-		return new Value(e.typeFor(ctx.definitionContext), null)
+		return new Value(e.resolveType(ctx.definitionContext), null)
 	}
 
 	def dispatch static Value valueFor(Expression e, EvaluationContext ctx) {
@@ -152,7 +153,7 @@ class CoreDSLInterpreter {
 			case "!":
 				new Value(boolType, e.left.valueFor(ctx).value)
 			case "sizeof":
-				new Value(new DataType(DataType.Type.INTEGRAL_UNSIGNED, 32), -1) // TODO: fix it
+				new Value(new IntegerType(32, false), -1) // TODO: fix it
 			default: // missing 'case "&", case "*", case "+" , case "-":'
 				null
 		}
@@ -217,19 +218,19 @@ class CoreDSLInterpreter {
 	}
 
 	def static dispatch Value valueFor(BitField e, EvaluationContext ctx) {
-		new Value(new DataType(DataType.Type.INTEGRAL_UNSIGNED, e.left.value.intValue), null) // bitfield cannot be evaluated
+		new Value(new IntegerType(e.left.value.intValue, false), null) // bitfield cannot be evaluated
 	}
 
 	def static dispatch Value valueFor(BitValue e, EvaluationContext ctx) {
-		new Value(new DataType(DataType.Type.INTEGRAL_UNSIGNED, 1), 0)
+		new Value(new IntegerType(1, false), 0)
 	}
 
 	def static dispatch Value valueFor(IntegerConstant e, EvaluationContext ctx) {
-		new Value(e.typeFor(ctx.definitionContext), e.value as BigIntegerWithRadix)
+		new Value(e.resolveType(ctx.definitionContext), e.value as BigIntegerWithRadix)
 	}
 
 	def static dispatch Value valueFor(FloatingConstant e, EvaluationContext ctx) {
-		new Value(e.typeFor(ctx.definitionContext), e.value as BigDecimalWithSize)
+		new Value(e.resolveType(ctx.definitionContext), e.value as BigDecimalWithSize)
 	}
 
 	def static dispatch Value valueFor(BoolConstant e, EvaluationContext ctx) {
@@ -237,11 +238,11 @@ class CoreDSLInterpreter {
 	}
 
 	def static dispatch Value valueFor(CharacterConstant e, EvaluationContext ctx) {
-		new Value(new DataType(DataType.Type.INTEGRAL_SIGNED, 8), BigInteger.valueOf(e.value.charAt(0)))
+		new Value(new IntegerType(8, true), BigInteger.valueOf(e.value.charAt(0)))
 	}
 
 	def static dispatch Value valueFor(StringLiteral e, EvaluationContext ctx) {
-		new Value(new DataType(DataType.Type.INTEGRAL_SIGNED, 0), null)
+		new Value(new IntegerType(0, true), null)
 	}
 
 	def static boolean isComparable(Value left, Value right) {

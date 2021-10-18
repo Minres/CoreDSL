@@ -6,7 +6,6 @@ import com.minres.coredsl.coreDsl.Attribute
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.BoolConstant
-import com.minres.coredsl.coreDsl.CompositeType
 import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.Declaration
@@ -36,11 +35,8 @@ import com.minres.coredsl.coreDsl.Postfix
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
-import com.minres.coredsl.coreDsl.PrimitiveType
 import com.minres.coredsl.coreDsl.SpawnStatement
 import com.minres.coredsl.coreDsl.StringLiteral
-import com.minres.coredsl.coreDsl.StructDeclaration
-import com.minres.coredsl.coreDsl.StructDeclarationSpecifier
 import com.minres.coredsl.coreDsl.StructOrUnion
 import com.minres.coredsl.coreDsl.SwitchStatement
 import com.minres.coredsl.services.visualization.VisualElement.DeclarationLiteral
@@ -57,6 +53,14 @@ import java.util.List
 import java.util.Map
 import java.util.function.Supplier
 import org.eclipse.emf.ecore.EObject
+import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
+import com.minres.coredsl.coreDsl.CompositeTypeSpecifier
+import com.minres.coredsl.coreDsl.StructFieldDeclaration
+import com.minres.coredsl.coreDsl.StructFieldDeclarationSpecifier
+import com.minres.coredsl.coreDsl.FloatTypeSpecifier
+import com.minres.coredsl.coreDsl.VoidTypeSpecifier
+import com.minres.coredsl.coreDsl.BoolTypeSpecifier
+import com.minres.coredsl.coreDsl.EnumTypeSpecifier
 
 class Visualizer {
 	
@@ -343,7 +347,6 @@ class Visualizer {
 			makePortGroup("Qualifiers", node.qualifiers.map[qualifier | makeImmediateLiteral(qualifier.toString)]),
 			makeGroup("Attributes", node.attributes),
 			makeChild("Type", node.type),
-			makeNamedLiteral("Ptr", node.ptr),
 			makeGroup("Declarators", node.init)
 		);
 	}
@@ -355,34 +358,55 @@ class Visualizer {
 		);
 	}
 	
-	private def dispatch VisualNode genNode(PrimitiveType node) {
-		return node.dataType.size == 1
-		? makeNode(node, "Primitive Type",
-			makeNamedLiteral("Data Type", node.dataType.get(0).toString),
-			makeGroup("Bit Size", node.size)
+	private def dispatch VisualNode genNode(IntegerTypeSpecifier node) {
+		return node.shorthand !== null
+		? makeNode(node, "Integer Type Specifier",
+			makeNamedLiteral("Signedness", node.signedness !== null ? node.signedness.literal : null),
+			makeNamedLiteral("Shorthand", node.shorthand.literal)
 		)
 		: makeNode(node, "Primitive Type",
-			makePortGroup("Data Type", node.dataType.map[type | makeImmediateLiteral(type.toString)]),
-			makeGroup("Bit Size", node.size)
+			makeNamedLiteral("Signedness", node.signedness !== null ? node.signedness.literal : null),
+			makeChild("Bit Size", node.size)
 		);
 	}
 	
-	private def dispatch VisualNode genNode(CompositeType node) {
-		return makeNode(node, node.composeType == StructOrUnion.STRUCT ? "Struct Type" : "Union Type",
+	private def dispatch VisualNode genNode(FloatTypeSpecifier node) {
+		return makeNode(node, "Float Type Specifier",
+			makeNamedLiteral("Shorthand", node.shorthand.literal)
+		)
+	}
+	
+	private def dispatch VisualNode genNode(BoolTypeSpecifier node) {
+		return makeNode(node, "Bool Type Specifier")
+	}
+	
+	private def dispatch VisualNode genNode(VoidTypeSpecifier node) {
+		return makeNode(node, "Void Type Specifier")
+	}
+	
+	private def dispatch VisualNode genNode(EnumTypeSpecifier node) {
+		return makeNode(node, "Enum Type Specifier",
+			makeNamedLiteral("Name", node.name),
+			makeGroup("Enumerators", node.enumerators)
+		)
+	}
+	
+	private def dispatch VisualNode genNode(CompositeTypeSpecifier node) {
+		return makeNode(node, node.composeType == StructOrUnion.STRUCT ? "Struct Type Specifier" : "Union Type Specifier",
 			makeNamedLiteral("Name", node.name),
 			makeGroup("Declarations", node.declaration)
 		)
 	}
 	
-	private def dispatch VisualNode genNode(StructDeclaration node) {
-		return makeNode(node, "Struct Declaration",
+	private def dispatch VisualNode genNode(StructFieldDeclaration node) {
+		return makeNode(node, "Struct Field",
 			makeChild("Specifier", node.specifier),
 			makeGroup("Declarators", node.declarator)
 		)
 	}
 	
-	private def dispatch VisualNode genNode(StructDeclarationSpecifier node) {
-		return makeNode(node, "Struct Declaration Specifier",
+	private def dispatch VisualNode genNode(StructFieldDeclarationSpecifier node) {
+		return makeNode(node, "Struct Field Specifier",
 			makeChild("Type", node.type),
 			makePortGroup("Qualifiers", node.qualifiers.map[qualifier | makeImmediateLiteral(qualifier.toString)])
 		)

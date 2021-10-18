@@ -15,6 +15,9 @@ import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.Statement
 import com.minres.coredsl.coreDsl.BlockItem
+import com.minres.coredsl.coreDsl.ReferenceTypeSpecifier
+import com.minres.coredsl.coreDsl.PrimitiveTypeSpecifier
+import com.minres.coredsl.coreDsl.PointerTypeSpecifier
 
 class ModelUtil {
     
@@ -33,7 +36,8 @@ class ModelUtil {
         	it instanceof Declaration && 
         	!(it as Declaration).storage.contains(StorageClassSpecifier.EXTERN) && 
         	!(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER) &&
-        	(it as Declaration).ptr === null
+        	!((it as Declaration).type instanceof ReferenceTypeSpecifier) &&
+        	!((it as Declaration).type instanceof PointerTypeSpecifier)
         ].map[it as Declaration]
     }
 
@@ -41,7 +45,8 @@ class ModelUtil {
         isa.declarations.filter[
         	it instanceof Declaration && 
         	(it as Declaration).storage.contains(StorageClassSpecifier.EXTERN) &&
-        	(it as Declaration).ptr === null
+        	!((it as Declaration).type instanceof ReferenceTypeSpecifier) &&
+        	!((it as Declaration).type instanceof PointerTypeSpecifier)
         ].map[it as Declaration]
     }
     
@@ -49,7 +54,8 @@ class ModelUtil {
         isa.declarations.filter[
         	it instanceof Declaration && 
         	(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER) &&
-        	(it as Declaration).ptr === null
+        	!((it as Declaration).type instanceof ReferenceTypeSpecifier) &&
+        	!((it as Declaration).type instanceof PointerTypeSpecifier)
         ].map[it as Declaration]
     }
 
@@ -58,7 +64,7 @@ class ModelUtil {
         	it instanceof Declaration && 
         	!(it as Declaration).storage.contains(StorageClassSpecifier.EXTERN) && 
         	!(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER) &&
-        	(it as Declaration).ptr == "&"
+        	(it as Declaration).type instanceof ReferenceTypeSpecifier
         ].map[it as Declaration]
     }
 
