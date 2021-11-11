@@ -374,26 +374,15 @@ ConstantExpression returns Expression
 // Constants
 Constant
     :   IntegerConstant
-    |	FloatingConstant
+    |	FloatConstant
     |   CharacterConstant
     |   BoolConstant
     ;
 
-IntegerConstant hidden(WS)
-    :   value=INTEGER
-    ;
-
-FloatingConstant hidden(WS)
-    :  	value=FLOAT
-    ;
-    
-BoolConstant
-    :   value=BOOLEAN
-    ;
-    
-CharacterConstant
-    :   value=CHARCONST
-    ;
+IntegerConstant hidden(WS): value=INTEGER;
+FloatConstant hidden(WS): value=FLOAT;
+CharacterConstant: value=CHARCONST;
+BoolConstant: value=BOOLEAN;
 
 // the following 2 rules are needed so that XText does not generate a terminal symbol '[[' and '&&'
 // which is always eaten by the Lexer so that a[b[3]] is not recognized
@@ -422,7 +411,7 @@ terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false' ;
 
 terminal FLOAT returns ecore::EBigDecimal:  (('0'..'9')+ '.' ('0'..'9')*) (('e' | 'E') ('+' | '-')? ('0'..'9')+)? ('f'|'F'|'l'|'L')?;
 
-terminal INTEGER returns ecore::EBigInteger:  (BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT | VLOGINT) ('u'|'U')? ('l'|'L')?;
+terminal INTEGER returns ecore::EBigInteger: VLOGINT | BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT;
 
 terminal fragment BINARYINT:	('0b' | '0B') '0'..'1' (('_')? '0'..'1')*;
 
@@ -432,7 +421,7 @@ terminal fragment DECIMALINT:   '0' | '1'..'9' (('_')? '0'..'9')*;
 
 terminal fragment HEXADECIMALINT:   ('0x'|'0X') ('0'..'9'|'a'..'f'|'A'..'F')  (('_')? ('0'..'9'|'a'..'f'|'A'..'F'))*;
 
-terminal fragment VLOGINT: ('0'..'9')+ "'" ('b' ('0'..'1')+ | 'o' ('0'..'7')+ | 'd' ('0'..'9')+ | 'h' ('0'..'9'|'a'..'f'|'A'..'F')+); 
+terminal fragment VLOGINT: ('0'..'9')+ "'" ('s')? ('b' ('0'..'1')+ | 'o' ('0'..'7')+ | 'd' ('0'..'9')+ | 'h' ('0'..'9'|'a'..'f'|'A'..'F')+); 
 
 terminal CHARCONST:	('u'|'U'|'L')? "'" ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|"'") )* "'";
 
