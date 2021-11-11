@@ -10,37 +10,22 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 
-import com.minres.coredsl.services.CoreDslGrammarAccess
-import org.eclipse.xtext.resource.IResourceFactory
-import org.eclipse.emf.common.util.URI
-import org.eclipse.xtext.resource.XtextResource
-import java.io.ByteArrayInputStream
-import java.util.Collections
-import com.minres.coredsl.coreDsl.TypeSpecifier
 import static org.junit.Assert.assertTrue
 import static org.junit.Assert.assertEquals
 import static extension com.minres.coredsl.typing.TypeProvider.resolveType
 import com.minres.coredsl.typing.IntegerType
 import static org.junit.Assert.assertNotNull
+import com.minres.coredsl.tests.util.TestHelper
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
 class CoreDslIntegerTypeSpecifierTest {
 
 	@Inject ValidationTestHelper validator
-	@Inject CoreDslGrammarAccess grammarAccess
-	@Inject IResourceFactory resourceFactory
-
-	def TypeSpecifier parseTypeSpecifier(String source) {
-		// https://github.com/eclipse/xtext-core/commit/0745d5a43d70b2a18b9fe828afbef564fcd06782
-		val resource = resourceFactory.createResource(URI.createURI("dummy://test.core_desc")) as XtextResource;
-		resource.entryPoint = grammarAccess.typeSpecifierRule
-		resource.load(new ByteArrayInputStream(source.getBytes()), Collections.EMPTY_MAP)
-		return resource.contents.get(0) as TypeSpecifier
-	}
+	@Inject extension TestHelper helper
 
 	def validateTypeSpecifier(String source, int expectedBitSize, boolean expectedSigned) {
-		val typeSpec = parseTypeSpecifier(source);
+		val typeSpec = source.parseAsTypeSpecifier();
 
 		val issues = validator.validate(typeSpec)
 		for (iss : issues)
