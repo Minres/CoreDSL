@@ -12,7 +12,7 @@ import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.EnumTypeSpecifier
 import com.minres.coredsl.coreDsl.Expression
-import com.minres.coredsl.coreDsl.FloatingConstant
+import com.minres.coredsl.coreDsl.FloatConstant
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.InitDeclarator
@@ -109,7 +109,7 @@ class TypeProvider {
 
 	def static dispatch DataType resolveType(IntegerTypeSpecifier e, ISA ctx) {
 		val signed = e.signedness === null || e.signedness === IntegerSignedness.SIGNED;
-		if(e.shorthand !== null) {
+		if(e.size === null) {
 			switch(e.shorthand) {
 				case CHAR: return new IntegerType(8, signed)
 				case SHORT: return new IntegerType(16, signed)
@@ -139,6 +139,7 @@ class TypeProvider {
 		return e.left.resolveType(ctx)
 	}
 
+	// https://github.com/Minres/CoreDSL/wiki/Expressions#arithmetic-type-rules
 	def static dispatch DataType resolveType(InfixExpression e, ISA ctx) {
 		switch(e.op) {
 			case "||",
@@ -150,6 +151,7 @@ class TypeProvider {
 			case "<=",
 			case ">=":
 				return boolType
+				
 			case '|',
 			case "&",
 			case "^": {
@@ -157,34 +159,96 @@ class TypeProvider {
 				val r = e.right.resolveType(ctx)
 
 				if(l === null || r === null) return null
-				if(l == r) return l
 
 				if(l.isIntegral && r.isIntegral) {
 					val li = l as IntegerType
 					val ri = l as IntegerType
-					if(li.signed !== ri.signed) return null;
-					return new IntegerType(Math.max(li.bitSize, ri.bitSize), li.signed)
+					
+					return new IntegerType(Math.max(li.bitSize, ri.bitSize), li.signed || ri.signed)
 				}
 			}
+			
 			case "<<",
 			case ">>": {
 				val l = e.left.resolveType(ctx)
-				return l !== null && l.isIntegral ? l : null
+				val r = e.right.resolveType(ctx)
+
+				if(l === null || r === null) return null
+
+				if(l.isIntegral && r.isIntegral) {
+					return l
+				}
 			}
+			
 			case '+',
-			case '-',
-			case '*',
+			case '-': {
+				val l = e.left.resolveType(ctx)
+				val r = e.right.resolveType(ctx)
+				
+				if(l === null || r === null) return null
+				
+				if(l.isIntegral && r.isIntegral) {
+					val li = l as IntegerType
+					val ri = r as IntegerType
+					
+					if(li.signed == ri.signed)
+						return new IntegerType(Math.max(li.bitSize, ri.bitSize) + 1, li.signed || e.op == '-')
+					
+					val int signedWidth = li.signed ? li.bitSize : ri.bitSize;
+					val int unsignedWidth = li.signed ? ri.bitSize : li.bitSize;
+					
+					val int resultWidth = signedWidth > unsignedWidth ? signedWidth + 1 : unsignedWidth + 2
+					return new IntegerType(resultWidth, true)
+				}
+			}
+			
+			case '*': {
+				val l = e.left.resolveType(ctx)
+				val r = e.right.resolveType(ctx)
+				
+				if(l === null || r === null) return null
+				
+				if(l.isIntegral && r.isIntegral) {
+					val li = l as IntegerType
+					val ri = r as IntegerType
+					
+					return new IntegerType(li.bitSize + ri.bitSize, li.signed || ri.signed)
+				}
+			}
+			
 			case '/': {
 				val l = e.left.resolveType(ctx)
-				return l == e.right.resolveType(ctx) ? l : null
+				val r = e.right.resolveType(ctx)
+				
+				if(l === null || r === null) return null
+				
+				if(l.isIntegral && r.isIntegral) {
+					val li = l as IntegerType
+					val ri = r as IntegerType
+					
+					return new IntegerType(ri.signed ? li.bitSize + 1 : li.bitSize, li.signed || ri.signed)
+				}
 			}
+			
 			case '%': {
 				val l = e.left.resolveType(ctx)
-				return l.isIntegral && l == e.right.resolveType(ctx) ? l : null
+				val r = e.right.resolveType(ctx)
+				
+				if(l === null || r === null) return null
+				
+				if(l.isIntegral && r.isIntegral) {
+					val li = l as IntegerType
+					val ri = r as IntegerType
+					
+					if(li.signed == ri.signed)
+						return new IntegerType(Math.min(li.bitSize, ri.bitSize), li.signed)
+					
+					return new IntegerType(Math.min(li.bitSize, li.signed ? ri.bitSize + 1 : ri.bitSize - 1), li.signed)
+				}
 			}
-			default:
-				return null
 		}
+		
+		return null
 	}
 
 	def static dispatch DataType resolveType(CastExpression e, ISA ctx) {
@@ -194,16 +258,49 @@ class TypeProvider {
 	def static dispatch DataType resolveType(PrefixExpression e, ISA ctx) {
 		switch(e.op) {
 			case "++",
-			case "--":
-				e.left.resolveType(ctx)
-			case "~":
-				e.left.resolveType(ctx)
+			case "--": {
+				val l = e.left.resolveType(ctx)
+				
+				if(l === null || !l.isIntegral) return null
+				
+				return l
+			}
+			
+			case "~": {
+				val l = e.left.resolveType(ctx)
+				
+				if(l === null || !l.isIntegral) return null
+				
+				return l
+			}
+			
 			case "!":
-				boolType
+				return boolType
+				
+			case "+": {
+				val l = e.left.resolveType(ctx)
+				
+				if(l === null || !l.isIntegral) return null
+				
+				return l
+			}
+			
+			case "-": {
+				val l = e.left.resolveType(ctx)
+				
+				if(l === null || !l.isIntegral) return null
+				
+				val li = l as IntegerType
+				return li.signed ? li : new IntegerType(li.bitSize + 1, true)
+			}
+			
 			case "sizeof":
+				// TODO determine the actual size here and only return as many bits as needed.
+				// TODO does this return the size in bits or bytes?
 				new IntegerType(32, false)
-			default: // missing 'case "&", case "*", case "+" , case "-":'
-				null
+			
+			default: // TODO missing case "&", case "*"
+				return null
 		}
 	}
 
@@ -288,7 +385,7 @@ class TypeProvider {
 		new IntegerType(value.size, value.type == BigIntegerWithRadix.TYPE.SIGNED)
 	}
 
-	def static dispatch DataType resolveType(FloatingConstant e, ISA ctx) {
+	def static dispatch DataType resolveType(FloatConstant e, ISA ctx) {
 		new FloatType((e.value as BigDecimalWithSize).size)
 	}
 
