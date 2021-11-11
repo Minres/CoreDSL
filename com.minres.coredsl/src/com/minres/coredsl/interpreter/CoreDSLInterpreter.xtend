@@ -9,7 +9,7 @@ import com.minres.coredsl.coreDsl.CharacterConstant
 import com.minres.coredsl.coreDsl.ConditionalExpression
 import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.Expression
-import com.minres.coredsl.coreDsl.FloatingConstant
+import com.minres.coredsl.coreDsl.FloatConstant
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.InitDeclarator
@@ -229,7 +229,7 @@ class CoreDSLInterpreter {
 		new Value(e.resolveType(ctx.definitionContext), e.value as BigIntegerWithRadix)
 	}
 
-	def static dispatch Value valueFor(FloatingConstant e, EvaluationContext ctx) {
+	def static dispatch Value valueFor(FloatConstant e, EvaluationContext ctx) {
 		new Value(e.resolveType(ctx.definitionContext), e.value as BigDecimalWithSize)
 	}
 

@@ -16,7 +16,7 @@ import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.ExpressionStatement
-import com.minres.coredsl.coreDsl.FloatingConstant
+import com.minres.coredsl.coreDsl.FloatConstant
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.IfStatement
 import com.minres.coredsl.coreDsl.Import
@@ -455,7 +455,7 @@ class Visualizer {
 		return makeImmediateLiteral(node.value.toString)
 	}
 	
-	private def dispatch VisualNode genNode(FloatingConstant node) {
+	private def dispatch VisualNode genNode(FloatConstant node) {
 		return makeImmediateLiteral(node.value.toString)
 	}
 	
