@@ -21,8 +21,6 @@ import com.minres.coredsl.coreDsl.PrimaryExpression
 import com.minres.coredsl.coreDsl.StringLiteral
 import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.coreDsl.Variable
-import com.minres.coredsl.util.BigDecimalWithSize
-import com.minres.coredsl.util.BigIntegerWithRadix
 import java.math.BigDecimal
 import java.math.BigInteger
 
@@ -226,11 +224,11 @@ class CoreDSLInterpreter {
 	}
 
 	def static dispatch Value valueFor(IntegerConstant e, EvaluationContext ctx) {
-		new Value(e.resolveType(ctx.definitionContext), e.value as BigIntegerWithRadix)
+		new Value(e.resolveType(ctx.definitionContext), e.value)
 	}
 
 	def static dispatch Value valueFor(FloatConstant e, EvaluationContext ctx) {
-		new Value(e.resolveType(ctx.definitionContext), e.value as BigDecimalWithSize)
+		new Value(e.resolveType(ctx.definitionContext), e.value)
 	}
 
 	def static dispatch Value valueFor(BoolConstant e, EvaluationContext ctx) {

@@ -1,6 +1,5 @@
 package com.minres.coredsl.converter;
 
-import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,18 +10,10 @@ import org.eclipse.xtext.util.Strings;
 
 import com.minres.coredsl.util.TypedBigInteger;
 
-
-public class INTEGERValueConverter extends AbstractLexerBasedConverter<BigInteger> {
+public class INTEGERValueConverter extends AbstractLexerBasedConverter<TypedBigInteger> {
 	@Override
-	protected String toEscapedString(BigInteger value) {
+	protected String toEscapedString(TypedBigInteger value) {
 		return value.toString();
-	}
-
-	@Override
-	protected void assertValidValue(BigInteger value) {
-		super.assertValidValue(value);
-		if (value.compareTo(BigInteger.ZERO) < 0)
-			throw new ValueConverterException(getRuleName() + "-value may not be negative (value: " + value + ").", null, null);
 	}
 	
 	private static final Pattern literalPattern = Pattern.compile(""
@@ -40,7 +31,7 @@ public class INTEGERValueConverter extends AbstractLexerBasedConverter<BigIntege
 	 Pattern.COMMENTS | Pattern.CASE_INSENSITIVE);
 
 	@Override
-	public BigInteger toValue(String string, INode node) throws ValueConverterException {
+	public TypedBigInteger toValue(String string, INode node) throws ValueConverterException {
 		if (Strings.isEmpty(string))
 			throw new ValueConverterException("Couldn't convert empty string to an integer value.", node, null);
 		
@@ -95,5 +86,4 @@ public class INTEGERValueConverter extends AbstractLexerBasedConverter<BigIntege
 			throw new ValueConverterException("Couldn't convert '" + string + "' to an integer value.", node, e);
 		}
 	}
-
 }

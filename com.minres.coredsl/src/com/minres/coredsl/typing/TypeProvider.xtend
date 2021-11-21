@@ -29,7 +29,6 @@ import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.coreDsl.Constant
 import com.minres.coredsl.coreDsl.Variable
 import com.minres.coredsl.util.BigDecimalWithSize
-import com.minres.coredsl.util.BigIntegerWithRadix
 
 import static extension com.minres.coredsl.interpreter.CoreDSLInterpreter.*
 import static extension com.minres.coredsl.util.ModelUtil.*
@@ -38,6 +37,7 @@ import java.math.BigInteger
 import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerSignedness
 import com.minres.coredsl.coreDsl.FloatTypeSpecifier
+import com.minres.coredsl.util.TypedBigInteger
 
 class TypeProvider {
 
@@ -120,6 +120,7 @@ class TypeProvider {
 
 		val sizeValue = e.size.valueFor(EvaluationContext.root(ctx));
 		if(sizeValue === null || !(sizeValue.value instanceof BigInteger)) return null
+		if(signed && (sizeValue.value as BigInteger).bitLength == 0) return null // signed<0> is invalid
 		return new IntegerType((sizeValue.value as BigInteger).intValue, signed)
 	}
 
@@ -366,7 +367,7 @@ class TypeProvider {
 					size += f.left.value.intValue - f.right.value.intValue + 1
 				}
 				BitValue: {
-					size += (f.value as BigIntegerWithRadix).size
+					size += (f.value as TypedBigInteger).type.bitSize
 				}
 			}
 		new IntegerType(size, false)
@@ -377,12 +378,11 @@ class TypeProvider {
 	}
 
 	def static dispatch DataType resolveType(BitValue e, ISA ctx) {
-		new IntegerType((e.value as BigIntegerWithRadix).size, false)
+		new IntegerType((e.value as TypedBigInteger).type.bitSize, false)
 	}
 
 	def static dispatch DataType resolveType(IntegerConstant e, ISA ctx) {
-		val value = e.value as BigIntegerWithRadix
-		new IntegerType(value.size, value.type == BigIntegerWithRadix.TYPE.SIGNED)
+		return (e.value as TypedBigInteger).type
 	}
 
 	def static dispatch DataType resolveType(FloatConstant e, ISA ctx) {
