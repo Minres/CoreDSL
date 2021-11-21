@@ -222,16 +222,10 @@ StructFieldDeclarationSpecifier
     ;
 
 InitDeclarator
-    :   declarator=DirectDeclarator attributes+=Attribute* ('=' initializer=Initializer)?
+    :   declarator=DirectDeclarator attributes+=Attribute* (l_equals='=' initializer=Initializer)?
     ;
 
-DirectDeclarator
-    :   name=ID ( ':' index=IntegerConstant)? 
-    	(  (LEFT_BR size+=ConditionalExpression RIGHT_BR)+    		
-//    	|   '[' (qualifiers+=TypeQualifier)? '*' ']'
-    	|   '(' ParameterList ')'
-    	)?
-    ;
+DirectDeclarator : name=ID;
     
 Initializer
     :   expr=ConditionalExpression

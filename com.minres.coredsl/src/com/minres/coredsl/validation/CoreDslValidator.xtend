@@ -32,7 +32,6 @@ import java.util.Collections
 import java.util.Map
 import com.minres.coredsl.typing.DataType
 import java.util.HashMap
-import com.minres.coredsl.coreDsl.Initializer
 import com.minres.coredsl.coreDsl.IntegerConstant
 import java.math.BigInteger
 
@@ -54,7 +53,9 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 		error(message, source, null, -1, code, issueData)
 	}
 
-	// @Check
+	protected final Map<EObject, DataType> resolvedTypes = new HashMap<EObject, DataType>()
+
+	@Check
 	def checkType(Expression e) {
 		switch (e) {
 			case PrimaryExpression,
@@ -147,10 +148,106 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 					} // '::'
 				}
 			}
-//            case ConditionalExpression: {
-//            }
-//            case AssignmentExpression: {
-//            }
+//        case ConditionalExpression: {
+//        }
+		}
+	}
+
+	@Check
+	def checkLiteral(IntegerConstant literal) {
+		if(literal.value.compareTo(BigInteger.ZERO) < 0) {
+			// must be a signed verilog literal with the msb set
+			warning("potentially unintended sign overflow", CoreDslPackage.Literals.INTEGER_CONSTANT__VALUE, IssueCodes.NEGATIVE_INT_LITERAL)
+		}
+	}
+
+	@Check
+	def checkAssignment(AssignmentExpression assignment) {
+		println(this)
+		val types = Collections.singleton(assignment.left.resolveType()) + assignment.assignments.map [
+			it.right.resolveType()
+		].toList()
+		val ops = assignment.assignments.map[it.type].toList()
+
+		for (var i = ops.size - 1; i >= 0; i--) {
+			val op = ops.get(i)
+			val leftType = types.get(i)
+			val rightType = types.get(i + 1)
+
+			switch (op) {
+				case '=': {
+					if (!rightType.isImplicitlyConvertibleTo(leftType)) {
+						error('''cannot implicitly convert from «rightType» to «leftType»''',
+							assignment.assignments.get(i), CoreDslPackage.Literals.ASSIGNMENT__TYPE,
+							IssueCodes.TYPE_MISMATCH)
+					}
+				}
+				case '+=',
+				case '-=',
+				case '*=',
+				case '/=': {
+					if (!leftType.isNumeric || !rightType.isNumeric) {
+						error("arithmetic operators are only valid on numeric types", assignment.assignments.get(i),
+							CoreDslPackage.Literals.ASSIGNMENT__TYPE, IssueCodes.TYPE_MISMATCH)
+					}
+					if (!rightType.isImplicitlyConvertibleTo(leftType)) {
+						error('''cannot implicitly convert from «rightType» to «leftType»''',
+							assignment.assignments.get(i), CoreDslPackage.Literals.ASSIGNMENT__TYPE,
+							IssueCodes.TYPE_MISMATCH)
+					}
+				}
+				case '%=': {
+					if (!leftType.isIntegral || !rightType.isIntegral) {
+						error("the modulo operator is only valid on integer types", assignment.assignments.get(i),
+							CoreDslPackage.Literals.ASSIGNMENT__TYPE, IssueCodes.TYPE_MISMATCH)
+					}
+					if (!rightType.isImplicitlyConvertibleTo(leftType)) {
+						error('''cannot implicitly convert from «rightType» to «leftType»''',
+							assignment.assignments.get(i), CoreDslPackage.Literals.ASSIGNMENT__TYPE,
+							IssueCodes.TYPE_MISMATCH)
+					}
+				}
+				case '<<=',
+				case '>>=': {
+					if (!leftType.isIntegral || !rightType.isIntegral) {
+						error("shift operators are only valid on integer types", assignment.assignments.get(i),
+							CoreDslPackage.Literals.ASSIGNMENT__TYPE, IssueCodes.TYPE_MISMATCH)
+					}
+					if (!rightType.isImplicitlyConvertibleTo(leftType)) {
+						error('''cannot implicitly convert from «rightType» to «leftType»''',
+							assignment.assignments.get(i), CoreDslPackage.Literals.ASSIGNMENT__TYPE,
+							IssueCodes.TYPE_MISMATCH)
+					}
+				}
+				case '&=',
+				case '^=',
+				case '|=': {
+					if (!leftType.isIntegral || !rightType.isIntegral) {
+						error("logical operators are only valid on integer types", assignment.assignments.get(i),
+							CoreDslPackage.Literals.ASSIGNMENT__TYPE, IssueCodes.TYPE_MISMATCH)
+					}
+					if (!rightType.isImplicitlyConvertibleTo(leftType)) {
+						error('''cannot implicitly convert from «rightType» to «leftType»''',
+							assignment.assignments.get(i), CoreDslPackage.Literals.ASSIGNMENT__TYPE,
+							IssueCodes.TYPE_MISMATCH)
+					}
+				}
+			}
+		}
+	}
+
+	@Check
+	def checkDeclaration(Declaration declaration) {
+		// TODO handle initializer lists
+		val leftType = declaration.type.resolveType()
+
+		for (declarator : declaration.init.filter[it.initializer !== null]) {
+			val expr = declarator.initializer.expr
+			val rightType = expr.resolveType()
+			if (!rightType.isImplicitlyConvertibleTo(leftType)) {
+				error('''cannot implicitly convert from «rightType» to «leftType»''', declarator,
+					CoreDslPackage.Literals.INIT_DECLARATOR__LEQUALS, IssueCodes.TYPE_MISMATCH)
+			}
 		}
 	}
 
@@ -162,56 +259,63 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 
 	@Check
 	def checkType(FloatTypeSpecifier typeSpec) {
-		//error("float types are not supported at the moment", typeSpec, UNSUPPORTED_LANGUAGE_FEATURE)
+		// error("float types are not supported at the moment", typeSpec, UNSUPPORTED_LANGUAGE_FEATURE)
 	}
-	
+
 	@Check
 	def checkType(PointerTypeSpecifier typeSpec) {
-		//error("pointer types are not supported at the moment", typeSpec, UNSUPPORTED_LANGUAGE_FEATURE)
+		// error("pointer types are not supported at the moment", typeSpec, UNSUPPORTED_LANGUAGE_FEATURE)
 	}
-	
+
 	@Check
 	def checkType(ReferenceTypeSpecifier typeSpec) {
-		//error("reference types are not supported at the moment", typeSpec, UNSUPPORTED_LANGUAGE_FEATURE)
+		// error("reference types are not supported at the moment", typeSpec, UNSUPPORTED_LANGUAGE_FEATURE)
 	}
-	
-	def checkAttributes(EObject node, EList<Attribute> attributes, KnownAttributes.AttributeUsage expectedUsage, EStructuralFeature feature) {
-		for(Attribute attribute : attributes) {
+
+	def checkAttributes(EObject node, EList<Attribute> attributes, KnownAttributes.AttributeUsage expectedUsage,
+		EStructuralFeature feature) {
+		for (Attribute attribute : attributes) {
 			val info = KnownAttributes.byName(attribute.type);
-			
-			if(info === null || !info.allowedUsage.contains(expectedUsage))
-				error("unexpected attribute '" + attribute.type + "'", feature, ILLEGAL_ATTRIBUTE);
-				
-			if(info.validator !== null && !info.validator.validate(node, attribute.params))
-				error("unexpected attribute '" + info.name + "'", feature, ILLEGAL_ATTRIBUTE);
-			
-			if(attribute.params.size() !== info.paramCount)
-				error("attribute '" + info.name + "' requires exactly " + info.paramCount + " parameter(s)", feature, INVALID_ATTRIBUTE_PARAMETERS);
+
+			if (info === null || !info.allowedUsage.contains(expectedUsage))
+				error("unexpected attribute '" + attribute.type + "'", feature, IssueCodes.ILLEGAL_ATTRIBUTE);
+
+			if (info.validator !== null && !info.validator.validate(node, attribute.params))
+				error("unexpected attribute '" + info.name + "'", feature, IssueCodes.ILLEGAL_ATTRIBUTE);
+
+			if (attribute.params.size() !== info.paramCount)
+				error("attribute '" + info.name + "' requires exactly " + info.paramCount + " parameter(s)", feature,
+					IssueCodes.INVALID_ATTRIBUTE_PARAMETERS);
 		}
 	}
 
 	@Check
 	def checkAttributeNames(ISA isa) {
-		checkAttributes(isa, isa.commonInstructionAttributes, KnownAttributes.AttributeUsage.instruction, CoreDslPackage.Literals.ISA__COMMON_INSTRUCTION_ATTRIBUTES);
+		checkAttributes(isa, isa.commonInstructionAttributes, KnownAttributes.AttributeUsage.instruction,
+			CoreDslPackage.Literals.ISA__COMMON_INSTRUCTION_ATTRIBUTES);
 	}
 
 	@Check
 	def checkAttributeNames(Instruction instr) {
-		checkAttributes(instr, instr.attributes, KnownAttributes.AttributeUsage.instruction, CoreDslPackage.Literals.INSTRUCTION__ATTRIBUTES);
+		checkAttributes(instr, instr.attributes, KnownAttributes.AttributeUsage.instruction,
+			CoreDslPackage.Literals.INSTRUCTION__ATTRIBUTES);
 	}
 
 	@Check
 	def checkAttributeNames(Declaration decl) {
-		checkAttributes(decl, decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES);
+		checkAttributes(decl, decl.attributes, KnownAttributes.AttributeUsage.declaration,
+			CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES);
 	}
 
 	@Check
 	def checkAttributeNames(InitDeclarator decl) {
-		checkAttributes(decl, decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES);
+		checkAttributes(decl, decl.attributes, KnownAttributes.AttributeUsage.declaration,
+			CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES);
 	}
 
 	@Check
 	def checkAttributeNames(FunctionDefinition func) {
-		checkAttributes(func, func.attributes, KnownAttributes.AttributeUsage.function, CoreDslPackage.Literals.FUNCTION_DEFINITION__ATTRIBUTES);
+		checkAttributes(func, func.attributes, KnownAttributes.AttributeUsage.function,
+			CoreDslPackage.Literals.FUNCTION_DEFINITION__ATTRIBUTES);
 	}
 }
