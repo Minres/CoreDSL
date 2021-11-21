@@ -27,7 +27,14 @@ import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
 import com.minres.coredsl.coreDsl.FloatTypeSpecifier
 import com.minres.coredsl.coreDsl.PointerTypeSpecifier
 import com.minres.coredsl.coreDsl.ReferenceTypeSpecifier
-import com.minres.coredsl.typing.TypeProvider
+import com.minres.coredsl.coreDsl.AssignmentExpression
+import java.util.Collections
+import java.util.Map
+import com.minres.coredsl.typing.DataType
+import java.util.HashMap
+import com.minres.coredsl.coreDsl.Initializer
+import com.minres.coredsl.coreDsl.IntegerConstant
+import java.math.BigInteger
 
 /**
  * This class contains custom validation rules. 
@@ -43,13 +50,6 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 	 * * check for duplicate fields
 	 * 
 	 */
-	protected static val ISSUE_CODE_PREFIX = "com.minres.coredsl."
-	public static val TYPE_MISMATCH = ISSUE_CODE_PREFIX + "TypeMismatch"
-	public static val TYPE_ILLEGAL = ISSUE_CODE_PREFIX + "TypeIllegal"
-	public static val ILLEGAL_ATTRIBUTE = ISSUE_CODE_PREFIX + "IllegalAttribute"
-	public static val INVALID_ATTRIBUTE_PARAMETERS = ISSUE_CODE_PREFIX + "InvalidAttributeParameters"
-	public static val UNSUPPORTED_LANGUAGE_FEATURE = ISSUE_CODE_PREFIX + "UnsupportedLanguageFeature"
-	
 	def error(String message, EObject source, String code, String... issueData) {
 		error(message, source, null, -1, code, issueData)
 	}
@@ -64,28 +64,26 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 					error(
 						"incompatible types used",
 						CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
-						TYPE_MISMATCH
+						IssueCodes.TYPE_MISMATCH
 					)
-					
 			case CastExpression: {
 				val cast = e as CastExpression
 				val fromType = cast.left.resolveType()
 				val toType = cast.type.resolveType()
-				
-				if(!fromType.isExplicitlyConvertibleTo(toType)) {
+
+				if (!fromType.isExplicitlyConvertibleTo(toType)) {
 					error(
 						"illegal cast",
 						CoreDslPackage.Literals.CAST_EXPRESSION__TYPE,
-						TYPE_ILLEGAL
+						IssueCodes.TYPE_ILLEGAL
 					)
 				}
 			}
-			
 			case InfixExpression: {
 				val infix = e as InfixExpression
 				val leftType = infix.left.resolveType()
 				val rightType = infix.right.resolveType()
-				
+
 				switch (infix.op) {
 					case '<',
 					case '>',
@@ -97,22 +95,20 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 							error(
 								"comparison operators are only valid on numeric types",
 								CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
-								TYPE_MISMATCH
+								IssueCodes.TYPE_MISMATCH
 							)
 						}
 					}
-							
 					case '||',
 					case '&&': {
 						if (!leftType.isIntegral || !rightType.isIntegral) {
 							error(
 								"logic operators are only valid on integer types",
 								CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
-								TYPE_MISMATCH
+								IssueCodes.TYPE_MISMATCH
 							)
 						}
 					}
-					
 					case '<<',
 					case '>>',
 					case '|',
@@ -122,11 +118,10 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 							error(
 								"bitwise operators are only valid on integer types",
 								CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
-								TYPE_MISMATCH
+								IssueCodes.TYPE_MISMATCH
 							)
 						}
 					}
-							
 					case '+',
 					case '-',
 					case '*',
@@ -135,21 +130,19 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 							error(
 								"arithmetic operators are only valid on numeric types",
 								CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
-								TYPE_MISMATCH
+								IssueCodes.TYPE_MISMATCH
 							)
 						}
 					}
-					
 					case '%': {
 						if (!leftType.isIntegral || !rightType.isIntegral) {
 							error(
 								"the modulo operator is only valid on integer types",
 								CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
-								TYPE_MISMATCH
+								IssueCodes.TYPE_MISMATCH
 							)
 						}
 					}
-					
 					default: {
 					} // '::'
 				}

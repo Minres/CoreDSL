@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue
 
 import com.minres.coredsl.validation.KnownAttributes
 import com.minres.coredsl.validation.CoreDslValidator
+import com.minres.coredsl.validation.IssueCodes
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -105,7 +106,7 @@ class CoreDslAttributeValidationTest {
 		val issues = validator.validate(content);
 		for (issue : issues) {
 			println(issue);
-			assertEquals(issue.code, CoreDslValidator.ILLEGAL_ATTRIBUTE);
+			assertEquals(issue.code, IssueCodes.ILLEGAL_ATTRIBUTE);
 		}
 
 		// Every attribute appears in every possible location, so we expect
@@ -155,7 +156,7 @@ class CoreDslAttributeValidationTest {
 		val issues = validator.validate(content);
 		for (issue : issues) {
 			println(issue);
-			assertEquals(issue.code, CoreDslValidator.INVALID_ATTRIBUTE_PARAMETERS);
+			assertEquals(issue.code, IssueCodes.INVALID_ATTRIBUTE_PARAMETERS);
 		}
 
 		// we expect an issue for every valid attribute placement
