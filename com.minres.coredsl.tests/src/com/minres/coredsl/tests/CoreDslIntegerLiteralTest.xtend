@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull
 import com.minres.coredsl.tests.util.TestHelper
 import java.math.BigInteger
 import com.minres.coredsl.util.TypedBigInteger
+import com.minres.coredsl.validation.IssueCodes
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -31,7 +32,13 @@ class CoreDslIntegerLiteralTest {
 		for (iss : issues)
 			println(iss)
 
-		assertTrue(issues.empty)
+		if(expectedValue < 0) {
+			assertEquals(1, issues.size)
+			assertEquals(IssueCodes.NEGATIVE_INT_LITERAL, issues.get(0).code)
+		}
+		else {
+			assertTrue(issues.empty)
+		}
 
 		val value = constant.value as TypedBigInteger
 		val type = value.type
