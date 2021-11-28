@@ -20,6 +20,7 @@
 		<systemProperties></systemProperties>
 		<additionalTestArguments></additionalTestArguments>
 		<maven.deploy.skip>true</maven.deploy.skip>
+		<software.download.area>${project.basedir}/../../..</software.download.area>
 	</properties>
 	<modules>
 		<module>com.minres.coredsl.target</module>
