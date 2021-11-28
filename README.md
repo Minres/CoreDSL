@@ -1,3 +1,5 @@
+[![Java CI with Maven](https://github.com/Minres/CoreDSL/actions/workflows/maven.yml/badge.svg)](https://github.com/Minres/CoreDSL/actions/workflows/maven.yml)
+
 # CoreDSL
 
 This repo contains the XText bundles/plugins for CoreDSL. The bundles can be installed from 
