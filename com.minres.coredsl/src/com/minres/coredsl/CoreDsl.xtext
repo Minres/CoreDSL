@@ -44,7 +44,7 @@ fragment SectionFunctions returns ISA:
 ;
 
 fragment SectionInstructions returns ISA:
-    'instructions' attributes+=Attribute*  '{' instructions+=Instruction+     '}'
+    'instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}'
 ;
 
 Instruction:
@@ -160,7 +160,7 @@ fragment DeclarationSpecifier
     ;
 
 Attribute
-    :  	DoubleLeftBracket type=AttributeName ('=' value=ConditionalExpression)? DoubleRightBracket
+    :  	DoubleLeftBracket type=ID ('=' params+=ConditionalExpression | '(' params+=ConditionalExpression (',' params+=ConditionalExpression)* ')')? DoubleRightBracket
     ;
     
 TypeSpecifier
@@ -377,7 +377,7 @@ CharacterConstant
     :   value=CHARCONST
     ;
 
-// the follwoing 2 rules are needed so that XText does not generate a terminal symbol '[[' and '&&'
+// the following 2 rules are needed so that XText does not generate a terminal symbol '[[' and '&&'
 // which is always eaten by the Lexer so that a[b[3]] is not recognized
 DoubleLeftBracket hidden(WS, ML_COMMENT, SL_COMMENT): LEFT_BR LEFT_BR;
 DoubleRightBracket hidden(WS, ML_COMMENT, SL_COMMENT): RIGHT_BR RIGHT_BR;
@@ -394,8 +394,6 @@ enum DataTypes
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';
 
 enum StorageClassSpecifier: EXTERN='extern' | STATIC='static' | REGISTER='register';
-
-enum AttributeName: NONE | IS_PC='is_pc' | IS_INTERLOCK_FOR='is_interlock_for' | DO_NOT_SYNTHESIZE="do_not_synthesize" | ENABLE="enable" | NO_CONT='no_cont' | COND='cond' | FLUSH='flush';
 
 enum StructOrUnion:   STRUCT='struct'|UNION='union';
 

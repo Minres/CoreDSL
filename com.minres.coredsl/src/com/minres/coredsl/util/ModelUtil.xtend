@@ -13,6 +13,8 @@ import java.util.List
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
+import com.minres.coredsl.coreDsl.Statement
+import com.minres.coredsl.coreDsl.BlockItem
 
 class ModelUtil {
     
@@ -22,6 +24,9 @@ class ModelUtil {
         isa.declarations.filter[it instanceof Declaration].map[it as Declaration]
     }
 
+    static def Iterable<Statement> getStateStatements(ISA isa) {
+        isa.declarations.filter[it instanceof Statement].map[it as Statement]
+    }
 
     static def Iterable<Declaration> getStateConstDeclarations(ISA isa) {
         isa.declarations.filter[
@@ -67,10 +72,13 @@ class ModelUtil {
     
     static def DirectDeclarator effectiveDeclarator(ISA isa, String name){
         if(isa instanceof CoreDef) {
-            val decl = isa.stateDeclarations.findFirst[it.init.findFirst[it.declarator.name==name && it.initializer!==null]!==null]
-            if(decl!==null)
-                return decl.init.findFirst[it.declarator.name==name].declarator
-            for(contrib:isa.contributingType.reverse) {
+            val decl = isa.allDefinitions.filter[it instanceof Declaration].findFirst[
+	           	(it as Declaration).init.findFirst[it.declarator.name==name]!==null
+            ]
+            if(decl!==null) {
+                return (decl as Declaration).init.findFirst[it.declarator.name==name].declarator
+            }
+            for(contrib:isa.contributingType.reverseView) {
                 val contribDecl = contrib.effectiveDeclarator(name)
                 if(contribDecl!==null)
                     return contribDecl
@@ -87,6 +95,22 @@ class ModelUtil {
     }
     
     
+    static def Iterable<BlockItem> allDefinitions(CoreDef core){
+        val blockItemList = if(core.contributingType.size == 0) core.declarations else {
+            val instrSets = core.contributingType?.map[InstructionSet i| i.allInstructionSets].flatten
+            val seen = newLinkedHashSet
+            seen.addAll(instrSets)
+            seen.add(core)
+            seen.map[ISA i| i.declarations].flatten
+        }
+        return blockItemList
+    }
+
+    static def Iterable<BlockItem> allDefinitions(InstructionSet core){
+        val blockItemList = core.allInstructionSets.map[ISA i| i.declarations].flatten
+        return blockItemList
+    }
+
     static def Iterable<Instruction> allInstr(CoreDef core){
         val unique = newLinkedHashMap
         val instrList = if(core.contributingType.size == 0) core.instructions else {

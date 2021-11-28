@@ -22,6 +22,9 @@ import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.FunctionDefinition
+import com.minres.coredsl.validation.KnownAttributes.AttributeUsage
+import org.eclipse.emf.common.util.EList
+import org.eclipse.emf.ecore.EStructuralFeature
 
 /**
  * This class contains custom validation rules. 
@@ -30,189 +33,135 @@ import com.minres.coredsl.coreDsl.FunctionDefinition
  */
 class CoreDslValidator extends AbstractCoreDslValidator {
 
-    /*TODO: 
-     * * check for cycles in structs
-     * * check for member selection
-     * * check for return statements
-     * * check for duplicate fields
-     * 
-     */
-    protected static val ISSUE_CODE_PREFIX = "com.minres.coredsl."
-    public static val TYPE_MISMATCH = ISSUE_CODE_PREFIX + "TypeMismatch"
-    public static val TYPE_ILLEGAL = ISSUE_CODE_PREFIX + "TypeIllegal"
-	
-    //@Check
-    def checkType(Expression e) {
-        switch (e) {
-            case PrimaryExpression,
-            case PostfixExpression,
-            case PrefixExpression:
-                if (e.typeFor === null)
-                    error(
-                        "incompatible types used",
-                        CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
-                        TYPE_MISMATCH
-                    )
-            case CastExpression: {
-                if ((e as CastExpression).type.typeFor === null)
-                    error(
-                        "illegal type used",
-                        CoreDslPackage.Literals.CAST_EXPRESSION__TYPE,
-                        TYPE_ILLEGAL
-                    )
-            }
-            case InfixExpression: {
-                val infix = e as InfixExpression
-                switch (infix.op) {
-                    case '<',
-                    case '>',
-                    case '<=',
-                    case '>=',
-                    case '==',
-                    case '!=':
-                        if (!e.left.typeFor.isComparable((e as InfixExpression).right.typeFor))
-                            error(
-                                "incompatible types used",
-                                CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
-                                TYPE_MISMATCH
-                            )
-                    case '||',
-                    case '&&',
-                    case '<<',
-                    case '>>',
-                    case '+',
-                    case '-',
-                    case '*',
-                    case '/',
-                    case '%',
-                    case '|',
-                    case '^',
-                    case '&':
-                        if (!e.left.typeFor.isComputable((e as InfixExpression).right.typeFor))
-                            error(
-                                "incompatible types used",
-                                CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
-                                TYPE_MISMATCH
-                            )
-                    default: {
-                    } // '::'
-                }
-            }
+	/*TODO: 
+	 * * check for cycles in structs
+	 * * check for member selection
+	 * * check for return statements
+	 * * check for duplicate fields
+	 * 
+	 */
+	protected static val ISSUE_CODE_PREFIX = "com.minres.coredsl."
+	public static val TYPE_MISMATCH = ISSUE_CODE_PREFIX + "TypeMismatch"
+	public static val TYPE_ILLEGAL = ISSUE_CODE_PREFIX + "TypeIllegal"
+	public static val ILLEGAL_ATTRIBUTE = ISSUE_CODE_PREFIX + "IllegalAttribute"
+	public static val INVALID_ATTRIBUTE_PARAMETERS = ISSUE_CODE_PREFIX + "InvalidAttributeParameters"
+
+	// @Check
+	def checkType(Expression e) {
+		switch (e) {
+			case PrimaryExpression,
+			case PostfixExpression,
+			case PrefixExpression:
+				if (e.typeFor === null)
+					error(
+						"incompatible types used",
+						CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
+						TYPE_MISMATCH
+					)
+			case CastExpression: {
+				if ((e as CastExpression).type.typeFor === null)
+					error(
+						"illegal type used",
+						CoreDslPackage.Literals.CAST_EXPRESSION__TYPE,
+						TYPE_ILLEGAL
+					)
+			}
+			case InfixExpression: {
+				val infix = e as InfixExpression
+				switch (infix.op) {
+					case '<',
+					case '>',
+					case '<=',
+					case '>=',
+					case '==',
+					case '!=':
+						if (!e.left.typeFor.isComparable((e as InfixExpression).right.typeFor))
+							error(
+								"incompatible types used",
+								CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
+								TYPE_MISMATCH
+							)
+					case '||',
+					case '&&',
+					case '<<',
+					case '>>',
+					case '+',
+					case '-',
+					case '*',
+					case '/',
+					case '%',
+					case '|',
+					case '^',
+					case '&':
+						if (!e.left.typeFor.isComputable((e as InfixExpression).right.typeFor))
+							error(
+								"incompatible types used",
+								CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
+								TYPE_MISMATCH
+							)
+					default: {
+					} // '::'
+				}
+			}
 //            case ConditionalExpression: {
 //            }
 //            case AssignmentExpression: {
 //            }
-        }
-    }
+		}
+	}
 
-    //@Check
-    def checkType(TypeSpecifier e) {
-        switch (e) {
+	// @Check
+	def checkType(TypeSpecifier e) {
+		switch (e) {
 //            case CompositeType: {
 //            }
 //            case EnumType: {
 //            }
-            case PrimitiveType: {
-                if (e.typeFor === new DataType(DataType.Type.COMPOSITE, 0))
-                    error(
-                        "incompatible types used",
-                        CoreDslPackage.Literals.PRIMITIVE_TYPE__DATA_TYPE,
-                        TYPE_MISMATCH
-                    )
-            }
-        }
-    }
-    @Check
-    def checkAttributeNames(ISA isa) {
-    	for(Attribute a: isa.attributes) {
-    		switch(a.type) {
-    			case ENABLE: if(a.value===null)
-                    error(
-                        "enable requires a condition",
-                        CoreDslPackage.Literals.ISA__ATTRIBUTES,
-                        ISSUE_CODE_PREFIX + "MissingValue"
-                    )
-    			default:
-    			    error(
-                        "illegal attribute name",
-                        CoreDslPackage.Literals.ISA__ATTRIBUTES,
-                        ISSUE_CODE_PREFIX + "IllegalAttribute"
-                    )
-    		}
-    	}
-    	
-    }
-    
-    @Check
-    def checkAttributeNames(Instruction instr) {
-    	for(Attribute a: instr.attributes) {
-    		switch(a.type) {
-    			case NO_CONT,
-    			case COND,
-    			case FLUSH:
-    				return
-    			default:
-    			    error(
-                        "illegal attribute name",
-                        CoreDslPackage.Literals.INSTRUCTION__ATTRIBUTES,
-                        ISSUE_CODE_PREFIX + "IllegalAttribute"
-                    )
-    		}
-    	}
-    	
-    }
-    
-    @Check
-    def checkAttributeNames(Declaration decl) {
-    	for(Attribute a: decl.attributes) {
-    		switch(a.type) {
-    			case IS_PC,
-    			case IS_INTERLOCK_FOR:
-    				return
-    			default:
-    			    error(
-                        "illegal attribute name",
-                        CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES,
-                        ISSUE_CODE_PREFIX + "IllegalAttribute"
-                    )
-    		}
-    	}
-    	
-    }
+			case PrimitiveType: {
+				if (e.typeFor === new DataType(DataType.Type.COMPOSITE, 0))
+					error(
+						"incompatible types used",
+						CoreDslPackage.Literals.PRIMITIVE_TYPE__DATA_TYPE,
+						TYPE_MISMATCH
+					)
+			}
+		}
+	}
+	
+	def checkAttributes(EList<Attribute> attributes, KnownAttributes.AttributeUsage expectedUsage, EStructuralFeature feature) {
+		for(Attribute attribute : attributes) {
+			val info = KnownAttributes.byName(attribute.type);
+			
+			if(info === null || !info.allowedUsage.contains(expectedUsage))
+				error("unexpected attribute '" + attribute.type + "'", feature, ILLEGAL_ATTRIBUTE);
+			
+			if(attribute.params.size() !== info.paramCount)
+				error("attribute '" + info.name + "' requires exactly " + info.paramCount + " parameter(s)", feature, INVALID_ATTRIBUTE_PARAMETERS);
+		}
+	}
 
-    @Check
-    def checkAttributeNames(InitDeclarator decl) {
-    	for(Attribute a: decl.attributes) {
-    		switch(a.type) {
-    			case IS_PC,
-    			case IS_INTERLOCK_FOR:
-    				return
-    			default:
-    			    error(
-                        "illegal attribute name",
-                        CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES,
-                        ISSUE_CODE_PREFIX + "IllegalAttribute"
-                    )
-    		}
-    	}
-    	
-    }
+	@Check
+	def checkAttributeNames(ISA isa) {
+		checkAttributes(isa.commonInstructionAttributes, KnownAttributes.AttributeUsage.instruction, CoreDslPackage.Literals.ISA__COMMON_INSTRUCTION_ATTRIBUTES);
+	}
 
-    @Check
-    def checkAttributeNames(FunctionDefinition decl) {
-    	for(Attribute a: decl.attributes) {
-    		switch(a.type) {
-    			case DO_NOT_SYNTHESIZE:
-    				return
-    			default:
-    			    error(
-                        "illegal attribute name",
-                        CoreDslPackage.Literals.FUNCTION_DEFINITION__ATTRIBUTES,
-                        ISSUE_CODE_PREFIX + "IllegalAttribute"
-                    )
-    		}
-    	}
-    	
-    }
-    
+	@Check
+	def checkAttributeNames(Instruction instr) {
+		checkAttributes(instr.attributes, KnownAttributes.AttributeUsage.instruction, CoreDslPackage.Literals.INSTRUCTION__ATTRIBUTES);
+	}
+
+	@Check
+	def checkAttributeNames(Declaration decl) {
+		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES);
+	}
+
+	@Check
+	def checkAttributeNames(InitDeclarator decl) {
+		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES);
+	}
+
+	@Check
+	def checkAttributeNames(FunctionDefinition decl) {
+		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.function, CoreDslPackage.Literals.FUNCTION_DEFINITION__ATTRIBUTES);
+	}
 }

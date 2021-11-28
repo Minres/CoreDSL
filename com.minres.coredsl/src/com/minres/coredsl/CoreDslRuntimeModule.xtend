@@ -8,8 +8,8 @@ import org.eclipse.xtext.scoping.IGlobalScopeProvider
 import com.minres.coredsl.converter.CoreDslTerminalConverters
 import com.minres.coredsl.scoping.CoreDslResourceDescriptionStrategy
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy
-import com.minres.coredsl.scoping.CoreDslGlobalScopeProvider
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
+import org.eclipse.xtext.xtext.XtextResourceDescriptionStrategy
 
 /** 
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
@@ -19,11 +19,22 @@ class CoreDslRuntimeModule extends AbstractCoreDslRuntimeModule {
 		return CoreDslTerminalConverters
 	}
 
+//	override configureIScopeProviderDelegate(com.google.inject.Binder binder) {
+//		binder.bind(org.eclipse.xtext.scoping.IScopeProvider)
+//		.annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider.NAMED_DELEGATE))
+//		.to(org.eclipse.xtext.scoping.impl.SimpleLocalScopeProvider);
+//	}
+
 	override Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
 		return ImportUriGlobalScopeProvider
 	}
+
+//	override Class<? extends org.eclipse.xtext.naming.IQualifiedNameProvider> bindIQualifiedNameProvider() {
+//		return org.eclipse.xtext.naming.SimpleNameProvider;
+//	}
 	
 	def Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
         return CoreDslResourceDescriptionStrategy
+        //return XtextResourceDescriptionStrategy
     }
 }
