@@ -1,1 +1,3 @@
 theme: jekyll-theme-slate
+title: CoreDSL 2.0
+description: A domain specific language to describe instruction set architectures
