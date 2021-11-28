@@ -7,4 +7,4 @@ Note that we consider supporting the generation of a *complete* core implementat
 
 Those who want to start with it should have a look at the [Programmer's manual](https://github.com/Minres/CoreDSL/wiki/CoreDSL-2-programmer's-manual).
 
-Editor support is available for the Eclipse IDE, you can ad the plugins using the update site https://minres.github.io/CoreDSL/repository .
+Editor support is available for the Eclipse IDE, you can ad the plugins using the [update site](https://minres.github.io/CoreDSL/repository) https://minres.github.io/CoreDSL/repository.
