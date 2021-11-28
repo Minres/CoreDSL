@@ -22,7 +22,7 @@ class CustomLexer(CLexer):
     tokens = {
         'statements': [
             (r'import', Comment.Preproc),
-            (r'(InstructionSet|CoreDef)(\s+)', bygroups(Keyword, Text), 'classname'),
+            (r'(InstructionSet|Core)(\s+)', bygroups(Keyword, Text), 'classname'),
             (r'(extends|provides)(\s+)', bygroups(Keyword, Text), 'classname'),
             (r'(instructions|architectural_state|functions)', Keyword),
 
