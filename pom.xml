@@ -20,7 +20,7 @@
 		<systemProperties></systemProperties>
 		<additionalTestArguments></additionalTestArguments>
 		<maven.deploy.skip>true</maven.deploy.skip>
-		<software.download.area>${project.basedir}/../../..</software.download.area>
+		<software.download.area>${project.basedir}/../..</software.download.area>
 	</properties>
 	<modules>
 		<module>com.minres.coredsl.target</module>
@@ -318,11 +318,6 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</pluginRepository>
-        <pluginRepository>
-            <id>bintray-devexperts-Maven</id>
-            <name>bintray-plugins</name>
-            <url>https://dl.bintray.com/devexperts/Maven</url>
-        </pluginRepository>
 	</pluginRepositories>
 	<profiles>
 		<profile>

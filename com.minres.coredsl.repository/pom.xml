@@ -59,19 +59,10 @@
 	<profiles>
 		<profile>
 			<!-- Activate this profile to perform the release to Bintray -->
-			<id>deploy-remote</id>
+			<id>release-composite</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
-			<properties>
-				<!-- Properties relative to the distant host where to upload the repo -->
-				<ftp.url>ftp://your.server.com</ftp.url>
-				<ftp.toDir>/yourpath</ftp.toDir>
-				<!-- Relative path to the repo being uploaded -->
-				<repo.path>${project.build.directory}/repository/</repo.path>
-				<maven.deploy.skip>false</maven.deploy.skip>
-			</properties>
-
 			<build>
 				<plugins>
 					<plugin>
@@ -118,7 +109,7 @@
 						<version>${tycho-version}</version>
 						<configuration>
 							<!-- IMPORTANT: DO NOT split the arg line -->
-							<appArgLine>-application org.eclipse.ant.core.antRunner -buildfile packaging-p2-composite.ant p2.composite.add -Dsite.label="CoreDSL Software Repository" -Dproject.build.directory=${project.build.directory} -DunqualifiedVersion=${unqualifiedVersion} -Dsoftware.download.area="${software.download.area}/CoreDSL-gh/repository"</appArgLine>
+							<appArgLine>-application org.eclipse.ant.core.antRunner -buildfile packaging-p2-composite.ant p2.composite.add -Dsite.label="CoreDSL Software Repository" -Dproject.build.directory=${project.build.directory} -DunqualifiedVersion=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion} -Dsoftware.download.area="${software.download.area}/CoreDSL-gh/repository"</appArgLine>
 							<repositories>
 								<repository>
 									<id>2020-03</id>
@@ -163,6 +154,7 @@
 							</execution>
 						</executions>
 					</plugin>
+				</plugins>
 			</build>
 		</profile>
 	</profiles>
