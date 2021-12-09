@@ -1,7 +1,7 @@
 package com.minres.coredsl.util
 
 import org.eclipse.emf.ecore.EObject
-import com.minres.coredsl.coreDsl.DirectDeclarator
+import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.InstructionSet
@@ -13,27 +13,49 @@ import java.util.List
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
-import com.minres.coredsl.coreDsl.Statement
-import com.minres.coredsl.coreDsl.BlockItem
 import com.minres.coredsl.coreDsl.ReferenceTypeSpecifier
-import com.minres.coredsl.coreDsl.PrimitiveTypeSpecifier
 import com.minres.coredsl.coreDsl.PointerTypeSpecifier
+import java.util.Set
+import java.util.HashSet
+import java.util.ArrayList
 
 class ModelUtil {
     
     static val logger = Logger.getLogger(typeof(ModelUtil));
-
-    static def Iterable<Declaration> getStateDeclarations(ISA isa) {
-        isa.declarations.filter[it instanceof Declaration].map[it as Declaration]
+    
+    /**
+     * Returns all instruction sets of a core in the order described <a href="https://github.com/Minres/CoreDSL/wiki/Elaboration">here</a>.
+     */
+    static def Iterable<InstructionSet> getTransitiveProvidedInstructionSets(CoreDef core) {
+    	val list = new ArrayList<InstructionSet>()
+    	val seen = new HashSet<InstructionSet>()
+    	for (instructionSet : core.contributingTypes) {
+    		getFlatInstructionSetHierarchy(instructionSet, list, seen)
+    	}
+    	return list
     }
-
-    static def Iterable<Statement> getStateStatements(ISA isa) {
-        isa.declarations.filter[it instanceof Statement].map[it as Statement]
+    
+    /**
+     * Returns all instruction sets in the inheritance hierarchy, starting with the least derived instruction set and ending with the function input.
+     */
+    static def Iterable<InstructionSet> getFlatInstructionSetHierarchy(InstructionSet instructionSet) {
+    	val list = new ArrayList<InstructionSet>()
+    	val seen = new HashSet<InstructionSet>()
+    	getFlatInstructionSetHierarchy(instructionSet, list, seen)
+    	return list
+    }
+    
+    private static def void getFlatInstructionSetHierarchy(InstructionSet instructionSet, List<InstructionSet> list, Set<InstructionSet> seen) {
+    	if(!seen.add(instructionSet)) return;
+    	
+    	if(instructionSet.superType !== null)
+    		getFlatInstructionSetHierarchy(instructionSet.superType, list, seen);
+    	
+    	list.add(instructionSet)
     }
 
     static def Iterable<Declaration> getStateConstDeclarations(ISA isa) {
         isa.declarations.filter[
-        	it instanceof Declaration && 
         	!(it as Declaration).storage.contains(StorageClassSpecifier.EXTERN) && 
         	!(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER) &&
         	!((it as Declaration).type instanceof ReferenceTypeSpecifier) &&
@@ -43,7 +65,6 @@ class ModelUtil {
 
     static def Iterable<Declaration> getStateExternDeclarations(ISA isa) {
         isa.declarations.filter[
-        	it instanceof Declaration && 
         	(it as Declaration).storage.contains(StorageClassSpecifier.EXTERN) &&
         	!((it as Declaration).type instanceof ReferenceTypeSpecifier) &&
         	!((it as Declaration).type instanceof PointerTypeSpecifier)
@@ -52,7 +73,6 @@ class ModelUtil {
     
     static def Iterable<Declaration> getStateRegisterDeclarations(ISA isa) {
         isa.declarations.filter[
-        	it instanceof Declaration && 
         	(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER) &&
         	!((it as Declaration).type instanceof ReferenceTypeSpecifier) &&
         	!((it as Declaration).type instanceof PointerTypeSpecifier)
@@ -61,7 +81,6 @@ class ModelUtil {
 
     static def Iterable<Declaration> getStateAliasDeclarations(ISA isa) {
         isa.declarations.filter[
-        	it instanceof Declaration && 
         	!(it as Declaration).storage.contains(StorageClassSpecifier.EXTERN) && 
         	!(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER) &&
         	(it as Declaration).type instanceof ReferenceTypeSpecifier
@@ -76,23 +95,23 @@ class ModelUtil {
         return obj.eContainer.parentOfType(clazz)
     }
     
-    static def DirectDeclarator effectiveDeclarator(ISA isa, String name){
+    static def Declarator effectiveDeclarator(ISA isa, String name){
         if(isa instanceof CoreDef) {
             val decl = isa.allDefinitions.filter[it instanceof Declaration].findFirst[
-	           	(it as Declaration).init.findFirst[it.declarator.name==name]!==null
+	           	(it as Declaration).declarators.findFirst[it.name==name]!==null
             ]
             if(decl!==null) {
-                return (decl as Declaration).init.findFirst[it.declarator.name==name].declarator
+                return (decl as Declaration).declarators.findFirst[it.name==name]
             }
-            for(contrib:isa.contributingType.reverseView) {
+            for(contrib:isa.contributingTypes.reverseView) {
                 val contribDecl = contrib.effectiveDeclarator(name)
                 if(contribDecl!==null)
                     return contribDecl
             }
         } else if(isa instanceof InstructionSet){
-            val decl = isa.stateDeclarations.findFirst[it.init.findFirst[it.declarator.name==name && it.initializer!==null]!==null]
+            val decl = isa.declarations.findFirst[it.declarators.findFirst[it.name==name && it.initializer!==null]!==null]
             if(decl!==null)
-                return decl.init.findFirst[it.declarator.name==name].declarator
+                return decl.declarators.findFirst[it.name==name]
             val baseDecl = isa.superType.effectiveDeclarator(name)
             if(baseDecl!==null)
                 return baseDecl
@@ -101,26 +120,24 @@ class ModelUtil {
     }
     
     
-    static def Iterable<BlockItem> allDefinitions(CoreDef core){
-        val blockItemList = if(core.contributingType.size == 0) core.declarations else {
-            val instrSets = core.contributingType?.map[InstructionSet i| i.allInstructionSets].flatten
-            val seen = newLinkedHashSet
-            seen.addAll(instrSets)
-            seen.add(core)
-            seen.map[ISA i| i.declarations].flatten
-        }
-        return blockItemList
+    static def Iterable<Declaration> allDefinitions(CoreDef core){
+    	if(core.contributingTypes.size == 0) return core.declarations
+    	
+        val instrSets = core.contributingTypes?.map[InstructionSet i| i.allInstructionSets].flatten
+        val seen = newLinkedHashSet
+        seen.addAll(instrSets)
+        seen.add(core)
+        return seen.map[ISA i| i.declarations].flatten
     }
 
-    static def Iterable<BlockItem> allDefinitions(InstructionSet core){
-        val blockItemList = core.allInstructionSets.map[ISA i| i.declarations].flatten
-        return blockItemList
+    static def Iterable<Declaration> allDefinitions(InstructionSet core){
+        return core.allInstructionSets.flatMap[it.declarations]
     }
 
     static def Iterable<Instruction> allInstr(CoreDef core){
         val unique = newLinkedHashMap
-        val instrList = if(core.contributingType.size == 0) core.instructions else {
-            val instrSets = core.contributingType?.map[InstructionSet i| i.allInstructionSets].flatten
+        val instrList = if(core.contributingTypes.size == 0) core.instructions else {
+            val instrSets = core.contributingTypes?.map[InstructionSet i| i.allInstructionSets].flatten
             val seen = newLinkedHashSet
             seen.addAll(instrSets)
             seen.add(core)

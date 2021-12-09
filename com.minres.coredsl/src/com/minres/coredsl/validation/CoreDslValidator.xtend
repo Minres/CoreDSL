@@ -16,7 +16,6 @@ import org.eclipse.xtext.validation.Check
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.Attribute
 import com.minres.coredsl.coreDsl.Instruction
-import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.validation.KnownAttributes.AttributeUsage
@@ -34,6 +33,7 @@ import com.minres.coredsl.typing.DataType
 import java.util.HashMap
 import com.minres.coredsl.coreDsl.IntegerConstant
 import java.math.BigInteger
+import com.minres.coredsl.coreDsl.Declarator
 
 /**
  * This class contains custom validation rules. 
@@ -163,7 +163,6 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 
 	@Check
 	def checkAssignment(AssignmentExpression assignment) {
-		println(this)
 		val types = Collections.singleton(assignment.left.resolveType()) + assignment.assignments.map [
 			it.right.resolveType()
 		].toList()
@@ -241,12 +240,12 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 		// TODO handle initializer lists
 		val leftType = declaration.type.resolveType()
 
-		for (declarator : declaration.init.filter[it.initializer !== null]) {
+		for (declarator : declaration.declarators.filter[it.initializer !== null]) {
 			val expr = declarator.initializer.expr
 			val rightType = expr.resolveType()
 			if (!rightType.isImplicitlyConvertibleTo(leftType)) {
 				error('''cannot implicitly convert from «rightType» to «leftType»''', declarator,
-					CoreDslPackage.Literals.INIT_DECLARATOR__LEQUALS, IssueCodes.TYPE_MISMATCH)
+					CoreDslPackage.Literals.DECLARATOR__TEQUALS, IssueCodes.TYPE_MISMATCH)
 			}
 		}
 	}
@@ -304,13 +303,13 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 	@Check
 	def checkAttributeNames(Declaration decl) {
 		checkAttributes(decl, decl.attributes, KnownAttributes.AttributeUsage.declaration,
-			CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES);
+			CoreDslPackage.Literals.DECLARATOR__ATTRIBUTES);
 	}
 
 	@Check
-	def checkAttributeNames(InitDeclarator decl) {
+	def checkAttributeNames(Declarator decl) {
 		checkAttributes(decl, decl.attributes, KnownAttributes.AttributeUsage.declaration,
-			CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES);
+			CoreDslPackage.Literals.DECLARATOR__ATTRIBUTES);
 	}
 
 	@Check

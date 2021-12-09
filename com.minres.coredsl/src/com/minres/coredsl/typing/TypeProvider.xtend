@@ -9,25 +9,20 @@ import com.minres.coredsl.coreDsl.CharacterConstant
 import com.minres.coredsl.coreDsl.CompositeTypeSpecifier
 import com.minres.coredsl.coreDsl.ConditionalExpression
 import com.minres.coredsl.coreDsl.Declaration
-import com.minres.coredsl.coreDsl.DirectDeclarator
+import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.EnumTypeSpecifier
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.FloatConstant
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.InfixExpression
-import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.IntegerConstant
-import com.minres.coredsl.coreDsl.Postfix
-import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
-import com.minres.coredsl.coreDsl.PrimaryExpression
 import com.minres.coredsl.coreDsl.StringLiteral
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.Field
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.coreDsl.Constant
-import com.minres.coredsl.coreDsl.Variable
 import com.minres.coredsl.util.BigDecimalWithSize
 
 import static extension com.minres.coredsl.interpreter.CoreDSLInterpreter.*
@@ -38,6 +33,10 @@ import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerSignedness
 import com.minres.coredsl.coreDsl.FloatTypeSpecifier
 import com.minres.coredsl.util.TypedBigInteger
+import com.minres.coredsl.coreDsl.BoolTypeSpecifier
+import com.minres.coredsl.coreDsl.MemberAccessExpression
+import com.minres.coredsl.coreDsl.IdentifierReference
+import com.minres.coredsl.coreDsl.Identifier
 
 class TypeProvider {
 
@@ -80,7 +79,7 @@ class TypeProvider {
 		e.resolveType(e.parentOfType(ISA))
 	}
 
-	def static DataType resolveType(DirectDeclarator e) {
+	def static DataType resolveType(Declarator e) {
 		e.resolveType(e.parentOfType(ISA))
 	}
 
@@ -90,6 +89,10 @@ class TypeProvider {
 
 	def static DataType resolveType(Constant e) {
 		e.resolveType(e.parentOfType(ISA))
+	}
+
+	def static dispatch DataType resolveType(BoolTypeSpecifier e, ISA ctx) {
+		return boolType
 	}
 
 	def static dispatch DataType resolveType(CompositeTypeSpecifier e, ISA ctx) {
@@ -305,58 +308,31 @@ class TypeProvider {
 		}
 	}
 
-	def static dispatch DataType resolveType(PostfixExpression e, ISA ctx) {
-		switch(e.postOp.op) {
-			case ".",
-			case "->":
-				e.postOp.resolveType(ctx)
-			default:
-				e.left.resolveType(ctx) ?: e.postOp.resolveType(ctx)
-		}
-	}
-
-	def static dispatch DataType resolveType(Postfix e, ISA ctx) {
-		if(e.right !== null)
-			switch(e.right.op) {
-				case ".",
-				case "->": return e.right.resolveType(ctx)
-			}
+	def static dispatch DataType resolveType(MemberAccessExpression e, ISA ctx) {
 		switch(e.op) {
 			case ".",
 			case "->":
 				e.declarator.resolveType(ctx)
-			default:
-				null
 		}
 	}
 
-	def static dispatch DataType resolveType(PrimaryExpression e, ISA ctx) {
-		if(e.constant !== null) {
-			e.constant.resolveType(ctx)
-		} else if(e.ref !== null) {
-			e.ref.resolveType(ctx)
-		} else if(e.left !== null) {
-			e.left.resolveType(ctx)
-		} else if(e.literal.size > 0) {
-			throw new UnsupportedOperationException
-		} else
-			return null
+	def static dispatch DataType resolveType(IdentifierReference e, ISA ctx) {
+		return e.identifier.resolveType(ctx)
 	}
 
-	def static dispatch DataType resolveType(Variable e, ISA ctx) {
-		null
+	def static dispatch DataType resolveType(Identifier e, ISA ctx) {
+		return null
 	}
 
 	def static dispatch DataType resolveType(FunctionDefinition e, ISA ctx) {
-		e.type.resolveType(ctx)
+		return e.type.resolveType(ctx)
 	}
 
-	def static dispatch DataType resolveType(DirectDeclarator e, ISA ctx) {
-		if(e.eContainer instanceof InitDeclarator && e.eContainer.eContainer instanceof Declaration) {
-			var decl = e.eContainer.eContainer as Declaration
-			decl.type.resolveType(ctx)
-		} else
-			null
+	def static dispatch DataType resolveType(Declarator e, ISA ctx) {
+		val declaration = e.eContainer as Declaration
+		if(declaration === null) return null
+		
+		return declaration.type.resolveType(ctx)
 	}
 
 	def static dispatch DataType resolveType(Encoding list, ISA ctx) {

@@ -4,14 +4,14 @@ import java.util.Set
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.typing.DataType
 import java.util.HashMap
-import com.minres.coredsl.coreDsl.DirectDeclarator
+import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.ISA
 
 class EvaluationContext {
 
     final EvaluationContext parent
     
-    final HashMap<DirectDeclarator, Value> values = newHashMap
+    final HashMap<Declarator, Value> values = newHashMap
     
     final Set<Expression> alreadyEvaluating
     
@@ -85,16 +85,16 @@ class EvaluationContext {
         return alreadyEvaluating;
     }
     
-    def Value getValue(DirectDeclarator decl){
+    def Value getValue(Declarator decl){
         values.get(decl)
     }
     
-    def Value newValue(DirectDeclarator decl, Value value){
+    def Value newValue(Declarator decl, Value value){
         values.put(decl, value)
         value
     }
     
-    def assignValue(DirectDeclarator decl, Value value){
+    def assignValue(Declarator decl, Value value){
         if(values.containsKey(decl)){
             values.put(decl, value)            
         }

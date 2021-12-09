@@ -39,7 +39,7 @@ class CoreDslLabelProvider extends DefaultEObjectLabelProvider {
     }
 
 	def text(Declaration decl) {
-		decl.init.map[it.declarator!==null? it.declarator.name:it.declarator.name].join(', ')
+		decl.declarators.map[it.name].join(', ')
     }
 
 	def text(Instruction ele) {
