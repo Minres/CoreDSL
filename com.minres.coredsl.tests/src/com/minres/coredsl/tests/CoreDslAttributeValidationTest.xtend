@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull
 import static org.junit.jupiter.api.Assertions.assertTrue
 
 import com.minres.coredsl.validation.KnownAttributes
-import com.minres.coredsl.validation.CoreDslValidator
 import com.minres.coredsl.validation.IssueCodes
 
 @ExtendWith(InjectionExtension)
@@ -43,7 +42,7 @@ class CoreDslAttributeValidationTest {
 		val content = '''
 			InstructionSet AttributeValidationTestInstructionSet {
 			    architectural_state {
-			        unsigned XLEN;
+			        unsigned int XLEN;
 			        unsigned<XLEN> field «declAttribString»;
 			    }
 			    functions {
@@ -82,7 +81,7 @@ class CoreDslAttributeValidationTest {
 		val content = '''
 			InstructionSet AttributeValidationTestInstructionSet {
 			    architectural_state {
-			        unsigned XLEN;
+			        unsigned int XLEN;
 			        unsigned<XLEN> field «attribString»;
 			    }
 			    functions {
@@ -132,7 +131,7 @@ class CoreDslAttributeValidationTest {
 		val content = '''
 			InstructionSet AttributeValidationTestInstructionSet {
 			    architectural_state {
-			        unsigned XLEN;
+			        unsigned int XLEN;
 			        unsigned<XLEN> field «declAttribString»;
 			    }
 			    functions {

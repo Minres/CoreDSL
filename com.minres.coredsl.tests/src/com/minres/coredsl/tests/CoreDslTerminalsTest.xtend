@@ -4,12 +4,11 @@
 package com.minres.coredsl.tests
 
 import com.google.inject.Inject
-import com.minres.coredsl.coreDsl.AssignmentExpression
-import com.minres.coredsl.coreDsl.DirectDeclarator
-import com.minres.coredsl.coreDsl.ExpressionStatement
+import com.minres.coredsl.coreDsl.BoolConstant
 import com.minres.coredsl.coreDsl.FloatConstant
 import com.minres.coredsl.coreDsl.IntegerConstant
-import com.minres.coredsl.coreDsl.PrimaryExpression
+import com.minres.coredsl.tests.util.TestHelper
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
@@ -19,8 +18,6 @@ import org.junit.jupiter.api.^extension.ExtendWith
 import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.junit.jupiter.api.Assertions.assertFalse
 import static org.junit.jupiter.api.Assertions.assertTrue
-import com.minres.coredsl.tests.util.TestHelper
-import org.eclipse.emf.ecore.EObject
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -62,83 +59,50 @@ class CoreDslTerminalsTest {
 	}
 
 	@Test
-	def void parseIntLiteralSuffixes() {
-		val validLiterals = #[
-			"42u",
-			"42U",
-			"42l",
-			"42L",
-			"42ul",
-			"42Ul",
-			"42uL",
-			"42UL"
-		]
-
-		for (literal : validLiterals) {
-			val constant = literal.parseAsConstant() as IntegerConstant
-			assertNoIssues(constant)
-			assertEquals(42, constant.value.intValue)
-		}
-
-		// Verilog syntax cannot have the suffix
-		assertIssues("6'd42u".parseAsExpression())
-		assertIssues("6'd42ul".parseAsExpression())
-
-		// Invalid suffixes
-		assertIssues("42uu".parseAsExpression())
-		assertIssues("42ulu".parseAsExpression())
-		assertIssues("42lL".parseAsExpression())
-	}
-
-	@Test
 	def void parseFloatLiterals() {
-		val compound = '''
-			double d, d1, d0;
-			float f;
-			long double ld;
+		val piLiterals = #[
+			"3.14",
+			"0.314e1",
+			"0.0314e+2",
+			"3140.e-3",
+			"3.14f",
+			"3.14F",
+			"3.14l",
+			"3.14L"
+		]
+		
+		for(pi : piLiterals) {
+			val parsed = pi.parseAsConstant()
+			assertTrue(parsed instanceof FloatConstant)
 			
-			d = 3.14;
-			d = 0.314e1;
-			d = 0.0314e+2;
-			d = 3140.e-3;
-			d1 = 1.;
-			d1 = 1.e0;
-			d0 = 0.0;
-			
-			f = 3.14f;
-			f = 3.14F;
-			ld = 3.14l;
-			ld = 3.14L;
-		'''.parseAsBlock()
-		validator.assertNoErrors(compound)
-
-		for (el : compound.items.subList(3, compound.items.size())) {
-			if (el instanceof ExpressionStatement) {
-				val expr = el.expr.expressions.get(0) as AssignmentExpression
-				val lhsName = ((expr.left as PrimaryExpression).ref as DirectDeclarator).name;
-				val rhs = (expr.assignments.get(0).right as PrimaryExpression).constant as FloatConstant
-				val floatValue = rhs.value.doubleValue
-				if (lhsName == "d" || lhsName == "f" || lhsName == "ld")
-					assertTrue(Math.abs(floatValue - 3.14) < 1e-6)
-				else if (lhsName == "d1")
-					assertTrue(floatValue == 1.0)
-				else
-					assertTrue(floatValue == 0.0)
-			}
+			val value = (parsed as FloatConstant).value.doubleValue
+			assertTrue(Math.abs(value - 3.14) < 1e-6)
 		}
+		
+		val zero = "0.0".parseAsConstant()
+		val one = "1.0".parseAsConstant()
+		
+		assertTrue(zero instanceof FloatConstant)
+		assertTrue(one instanceof FloatConstant)
+		
+		assertTrue(0.0 == (zero as FloatConstant).value.doubleValue)
+		assertTrue(1.0 == (one as FloatConstant).value.doubleValue)
 	}
 
 	@Test
 	def void parseBoolLiterals() {
-		val content = '''
-			bool b;
-			b = true;
-			b = false;
-		'''.parseAsBlock()
-		validator.assertNoErrors(content)
+		val t = "true".parseAsConstant()
+		val f = "false".parseAsConstant() 
+		
+		assertTrue(t instanceof BoolConstant)
+		assertTrue(f instanceof BoolConstant)
+		
+		assertTrue((t as BoolConstant).value)
+		assertFalse((f as BoolConstant).value)
 	}
 
-	@Test
+	//@Test
+	// TODO: Currently, this only checks whether the syntax is accepted. No handling of encoding and escape sequences is done.
 	def void parseCharLiterals() {
 		val content = '''
 			char c;
@@ -152,11 +116,10 @@ class CoreDslTerminalsTest {
 			c = U'x';
 		'''.parseAsBlock()
 		validator.assertNoErrors(content)
-
-	// TODO: Currently, this only checks whether the syntax is accepted. No handling of encoding and escape sequences is done.
 	}
 
-	@Test
+	//@Test
+	// TODO: Currently, this only checks whether the syntax is accepted. No handling of encoding and escape sequences is done.
 	def void parseStringLiterals() {
 		val content = '''
 			char *str;
@@ -167,8 +130,6 @@ class CoreDslTerminalsTest {
 			str = L"hello world 5";
 		'''.parseAsBlock()
 		validator.assertNoErrors(content)
-
-	// TODO: Currently, this only checks whether the syntax is accepted. No handling of encoding and escape sequences is done.
 	}
 
 	@Test

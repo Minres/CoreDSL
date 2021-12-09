@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue
 import static org.junit.jupiter.api.Assertions.assertEquals
 
 import static extension com.minres.coredsl.interpreter.CoreDSLInterpreter.*
-import static extension com.minres.coredsl.util.ModelUtil.*
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -34,8 +33,8 @@ class CoreDslInterpreterTest {
         InstructionSet Test {
             architectural_state {
                 int a = 42;
-                int b = a + 5;
-                int XLEN = a + b;
+                int b = (int)(a + 5);
+                int XLEN = (int)(a + b);
                 [[is_pc]] int PC ;
                 int Xreg[XLEN];
                 float Freg[a];
@@ -43,13 +42,12 @@ class CoreDslInterpreterTest {
         }
         '''.parse
         val issues = validator.validate(content)
+        issues.forEach[println];
         assertTrue(issues.isEmpty())
-        val constants = content.definitions.get(0).stateDeclarations
+        val constants = content.definitions.get(0).declarations
         val rootContext = EvaluationContext.root
         val values  = constants.flatMap[declaration |
-            declaration.init.map[initDecl|
-                initDecl.declarator.evaluate(rootContext)
-            ]
+            declaration.declarators.map[it.evaluate(rootContext)]
         ].toList
         assertTrue(values.get(0).value instanceof BigInteger)
         assertEquals((values.get(0).value as BigInteger).intValue, 42)

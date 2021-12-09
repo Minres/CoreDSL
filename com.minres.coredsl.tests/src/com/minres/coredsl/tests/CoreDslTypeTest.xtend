@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull
 import static org.junit.jupiter.api.Assertions.assertTrue
 
 import static extension com.minres.coredsl.typing.TypeProvider.*
-import static extension com.minres.coredsl.util.ModelUtil.*
 import com.minres.coredsl.typing.IntegerType
 
 @ExtendWith(InjectionExtension)
@@ -33,7 +32,7 @@ class CoreDslTypeTest {
         val content = '''
         InstructionSet TestISA {
             architectural_state {
-                unsigned XLEN;
+                unsigned int XLEN;
                 unsigned<XLEN>  X[32];
             }
         }
@@ -47,7 +46,7 @@ class CoreDslTypeTest {
         for (iss : issues)
             println(iss)
         assertTrue(issues.isEmpty())
-        val decl = content.definitions.get(0).stateDeclarations.get(1).init.get(0).declarator
+        val decl = content.definitions.get(0).declarations.get(1).declarators.get(0)
         assertEquals("X", decl.name)
         val dataType = decl.resolveType(content.definitions.last) as IntegerType;
         assertNotNull(dataType)

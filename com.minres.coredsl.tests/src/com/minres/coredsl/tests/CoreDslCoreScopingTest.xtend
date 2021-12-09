@@ -27,17 +27,17 @@ class CoreDslCoreScopingTest {
         val content = '''
         InstructionSet BaseISA {
             architectural_state {
-                unsigned X[32];
+                unsigned int X[32];
             }
         }
         
         InstructionSet TestISA extends BaseISA {
             instructions {
                 Inst1 {
-                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior:
-                        X[rd] = X[rs1] + X[rs2];
+                        X[rd] = (unsigned int)(X[rs1] + X[rs2]);
                 }
             }
         }
@@ -45,16 +45,17 @@ class CoreDslCoreScopingTest {
         Core TestCore provides TestISA {
             instructions {
                 Inst2 {
-                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000001;  
+                    encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000001;
                     args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior:
-                        X[rd] = X[rs1] - X[rs2];
+                        X[rd] = (unsigned int)(X[rs1] - X[rs2]);
                 }
             }
         	
         }
         '''.parse
         val issues = validator.validate(content)
+        issues.forEach[println]
         assertTrue(issues.isEmpty())
     }
     
