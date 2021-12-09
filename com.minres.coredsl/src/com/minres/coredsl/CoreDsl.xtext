@@ -4,71 +4,53 @@ import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
 generate coreDsl "http://www.minres.com/coredsl/CoreDsl/2.0"
 
-DescriptionContent
-	: (imports+=Import)* definitions+=ISA+ 
-	;
+DescriptionContent:
+	(imports+=Import)*
+	definitions+=ISA+;
 
-Import
-	: 'import' importURI=STRING
-	;
+Import: 'import' importURI=STRING;
 
-ISA
-	: InstructionSet
-	| CoreDef
-	;
+ISA: InstructionSet	| CoreDef;
 
-InstructionSet :
-	'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' 
-        ( SectionArchState (SectionFunctions SectionInstructions? | SectionInstructions SectionFunctions?)?
-        | SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions SectionArchState?)?
-        | SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions SectionArchState?)?
-        )
-    '}'
-;
+InstructionSet:
+	'InstructionSet' name=ID ('extends' superType=[InstructionSet] )? '{'
+		(	SectionArchState (SectionFunctions SectionInstructions? | SectionInstructions SectionFunctions?)?
+		|	SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions SectionArchState?)?
+		|	SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions SectionArchState?)?
+		)
+	'}';
 
 CoreDef:
-	'Core' name=ID ( 'provides' contributingType+=[InstructionSet] (',' contributingType+=[InstructionSet])*)? '{' 
-        ( SectionArchState (SectionFunctions SectionInstructions? | SectionInstructions SectionFunctions?)?
-        | SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions SectionArchState?)?
-        | SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions SectionArchState?)?
-        )
-    '}'
-;
+	'Core' name=ID ('provides' contributingTypes+=[InstructionSet] (',' contributingTypes+=[InstructionSet])*)? '{'
+		(	SectionArchState (SectionFunctions SectionInstructions? | SectionInstructions SectionFunctions?)?
+		|	SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions SectionArchState?)?
+		|	SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions SectionArchState?)?
+		)
+	'}';
 
 fragment SectionArchState returns ISA:
-    'architectural_state' '{' declarations+=(Declaration | ExpressionStatement)+ '}'
-;
+    'architectural_state' '{' (declarations+=Declaration | assignments+=ExpressionStatement)+ '}';
 
 fragment SectionFunctions returns ISA:
-    'functions' '{' functions+=FunctionDefinition+ '}'
-;
+    'functions' '{' functions+=FunctionDefinition+ '}';
 
 fragment SectionInstructions returns ISA:
-    'instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}'
-;
+    'instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}';
 
 Instruction:
 	name=ID attributes+=Attribute* '{' 
-		('encoding' ':' encoding=Encoding ';') ('args_disass' ':' disass=STRING ';')? ('behavior' ':' behavior=Statement)
-	'}'
-;
+		('encoding' ':' encoding=Encoding ';')
+		('args_disass' ':' disass=STRING ';')?
+		('behavior' ':' behavior=Statement)
+	'}';
 
-Encoding
-	:	fields+=Field ('::' fields+=Field)*
-	;
+Encoding: fields+=Field ('::' fields+=Field)*;
 
-Field
-	: 	BitValue
-	|	BitField
-	;
+Field: BitValue | BitField;
 
-BitValue
-	: 	value=INTEGER
-	;
+BitValue: value=INTEGER;
 
-BitField
-	:	name=ID LEFT_BR left=IntegerConstant ':' right=IntegerConstant RIGHT_BR 
-	;
+BitField: name=ID LEFT_BR left=IntegerConstant ':' right=IntegerConstant RIGHT_BR;
 
 FunctionDefinition
 	:   extern?='extern' type=TypeSpecifier name=ID '(' ParameterList? ')' ';'
@@ -77,12 +59,9 @@ FunctionDefinition
 
 fragment ParameterList: params+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*;
 
-ParameterDeclaration
-    :   type=TypeSpecifier
-    	(	declarator=DirectDeclarator
-    	|	declarator=AbstractDeclarator
-    	)?
-    ;
+ParameterDeclaration:
+	type=TypeSpecifier
+	declarator=Declarator;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Statements
@@ -110,15 +89,10 @@ BlockItem
     |   Declaration
     ;
 
-ExpressionStatement
-    :   {ExpressionStatement} expr=ExpressionList? ';'
-        
-    ;
+ExpressionStatement: {ExpressionStatement} expr=ExpressionList? ';';
 
-SelectionStatement
-    :   IfStatement
-    |   SwitchStatement
-    ;
+SelectionStatement: IfStatement | SwitchStatement;
+
 IfStatement
     :   'if' '(' cond=ConditionalExpression ')' thenStmt=Statement (=> 'else' elseStmt=Statement)?
     ;
@@ -150,7 +124,7 @@ SpawnStatement
 // Declarations
 
 Declaration
-	:	DeclarationSpecifier* type=TypeSpecifier (init+=InitDeclarator (',' init+=InitDeclarator)*)? ';'
+	:	DeclarationSpecifier* type=TypeSpecifier (declarators+=Declarator (',' declarators+=Declarator)*)? ';'
 	;
 	
 fragment DeclarationSpecifier
@@ -213,7 +187,7 @@ CompositeTypeSpecifier
     ;
 
 StructFieldDeclaration
-    :   specifier=StructFieldDeclarationSpecifier declarator+=DirectDeclarator (',' declarator+=DirectDeclarator)* ';'
+    :   specifier=StructFieldDeclarationSpecifier declarators+=Declarator (',' declarators+=Declarator)* ';'
     ;
 
 StructFieldDeclarationSpecifier
@@ -221,11 +195,11 @@ StructFieldDeclarationSpecifier
     |   qualifiers+=TypeQualifier
     ;
 
-InitDeclarator
-    :   declarator=DirectDeclarator attributes+=Attribute* (l_equals='=' initializer=Initializer)?
-    ;
-
-DirectDeclarator : name=ID;
+Declarator:
+	name=ID
+	(LEFT_BR size=ConstantExpression RIGHT_BR)?
+	attributes+=Attribute*
+	(t_equals='=' initializer=Initializer)?;
     
 Initializer
     :   expr=ConditionalExpression
@@ -323,60 +297,50 @@ PrefixExpression
     :   PostfixExpression
     |   op='++' left=PrefixExpression
     |   op='--' left=PrefixExpression
-    |   UnaryOperator left=CastExpression
+    |   op=('&' | '*' | '+' | '-' | '~' | '!') left=CastExpression
     |   op='sizeof' '(' (left=PostfixExpression |  type=TypeSpecifier ) ')'
 //    |   op='_Alignof' '(' type=TypeSpecifier ')'
     ;
 
-fragment UnaryOperator:	op=('&' | '*' | '+' | '-' | '~' | '!');
+PostfixExpression:
+	PrimaryExpression
+	(	{FunctionCallExpression.left=current} '(' (arguments+=ConditionalExpression (',' arguments+=ConditionalExpression)*)? ')'
+	|	{ArrayAccessExpression.left=current} LEFT_BR index=ConditionalExpression (':' endIndex=ConditionalExpression)? RIGHT_BR
+	|	{MemberAccessExpression.left=current} op='.' declarator=[Declarator]
+	|	{MemberAccessExpression.left=current} op='->' declarator=[Declarator]
+	|	{PostfixExpression.left=current} op='++'
+	|	{PostfixExpression.left=current} op='--'
+	)*;
 
-PostfixExpression
-    :   PrimaryExpression ({PostfixExpression.left=current} postOp=Postfix)?
-    ;
+PrimaryExpression:
+	IdentifierReference | Constant | ParenthesisExpression;
 
-Postfix
-    :   (   op=LEFT_BR args+=ConditionalExpression (':' args+=ConditionalExpression)? RIGHT_BR
-        |   op='(' (args+=ConditionalExpression (',' args+=ConditionalExpression)*)?')' //function call
-        |   op='.'  declarator=[DirectDeclarator]  //member=PostfixExpression
-        |   op='->' declarator=[DirectDeclarator] //member=PostfixExpression
-        |   op='++'
-        |   op='--'
-        )
-        right=Postfix?
-    ;
+IdentifierReference: identifier=[Identifier];
 
-PrimaryExpression
-    :	ref=[Variable]
-    |   constant=Constant
-    |   literal+=StringLiteral+
-    |   '(' left=ConditionalExpression ')'
-    ;
+ParenthesisExpression: '(' inner=ConditionalExpression ')';
 
-Variable hidden()
-	:	FunctionDefinition|DirectDeclarator|Field
-	;
+Identifier hidden(): FunctionDefinition | Declarator | BitField;
 
-StringLiteral
-    :   value=ENCSTRINGCONST
-	|   value=STRING
-    ;
+StringLiteral: value=ENCSTRINGCONST | value=STRING;
 
-ConstantExpression returns Expression
-    :   ConditionalExpression
-    ;
+ConstantExpression returns Expression:
+	ConditionalExpression;
+	
 ///////////////////////////////////////////////////////////////////////////////
 // Constants
-Constant
-    :   IntegerConstant
-    |	FloatConstant
-    |   CharacterConstant
-    |   BoolConstant
-    ;
+Constant:
+		IntegerConstant
+	|	FloatConstant
+	|	CharacterConstant
+	|	BoolConstant
+	|	StringConstant
+	;
 
 IntegerConstant hidden(WS): value=INTEGER;
 FloatConstant hidden(WS): value=FLOAT;
 CharacterConstant: value=CHARCONST;
 BoolConstant: value=BOOLEAN;
+StringConstant: literals+=StringLiteral+;
 
 // the following 2 rules are needed so that XText does not generate a terminal symbol '[[' and '&&'
 // which is always eaten by the Lexer so that a[b[3]] is not recognized
@@ -427,4 +391,4 @@ terminal ID : '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 
 // do we need to override the built-in STRING rule?
 
-terminal ENCSTRINGCONST	:	('u8'|'u'|'U'|'L') '"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';
+terminal ENCSTRINGCONST	:	('u8'|'u'|'U'|'L') '"' ('\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"'))* '"';
