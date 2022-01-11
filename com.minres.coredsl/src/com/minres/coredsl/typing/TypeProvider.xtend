@@ -79,6 +79,8 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(PrimitiveType e, ISA ctx) {
+        if (e.dataType.findFirst[it == DataTypes.VOID] !== null)
+            return new DataType(DataType.Type.VOID, 0)
         if (e.dataType.findFirst[it == DataTypes.FLOAT] !== null)
             return new DataType(DataType.Type.FLOAT, 32)
         val longCount = e.dataType.filter[it === DataTypes.LONG].size

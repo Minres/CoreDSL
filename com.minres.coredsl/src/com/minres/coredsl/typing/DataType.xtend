@@ -4,7 +4,7 @@ import org.eclipse.xtend.lib.annotations.Data
 
 @Data class DataType {
 	enum Type {
-		COMPOSITE, INTEGRAL_SIGNED, INTEGRAL_UNSIGNED, FLOAT
+		VOID, COMPOSITE, INTEGRAL_SIGNED, INTEGRAL_UNSIGNED, FLOAT
 	}
     //! the data type of the expression, a value null denotes a composite type
     Type type
