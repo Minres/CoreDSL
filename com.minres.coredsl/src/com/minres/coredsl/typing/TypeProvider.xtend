@@ -18,7 +18,6 @@ import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.IntegerConstant
-import com.minres.coredsl.coreDsl.Postfix
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
@@ -37,6 +36,9 @@ import static extension com.minres.coredsl.interpreter.CoreDSLInterpreter.*
 import static extension com.minres.coredsl.util.ModelUtil.*
 import com.minres.coredsl.interpreter.EvaluationContext
 import java.math.BigInteger
+import com.minres.coredsl.coreDsl.FunctionCallExpression
+import com.minres.coredsl.coreDsl.MemberAccessExpression
+import com.minres.coredsl.coreDsl.ArrayAccessExpression
 
 class TypeProvider {
 
@@ -181,24 +183,21 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(PostfixExpression e, ISA ctx) {
-        switch(e.postOp.op){
-            case ".",
-            case "->":e.postOp.typeFor(ctx)
-            default:
-                e.left.typeFor(ctx)?:e.postOp.typeFor(ctx)
-        }
+        return e.left.typeFor(ctx);
     }
 
-    def static dispatch DataType typeFor(Postfix e, ISA ctx) {
-        if(e.right!==null)
-            switch(e.right.op){
-                case ".", case "->": return e.right.typeFor(ctx)
-            }
-        switch(e.op){
-            case ".", case "->":e.declarator.typeFor(ctx)
-            default:
-                null
-        }
+    def static dispatch DataType typeFor(FunctionCallExpression e, ISA ctx) {
+    	// TODO resolve function signature and return the return type
+        return null;
+    }
+
+    def static dispatch DataType typeFor(ArrayAccessExpression e, ISA ctx) {
+    	// TODO resolve array type and return array element type
+        return null;
+    }
+
+    def static dispatch DataType typeFor(MemberAccessExpression e, ISA ctx) {
+        return e.declarator.typeFor(ctx);
     }
 
     def static dispatch DataType typeFor(PrimaryExpression e, ISA ctx) {

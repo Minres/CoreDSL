@@ -32,7 +32,6 @@ import com.minres.coredsl.coreDsl.JumpStatement
 import com.minres.coredsl.coreDsl.LabeledStatement
 import com.minres.coredsl.coreDsl.ParameterDeclaration
 import com.minres.coredsl.coreDsl.ParameterList
-import com.minres.coredsl.coreDsl.Postfix
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
@@ -57,6 +56,9 @@ import java.util.List
 import java.util.Map
 import java.util.function.Supplier
 import org.eclipse.emf.ecore.EObject
+import com.minres.coredsl.coreDsl.FunctionCallExpression
+import com.minres.coredsl.coreDsl.ArrayAccessExpression
+import com.minres.coredsl.coreDsl.MemberAccessExpression
 
 class Visualizer {
 	
@@ -459,25 +461,29 @@ class Visualizer {
 	private def dispatch VisualNode genNode(PostfixExpression node) {
 		return makeNode(node, "Postfix Expression",
 			makeChild("Operand", node.left),
-			makeChild("Operator", node.postOp)
+			makeNamedLiteral("Operator", node.op)
 		);
 	}
 	
-	private def dispatch VisualNode genNode(Postfix node) {
-		return switch node.op {
-			case "(":
-				makeNode(node, "Method Invocation", node.args)
-			case "[":
-				makeNode(node, "Indexer", node.args)
-			case ".",
-			case "->":
-				makeNode(node, "Member Access (" + node.op + ")", 
-					makeReference("Member", node.declarator?.name, [node.declarator])
-				)
-			case "++",
-			case "--":
-				makeNode(node, "Postfix Operator (" + node.op + ")")
-		}
+	private def dispatch VisualNode genNode(FunctionCallExpression node) {
+		return makeNode(node, "Function Call",
+			makeChild("Target", node.left),
+			makeGroup("Arguments", node.arguments)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(ArrayAccessExpression node) {
+		return makeNode(node, "Array Access",
+			makeChild("Target", node.left),
+			makeChild("Index", node.index)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(MemberAccessExpression node) {
+		return makeNode(node, "Member Access (" + node.op + ")",
+			makeChild("Target", node.left),
+			makeReference("Member", node.declarator?.name, [node.declarator])
+		);
 	}
 	
 	private def dispatch VisualNode genNode(PrimaryExpression node) {

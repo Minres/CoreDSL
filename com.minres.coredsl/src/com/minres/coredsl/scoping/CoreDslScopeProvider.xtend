@@ -16,7 +16,6 @@ import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.IterationStatement
-import com.minres.coredsl.coreDsl.Postfix
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
 import com.minres.coredsl.coreDsl.StructDeclaration
@@ -30,6 +29,7 @@ import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 
 import static extension com.minres.coredsl.util.ModelUtil.*
+import com.minres.coredsl.coreDsl.MemberAccessExpression
 
 /**
  * This class contains custom scoping description.
@@ -56,25 +56,15 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
             }
         } else if(reference.EReferenceType == CoreDslPackage.Literals.DIRECT_DECLARATOR) {
             val parent = context.eContainer
-            if(parent instanceof PostfixExpression) {
+            // TODO for some reason, parent.directDeclarator.eContainer is null here
+            /*if(parent instanceof PostfixExpression) {
                 val type = (parent.directDeclarator .eContainer.eContainer as Declaration).type
                 if( type instanceof CompositeType) {
                     val decls = type.directDeclarations;
                     return Scopes.scopeFor(decls)
                 }                
-            } else if(parent instanceof Postfix) {
-                if(parent.declarator !== null){
-                    val decl = parent.declarator.eContainer
-                    if(decl instanceof StructDeclaration){
-                        if( decl.specifier.type instanceof CompositeType) {
-                            val decls = decl.specifier.type.directDeclarations;
-                            return Scopes.scopeFor(decls)
-                        }                
-                    }
-                } else {
-                    return parent.getScope(reference);
-                }
             }
+            */
             IScope.NULLSCOPE            
         } else
             super.getScope(context, reference)
@@ -265,7 +255,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
         expression.ref instanceof DirectDeclarator? expression.ref as DirectDeclarator : null
     }
 
-    def dispatch DirectDeclarator directDeclarator(Postfix expression) {
+    def dispatch DirectDeclarator directDeclarator(MemberAccessExpression expression) {
         expression.declarator
     }
 

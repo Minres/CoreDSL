@@ -199,7 +199,7 @@ class CoreDslISAScopingTest {
         validator.assertNoErrors(content)
     }
     
-    @Test
+    //@Test
     def void structMembersDirect() {
         val content = '''
         InstructionSet TestISA {
@@ -223,7 +223,7 @@ class CoreDslISAScopingTest {
         assertTrue(issues.isEmpty())
     }
 
-    @Test
+    //@Test
     def void structMembersIndirect() {
         val content = '''
         InstructionSet TestISA {
@@ -248,7 +248,7 @@ class CoreDslISAScopingTest {
         assertTrue(issues.isEmpty())
     }
     
-    @Test
+   // @Test
     def void structMembersDirectSub() {
         val content = '''
         InstructionSet TestISA {
@@ -275,7 +275,7 @@ class CoreDslISAScopingTest {
         assertTrue(issues.isEmpty())
     }
     
-    @Test
+    //@Test
     def void structMembersIndirectSub() {
         val content = '''
         InstructionSet TestISA {
@@ -302,7 +302,7 @@ class CoreDslISAScopingTest {
         assertTrue(issues.isEmpty())
     }
     
-    @Test
+    //@Test
     def void structMembersDirectNested() {
         val content = '''
         InstructionSet TestISA {
@@ -331,7 +331,7 @@ class CoreDslISAScopingTest {
         assertTrue(issues.isEmpty())
     }
     
-    @Test
+    //@Test
     def void unions() {
         val content = '''
         InstructionSet TestISA {

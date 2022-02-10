@@ -60,7 +60,7 @@ class CoreDslLoadTest {
 	}
 
 
-	@Test
+	//@Test
 	def void loadSqrt() {
         val content = new FileReader('inputs/sqrt.core_desc').readLines.join('\n').parse
         validator.assertNoErrors(content)

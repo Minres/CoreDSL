@@ -14,7 +14,6 @@ import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.IntegerConstant
-import com.minres.coredsl.coreDsl.Postfix
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
@@ -33,6 +32,9 @@ import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.ExpressionStatement
+import com.minres.coredsl.coreDsl.FunctionCallExpression
+import com.minres.coredsl.coreDsl.ArrayAccessExpression
+import com.minres.coredsl.coreDsl.MemberAccessExpression
 
 class CoreDSLInterpreter {
 
@@ -159,28 +161,23 @@ class CoreDSLInterpreter {
 	}
 
 	def static dispatch Value valueFor(PostfixExpression e, EvaluationContext ctx) {
-		switch (e.postOp.op) {
-			case ".",
-			case "->":
-				e.postOp.valueFor(ctx)
-			default:
-				e.left.valueFor(ctx) ?: e.postOp.valueFor(ctx)
-		}
+		// postfix increment/decrement is not supported in constant expressions, because it has side effects
+		return null;
 	}
 
-	def static dispatch Value valueFor(Postfix e, EvaluationContext ctx) {
-		if (e.right !== null)
-			switch (e.right.op) {
-				case ".",
-				case "->": return e.right.valueFor(ctx)
-			}
-		switch (e.op) {
-			case ".",
-			case "->":
-				e.declarator.valueFor(ctx)
-			default:
-				null
-		}
+	def static dispatch Value valueFor(FunctionCallExpression e, EvaluationContext ctx) {
+		// postfix increment/decrement is not supported in constant expressions, because it can have side effects
+		return null;
+	}
+
+	def static dispatch Value valueFor(ArrayAccessExpression e, EvaluationContext ctx) {
+		// TODO do we want to support this?
+		return null;
+	}
+
+	def static dispatch Value valueFor(MemberAccessExpression e, EvaluationContext ctx) {
+		// TODO do we want to support this?
+		return null;
 	}
 
 	def static dispatch Value valueFor(PrimaryExpression e, EvaluationContext ctx) {

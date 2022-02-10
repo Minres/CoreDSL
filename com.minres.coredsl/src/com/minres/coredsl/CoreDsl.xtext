@@ -311,27 +311,20 @@ PrefixExpression
     :   PostfixExpression
     |   op='++' left=PrefixExpression
     |   op='--' left=PrefixExpression
-    |   UnaryOperator left=CastExpression
+    |   op=('&' | '*' | '+' | '-' | '~' | '!') left=CastExpression
     |   op='sizeof' '(' (left=PostfixExpression |  type=TypeSpecifier ) ')'
 //    |   op='_Alignof' '(' type=TypeSpecifier ')'
     ;
 
-fragment UnaryOperator:	op=('&' | '*' | '+' | '-' | '~' | '!');
-
-PostfixExpression
-    :   PrimaryExpression ({PostfixExpression.left=current} postOp=Postfix)?
-    ;
-
-Postfix
-    :   (   op=LEFT_BR args+=ConditionalExpression (':' args+=ConditionalExpression)? RIGHT_BR
-        |   op='(' (args+=ConditionalExpression (',' args+=ConditionalExpression)*)?')' //function call
-        |   op='.'  declarator=[DirectDeclarator]  //member=PostfixExpression
-        |   op='->' declarator=[DirectDeclarator] //member=PostfixExpression
-        |   op='++'
-        |   op='--'
-        )
-        right=Postfix?
-    ;
+PostfixExpression:
+	PrimaryExpression
+	(	{FunctionCallExpression.left=current} '(' (arguments+=ConditionalExpression (',' arguments+=ConditionalExpression)*)? ')'
+	|	{ArrayAccessExpression.left=current} LEFT_BR index=ConditionalExpression (':' endIndex=ConditionalExpression)? RIGHT_BR
+	|	{MemberAccessExpression.left=current} op='.' declarator=[DirectDeclarator]
+	|	{MemberAccessExpression.left=current} op='->' declarator=[DirectDeclarator]
+	|	{PostfixExpression.left=current} op='++'
+	|	{PostfixExpression.left=current} op='--'
+	)*;
 
 PrimaryExpression
     :	ref=[Variable]
