@@ -10,9 +10,6 @@ import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
-import com.minres.coredsl.coreDsl.PrimitiveType
-import com.minres.coredsl.coreDsl.TypeSpecifier
-import com.minres.coredsl.typing.DataType
 
 import static extension com.minres.coredsl.typing.TypeProvider.*
 import org.eclipse.xtext.validation.Check
@@ -107,24 +104,6 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 //            }
 //            case AssignmentExpression: {
 //            }
-		}
-	}
-
-	// @Check
-	def checkType(TypeSpecifier e) {
-		switch (e) {
-//            case CompositeType: {
-//            }
-//            case EnumType: {
-//            }
-			case PrimitiveType: {
-				if (e.typeFor === new DataType(DataType.Type.COMPOSITE, 0))
-					error(
-						"incompatible types used",
-						CoreDslPackage.Literals.PRIMITIVE_TYPE__DATA_TYPE,
-						TYPE_MISMATCH
-					)
-			}
 		}
 	}
 	

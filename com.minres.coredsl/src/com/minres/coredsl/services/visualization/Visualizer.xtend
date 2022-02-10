@@ -6,7 +6,6 @@ import com.minres.coredsl.coreDsl.Attribute
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.BoolConstant
-import com.minres.coredsl.coreDsl.CompositeType
 import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.Declaration
@@ -35,7 +34,6 @@ import com.minres.coredsl.coreDsl.ParameterList
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
-import com.minres.coredsl.coreDsl.PrimitiveType
 import com.minres.coredsl.coreDsl.SpawnStatement
 import com.minres.coredsl.coreDsl.StringLiteral
 import com.minres.coredsl.coreDsl.StructDeclaration
@@ -59,6 +57,12 @@ import org.eclipse.emf.ecore.EObject
 import com.minres.coredsl.coreDsl.FunctionCallExpression
 import com.minres.coredsl.coreDsl.ArrayAccessExpression
 import com.minres.coredsl.coreDsl.MemberAccessExpression
+import com.minres.coredsl.coreDsl.CompositeTypeSpecifier
+import com.minres.coredsl.coreDsl.EnumTypeSpecifier
+import com.minres.coredsl.coreDsl.BoolTypeSpecifier
+import com.minres.coredsl.coreDsl.VoidTypeSpecifier
+import com.minres.coredsl.coreDsl.FloatTypeSpecifier
+import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
 
 class Visualizer {
 	
@@ -357,22 +361,39 @@ class Visualizer {
 		);
 	}
 	
-	private def dispatch VisualNode genNode(PrimitiveType node) {
-		return node.dataType.size == 1
-		? makeNode(node, "Primitive Type",
-			makeNamedLiteral("Data Type", node.dataType.get(0).toString),
-			makeGroup("Bit Size", node.size)
-		)
-		: makeNode(node, "Primitive Type",
-			makePortGroup("Data Type", node.dataType.map[type | makeImmediateLiteral(type.toString)]),
-			makeGroup("Bit Size", node.size)
+	private def dispatch VisualNode genNode(VoidTypeSpecifier node) {
+		return makeNode(node, "Void Type");
+	}
+	
+	private def dispatch VisualNode genNode(BoolTypeSpecifier node) {
+		return makeNode(node, "Bool Type");
+	}
+	
+	private def dispatch VisualNode genNode(FloatTypeSpecifier node) {
+		return makeNode(node, "Float Type",
+			makeNamedLiteral("Shorthand", node.shorthand?.literal)
 		);
 	}
 	
-	private def dispatch VisualNode genNode(CompositeType node) {
+	private def dispatch VisualNode genNode(IntegerTypeSpecifier node) {
+		return makeNode(node, "Integer Type",
+			makeNamedLiteral("Signedness", node.signedness?.literal),
+			makeNamedLiteral("Shorthand", node.shorthand?.literal),
+			makeChild("Bit Size", node.size)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(CompositeTypeSpecifier node) {
 		return makeNode(node, node.composeType == StructOrUnion.STRUCT ? "Struct Type" : "Union Type",
 			makeNamedLiteral("Name", node.name),
 			makeGroup("Declarations", node.declaration)
+		)
+	}
+	
+	private def dispatch VisualNode genNode(EnumTypeSpecifier node) {
+		return makeNode(node, "Enum Type",
+			makeNamedLiteral("Name", node.name),
+			makeGroup("Members", node.enumerators)
 		)
 	}
 	
