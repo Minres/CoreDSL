@@ -42,7 +42,7 @@ class CoreDslAttributeValidationTest {
 		val content = '''
 			InstructionSet AttributeValidationTestInstructionSet {
 			    architectural_state {
-			        unsigned XLEN;
+			        unsigned int XLEN;
 			        unsigned<XLEN> field «declAttribString»;
 			    }
 			    functions {
@@ -81,7 +81,7 @@ class CoreDslAttributeValidationTest {
 		val content = '''
 			InstructionSet AttributeValidationTestInstructionSet {
 			    architectural_state {
-			        unsigned XLEN;
+			        unsigned int XLEN;
 			        unsigned<XLEN> field «attribString»;
 			    }
 			    functions {
@@ -131,8 +131,8 @@ class CoreDslAttributeValidationTest {
 		val content = '''
 			InstructionSet AttributeValidationTestInstructionSet {
 			    architectural_state {
-			        unsigned XLEN;
-			        unsigned<XLEN> field «declAttribString»;
+			        unsigned int XLEN;
+					unsigned<XLEN> field «declAttribString»;
 			    }
 			    functions {
 			    	void fun() «funcAttribString» {}

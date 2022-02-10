@@ -27,7 +27,7 @@ class CoreDslCoreScopingTest {
         val content = '''
         InstructionSet BaseISA {
             architectural_state {
-                unsigned X[32];
+                unsigned int X[32];
             }
         }
         
