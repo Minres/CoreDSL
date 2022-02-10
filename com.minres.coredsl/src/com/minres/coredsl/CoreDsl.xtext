@@ -162,34 +162,39 @@ fragment DeclarationSpecifier
 Attribute
     :  	DoubleLeftBracket type=ID ('=' params+=ConditionalExpression | '(' params+=ConditionalExpression (',' params+=ConditionalExpression)* ')')? DoubleRightBracket
     ;
-    
+
 TypeSpecifier
-	:	PrimitiveType 
-	|	CompositeType
-	|	EnumType
-	;
-    
-PrimitiveType
-	:	dataType+=DataTypes+ BitSizeSpecifier? 
+	:	ValueTypeSpecifier
+	|	VoidTypeSpecifier
 	;
 
-fragment BitSizeSpecifier
-	:	'<' size+=PrimaryExpression (',' size+=PrimaryExpression ',' size+=PrimaryExpression ',' size+=PrimaryExpression)? '>'
+ValueTypeSpecifier
+	:	PrimitiveTypeSpecifier
+	|	CompositeTypeSpecifier
+	|	EnumTypeSpecifier
 	;
 
-EnumType
-    :   'enum' name=ID? '{' EnumeratorList ','? '}'
-    |   'enum' name=ID
-    ;
+PrimitiveTypeSpecifier
+	:	IntegerTypeSpecifier
+	|	FloatTypeSpecifier
+	|	BoolTypeSpecifier
+	;
 
-fragment EnumeratorList:   enumerators+=Enumerator (',' enumerators+=Enumerator)*;
+IntegerTypeSpecifier
+	:	signedness=IntegerSignedness (shorthand=IntegerSizeShorthand | '<' size=PrimaryExpression '>')
+	|	shorthand=IntegerSizeShorthand
+	;
 
-Enumerator
-    :   name=ID
-    |   name=ID '=' expression=ConstantExpression
-    ;
+FloatTypeSpecifier
+	:	shorthand=FloatSizeShorthand;
 
-CompositeType
+BoolTypeSpecifier
+	:	{BoolTypeSpecifier} 'bool';
+
+VoidTypeSpecifier
+	:	{VoidTypeSpecifier} 'void';
+
+CompositeTypeSpecifier
     :   composeType=StructOrUnion name=ID? '{' (declaration += StructDeclaration)* '}'
     |   composeType=StructOrUnion name=ID
     ;
@@ -201,6 +206,17 @@ StructDeclaration
 StructDeclarationSpecifier
     :   type=TypeSpecifier
     |   qualifiers+=TypeQualifier
+    ;
+	
+// TODO add optional size specifier after name? (':' size=IntegerTypeSpecifier)?
+EnumTypeSpecifier
+    :   'enum' name=ID? '{' enumerators+=EnumMemberDeclaration (',' enumerators+=EnumMemberDeclaration)* ','? '}'
+    |   'enum' name=ID
+    ;
+
+EnumMemberDeclaration
+    :   name=ID
+    |   name=ID '=' expression=ConstantExpression
     ;
 
 InitDeclarator
@@ -377,12 +393,11 @@ DoubleRightBracket hidden(WS, ML_COMMENT, SL_COMMENT): RIGHT_BR RIGHT_BR;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-enum DataTypes
-	: 	BOOL='bool' | CHAR='char' | SHORT='short' | INT='int' | LONG='long'
-	| 	SIGNED='signed' | UNSIGNED='unsigned'
-	|	FLOAT='float'	| DOUBLE='double' | VOID='void'
-	|	ALIAS='alias'
-	;
+enum IntegerSignedness : SIGNED='signed' | UNSIGNED='unsigned';
+
+enum IntegerSizeShorthand : CHAR='char' | SHORT='short' | INT='int' | LONG='long';
+
+enum FloatSizeShorthand : FLOAT='float' | DOUBLE='double';
 
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';
 
