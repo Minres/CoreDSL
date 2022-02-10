@@ -116,7 +116,7 @@ class CoreDslISAScopingTest {
             InstructionSet TestISA {
             architectural_state {
                 int CCC = 42;
-                unsigned X[32];
+                unsigned int X[32];
             }
 
             functions {
@@ -146,7 +146,7 @@ class CoreDslISAScopingTest {
         InstructionSet TestISA {
             architectural_state {
                 int CCC = 42;
-                unsigned X[32];
+                unsigned int X[32];
             }
 
             functions {
@@ -205,7 +205,7 @@ class CoreDslISAScopingTest {
         InstructionSet TestISA {
             architectural_state {
                 struct {
-                    unsigned x, y;
+                    unsigned int X, y;
                 } point;
             }
             
@@ -229,7 +229,7 @@ class CoreDslISAScopingTest {
         InstructionSet TestISA {
             architectural_state {
                 struct point_s {
-                    unsigned x, y;
+                    unsigned int X, y;
                 };
             }
             
@@ -282,7 +282,7 @@ class CoreDslISAScopingTest {
             architectural_state {
                 unsigned N_REGS = 4;
                 struct point_s {
-                    unsigned x, y;
+                    unsigned int X, y;
                 };
             }
             
@@ -309,10 +309,10 @@ class CoreDslISAScopingTest {
             architectural_state {
                 struct rect_s {
                     struct origin_s {
-                        unsigned x, y;
+                        unsigned int X, y;
                     } origin;
                     struct size_s {
-                        unsigned x, y;
+                        unsigned int X, y;
                     } size;
                 } rect;
             }
