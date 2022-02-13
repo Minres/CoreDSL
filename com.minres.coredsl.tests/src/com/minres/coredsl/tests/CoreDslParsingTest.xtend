@@ -38,7 +38,7 @@ class CoreDslParsingTest {
         val content = '''
         PRELU {
             encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  
-            args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
+            assembly: "{name(rd)}, {name(rs1)}, {name(rs2)}";
             behavior: {
                 static float alpha = 0.2;  
                 float input, new_alpha;
@@ -64,7 +64,7 @@ class CoreDslParsingTest {
         val content = '''
         SBOX {
             encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  
-            args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
+            assembly: "{name(rd)}, {name(rs1)}, {name(rs2)}";
             behavior: {
                 unsigned int data_i;
                 // contents of array omitted for for brevity        
@@ -87,7 +87,7 @@ class CoreDslParsingTest {
                 instructions { 
                     vectorL {
                         encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011 ;
-                        args_disass:"{name(rd)}, {name(rs1)}";
+                        assembly: "{name(rd)}, {name(rs1)}";
                         behavior: { 
                         float xc = F_Ext[rs1];     
                         float yc = F_Ext[rs1];
@@ -117,7 +117,7 @@ class CoreDslParsingTest {
                 instructions { 
                     vectorL {
                         encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011 ;
-                        args_disass:"{name(rd)}, {name(rs1)}";
+                        assembly: "{name(rd)}, {name(rs1)}";
                         behavior: { 
                             float xc = ISAXRegFile[rs1].vector2d.x_coord;
                             float yc = ISAXRegFile[rs1].vector2d.y_coord;
@@ -148,7 +148,7 @@ class CoreDslParsingTest {
                 instructions {
                     SIN {
                         encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011 ;
-                        args_disass:"#{name(rd)}, {name(rs1)}";   
+                        assembly: "#{name(rd)}, {name(rs1)}";
                         behavior: { 
                             double theta = Freg[rs1];
                             F_ready[rd] = false;            // synchronously mark result as unavailable
@@ -190,7 +190,7 @@ class CoreDslParsingTest {
                 instructions {
                     LP_SETUPI {
                         encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011 ;
-                        args_disass:"{name(rs1)}, {name(rs2)}";
+                        assembly: "{name(rs1)}, {name(rs2)}";
                         behavior: {
                             count   = X[rs1];
                             endpc   = PC + 4 + X[rs2]<<2; // use PC relative addressing to save bits
@@ -209,7 +209,7 @@ class CoreDslParsingTest {
         val content = '''
         FOO {
             encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  
-            args_disass:"{name(rd)}, {name(rs1)}, {name(rs2)}"; 
+            assembly: "{name(rd)}, {name(rs1)}, {name(rs2)}";
             behavior: {
                 switch(rs1) {
                     case 1: break;

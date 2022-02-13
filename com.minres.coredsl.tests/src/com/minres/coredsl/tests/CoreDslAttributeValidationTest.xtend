@@ -51,7 +51,7 @@ class CoreDslAttributeValidationTest {
 			    instructions «instrAttribString» {
 			    	test «instrAttribString» {
 			    		encoding: 0;
-			    		args_disass: "";
+			    		assembly: "";
 			    		behavior: {}
 			    	}
 			    }
@@ -90,7 +90,7 @@ class CoreDslAttributeValidationTest {
 			    instructions «attribString» {
 			    	test «attribString» {
 			    		encoding: 0;
-			    		args_disass: "";
+			    		assembly: "";
 			    		behavior: {}
 			    	}
 			    }
@@ -140,7 +140,7 @@ class CoreDslAttributeValidationTest {
 			    instructions «instrAttribString» {
 			    	test «instrAttribString» {
 			    		encoding: 0;
-			    		args_disass: "";
+			    		assembly: "";
 			    		behavior: {}
 			    	}
 			    }
