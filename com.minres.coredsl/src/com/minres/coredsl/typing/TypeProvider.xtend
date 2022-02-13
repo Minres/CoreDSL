@@ -9,14 +9,13 @@ import com.minres.coredsl.coreDsl.CharacterConstant
 import com.minres.coredsl.coreDsl.CompositeTypeSpecifier
 import com.minres.coredsl.coreDsl.ConditionalExpression
 import com.minres.coredsl.coreDsl.Declaration
-import com.minres.coredsl.coreDsl.DirectDeclarator
+import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.EnumTypeSpecifier
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.FloatConstant
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.Identifier
 import com.minres.coredsl.coreDsl.InfixExpression
-import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.IntegerConstant
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
@@ -45,6 +44,7 @@ import com.minres.coredsl.coreDsl.IntegerSignedness
 import com.minres.coredsl.coreDsl.ParenthesisExpression
 import com.minres.coredsl.coreDsl.IdentifierReference
 import com.minres.coredsl.coreDsl.StringConstant
+import com.minres.coredsl.coreDsl.InitDeclarator
 
 class TypeProvider {
 
@@ -66,7 +66,7 @@ class TypeProvider {
         e.typeFor(e.parentOfType(ISA))
     }
  
-    def static DataType typeFor(DirectDeclarator e) {
+    def static DataType typeFor(Declarator e) {
         e.typeFor(e.parentOfType(ISA))
     }
  
@@ -231,7 +231,7 @@ class TypeProvider {
         e.type.typeFor(ctx)
     }
 
-    def static dispatch DataType typeFor(DirectDeclarator e, ISA ctx) {
+    def static dispatch DataType typeFor(Declarator e, ISA ctx) {
         if (e.eContainer instanceof InitDeclarator && e.eContainer.eContainer instanceof Declaration) {
             var decl = e.eContainer.eContainer as Declaration
             decl.type.typeFor(ctx)
