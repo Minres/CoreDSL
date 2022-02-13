@@ -9,17 +9,16 @@ import com.minres.coredsl.coreDsl.CharacterConstant
 import com.minres.coredsl.coreDsl.ConditionalExpression
 import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.Expression
-import com.minres.coredsl.coreDsl.FloatingConstant
+import com.minres.coredsl.coreDsl.FloatConstant
 import com.minres.coredsl.coreDsl.FunctionDefinition
+import com.minres.coredsl.coreDsl.Identifier
 import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.IntegerConstant
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
-import com.minres.coredsl.coreDsl.PrimaryExpression
 import com.minres.coredsl.coreDsl.StringLiteral
 import com.minres.coredsl.coreDsl.TypeSpecifier
-import com.minres.coredsl.coreDsl.Variable
 import com.minres.coredsl.typing.DataType
 import com.minres.coredsl.util.BigDecimalWithSize
 import com.minres.coredsl.util.BigIntegerWithRadix
@@ -35,6 +34,9 @@ import com.minres.coredsl.coreDsl.ExpressionStatement
 import com.minres.coredsl.coreDsl.FunctionCallExpression
 import com.minres.coredsl.coreDsl.ArrayAccessExpression
 import com.minres.coredsl.coreDsl.MemberAccessExpression
+import com.minres.coredsl.coreDsl.ParenthesisExpression
+import com.minres.coredsl.coreDsl.IdentifierReference
+import com.minres.coredsl.coreDsl.StringConstant
 
 class CoreDSLInterpreter {
 
@@ -66,7 +68,7 @@ class CoreDSLInterpreter {
 					.filter[it instanceof AssignmentExpression]]
 				.flatten
 			val declAssignment = assignments.filter [
-				it.left instanceof PrimaryExpression && (it.left as PrimaryExpression).ref == decl
+				it.left instanceof IdentifierReference && (it.left as IdentifierReference).identifier == decl
 			].last
 			if (declAssignment === null) {
 				val initDecl = (decl.eContainer as InitDeclarator)
@@ -180,16 +182,15 @@ class CoreDSLInterpreter {
 		return null;
 	}
 
-	def static dispatch Value valueFor(PrimaryExpression e, EvaluationContext ctx) {
-		if (e.constant !== null) {
-			e.constant.valueFor(ctx)
-		} else if (e.ref !== null) {
-			e.ref.valueFor(ctx)
-		} else
-			return null
+	def static dispatch Value valueFor(ParenthesisExpression e, EvaluationContext ctx) {
+		return e.inner.valueFor(ctx);
+	}
+	
+	def static dispatch Value valueFor(IdentifierReference e, EvaluationContext ctx) {
+		return e.identifier.valueFor(ctx);
 	}
 
-	def static dispatch Value valueFor(Variable e, EvaluationContext ctx) {
+	def static dispatch Value valueFor(Identifier e, EvaluationContext ctx) {
 		null
 	}
 
@@ -225,7 +226,7 @@ class CoreDSLInterpreter {
 		new Value(e.typeFor(ctx.definitionContext), e.value as BigIntegerWithRadix)
 	}
 
-	def static dispatch Value valueFor(FloatingConstant e, EvaluationContext ctx) {
+	def static dispatch Value valueFor(FloatConstant e, EvaluationContext ctx) {
 		new Value(e.typeFor(ctx.definitionContext), e.value as BigDecimalWithSize)
 	}
 
@@ -235,6 +236,10 @@ class CoreDSLInterpreter {
 
 	def static dispatch Value valueFor(CharacterConstant e, EvaluationContext ctx) {
 		new Value(new DataType(DataType.Type.INTEGRAL_SIGNED, 8), BigInteger.valueOf(e.value.charAt(0)))
+	}
+
+	def static dispatch Value valueFor(StringConstant e, EvaluationContext ctx) {
+		new Value(new DataType(DataType.Type.INTEGRAL_SIGNED, 0), null)
 	}
 
 	def static dispatch Value valueFor(StringLiteral e, EvaluationContext ctx) {

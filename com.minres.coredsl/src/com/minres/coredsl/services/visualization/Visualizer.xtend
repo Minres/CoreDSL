@@ -16,7 +16,7 @@ import com.minres.coredsl.coreDsl.DirectDeclarator
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.ExpressionStatement
-import com.minres.coredsl.coreDsl.FloatingConstant
+import com.minres.coredsl.coreDsl.FloatConstant
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.IfStatement
 import com.minres.coredsl.coreDsl.Import
@@ -33,7 +33,6 @@ import com.minres.coredsl.coreDsl.ParameterDeclaration
 import com.minres.coredsl.coreDsl.ParameterList
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
-import com.minres.coredsl.coreDsl.PrimaryExpression
 import com.minres.coredsl.coreDsl.SpawnStatement
 import com.minres.coredsl.coreDsl.StringLiteral
 import com.minres.coredsl.coreDsl.StructDeclaration
@@ -63,6 +62,10 @@ import com.minres.coredsl.coreDsl.BoolTypeSpecifier
 import com.minres.coredsl.coreDsl.VoidTypeSpecifier
 import com.minres.coredsl.coreDsl.FloatTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
+import com.minres.coredsl.coreDsl.IdentifierReference
+import com.minres.coredsl.coreDsl.CharacterConstant
+import com.minres.coredsl.coreDsl.StringConstant
+import com.minres.coredsl.coreDsl.ParenthesisExpression
 
 class Visualizer {
 	
@@ -454,12 +457,26 @@ class Visualizer {
 		return makeImmediateLiteral(node.value.toString)
 	}
 	
-	private def dispatch VisualNode genNode(FloatingConstant node) {
+	private def dispatch VisualNode genNode(FloatConstant node) {
 		return makeImmediateLiteral(node.value.toString)
 	}
 	
 	private def dispatch VisualNode genNode(BoolConstant node) {
 		return makeImmediateLiteral(node.value.toString)
+	}
+	
+	private def dispatch VisualNode genNode(CharacterConstant node) {
+		return makeImmediateLiteral(node.value)
+	}
+	
+	private def dispatch VisualNode genNode(StringConstant node) {
+		if(node.literals.size == 1) {
+			return visit(node.literals.get(0));
+		}
+		
+		return makeNode(node, "Compound String Constant",
+			makeGroup("Literals", node.literals)
+		);
 	}
 	
 	private def dispatch VisualNode genNode(StringLiteral node) {
@@ -507,28 +524,21 @@ class Visualizer {
 		);
 	}
 	
-	private def dispatch VisualNode genNode(PrimaryExpression node) {
-		if(node.left !== null)
-			return visit(node.left);
-			
-		if(node.ref instanceof FunctionDefinition)
-			return makeNode(node, "Function Reference", makeReference("Function", (node.ref as FunctionDefinition).name, [node.ref]));
-			
-		if(node.ref instanceof DirectDeclarator)
-			return makeNode(node, "Declarator Reference", makeReference("Declarator", (node.ref as DirectDeclarator).name, [node.ref]));
-			
-		if(node.ref instanceof BitField)
-			return makeNode(node, "Field Reference", makeReference("Field", (node.ref as BitField).name, [node.ref]));
-		
-		if(node.constant !== null)
-			return visit(node.constant);
-		
-		if(node.literal.size == 1)
-			return visit(node.literal.get(0));
-		
-		return makeNode(node, "Compound String Literal",
-			makeGroup("Literals", node.literal)
+	private def dispatch VisualNode genNode(ParenthesisExpression node) {
+		return makeNode(node, "Parenthesis Expression",
+			makeChild("Inner", node.inner)
 		);
+	}
+	
+	private def dispatch VisualNode genNode(IdentifierReference node) {
+		if(node.identifier instanceof FunctionDefinition)
+			return makeNode(node, "Function Reference", makeReference("Function", (node.identifier as FunctionDefinition).name, [node.identifier]));
+			
+		if(node.identifier instanceof DirectDeclarator)
+			return makeNode(node, "Declarator Reference", makeReference("Declarator", (node.identifier as DirectDeclarator).name, [node.identifier]));
+			
+		if(node.identifier instanceof BitField)
+			return makeNode(node, "Field Reference", makeReference("Field", (node.identifier as BitField).name, [node.identifier]));
 	}
 	
 	private def dispatch VisualNode genNode(Expression node) {
