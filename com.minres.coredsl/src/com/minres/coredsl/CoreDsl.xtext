@@ -342,49 +342,32 @@ PostfixExpression:
 	|	{PostfixExpression.left=current} op='--'
 	)*;
 
-PrimaryExpression
-    :	ref=[Variable]
-    |   constant=Constant
-    |   literal+=StringLiteral+
-    |   '(' left=ConditionalExpression ')'
-    ;
+PrimaryExpression: IdentifierReference | Constant | ParenthesisExpression;
 
-Variable hidden()
-	:	FunctionDefinition|DirectDeclarator|Field
-	;
+ParenthesisExpression: '(' inner=ConditionalExpression ')';
 
-StringLiteral
-    :   value=ENCSTRINGCONST
-	|   value=STRING
-    ;
+IdentifierReference: identifier=[Identifier];
 
-ConstantExpression returns Expression
-    :   ConditionalExpression
-    ;
+Identifier hidden(): FunctionDefinition | DirectDeclarator | BitField;
+
+ConstantExpression returns Expression: ConditionalExpression;
+    
 ///////////////////////////////////////////////////////////////////////////////
 // Constants
 Constant
-    :   IntegerConstant
-    |	FloatingConstant
-    |   CharacterConstant
-    |   BoolConstant
-    ;
+	:	IntegerConstant
+	|	FloatConstant
+	|	CharacterConstant
+	|	BoolConstant
+	|	StringConstant
+	;
 
-IntegerConstant hidden(WS)
-    :   value=INTEGER
-    ;
-
-FloatingConstant hidden(WS)
-    :  	value=FLOAT
-    ;
-    
-BoolConstant
-    :   value=BOOLEAN
-    ;
-    
-CharacterConstant
-    :   value=CHARCONST
-    ;
+IntegerConstant hidden(WS): value=INTEGER;
+FloatConstant hidden(WS): value=FLOAT;
+CharacterConstant: value=CHARCONST;
+BoolConstant: value=BOOLEAN;
+StringConstant: literals+=StringLiteral+;
+StringLiteral: value=ENCSTRINGCONST | value=STRING ;
 
 // the following 2 rules are needed so that XText does not generate a terminal symbol '[[' and '&&'
 // which is always eaten by the Lexer so that a[b[3]] is not recognized
