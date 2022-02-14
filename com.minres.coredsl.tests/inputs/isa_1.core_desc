@@ -1,10 +1,10 @@
-InstructionSet RV32I {
+InstructionSet RVI {
     architectural_state {
-        unsigned int XLEN, FLEN;
+        unsigned int XLEN;
         unsigned CSR_SIZE = 4096;
         unsigned REG_FILE_SIZE=32;
-    	[[is_pc]] int PC ;
-        int X[REG_FILE_SIZE];
+        register unsigned<XLEN> PC [[is_pc]];
+        register unsigned<XLEN> X[REG_FILE_SIZE];
         extern char MEM[1<<XLEN];
         extern unsigned CSR[CSR_SIZE];
     }

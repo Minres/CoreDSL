@@ -9,7 +9,6 @@ import com.minres.coredsl.converter.CoreDslTerminalConverters
 import com.minres.coredsl.scoping.CoreDslResourceDescriptionStrategy
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
-import org.eclipse.xtext.xtext.XtextResourceDescriptionStrategy
 
 /** 
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
