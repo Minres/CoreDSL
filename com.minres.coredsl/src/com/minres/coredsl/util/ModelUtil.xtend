@@ -1,7 +1,7 @@
 package com.minres.coredsl.util
 
 import org.eclipse.emf.ecore.EObject
-import com.minres.coredsl.coreDsl.DirectDeclarator
+import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.InstructionSet
@@ -32,24 +32,21 @@ class ModelUtil {
         isa.declarations.filter[
         	it instanceof Declaration && 
         	!(it as Declaration).storage.contains(StorageClassSpecifier.EXTERN) && 
-        	!(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER) &&
-        	(it as Declaration).ptr === null
+        	!(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER)
         ].map[it as Declaration]
     }
 
     static def Iterable<Declaration> getStateExternDeclarations(ISA isa) {
         isa.declarations.filter[
         	it instanceof Declaration && 
-        	(it as Declaration).storage.contains(StorageClassSpecifier.EXTERN) &&
-        	(it as Declaration).ptr === null
+        	(it as Declaration).storage.contains(StorageClassSpecifier.EXTERN)
         ].map[it as Declaration]
     }
     
     static def Iterable<Declaration> getStateRegisterDeclarations(ISA isa) {
         isa.declarations.filter[
         	it instanceof Declaration && 
-        	(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER) &&
-        	(it as Declaration).ptr === null
+        	(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER)
         ].map[it as Declaration]
     }
 
@@ -57,8 +54,7 @@ class ModelUtil {
         isa.declarations.filter[
         	it instanceof Declaration && 
         	!(it as Declaration).storage.contains(StorageClassSpecifier.EXTERN) && 
-        	!(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER) &&
-        	(it as Declaration).ptr == "&"
+        	!(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER)
         ].map[it as Declaration]
     }
 
@@ -70,13 +66,13 @@ class ModelUtil {
         return obj.eContainer.parentOfType(clazz)
     }
     
-    static def DirectDeclarator effectiveDeclarator(ISA isa, String name){
+    static def Declarator effectiveDeclarator(ISA isa, String name){
         if(isa instanceof CoreDef) {
             val decl = isa.allDefinitions.filter[it instanceof Declaration].findFirst[
-	           	(it as Declaration).init.findFirst[it.declarator.name==name]!==null
+	           	(it as Declaration).declarators.findFirst[it.declarator.name==name]!==null
             ]
             if(decl!==null) {
-                return (decl as Declaration).init.findFirst[it.declarator.name==name].declarator
+                return (decl as Declaration).declarators.findFirst[it.declarator.name==name].declarator
             }
             for(contrib:isa.contributingType.reverseView) {
                 val contribDecl = contrib.effectiveDeclarator(name)
@@ -84,9 +80,9 @@ class ModelUtil {
                     return contribDecl
             }
         } else if(isa instanceof InstructionSet){
-            val decl = isa.stateDeclarations.findFirst[it.init.findFirst[it.declarator.name==name && it.initializer!==null]!==null]
+            val decl = isa.stateDeclarations.findFirst[it.declarators.findFirst[it.declarator.name==name && it.initializer!==null]!==null]
             if(decl!==null)
-                return decl.init.findFirst[it.declarator.name==name].declarator
+                return decl.declarators.findFirst[it.declarator.name==name].declarator
             val baseDecl = isa.superType.effectiveDeclarator(name)
             if(baseDecl!==null)
                 return baseDecl
