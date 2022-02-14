@@ -6,7 +6,7 @@ InstructionSet RVI {
         register unsigned<XLEN> PC [[is_pc]];
         register unsigned<XLEN> X[REG_FILE_SIZE];
         extern char MEM[1<<XLEN];
-        extern unsigned CSR[CSR_SIZE];
+        extern unsigned int CSR[CSR_SIZE];
     }
     instructions { 
        ADDI {
@@ -37,8 +37,8 @@ InstructionSet RVI {
         JAL[[no_cont]] {
             encoding:imm[20:20] :: imm[10:1] :: imm[11:11] :: imm[19:12] :: rd[4:0] :: 0b1101111;
             behavior: {
-                if(rd!=0) X[rd] = (unsigned)PC;
-                PC = PC+(signed)imm;
+                if(rd!=0) X[rd] = (unsigned int)PC;
+                PC = PC+(signed int)imm;
             }
         }
     }

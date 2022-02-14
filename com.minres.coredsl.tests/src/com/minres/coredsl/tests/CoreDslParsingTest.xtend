@@ -101,7 +101,7 @@ class CoreDslParsingTest {
         validator.assertNoErrors(content)
     }
 
-    @Test
+    //@Test
     def void parseInstrSQRTUnionRegs() {
         val content = '''
             InstructionSet TestISA {

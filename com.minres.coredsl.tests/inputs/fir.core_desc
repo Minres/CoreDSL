@@ -2,7 +2,7 @@ import "inputs/isa_1.core_desc"
 
 InstructionSet X_FIR_1 extends RV32I {
 	architectural_state {
-		unsigned N_ACC = 4;
+		unsigned int N_ACC = 4;
 		int ACC[N_ACC];
 	}
 	instructions {
@@ -36,10 +36,10 @@ InstructionSet X_FIR_1 extends RV32I {
 			encoding: acc[6:0] :: rs2[4:0] :: rs1[4:0] :: 0b100 :: rd[4:0] :: 0b0010111;
 			behavior: {
 				if (acc < N_ACC) {
-					int<32> lhs = X[rs1];
-					int<32> rhs = X[rs2];
-					int<32> lane1 = lhs[31:16] * rhs[31:16];
-					int<32> lane2 = lhs[15:0] * rhs[15:0];
+					signed<32> lhs = X[rs1];
+					signed<32> rhs = X[rs2];
+					signed<32> lane1 = lhs[31:16] * rhs[31:16];
+					signed<32> lane2 = lhs[15:0] * rhs[15:0];
 					ACC[acc] += lane1 + lane2;
 				}
 			}

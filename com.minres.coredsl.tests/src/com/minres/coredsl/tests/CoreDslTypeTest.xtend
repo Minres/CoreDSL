@@ -32,7 +32,7 @@ class CoreDslTypeTest {
         val content = '''
         InstructionSet TestISA {
             architectural_state {
-                unsigned XLEN;
+                unsigned int XLEN;
                 unsigned<XLEN>  X[32];
             }
         }

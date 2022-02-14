@@ -6,23 +6,20 @@ import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.BoolConstant
 import com.minres.coredsl.coreDsl.CastExpression
 import com.minres.coredsl.coreDsl.CharacterConstant
-import com.minres.coredsl.coreDsl.CompositeType
+import com.minres.coredsl.coreDsl.CompositeTypeSpecifier
 import com.minres.coredsl.coreDsl.ConditionalExpression
-import com.minres.coredsl.coreDsl.DataTypes
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.DirectDeclarator
-import com.minres.coredsl.coreDsl.EnumType
+import com.minres.coredsl.coreDsl.EnumTypeSpecifier
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.FloatingConstant
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.IntegerConstant
-import com.minres.coredsl.coreDsl.Postfix
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
-import com.minres.coredsl.coreDsl.PrimitiveType
 import com.minres.coredsl.coreDsl.StringLiteral
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.Field
@@ -37,6 +34,15 @@ import static extension com.minres.coredsl.interpreter.CoreDSLInterpreter.*
 import static extension com.minres.coredsl.util.ModelUtil.*
 import com.minres.coredsl.interpreter.EvaluationContext
 import java.math.BigInteger
+import com.minres.coredsl.coreDsl.FunctionCallExpression
+import com.minres.coredsl.coreDsl.MemberAccessExpression
+import com.minres.coredsl.coreDsl.ArrayAccessExpression
+import com.minres.coredsl.coreDsl.VoidTypeSpecifier
+import com.minres.coredsl.coreDsl.FloatTypeSpecifier
+import com.minres.coredsl.coreDsl.FloatSizeShorthand
+import com.minres.coredsl.coreDsl.BoolTypeSpecifier
+import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
+import com.minres.coredsl.coreDsl.IntegerSignedness
 
 class TypeProvider {
 
@@ -70,55 +76,64 @@ class TypeProvider {
         e.typeFor(e.parentOfType(ISA))
     }
 
-    def static dispatch DataType typeFor(CompositeType e, ISA ctx) {
+    def static dispatch DataType typeFor(CompositeTypeSpecifier e, ISA ctx) {
         return new DataType(DataType.Type.COMPOSITE, 0)
     }
 
-    def static dispatch DataType typeFor(EnumType e, ISA ctx) {
+    def static dispatch DataType typeFor(EnumTypeSpecifier e, ISA ctx) {
         return new DataType(DataType.Type.INTEGRAL_SIGNED, 32)
     }
+    
+    def static dispatch DataType typeFor(VoidTypeSpecifier e, ISA ctx) {
+		return new DataType(DataType.Type.VOID, 0)    	
+    }
+    
+    def static dispatch DataType typeFor(FloatTypeSpecifier e, ISA ctx) {
+    	if(e.shorthand == FloatSizeShorthand.DOUBLE)
+    		return new DataType(DataType.Type.FLOAT, 64)
+    	return new DataType(DataType.Type.FLOAT, 32) 
+    }
+    
+    def static dispatch DataType typeFor(BoolTypeSpecifier e, ISA ctx) {
+    	return new DataType(DataType.Type.INTEGRAL_SIGNED, 1) 
+    }
 
-    def static dispatch DataType typeFor(PrimitiveType e, ISA ctx) {
-        if (e.dataType.findFirst[it == DataTypes.VOID] !== null)
-            return new DataType(DataType.Type.VOID, 0)
-        if (e.dataType.findFirst[it == DataTypes.FLOAT] !== null)
-            return new DataType(DataType.Type.FLOAT, 32)
-        val longCount = e.dataType.filter[it === DataTypes.LONG].size
-        if (e.dataType.findFirst[it === DataTypes.DOUBLE] !== null)
-            return longCount == 1 ? new DataType(DataType.Type.FLOAT, 80) : new DataType(DataType.Type.FLOAT, 64)
-        if (e.dataType.findFirst[it === DataTypes.BOOL] !== null)
-            return new DataType(DataType.Type.INTEGRAL_SIGNED, 1)
-        val isUnsigned = e.dataType.findFirst[it === DataTypes.UNSIGNED] !== null
-        if (e.size.size > 0) {
-            val sizeValue = e.size.get(0).valueFor(EvaluationContext.root(ctx))
+    def static dispatch DataType typeFor(IntegerTypeSpecifier e, ISA ctx) {
+        val isUnsigned = e.signedness == IntegerSignedness.UNSIGNED;
+        
+        if (e.size !== null) {
+            val sizeValue = e.size.valueFor(EvaluationContext.root(ctx))
             if(sizeValue === null || !(sizeValue.value instanceof BigInteger)) return null
             val sizeInt = (sizeValue.value as BigInteger).intValue
             return isUnsigned
                 ? new DataType(DataType.Type.INTEGRAL_UNSIGNED, sizeInt)
                 : new DataType(DataType.Type.INTEGRAL_SIGNED, sizeInt)
         } else {
-            if (longCount == 2)
-                return isUnsigned
-                    ? new DataType(DataType.Type.INTEGRAL_UNSIGNED, 128)
-                    : new DataType(DataType.Type.INTEGRAL_SIGNED, 128)
-            else if (longCount == 1)
-                return isUnsigned
-                    ? new DataType(DataType.Type.INTEGRAL_UNSIGNED, 128)
-                    : new DataType(DataType.Type.INTEGRAL_SIGNED, 128)
-            else if (longCount == 0) {
-                if (e.dataType.findFirst[it === DataTypes.SHORT] !== null)
-                    return isUnsigned
-                        ? new DataType(DataType.Type.INTEGRAL_UNSIGNED, 16)
-                        : new DataType(DataType.Type.INTEGRAL_SIGNED, 16)
-                if (e.dataType.findFirst[it === DataTypes.CHAR] !== null)
+			switch(e.shorthand) {
+				case CHAR: {
                     return isUnsigned
                         ? new DataType(DataType.Type.INTEGRAL_UNSIGNED, 8)
                         : new DataType(DataType.Type.INTEGRAL_SIGNED, 8)
-                return isUnsigned
-                    ? new DataType(DataType.Type.INTEGRAL_UNSIGNED, 32)
-                    : new DataType(DataType.Type.INTEGRAL_SIGNED, 32)
-            }
+				}
+				case SHORT: {
+                    return isUnsigned
+                        ? new DataType(DataType.Type.INTEGRAL_UNSIGNED, 16)
+                        : new DataType(DataType.Type.INTEGRAL_SIGNED, 16)
+				}
+				case INT: {
+                	return isUnsigned
+                    	? new DataType(DataType.Type.INTEGRAL_UNSIGNED, 32)
+                    	: new DataType(DataType.Type.INTEGRAL_SIGNED, 32)
+				}
+				case LONG: {
+                	return isUnsigned
+	                    ? new DataType(DataType.Type.INTEGRAL_UNSIGNED, 64)
+                    	: new DataType(DataType.Type.INTEGRAL_SIGNED, 64)
+				}
+			}
         }
+        
+        return null;
     }
 
     def dispatch static DataType typeFor(Expression e, ISA ctx) {
@@ -181,24 +196,21 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(PostfixExpression e, ISA ctx) {
-        switch(e.postOp.op){
-            case ".",
-            case "->":e.postOp.typeFor(ctx)
-            default:
-                e.left.typeFor(ctx)?:e.postOp.typeFor(ctx)
-        }
+        return e.left.typeFor(ctx);
     }
 
-    def static dispatch DataType typeFor(Postfix e, ISA ctx) {
-        if(e.right!==null)
-            switch(e.right.op){
-                case ".", case "->": return e.right.typeFor(ctx)
-            }
-        switch(e.op){
-            case ".", case "->":e.declarator.typeFor(ctx)
-            default:
-                null
-        }
+    def static dispatch DataType typeFor(FunctionCallExpression e, ISA ctx) {
+    	// TODO resolve function signature and return the return type
+        return null;
+    }
+
+    def static dispatch DataType typeFor(ArrayAccessExpression e, ISA ctx) {
+    	// TODO resolve array type and return array element type
+        return null;
+    }
+
+    def static dispatch DataType typeFor(MemberAccessExpression e, ISA ctx) {
+        return e.declarator.typeFor(ctx);
     }
 
     def static dispatch DataType typeFor(PrimaryExpression e, ISA ctx) {
@@ -271,8 +283,7 @@ class TypeProvider {
     
     def static boolean isComparable(DataType left, DataType right){
         if (left.size > 0 && right.size > 0) {
-            if ((left.type == DataTypes.FLOAT || left.type == DataTypes.DOUBLE) &&
-                (right.type == DataTypes.FLOAT || right.type == DataTypes.DOUBLE))
+            if (left.type == DataType.Type.FLOAT && right.type == DataType.Type.FLOAT)
                 return true
             if (left.type == right.type)
                 return true
@@ -285,8 +296,7 @@ class TypeProvider {
             if (to.type == from.type && to.size == from.size)
                 return true
             if (to.size > 0 && from.size > 0) {
-                if ((to.type == DataTypes.FLOAT || to.type == DataTypes.DOUBLE) &&
-                    (from.type == DataTypes.FLOAT || from.type == DataTypes.DOUBLE))
+                if (to.type == DataType.Type.FLOAT && from.type == DataType.Type.FLOAT)
                     return true
                 if (to.isIntegral && from.isIntegral)
                     return (to.type == from.type) || (to.size == from.size)

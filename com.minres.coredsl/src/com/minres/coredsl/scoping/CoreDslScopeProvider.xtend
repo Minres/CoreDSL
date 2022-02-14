@@ -5,7 +5,7 @@ package com.minres.coredsl.scoping
 
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BlockItem
-import com.minres.coredsl.coreDsl.CompositeType
+import com.minres.coredsl.coreDsl.CompositeTypeSpecifier
 import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.CoreDslPackage
@@ -16,7 +16,6 @@ import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.IterationStatement
-import com.minres.coredsl.coreDsl.Postfix
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
 import com.minres.coredsl.coreDsl.StructDeclaration
@@ -30,6 +29,7 @@ import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 
 import static extension com.minres.coredsl.util.ModelUtil.*
+import com.minres.coredsl.coreDsl.MemberAccessExpression
 
 /**
  * This class contains custom scoping description.
@@ -56,25 +56,15 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
             }
         } else if(reference.EReferenceType == CoreDslPackage.Literals.DIRECT_DECLARATOR) {
             val parent = context.eContainer
-            if(parent instanceof PostfixExpression) {
+            // TODO for some reason, parent.directDeclarator.eContainer is null here
+            /*if(parent instanceof PostfixExpression) {
                 val type = (parent.directDeclarator .eContainer.eContainer as Declaration).type
                 if( type instanceof CompositeType) {
                     val decls = type.directDeclarations;
                     return Scopes.scopeFor(decls)
                 }                
-            } else if(parent instanceof Postfix) {
-                if(parent.declarator !== null){
-                    val decl = parent.declarator.eContainer
-                    if(decl instanceof StructDeclaration){
-                        if( decl.specifier.type instanceof CompositeType) {
-                            val decls = decl.specifier.type.directDeclarations;
-                            return Scopes.scopeFor(decls)
-                        }                
-                    }
-                } else {
-                    return parent.getScope(reference);
-                }
             }
+            */
             IScope.NULLSCOPE            
         } else
             super.getScope(context, reference)
@@ -213,12 +203,12 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
         decl.init.map[it.declarator]
     }
 
-    def dispatch Iterable<DirectDeclarator> directDeclarations(CompositeType spec) {
+    def dispatch Iterable<DirectDeclarator> directDeclarations(CompositeTypeSpecifier spec) {
         if (spec.declaration.size > 0)
             spec.declaration.directDeclarations
         else {
             val specifier = spec.eContainer.findCompositeType([
-                CompositeType d|d.name!==null?d.name==spec.name:false
+                CompositeTypeSpecifier d|d.name!==null?d.name==spec.name:false
             ])
             specifier===null?#[]:specifier.declaration.directDeclarations
         }
@@ -234,24 +224,24 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
     /************************************************************************
      * type extension methods begin
      */
-    def dispatch CompositeType findCompositeType(Declaration object, (CompositeType)=>boolean predicate){
+    def dispatch CompositeTypeSpecifier findCompositeType(Declaration object, (CompositeTypeSpecifier)=>boolean predicate){
         val res = object.eContainer.declarationsBefore(object)
             .map[it.type]
-            .filter[it instanceof CompositeType]
-            .map[it as CompositeType]
+            .filter[it instanceof CompositeTypeSpecifier]
+            .map[it as CompositeTypeSpecifier]
             .findFirst(predicate)
         res ?: object.eContainer.eContainer.findCompositeType(predicate)
     }
         
-    def dispatch CompositeType findCompositeType(ISA isa, (CompositeType)=>boolean predicate){
+    def dispatch CompositeTypeSpecifier findCompositeType(ISA isa, (CompositeTypeSpecifier)=>boolean predicate){
         isa.allDeclarations
             .map[it.type]
-            .filter[it instanceof CompositeType]
-            .map[it as CompositeType]
+            .filter[it instanceof CompositeTypeSpecifier]
+            .map[it as CompositeTypeSpecifier]
             .findFirst(predicate)
     }
 
-    def dispatch CompositeType findCompositeType(EObject object, (CompositeType)=>boolean predicate){
+    def dispatch CompositeTypeSpecifier findCompositeType(EObject object, (CompositeTypeSpecifier)=>boolean predicate){
         object.eContainer.findCompositeType(predicate)
     }
     /*
@@ -265,7 +255,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
         expression.ref instanceof DirectDeclarator? expression.ref as DirectDeclarator : null
     }
 
-    def dispatch DirectDeclarator directDeclarator(Postfix expression) {
+    def dispatch DirectDeclarator directDeclarator(MemberAccessExpression expression) {
         expression.declarator
     }
 
