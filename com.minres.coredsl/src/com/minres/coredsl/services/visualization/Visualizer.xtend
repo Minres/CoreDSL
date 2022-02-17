@@ -239,7 +239,7 @@ class Visualizer {
 		return makeNode(node, "Instruction", 
 			makeNamedLiteral("Name", node.name),
 			makeChild("Encoding", node.encoding),
-			makeNamedLiteral("Disassembly Format", node.disass),
+			makeNamedLiteral("Assembly Format", node.assembly),
 			makeChild("Behavior", node.behavior)
 		);
 	}

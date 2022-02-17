@@ -49,7 +49,9 @@ fragment SectionInstructions returns ISA:
 
 Instruction:
 	name=ID attributes+=Attribute* '{' 
-		('encoding' ':' encoding=Encoding ';') ('args_disass' ':' disass=STRING ';')? ('behavior' ':' behavior=Statement)
+		('encoding' ':' encoding=Encoding ';')
+		('assembly' ':' assembly=STRING ';')?
+		('behavior' ':' behavior=Statement)
 	'}'
 ;
 
