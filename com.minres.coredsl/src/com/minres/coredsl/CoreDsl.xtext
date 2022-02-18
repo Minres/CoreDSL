@@ -318,9 +318,9 @@ PrimaryExpression: IdentifierReference | Constant | ParenthesisExpression;
 
 ParenthesisExpression: '(' inner=ConditionalExpression ')';
 
-IdentifierReference: identifier=[Identifier];
+IdentifierReference: identifier=[NamedEntity];
 
-Identifier hidden(): FunctionDefinition | Declarator | BitField;
+NamedEntity hidden(): FunctionDefinition | Declarator | BitField;
 
 ConstantExpression returns Expression: ConditionalExpression;
     

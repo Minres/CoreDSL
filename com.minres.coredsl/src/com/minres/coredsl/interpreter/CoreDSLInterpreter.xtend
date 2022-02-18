@@ -11,7 +11,6 @@ import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.FloatConstant
 import com.minres.coredsl.coreDsl.FunctionDefinition
-import com.minres.coredsl.coreDsl.Identifier
 import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.IntegerConstant
@@ -38,6 +37,7 @@ import com.minres.coredsl.coreDsl.ParenthesisExpression
 import com.minres.coredsl.coreDsl.IdentifierReference
 import com.minres.coredsl.coreDsl.StringConstant
 import com.minres.coredsl.coreDsl.ExpressionInitializer
+import com.minres.coredsl.coreDsl.NamedEntity
 
 class CoreDSLInterpreter {
 
@@ -191,7 +191,7 @@ class CoreDSLInterpreter {
 		return e.identifier.valueFor(ctx);
 	}
 
-	def static dispatch Value valueFor(Identifier e, EvaluationContext ctx) {
+	def static dispatch Value valueFor(NamedEntity e, EvaluationContext ctx) {
 		null
 	}
 
