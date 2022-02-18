@@ -34,10 +34,10 @@ import com.minres.coredsl.coreDsl.FunctionCallExpression
 import com.minres.coredsl.coreDsl.ArrayAccessExpression
 import com.minres.coredsl.coreDsl.MemberAccessExpression
 import com.minres.coredsl.coreDsl.ParenthesisExpression
-import com.minres.coredsl.coreDsl.IdentifierReference
 import com.minres.coredsl.coreDsl.StringConstant
 import com.minres.coredsl.coreDsl.ExpressionInitializer
 import com.minres.coredsl.coreDsl.NamedEntity
+import com.minres.coredsl.coreDsl.EntityReference
 
 class CoreDSLInterpreter {
 
@@ -69,7 +69,7 @@ class CoreDSLInterpreter {
 					.filter[it instanceof AssignmentExpression]]
 				.flatten
 			val declAssignment = assignments.filter [
-				it.left instanceof IdentifierReference && (it.left as IdentifierReference).identifier == decl
+				it.left instanceof EntityReference && (it.left as EntityReference).target == decl
 			].last
 			if (declAssignment === null) {
 				val initDecl = (decl.eContainer as InitDeclarator)
@@ -187,8 +187,8 @@ class CoreDSLInterpreter {
 		return e.inner.valueFor(ctx);
 	}
 	
-	def static dispatch Value valueFor(IdentifierReference e, EvaluationContext ctx) {
-		return e.identifier.valueFor(ctx);
+	def static dispatch Value valueFor(EntityReference e, EvaluationContext ctx) {
+		return e.target.valueFor(ctx);
 	}
 
 	def static dispatch Value valueFor(NamedEntity e, EvaluationContext ctx) {

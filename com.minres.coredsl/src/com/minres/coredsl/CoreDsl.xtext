@@ -314,11 +314,11 @@ PostfixExpression:
 	|	{PostfixExpression.left=current} op='--'
 	)*;
 
-PrimaryExpression: IdentifierReference | Constant | ParenthesisExpression;
+PrimaryExpression: EntityReference | Constant | ParenthesisExpression;
 
 ParenthesisExpression: '(' inner=ConditionalExpression ')';
 
-IdentifierReference: identifier=[NamedEntity];
+EntityReference: target=[NamedEntity];
 
 NamedEntity hidden(): FunctionDefinition | Declarator | BitField;
 

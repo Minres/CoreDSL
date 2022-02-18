@@ -29,8 +29,8 @@ import org.eclipse.xtext.scoping.Scopes
 
 import static extension com.minres.coredsl.util.ModelUtil.*
 import com.minres.coredsl.coreDsl.MemberAccessExpression
-import com.minres.coredsl.coreDsl.IdentifierReference
 import com.minres.coredsl.coreDsl.NamedEntity
+import com.minres.coredsl.coreDsl.EntityReference
 
 /**
  * This class contains custom scoping description.
@@ -252,8 +252,8 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
     /************************************************************************
      * Declarator extension methods begin
      */
-    def dispatch Declarator Declarator(IdentifierReference expression) {
-        expression.identifier instanceof Declarator? expression.identifier as Declarator : null
+    def dispatch Declarator Declarator(EntityReference expression) {
+        expression.target instanceof Declarator? expression.target as Declarator : null
     }
 
     def dispatch Declarator Declarator(MemberAccessExpression expression) {
