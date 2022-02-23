@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.junit.jupiter.api.Assertions.assertFalse
 import static org.junit.jupiter.api.Assertions.assertTrue
 import com.minres.coredsl.coreDsl.FloatConstant
-import com.minres.coredsl.coreDsl.IdentifierReference
+import com.minres.coredsl.coreDsl.EntityReference
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -109,7 +109,7 @@ class CoreDslTerminalsTest {
         for (el : compound.items.subList(3, compound.items.size())) {
             if (el instanceof ExpressionStatement) {
                 val expr = el.expr.expressions.get(0) as AssignmentExpression
-                val lhsName = ((expr.left as IdentifierReference).identifier as Declarator).name;
+                val lhsName = ((expr.left as EntityReference).target as Declarator).name;
                 val rhs = expr.assignments.get(0).right as FloatConstant
                 val floatValue = rhs.value.doubleValue
                 if (lhsName == "d" || lhsName == "f")

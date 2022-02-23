@@ -60,12 +60,12 @@ import com.minres.coredsl.coreDsl.BoolTypeSpecifier
 import com.minres.coredsl.coreDsl.VoidTypeSpecifier
 import com.minres.coredsl.coreDsl.FloatTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
-import com.minres.coredsl.coreDsl.IdentifierReference
 import com.minres.coredsl.coreDsl.CharacterConstant
 import com.minres.coredsl.coreDsl.StringConstant
 import com.minres.coredsl.coreDsl.ParenthesisExpression
 import com.minres.coredsl.coreDsl.ExpressionInitializer
 import com.minres.coredsl.coreDsl.ListInitializer
+import com.minres.coredsl.coreDsl.EntityReference
 
 class Visualizer {
 	
@@ -527,15 +527,15 @@ class Visualizer {
 		);
 	}
 	
-	private def dispatch VisualNode genNode(IdentifierReference node) {
-		if(node.identifier instanceof FunctionDefinition)
-			return makeNode(node, "Function Reference", makeReference("Function", (node.identifier as FunctionDefinition).name, [node.identifier]));
+	private def dispatch VisualNode genNode(EntityReference node) {
+		if(node.target instanceof FunctionDefinition)
+			return makeNode(node, "Function Reference", makeReference("Function", (node.target as FunctionDefinition).name, [node.target]));
 			
-		if(node.identifier instanceof Declarator)
-			return makeNode(node, "Declarator Reference", makeReference("Declarator", (node.identifier as Declarator).name, [node.identifier]));
+		if(node.target instanceof Declarator)
+			return makeNode(node, "Declarator Reference", makeReference("Declarator", (node.target as Declarator).name, [node.target]));
 			
-		if(node.identifier instanceof BitField)
-			return makeNode(node, "Field Reference", makeReference("Field", (node.identifier as BitField).name, [node.identifier]));
+		if(node.target instanceof BitField)
+			return makeNode(node, "Field Reference", makeReference("Field", (node.target as BitField).name, [node.target]));
 	}
 	
 	private def dispatch VisualNode genNode(Expression node) {

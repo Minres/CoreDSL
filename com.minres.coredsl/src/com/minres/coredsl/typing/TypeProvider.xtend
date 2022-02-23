@@ -14,7 +14,6 @@ import com.minres.coredsl.coreDsl.EnumTypeSpecifier
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.FloatConstant
 import com.minres.coredsl.coreDsl.FunctionDefinition
-import com.minres.coredsl.coreDsl.Identifier
 import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.IntegerConstant
 import com.minres.coredsl.coreDsl.PostfixExpression
@@ -42,9 +41,10 @@ import com.minres.coredsl.coreDsl.BoolTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerSignedness
 import com.minres.coredsl.coreDsl.ParenthesisExpression
-import com.minres.coredsl.coreDsl.IdentifierReference
 import com.minres.coredsl.coreDsl.StringConstant
 import com.minres.coredsl.coreDsl.InitDeclarator
+import com.minres.coredsl.coreDsl.NamedEntity
+import com.minres.coredsl.coreDsl.EntityReference
 
 class TypeProvider {
 
@@ -219,11 +219,11 @@ class TypeProvider {
         return e.inner.typeFor(ctx);
     }
     
-    def static dispatch DataType typeFor(IdentifierReference e, ISA ctx) {
-        return e.identifier.typeFor(ctx);
+    def static dispatch DataType typeFor(EntityReference e, ISA ctx) {
+        return e.target.typeFor(ctx);
     }
     
-    def static dispatch DataType typeFor(Identifier e, ISA ctx) {
+    def static dispatch DataType typeFor(NamedEntity e, ISA ctx) {
         null
     }
 
