@@ -1,8 +1,8 @@
 InstructionSet RVI {
     architectural_state {
         unsigned int XLEN;
-        unsigned CSR_SIZE = 4096;
-        unsigned REG_FILE_SIZE=32;
+        unsigned int CSR_SIZE = 4096;
+        unsigned int REG_FILE_SIZE=32;
         register unsigned<XLEN> PC [[is_pc]];
         register unsigned<XLEN> X[REG_FILE_SIZE];
         extern char MEM[1<<XLEN];

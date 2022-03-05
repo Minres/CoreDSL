@@ -177,7 +177,7 @@ class CoreDslISAScopingTest {
         val content = '''
         import "inputs/isa_1.core_desc"
         
-        InstructionSet TestISA2 extends RV32I {
+        InstructionSet TestISA2 extends RVI {
             instructions {
                 Inst1 {
                     encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
