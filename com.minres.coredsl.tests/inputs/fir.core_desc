@@ -1,6 +1,6 @@
 import "inputs/isa_1.core_desc"
 
-InstructionSet X_FIR_1 extends RV32I {
+InstructionSet X_FIR_1 extends RVI {
 	architectural_state {
 		unsigned int N_ACC = 4;
 		int ACC[N_ACC];

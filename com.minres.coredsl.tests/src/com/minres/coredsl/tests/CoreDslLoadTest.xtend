@@ -35,7 +35,7 @@ class CoreDslLoadTest {
 				
 		val InstructionSet result = content.definitions.get(0) as InstructionSet
 		assertNotNull(result)
-		assertEquals("RV32I", result.name)
+		assertEquals("RVI", result.name)
 		assertNull(result.superType)
 		assertEquals(7, result.declarations.size())
 		assertNotNull(result.instructions)
