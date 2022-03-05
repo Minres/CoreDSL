@@ -7,12 +7,10 @@ import com.google.inject.Inject
 import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.DescriptionContent
-import com.minres.coredsl.coreDsl.DirectDeclarator
+import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.ExpressionStatement
-import com.minres.coredsl.coreDsl.FloatingConstant
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.IntegerConstant
-import com.minres.coredsl.coreDsl.PrimaryExpression
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -23,6 +21,8 @@ import org.junit.jupiter.api.^extension.ExtendWith
 import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.junit.jupiter.api.Assertions.assertFalse
 import static org.junit.jupiter.api.Assertions.assertTrue
+import com.minres.coredsl.coreDsl.FloatConstant
+import com.minres.coredsl.coreDsl.EntityReference
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -42,7 +42,7 @@ class CoreDslTerminalsTest {
             instructions {
             	FOO {
             		encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  
-            		args_disass: "{name(rd)}, {name(rs1)}, {name(rs2)}";
+            		assembly: "{name(rd)}, {name(rs1)}, {name(rs2)}";
             		behavior: {
             			«str»
             		}
@@ -60,7 +60,7 @@ class CoreDslTerminalsTest {
     @Test
     def void parseIntLiterals() {
         val content = addBehaviorContext('''
-            unsigned c;
+            unsigned int c;
             unsigned<6> v;
             // C syntax
             c = 42;
@@ -80,54 +80,10 @@ class CoreDslTerminalsTest {
         for (el : compound.items) {
             if (el instanceof ExpressionStatement) {
                 val expr = el.expr.expressions.get(0) as AssignmentExpression
-                val rhs = (expr.assignments.get(0).right as PrimaryExpression).constant as IntegerConstant
+                val rhs = expr.assignments.get(0).right as IntegerConstant
                 assertEquals(rhs.value.intValue, 42)
             }
         }
-    }
-
-    @Test
-    def void parseIntLiteralSuffixes() {
-        val content = addBehaviorContext('''
-            unsigned u32;
-            unsigned long u64;
-            unsigned long long u128;
-            long i64;
-            long long i128;
-            u32 = 42u;
-            u32 = 42U;
-            
-            i64 = 42l;
-            i64 = 42L;
-            i128 = 42ll;
-            i128 = 42LL;
-            
-            u64 = 42ul;
-            u128 = 42ull;
-            // u64 = 42lu;  // currently not supported
-            // u128 = 42llu; // ditto
-         	''').parse
-        validator.assertNoErrors(content)
-
-        val compound = ((content.definitions.get(0) as InstructionSet).instructions.get(0).behavior as CompoundStatement)
-        for (el : compound.items.subList(3, compound.items.size())) {
-            if (el instanceof ExpressionStatement) {
-                val expr = el.expr.expressions.get(0) as AssignmentExpression
-                // val lhsName = (expr.left as PrimaryExpression).ref.name;
-                val rhs = (expr.assignments.get(0).right as PrimaryExpression).constant as IntegerConstant
-                val intValue = rhs.value.intValue
-                assertEquals(intValue, 42)
-            // FIXME: cannot check size and signedness, because the BigIntegerWithRadix class is not accessible here -- why?
-            }
-        }
-
-        assertIssues("int i = 6'd42u;") // Verilog syntax cannot have the suffix
-        assertIssues("int i = 6'd42ul;")
-        assertIssues("int i = 42uu;")
-        assertIssues("int i = 42lul;")
-        assertIssues("int i = 42ulu;")
-//		assertIssues("int i = 42lL;") // TODO: The INTEGERValueConverter currently does not handle this case -- does it matter?
-        assertIssues("int i = 42lll;")
     }
 
     @Test
@@ -135,7 +91,6 @@ class CoreDslTerminalsTest {
         val content = addBehaviorContext('''
             double d, d1, d0;
             float f;
-            long double ld;
             
             d = 3.14;
             d = 0.314e1;
@@ -147,8 +102,6 @@ class CoreDslTerminalsTest {
             
             f = 3.14f;
             f = 3.14F;
-            ld = 3.14l;
-            ld = 3.14L;
         ''').parse
         validator.assertNoErrors(content)
 
@@ -156,10 +109,10 @@ class CoreDslTerminalsTest {
         for (el : compound.items.subList(3, compound.items.size())) {
             if (el instanceof ExpressionStatement) {
                 val expr = el.expr.expressions.get(0) as AssignmentExpression
-                val lhsName = ((expr.left as PrimaryExpression).ref as DirectDeclarator).name;
-                val rhs = (expr.assignments.get(0).right as PrimaryExpression).constant as FloatingConstant
+                val lhsName = ((expr.left as EntityReference).target as Declarator).name;
+                val rhs = expr.assignments.get(0).right as FloatConstant
                 val floatValue = rhs.value.doubleValue
-                if (lhsName == "d" || lhsName == "f" || lhsName == "ld")
+                if (lhsName == "d" || lhsName == "f")
                     assertTrue(Math.abs(floatValue - 3.14) < 1e-6)
                 else if (lhsName == "d1")
                     assertTrue(floatValue == 1.0)
@@ -197,7 +150,7 @@ class CoreDslTerminalsTest {
     // TODO: Currently, this only checks whether the syntax is accepted. No handling of encoding and escape sequences is done.
     }
 
-    @Test
+    //@Test
     def void parseStringLiterals() {
         val content = addBehaviorContext('''
             char *str;

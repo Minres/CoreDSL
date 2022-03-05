@@ -42,7 +42,7 @@ class CoreDslAttributeValidationTest {
 		val content = '''
 			InstructionSet AttributeValidationTestInstructionSet {
 			    architectural_state {
-			        unsigned XLEN;
+			        unsigned int XLEN;
 			        unsigned<XLEN> field «declAttribString»;
 			    }
 			    functions {
@@ -51,7 +51,7 @@ class CoreDslAttributeValidationTest {
 			    instructions «instrAttribString» {
 			    	test «instrAttribString» {
 			    		encoding: 0;
-			    		args_disass: "";
+			    		assembly: "";
 			    		behavior: {}
 			    	}
 			    }
@@ -81,7 +81,7 @@ class CoreDslAttributeValidationTest {
 		val content = '''
 			InstructionSet AttributeValidationTestInstructionSet {
 			    architectural_state {
-			        unsigned XLEN;
+			        unsigned int XLEN;
 			        unsigned<XLEN> field «attribString»;
 			    }
 			    functions {
@@ -90,7 +90,7 @@ class CoreDslAttributeValidationTest {
 			    instructions «attribString» {
 			    	test «attribString» {
 			    		encoding: 0;
-			    		args_disass: "";
+			    		assembly: "";
 			    		behavior: {}
 			    	}
 			    }
@@ -131,8 +131,8 @@ class CoreDslAttributeValidationTest {
 		val content = '''
 			InstructionSet AttributeValidationTestInstructionSet {
 			    architectural_state {
-			        unsigned XLEN;
-			        unsigned<XLEN> field «declAttribString»;
+			        unsigned int XLEN;
+					unsigned<XLEN> field «declAttribString»;
 			    }
 			    functions {
 			    	void fun() «funcAttribString» {}
@@ -140,7 +140,7 @@ class CoreDslAttributeValidationTest {
 			    instructions «instrAttribString» {
 			    	test «instrAttribString» {
 			    		encoding: 0;
-			    		args_disass: "";
+			    		assembly: "";
 			    		behavior: {}
 			    	}
 			    }

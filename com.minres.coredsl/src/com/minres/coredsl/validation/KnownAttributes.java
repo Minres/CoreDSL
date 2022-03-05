@@ -25,6 +25,7 @@ public final class KnownAttributes {
 		register("is_main_reg", 0, declaration);
 		register("is_main_mem", 0, declaration);
 		register("is_interlock_for", 1, declaration);
+		register("clk_budget", 1, function);
 	}
 	
 	public static void register(String name, int paramCount, AttributeUsage... allowedUsage) {

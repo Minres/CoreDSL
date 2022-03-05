@@ -10,17 +10,14 @@ import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
-import com.minres.coredsl.coreDsl.PrimitiveType
-import com.minres.coredsl.coreDsl.TypeSpecifier
-import com.minres.coredsl.typing.DataType
 
 import static extension com.minres.coredsl.typing.TypeProvider.*
 import org.eclipse.xtext.validation.Check
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.Attribute
 import com.minres.coredsl.coreDsl.Instruction
-import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.validation.KnownAttributes.AttributeUsage
 import org.eclipse.emf.common.util.EList
@@ -109,24 +106,6 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 //            }
 		}
 	}
-
-	// @Check
-	def checkType(TypeSpecifier e) {
-		switch (e) {
-//            case CompositeType: {
-//            }
-//            case EnumType: {
-//            }
-			case PrimitiveType: {
-				if (e.typeFor === new DataType(DataType.Type.COMPOSITE, 0))
-					error(
-						"incompatible types used",
-						CoreDslPackage.Literals.PRIMITIVE_TYPE__DATA_TYPE,
-						TYPE_MISMATCH
-					)
-			}
-		}
-	}
 	
 	def checkAttributes(EList<Attribute> attributes, KnownAttributes.AttributeUsage expectedUsage, EStructuralFeature feature) {
 		for(Attribute attribute : attributes) {
@@ -152,12 +131,12 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 
 	@Check
 	def checkAttributeNames(Declaration decl) {
-		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES);
+		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.DECLARATOR__ATTRIBUTES);
 	}
 
 	@Check
-	def checkAttributeNames(InitDeclarator decl) {
-		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES);
+	def checkAttributeNames(Declarator decl) {
+		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.DECLARATOR__ATTRIBUTES);
 	}
 
 	@Check

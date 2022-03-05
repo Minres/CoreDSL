@@ -32,7 +32,7 @@ class CoreDslTypeTest {
         val content = '''
         InstructionSet TestISA {
             architectural_state {
-                unsigned XLEN;
+                unsigned int XLEN;
                 unsigned<XLEN>  X[32];
             }
         }
@@ -46,7 +46,7 @@ class CoreDslTypeTest {
         for (iss : issues)
             println(iss)
         assertTrue(issues.isEmpty())
-        val decl = content.definitions.get(0).stateDeclarations.get(1).init.get(0).declarator
+        val decl = content.definitions.get(0).stateDeclarations.get(1).declarators.get(0).declarator
         assertEquals("X", decl.name)
         val dataType = decl.typeFor(content.definitions.last)
         assertNotNull(dataType)
