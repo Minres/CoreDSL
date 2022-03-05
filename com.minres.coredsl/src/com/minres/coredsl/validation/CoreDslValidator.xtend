@@ -16,8 +16,8 @@ import org.eclipse.xtext.validation.Check
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.Attribute
 import com.minres.coredsl.coreDsl.Instruction
-import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.validation.KnownAttributes.AttributeUsage
 import org.eclipse.emf.common.util.EList
@@ -131,12 +131,12 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 
 	@Check
 	def checkAttributeNames(Declaration decl) {
-		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES);
+		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.DECLARATOR__ATTRIBUTES);
 	}
 
 	@Check
-	def checkAttributeNames(InitDeclarator decl) {
-		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.INIT_DECLARATOR__ATTRIBUTES);
+	def checkAttributeNames(Declarator decl) {
+		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.DECLARATOR__ATTRIBUTES);
 	}
 
 	@Check

@@ -21,7 +21,7 @@
                 instructions {
                     LP_SETUPI {
                         encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011 ;
-                        args_disass:"{name(rs1)}, {name(rs2)}";
+                        assembly: "{name(rs1)}, {name(rs2)}";
                         behavior: {
                             count   = X[rs1];
                             endpc   = PC + 4 + X[rs2]<<2; // use PC relative addressing to save bits

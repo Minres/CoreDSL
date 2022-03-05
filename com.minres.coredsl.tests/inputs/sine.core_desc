@@ -31,7 +31,7 @@ InstructionSet RISCVROB {
     instructions {
         SIMDSIN {  
             encoding: 0b10101 :: rd[4:0] :: rs1[4:0] ;
-            args_disass:"{name(rd)}, {name(rs1)}"; 
+            assembly: "{name(rd)}, {name(rs1)}";
             behavior: {
                 unsigned int i;
                 // given sufficient hardware area, the HLS tool can unroll this and perform SIMD processing of up to NR_JOINTS computations in parallel

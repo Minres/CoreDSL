@@ -47,7 +47,7 @@ class CoreDslInterpreterTest {
         val constants = content.definitions.get(0).stateDeclarations
         val rootContext = EvaluationContext.root
         val values  = constants.flatMap[declaration |
-            declaration.init.map[initDecl|
+            declaration.declarators.map[initDecl|
                 initDecl.declarator.evaluate(rootContext)
             ]
         ].toList

@@ -9,24 +9,21 @@ import com.minres.coredsl.coreDsl.CharacterConstant
 import com.minres.coredsl.coreDsl.CompositeTypeSpecifier
 import com.minres.coredsl.coreDsl.ConditionalExpression
 import com.minres.coredsl.coreDsl.Declaration
-import com.minres.coredsl.coreDsl.DirectDeclarator
+import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.EnumTypeSpecifier
 import com.minres.coredsl.coreDsl.Expression
-import com.minres.coredsl.coreDsl.FloatingConstant
+import com.minres.coredsl.coreDsl.FloatConstant
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.InfixExpression
-import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.IntegerConstant
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
-import com.minres.coredsl.coreDsl.PrimaryExpression
 import com.minres.coredsl.coreDsl.StringLiteral
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.Field
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.coreDsl.Constant
-import com.minres.coredsl.coreDsl.Variable
 import com.minres.coredsl.util.BigDecimalWithSize
 import com.minres.coredsl.util.BigIntegerWithRadix
 
@@ -43,6 +40,11 @@ import com.minres.coredsl.coreDsl.FloatSizeShorthand
 import com.minres.coredsl.coreDsl.BoolTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerSignedness
+import com.minres.coredsl.coreDsl.ParenthesisExpression
+import com.minres.coredsl.coreDsl.StringConstant
+import com.minres.coredsl.coreDsl.InitDeclarator
+import com.minres.coredsl.coreDsl.NamedEntity
+import com.minres.coredsl.coreDsl.EntityReference
 
 class TypeProvider {
 
@@ -64,7 +66,7 @@ class TypeProvider {
         e.typeFor(e.parentOfType(ISA))
     }
  
-    def static DataType typeFor(DirectDeclarator e) {
+    def static DataType typeFor(Declarator e) {
         e.typeFor(e.parentOfType(ISA))
     }
  
@@ -213,20 +215,15 @@ class TypeProvider {
         return e.declarator.typeFor(ctx);
     }
 
-    def static dispatch DataType typeFor(PrimaryExpression e, ISA ctx) {
-        if(e.constant !== null) {
-            e.constant.typeFor(ctx)
-        } else if(e.ref !== null ){
-            e.ref.typeFor(ctx)
-        } else if(e.left !== null ){
-            e.left.typeFor(ctx)
-        } else if(e.literal.size>0 ){
-        	throw new UnsupportedOperationException
-        } else
-            return null
+    def static dispatch DataType typeFor(ParenthesisExpression e, ISA ctx) {
+        return e.inner.typeFor(ctx);
     }
     
-    def static dispatch DataType typeFor(Variable e, ISA ctx) {
+    def static dispatch DataType typeFor(EntityReference e, ISA ctx) {
+        return e.target.typeFor(ctx);
+    }
+    
+    def static dispatch DataType typeFor(NamedEntity e, ISA ctx) {
         null
     }
 
@@ -234,7 +231,7 @@ class TypeProvider {
         e.type.typeFor(ctx)
     }
 
-    def static dispatch DataType typeFor(DirectDeclarator e, ISA ctx) {
+    def static dispatch DataType typeFor(Declarator e, ISA ctx) {
         if (e.eContainer instanceof InitDeclarator && e.eContainer.eContainer instanceof Declaration) {
             var decl = e.eContainer.eContainer as Declaration
             decl.type.typeFor(ctx)
@@ -265,7 +262,7 @@ class TypeProvider {
         new DataType(value.type==BigIntegerWithRadix.TYPE.UNSIGNED?DataType.Type.INTEGRAL_UNSIGNED:DataType.Type.INTEGRAL_SIGNED, value.size)
     }
 
-    def static dispatch DataType typeFor(FloatingConstant e, ISA ctx) {
+    def static dispatch DataType typeFor(FloatConstant e, ISA ctx) {
         new DataType(DataType.Type.FLOAT, (e.value as BigDecimalWithSize).size)
     }
 
@@ -275,6 +272,10 @@ class TypeProvider {
 
     def static dispatch DataType typeFor(CharacterConstant e, ISA ctx) {
         new DataType(DataType.Type.INTEGRAL_SIGNED, 8)
+    }
+    
+    def static dispatch DataType typeFor(StringConstant e, ISA ctx) {
+        new DataType(DataType.Type.INTEGRAL_SIGNED, 0)
     }
     
     def static dispatch DataType typeFor(StringLiteral e, ISA ctx) {

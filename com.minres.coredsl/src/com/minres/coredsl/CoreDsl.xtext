@@ -49,7 +49,9 @@ fragment SectionInstructions returns ISA:
 
 Instruction:
 	name=ID attributes+=Attribute* '{' 
-		('encoding' ':' encoding=Encoding ';') ('args_disass' ':' disass=STRING ';')? ('behavior' ':' behavior=Statement)
+		('encoding' ':' encoding=Encoding ';')
+		('assembly' ':' assembly=STRING ';')?
+		('behavior' ':' behavior=Statement)
 	'}'
 ;
 
@@ -71,18 +73,11 @@ BitField
 	;
 
 FunctionDefinition
-	:   extern?='extern' type=TypeSpecifier name=ID '(' ParameterList? ')' ';'
-	|   type=TypeSpecifier name=ID '(' ParameterList? ')' attributes+=Attribute* statement=CompoundStatement
+	:   extern?='extern' type=TypeSpecifier name=ID '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')' ';'
+	|   type=TypeSpecifier name=ID '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')' attributes+=Attribute* statement=CompoundStatement
 	;
 
-fragment ParameterList: params+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*;
-
-ParameterDeclaration
-    :   type=TypeSpecifier
-    	(	declarator=DirectDeclarator
-    	|	declarator=AbstractDeclarator
-    	)?
-    ;
+ParameterDeclaration: type=TypeSpecifier declarator=Declarator?;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Statements
@@ -149,15 +144,9 @@ SpawnStatement
 ///////////////////////////////////////////////////////////////////////////////
 // Declarations
 
-Declaration
-	:	DeclarationSpecifier* type=TypeSpecifier ptr=('*'|'&')? (init+=InitDeclarator (',' init+=InitDeclarator)*)? ';'
-	;
-	
-fragment DeclarationSpecifier
-    :   storage+=StorageClassSpecifier
-    |   qualifiers+=TypeQualifier
-    |   attributes+=Attribute
-    ;
+Declaration:
+	(storage+=StorageClassSpecifier | qualifiers+=TypeQualifier | attributes+=Attribute)*
+	type=TypeSpecifier (declarators+=InitDeclarator (',' declarators+=InitDeclarator)*)? ';';
 
 Attribute
     :  	DoubleLeftBracket type=ID ('=' params+=ConditionalExpression | '(' params+=ConditionalExpression (',' params+=ConditionalExpression)* ')')? DoubleRightBracket
@@ -200,7 +189,7 @@ CompositeTypeSpecifier
     ;
 
 StructDeclaration
-    :   specifier=StructDeclarationSpecifier declarator += DirectDeclarator(',' declarator+=DirectDeclarator)* ';'
+    :   specifier=StructDeclarationSpecifier declarator += Declarator(',' declarator+=Declarator)* ';'
     ;
 
 StructDeclarationSpecifier
@@ -219,42 +208,25 @@ EnumMemberDeclaration
     |   name=ID '=' expression=ConstantExpression
     ;
 
-InitDeclarator
-    :   declarator=DirectDeclarator attributes+=Attribute* ('=' initializer=Initializer)?
-    ;
+InitDeclarator:
+	declarator=Declarator
+	(t_equals='=' initializer=(ExpressionInitializer | ListInitializer))?;
 
-DirectDeclarator
-    :   name=ID ( ':' index=IntegerConstant)? 
-    	(  (LEFT_BR size+=ConditionalExpression RIGHT_BR)+    		
-//    	|   '[' (qualifiers+=TypeQualifier)? '*' ']'
-    	|   '(' ParameterList ')'
-    	)?
-    ;
+Declarator:
+	alias?='&'?
+	name=ID
+	(LEFT_BR dimensions+=ConstantExpression RIGHT_BR)*
+	attributes+=Attribute*;
     
-Initializer
-    :   expr=ConditionalExpression
-    |   '{' InitializerList ','? '}'
-    ;
+Initializer: ExpressionInitializer | ListInitializer | DesignatedInitializer;
 
-fragment InitializerList:   init+=(DesignatedInitializer|Initializer) (',' init+=(DesignatedInitializer|Initializer))*;
+ExpressionInitializer: expr=ConditionalExpression;
 
-DesignatedInitializer
-	:	(designators+=Designator)+ '=' init=Initializer
-	;
+ListInitializer: '{' initializers+=Initializer (',' initializers+=Initializer)* ','? '}';
 
-Designator
-    :   LEFT_BR idx=ConstantExpression RIGHT_BR
-    |   '.' prop=ID
-    ;
+DesignatedInitializer: (designators+=Designator)+ '=' initializer=(ExpressionInitializer | ListInitializer);
 
-AbstractDeclarator
-    :	DirectAbstractDeclarator
-    ;
-
-DirectAbstractDeclarator 
-    :   {DirectAbstractDeclarator} '(' (declarator=AbstractDeclarator? | ParameterList) ')'
-    |	{DirectAbstractDeclarator} LEFT_BR expr=ConstantExpression? RIGHT_BR
-    ;
+Designator: LEFT_BR idx=ConstantExpression RIGHT_BR | '.' prop=ID;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Expressions
@@ -336,55 +308,38 @@ PostfixExpression:
 	PrimaryExpression
 	(	{FunctionCallExpression.left=current} '(' (arguments+=ConditionalExpression (',' arguments+=ConditionalExpression)*)? ')'
 	|	{ArrayAccessExpression.left=current} LEFT_BR index=ConditionalExpression (':' endIndex=ConditionalExpression)? RIGHT_BR
-	|	{MemberAccessExpression.left=current} op='.' declarator=[DirectDeclarator]
-	|	{MemberAccessExpression.left=current} op='->' declarator=[DirectDeclarator]
+	|	{MemberAccessExpression.left=current} op='.' declarator=[Declarator]
+	|	{MemberAccessExpression.left=current} op='->' declarator=[Declarator]
 	|	{PostfixExpression.left=current} op='++'
 	|	{PostfixExpression.left=current} op='--'
 	)*;
 
-PrimaryExpression
-    :	ref=[Variable]
-    |   constant=Constant
-    |   literal+=StringLiteral+
-    |   '(' left=ConditionalExpression ')'
-    ;
+PrimaryExpression: EntityReference | Constant | ParenthesisExpression;
 
-Variable hidden()
-	:	FunctionDefinition|DirectDeclarator|Field
-	;
+ParenthesisExpression: '(' inner=ConditionalExpression ')';
 
-StringLiteral
-    :   value=ENCSTRINGCONST
-	|   value=STRING
-    ;
+EntityReference: target=[NamedEntity];
 
-ConstantExpression returns Expression
-    :   ConditionalExpression
-    ;
+NamedEntity hidden(): FunctionDefinition | Declarator | BitField;
+
+ConstantExpression returns Expression: ConditionalExpression;
+    
 ///////////////////////////////////////////////////////////////////////////////
 // Constants
 Constant
-    :   IntegerConstant
-    |	FloatingConstant
-    |   CharacterConstant
-    |   BoolConstant
-    ;
+	:	IntegerConstant
+	|	FloatConstant
+	|	CharacterConstant
+	|	BoolConstant
+	|	StringConstant
+	;
 
-IntegerConstant hidden(WS)
-    :   value=INTEGER
-    ;
-
-FloatingConstant hidden(WS)
-    :  	value=FLOAT
-    ;
-    
-BoolConstant
-    :   value=BOOLEAN
-    ;
-    
-CharacterConstant
-    :   value=CHARCONST
-    ;
+IntegerConstant hidden(WS): value=INTEGER;
+FloatConstant hidden(WS): value=FLOAT;
+CharacterConstant: value=CHARCONST;
+BoolConstant: value=BOOLEAN;
+StringConstant: literals+=StringLiteral+;
+StringLiteral: value=ENCSTRINGCONST | value=STRING ;
 
 // the following 2 rules are needed so that XText does not generate a terminal symbol '[[' and '&&'
 // which is always eaten by the Lexer so that a[b[3]] is not recognized
