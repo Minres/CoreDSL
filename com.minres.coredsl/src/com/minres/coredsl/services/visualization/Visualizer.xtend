@@ -523,7 +523,7 @@ class Visualizer {
 	
 	private def dispatch VisualNode genNode(ParenthesisExpression node) {
 		return makeNode(node, "Parenthesis Expression",
-			makeChild("Inner", node.inner)
+			makeChild("Inner", node.left)
 		);
 	}
 	

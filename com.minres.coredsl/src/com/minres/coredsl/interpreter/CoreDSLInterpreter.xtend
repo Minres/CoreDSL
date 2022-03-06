@@ -184,7 +184,7 @@ class CoreDSLInterpreter {
 	}
 
 	def static dispatch Value valueFor(ParenthesisExpression e, EvaluationContext ctx) {
-		return e.inner.valueFor(ctx);
+		return e.left.valueFor(ctx);
 	}
 	
 	def static dispatch Value valueFor(EntityReference e, EvaluationContext ctx) {

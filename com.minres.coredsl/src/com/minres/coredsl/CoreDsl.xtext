@@ -170,7 +170,7 @@ PrimitiveTypeSpecifier
 	;
 
 IntegerTypeSpecifier
-	:	signedness=IntegerSignedness (shorthand=IntegerSizeShorthand | '<' size=PrimaryExpression '>')
+	:	signedness=IntegerSignedness (shorthand=IntegerSizeShorthand | '<' size=PrimaryExpression '>')?
 	|	shorthand=IntegerSizeShorthand
 	;
 
@@ -209,8 +209,7 @@ EnumMemberDeclaration
     ;
 
 InitDeclarator:
-	declarator=Declarator
-	(t_equals='=' initializer=(ExpressionInitializer | ListInitializer))?;
+	declarator=Declarator ('=' initializer=(ExpressionInitializer | ListInitializer))?;
 
 Declarator:
 	alias?='&'?
@@ -316,7 +315,7 @@ PostfixExpression:
 
 PrimaryExpression: EntityReference | Constant | ParenthesisExpression;
 
-ParenthesisExpression: '(' inner=ConditionalExpression ')';
+ParenthesisExpression: '(' left=ConditionalExpression ')';
 
 EntityReference: target=[NamedEntity];
 
@@ -350,7 +349,7 @@ DoubleRightBracket hidden(WS, ML_COMMENT, SL_COMMENT): RIGHT_BR RIGHT_BR;
 
 enum IntegerSignedness : SIGNED='signed' | UNSIGNED='unsigned';
 
-enum IntegerSizeShorthand : CHAR='char' | SHORT='short' | INT='int' | LONG='long';
+enum IntegerSizeShorthand : INT='int' | CHAR='char' | SHORT='short' |  LONG='long';
 
 enum FloatSizeShorthand : FLOAT='float' | DOUBLE='double';
 

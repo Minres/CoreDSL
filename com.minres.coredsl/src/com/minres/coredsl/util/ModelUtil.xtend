@@ -15,6 +15,7 @@ import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.Statement
 import com.minres.coredsl.coreDsl.BlockItem
+import com.minres.coredsl.coreDsl.InitDeclarator
 
 class ModelUtil {
     
@@ -28,34 +29,39 @@ class ModelUtil {
         isa.declarations.filter[it instanceof Statement].map[it as Statement]
     }
 
-    static def Iterable<Declaration> getStateConstDeclarations(ISA isa) {
-        isa.declarations.filter[
-        	it instanceof Declaration && 
-        	!(it as Declaration).storage.contains(StorageClassSpecifier.EXTERN) && 
-        	!(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER)
-        ].map[it as Declaration]
+    static def Iterable<Declarator> getStateDeclarators(ISA isa) {
+    	val declarators = isa.declarations.filter[it instanceof Declaration].map[(it as Declaration)]
+        declarators.map[it.declarators.map[it.declarator]]
+        .flatten
     }
 
-    static def Iterable<Declaration> getStateExternDeclarations(ISA isa) {
-        isa.declarations.filter[
-        	it instanceof Declaration && 
-        	(it as Declaration).storage.contains(StorageClassSpecifier.EXTERN)
-        ].map[it as Declaration]
+    static def Iterable<Declarator> getStateConstDeclarators(ISA isa) {
+        isa.stateDeclarators.filter[
+        	val decl = it.eContainer.eContainer as Declaration
+        	!decl.storage.contains(StorageClassSpecifier.EXTERN) && 
+        	!decl.storage.contains(StorageClassSpecifier.REGISTER) && 
+        	!it.alias
+        ]
+    }
+
+    static def Iterable<Declarator> getStateExternDeclarators(ISA isa) {
+        isa.stateDeclarators.filter[
+        	val decl = it.eContainer.eContainer as Declaration
+        	decl.storage.contains(StorageClassSpecifier.EXTERN)
+        ]
     }
     
-    static def Iterable<Declaration> getStateRegisterDeclarations(ISA isa) {
-        isa.declarations.filter[
-        	it instanceof Declaration && 
-        	(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER)
-        ].map[it as Declaration]
+    static def Iterable<Declarator> getStateRegisterDeclarators(ISA isa) {
+        isa.stateDeclarators.filter[
+        	val decl = it.eContainer.eContainer as Declaration
+        	decl.storage.contains(StorageClassSpecifier.REGISTER)
+        ]
     }
 
-    static def Iterable<Declaration> getStateAliasDeclarations(ISA isa) {
-        isa.declarations.filter[
-        	it instanceof Declaration && 
-        	!(it as Declaration).storage.contains(StorageClassSpecifier.EXTERN) && 
-        	!(it as Declaration).storage.contains(StorageClassSpecifier.REGISTER)
-        ].map[it as Declaration]
+    static def Iterable<Declarator> getStateAliasDeclarators(ISA isa) {
+        isa.stateDeclarators.filter[
+        	it.alias
+        ]
     }
 
     static def <T extends EObject> T parentOfType(EObject obj, Class<T> clazz) {
@@ -80,9 +86,12 @@ class ModelUtil {
                     return contribDecl
             }
         } else if(isa instanceof InstructionSet){
-            val decl = isa.stateDeclarations.findFirst[it.declarators.findFirst[it.declarator.name==name && it.initializer!==null]!==null]
-            if(decl!==null)
-                return decl.declarators.findFirst[it.declarator.name==name].declarator
+            val decl = isa.stateDeclarators.findFirst[it.name==name]
+            if(decl!==null) {
+            	val init = decl.eContainer as InitDeclarator
+            	if(init.initializer !== null)
+	                return decl            	
+            }
             val baseDecl = isa.superType.effectiveDeclarator(name)
             if(baseDecl!==null)
                 return baseDecl

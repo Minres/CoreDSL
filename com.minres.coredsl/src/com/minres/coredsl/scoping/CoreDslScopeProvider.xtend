@@ -124,9 +124,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 	}
 		
     private def Iterable<NamedEntity> variables(ISA isa) {
-        #[isa.stateDeclarations].filter[it !== null].map [
-            it.flatMap[declarators].map[it.declarator]
-        ].flatten + isa.functions
+        isa.stateDeclarators + isa.functions
     }
 
 		

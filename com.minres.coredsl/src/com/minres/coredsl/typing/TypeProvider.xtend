@@ -202,13 +202,11 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(FunctionCallExpression e, ISA ctx) {
-    	// TODO resolve function signature and return the return type
-        return null;
+        return e.left.typeFor(ctx);
     }
 
     def static dispatch DataType typeFor(ArrayAccessExpression e, ISA ctx) {
-    	// TODO resolve array type and return array element type
-        return null;
+        return e.left.typeFor(ctx);
     }
 
     def static dispatch DataType typeFor(MemberAccessExpression e, ISA ctx) {
@@ -216,7 +214,7 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(ParenthesisExpression e, ISA ctx) {
-        return e.inner.typeFor(ctx);
+        return e.left.typeFor(ctx);
     }
     
     def static dispatch DataType typeFor(EntityReference e, ISA ctx) {
