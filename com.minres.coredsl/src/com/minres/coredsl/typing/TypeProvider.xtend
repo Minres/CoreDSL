@@ -101,8 +101,7 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(IntegerTypeSpecifier e, ISA ctx) {
-        val isUnsigned = e.signedness == IntegerSignedness.UNSIGNED;
-        
+        val isUnsigned = e.signedness == IntegerSignedness.UNSIGNED;   
         if (e.size !== null) {
             val sizeValue = e.size.valueFor(EvaluationContext.root(ctx))
             if(sizeValue === null || !(sizeValue.value instanceof BigInteger)) return null

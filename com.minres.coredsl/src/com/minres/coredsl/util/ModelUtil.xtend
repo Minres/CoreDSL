@@ -98,24 +98,24 @@ class ModelUtil {
         }
         null
     }
-    
-    
-    static def Iterable<BlockItem> allDefinitions(CoreDef core){
-        val blockItemList = if(core.contributingType.size == 0) core.declarations else {
-            val instrSets = core.contributingType?.map[InstructionSet i| i.allInstructionSets].flatten
-            val seen = newLinkedHashSet
-            seen.addAll(instrSets)
-            seen.add(core)
-            seen.map[ISA i| i.declarations].flatten
+        
+    static def Iterable<BlockItem> allDefinitions(ISA isa){
+        switch(isa){
+            CoreDef:
+                if (isa.contributingType.size == 0)
+                    isa.declarations
+                else {
+                    val instrSets = isa.contributingType?.map[InstructionSet i|i.allInstructionSets].flatten
+                    val seen = newLinkedHashSet
+                    seen.addAll(instrSets)
+                    seen.add(isa)
+                    seen.map[ISA i|i.declarations].flatten
+                }
+            InstructionSet:
+                isa.allInstructionSets.map[ISA i| i.declarations].flatten
         }
-        return blockItemList
     }
-
-    static def Iterable<BlockItem> allDefinitions(InstructionSet core){
-        val blockItemList = core.allInstructionSets.map[ISA i| i.declarations].flatten
-        return blockItemList
-    }
-
+    
     static def Iterable<Instruction> allInstr(CoreDef core){
         val unique = newLinkedHashMap
         val instrList = if(core.contributingType.size == 0) core.instructions else {
