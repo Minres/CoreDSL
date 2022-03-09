@@ -203,32 +203,34 @@ class CoreDSLInterpreter {
     }
 
     private static def Value calculateValue(Declarator e, EvaluationContext ctx) {
-        val allDefinitions = ctx.definitionContext.allDefinitions
-        val assignments = allDefinitions.filter [
-            if (it instanceof ExpressionStatement) {
-                val expr = it.expr
-                for(ex:expr.expressions) {
-                if (ex instanceof AssignmentExpression) {
-                    val entityRef = ex.left
-                    if (entityRef instanceof EntityReference) {
-                        return ex.assignments.size > 0 && entityRef.target === e
+        if (ctx.definitionContext !== null) {
+            val allDefinitions = ctx.definitionContext.allDefinitions
+            val assignments = allDefinitions.filter [
+                if (it instanceof ExpressionStatement) {
+                    val expr = it.expr
+                    for (ex : expr.expressions) {
+                        if (ex instanceof AssignmentExpression) {
+                            val entityRef = ex.left
+                            if (entityRef instanceof EntityReference) {
+                                return ex.assignments.size > 0 && entityRef.target === e
+                            }
+                        }
                     }
-                }                    
                 }
+                return false
+            ].map[(it as ExpressionStatement).expr as Expression].toList
+            if (assignments.size > 0) {
+                val assignment = assignments.last.expressions.findFirst [
+                    if (it instanceof AssignmentExpression) {
+                        val left = it.left
+                        if (left instanceof EntityReference)
+                            return left.target === e
+                    }
+                    false
+                ] as AssignmentExpression
+                val res = assignment.assignments.findFirst[! (right instanceof EntityReference)].right.valueFor(ctx)
+                return ctx.newValue(e, res);
             }
-            return false
-        ].map[(it as ExpressionStatement).expr as Expression].toList
-        if (assignments.size > 0) {
-            val assignment = assignments.last.expressions.findFirst[
-                if(it instanceof AssignmentExpression){
-                    val left = it.left
-                    if(left instanceof EntityReference)
-                        return left.target === e
-                }
-                false
-            ] as AssignmentExpression
-            val res = assignment.assignments.findFirst[! (right instanceof EntityReference)].right.valueFor(ctx)
-            return ctx.newValue(e, res);
         }
         if (e.eContainer instanceof InitDeclarator) {
             val initDecl = e.eContainer as InitDeclarator;
