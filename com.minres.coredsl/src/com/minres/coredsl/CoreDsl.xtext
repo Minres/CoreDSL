@@ -140,7 +140,7 @@ PrimitiveTypeSpecifier
 	;
 
 IntegerTypeSpecifier
-	:	signedness=IntegerSignedness (shorthand=IntegerSizeShorthand | '<' size=PrimaryExpression '>')?
+	:	signedness=IntegerSignedness (shorthand=IntegerSizeShorthand | '<' size=PrimaryExpression '>')
 	|	shorthand=IntegerSizeShorthand
 	;
 
@@ -179,7 +179,8 @@ EnumMemberDeclaration
     ;
 
 InitDeclarator:
-	declarator=Declarator ('=' initializer=(ExpressionInitializer | ListInitializer))?;
+	declarator=Declarator
+	(t_equals='=' initializer=(ExpressionInitializer | ListInitializer))?;
 
 Declarator:
 	alias?='&'?

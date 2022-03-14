@@ -33,9 +33,9 @@ class CoreDslTypeTest {
         InstructionSet TestISA {
             architectural_state {
                 unsigned int XLEN;
-                unsigned FLEN;
+                unsigned int FLEN;
                 int CSR_SIZE;
-                unsigned<XLEN>  X[32];
+                unsigned<XLEN> X[32];
             }
         }
         Core TestCore provides TestISA {
