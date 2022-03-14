@@ -44,7 +44,7 @@ class CoreDslInterpreterTest {
         '''.parse
         val issues = validator.validate(content)
         assertTrue(issues.isEmpty())
-        val constants = content.definitions.get(0).stateDeclarations
+        val constants = content.definitions.get(0).declarations
         val rootContext = EvaluationContext.root
         val values  = constants.flatMap[declaration |
             declaration.declarators.map[initDecl|

@@ -13,7 +13,6 @@ import java.util.List
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
-import com.minres.coredsl.coreDsl.Statement
 import com.minres.coredsl.coreDsl.BlockItem
 import com.minres.coredsl.coreDsl.InitDeclarator
 
@@ -21,18 +20,8 @@ class ModelUtil {
     
     static val logger = Logger.getLogger(typeof(ModelUtil));
 
-    static def Iterable<Declaration> getStateDeclarations(ISA isa) {
-        isa.declarations.filter[it instanceof Declaration].map[it as Declaration]
-    }
-
-    static def Iterable<Statement> getStateStatements(ISA isa) {
-        isa.declarations.filter[it instanceof Statement].map[it as Statement]
-    }
-
     static def Iterable<Declarator> getStateDeclarators(ISA isa) {
-    	val declarators = isa.declarations.filter[it instanceof Declaration].map[(it as Declaration)]
-        declarators.map[it.declarators.map[it.declarator]]
-        .flatten
+        isa.declarations.flatMap[it.declarators.map[it.declarator]]
     }
 
     static def Iterable<Declarator> getStateConstDeclarators(ISA isa) {
@@ -103,16 +92,16 @@ class ModelUtil {
         switch(isa){
             CoreDef:
                 if (isa.contributingType.size == 0)
-                    isa.declarations
+                    return isa.declarations + isa.assignments
                 else {
-                    val instrSets = isa.contributingType?.map[InstructionSet i|i.allInstructionSets].flatten
+                    val instrSets = isa.contributingType?.flatMap[it.allInstructionSets]
                     val seen = newLinkedHashSet
                     seen.addAll(instrSets)
                     seen.add(isa)
-                    seen.map[ISA i|i.declarations].flatten
+                    return seen.flatMap[it.declarations + it.assignments]
                 }
             InstructionSet:
-                isa.allInstructionSets.map[ISA i| i.declarations].flatten
+                return isa.allInstructionSets.flatMap[it.declarations + it.assignments]
         }
     }
     
