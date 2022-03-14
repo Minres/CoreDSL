@@ -165,10 +165,10 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
     def Iterable<Declaration> allDeclarations(ISA isa) {
         if(isa instanceof InstructionSet) {
             val declsSuper = isa.superType!==null?isa.superType.allDeclarations:#[]
-            #[declsSuper, isa.stateDeclarations.filter[it instanceof Declaration]].flatten
+            declsSuper + isa.declarations
         } else if(isa instanceof CoreDef){
             val declsSuper = isa.contributingType.map[it.allDeclarations].flatten
-            #[declsSuper, isa.stateDeclarations.filter[it instanceof Declaration]].flatten
+            declsSuper + isa.declarations
         }
     }
     /*
