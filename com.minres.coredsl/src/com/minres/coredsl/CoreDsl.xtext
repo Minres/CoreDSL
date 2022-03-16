@@ -263,6 +263,7 @@ MultiplicativeExpression returns Expression
 CastExpression
     :   PrefixExpression
     |	'(' type=TypeSpecifier ')' left=CastExpression
+    |	'(' signedness=IntegerSignedness ')' left=CastExpression
     ;
 
 PrefixExpression
