@@ -38,7 +38,6 @@ import com.minres.coredsl.coreDsl.StringConstant
 import com.minres.coredsl.coreDsl.ExpressionInitializer
 import com.minres.coredsl.coreDsl.NamedEntity
 import com.minres.coredsl.coreDsl.EntityReference
-import com.minres.coredsl.coreDsl.PrimaryExpression
 
 class CoreDSLInterpreter {
 
