@@ -18,9 +18,8 @@ import com.minres.coredsl.coreDsl.BlockItem
 import org.eclipse.emf.common.util.EList
 import com.minres.coredsl.validation.IssueCodes
 import com.minres.coredsl.coreDsl.CoreDslPackage
-import static org.junit.Assert.*
+import static org.junit.jupiter.api.Assertions.*
 import com.minres.coredsl.coreDsl.IfStatement
-import com.minres.coredsl.coreDsl.CompoundStatement
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
