@@ -19,6 +19,8 @@ import org.eclipse.emf.common.util.EList
 import com.minres.coredsl.validation.IssueCodes
 import com.minres.coredsl.coreDsl.CoreDslPackage
 import static org.junit.Assert.*
+import com.minres.coredsl.coreDsl.IfStatement
+import com.minres.coredsl.coreDsl.CompoundStatement
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -58,6 +60,10 @@ class CoreDslSyntaxTest {
 			    }
 			}
 		'''.parse().definitions.get(0).functions.get(0).statement.items;
+	}
+
+	def BlockItem parseAsStatement(CharSequence str) {
+		return str.parseAsStatements().get(0);
 	}
 
 	@Test
@@ -409,5 +415,265 @@ class CoreDslSyntaxTest {
 		for (statement : statements) {
 			validator.assertError(statement, CoreDslPackage.Literals.DECLARATOR, IssueCodes.SyntaxError);
 		}
+	}
+
+	@Test
+	def void parseIfStatementValid() {
+		val statements = '''
+			
+			if(false);
+			
+			if(false) {}
+			
+			if(false) if(true);
+			
+			if(false);
+			else;
+			
+			if(false) {}
+			else {}
+			
+			if(false);
+			else if(true);
+			else;
+			
+			if(false) {}
+			else if(true) {}
+			else {}
+			
+			if((((false))));
+			
+		'''.parseAsStatements();
+
+		for (statement : statements) {
+			validator.assertNoErrors(statement, IssueCodes.SyntaxError);
+		}
+
+		// check that the else is properly associated with the inner if
+		val ifstmt = '''
+			
+			if(false)
+			if(true);
+			else;
+			
+		'''.parseAsStatements().get(0) as IfStatement;
+
+		assertNull(ifstmt.elseStmt);
+		assertNotNull((ifstmt.thenStmt as IfStatement).elseStmt);
+	}
+
+	@Test
+	def void parseIfStatementInvalid() {
+		// else must follow an if statement
+		validator.assertError('''
+			
+			{
+				else;
+			}
+			
+		'''.parseAsStatement(), CoreDslPackage.Literals.COMPOUND_STATEMENT, IssueCodes.SyntaxError);
+
+		// at most one else per if statement
+		validator.assertError('''
+			
+			{
+				if(false);
+				else;
+				else;
+			}
+			
+		'''.parseAsStatement(), CoreDslPackage.Literals.COMPOUND_STATEMENT, IssueCodes.SyntaxError);
+
+		// parentheses are required
+		// NOTE: it makes no sense, but this error is reported on the false and {} nodes, instead of the if statement
+		validator.assertError('''
+			
+			if false {}
+			
+		'''.parseAsStatement(), CoreDslPackage.Literals.BOOL_CONSTANT, IssueCodes.SyntaxError);
+
+		// then statement is required
+		validator.assertError('''
+			
+			if(false)
+			
+		'''.parseAsStatement(), CoreDslPackage.Literals.COMPOUND_STATEMENT, IssueCodes.SyntaxError);
+
+		// else statement is required if else keyword is present
+		validator.assertError('''
+			
+			if(false);
+			else
+			
+		'''.parseAsStatement(), CoreDslPackage.Literals.COMPOUND_STATEMENT, IssueCodes.SyntaxError);
+	}
+
+	@Test
+	def void parseSwitchStatementValid() {
+		val statements = '''
+			
+			// simple default
+			switch(1) { default: }
+			
+			// complex switch expression
+			switch((((1)))) { default: }
+			
+			// multiple defaults
+			switch(1) { default: default: default: }
+			
+			// simple case
+			switch(1) { case 0: }
+			
+			// complex case expression
+			switch(1) { case (((0))): }
+			
+			// default last
+			switch(1) { case 0: case 1: default: }
+			
+			// default in between
+			switch(1) { case 0: default: case 1: }
+			
+			// default first
+			switch(1) { default: case 0: case 1: }
+			
+			// mixed sections, multiple defaults
+			switch(1) { default: case 0: default: case 1: default: }
+			
+			// one section, one statement
+			switch(1) { case 0: {} }
+			
+			// one section, multiple statements
+			switch(1) { case 0: {};; }
+			
+			// multiple sections, at most one statement each
+			switch(1) { case 0: case 1: ; default: {} }
+			
+			// multiple sections, multiple statements
+			switch(1) { case 0: case 1: ;;; default: {};; }
+			
+		'''.parseAsStatements();
+
+		for (statement : statements) {
+			validator.assertNoErrors(statement, IssueCodes.SyntaxError);
+		}
+	}
+
+	@Test
+	def void parseSwitchStatementInvalid() {
+		// parentheses are required
+		validator.assertError('''
+			
+			switch 5 { default: }
+			
+		'''.parseAsStatement(), CoreDslPackage.Literals.INTEGER_CONSTANT, IssueCodes.SyntaxError);
+
+		// switch body is required
+		validator.assertError('''
+			
+			switch(5);
+			
+		'''.parseAsStatement(), CoreDslPackage.Literals.EXPRESSION_STATEMENT, IssueCodes.SyntaxError);
+
+		// at least one section is required (TODO why?)
+		// NOTE: the closing brace is parsed as the end of the (omitted) compound statement, hence the error location
+		validator.assertError('''
+			
+			switch(5) {}
+			
+		'''.parseAsStatement(), CoreDslPackage.Literals.COMPOUND_STATEMENT, IssueCodes.SyntaxError);
+
+		// case needs a condition
+		validator.assertError('''
+			
+			switch(5) { case: }
+			
+		'''.parseAsStatement(), CoreDslPackage.Literals.LABELED_STATEMENT, IssueCodes.SyntaxError);
+
+		// default must not have a condition
+		validator.assertError('''
+			
+			switch(5) { default 0: }
+			
+		'''.parseAsStatement(), CoreDslPackage.Literals.LABELED_STATEMENT, IssueCodes.SyntaxError);
+	}
+
+	@Test
+	def void parseLoopValid() {
+		val statements = '''
+			
+			// simple while
+			while(true) {}
+			
+			// while without compound
+			while(true);
+			
+			// while with complex condition
+			while((((true)))) {}
+			
+			// simple do
+			do {} while(true);
+			
+			// do without compound
+			do ; while(true);
+			
+			// do with complex condition
+			do {} while((((true))));
+			
+			// simple for
+			for(;;) {}
+			
+			// for without compound
+			for(;;);
+			
+			// for with complex condition
+			for(;(((true)));) {}
+			
+			// for with single init declaration
+			for(int i = 0;;) {}
+			
+			// for with multiple init declarations
+			for(int i, j = 0, k;;) {}
+			
+			// for with single init assignment
+			for(i = 0;;) {}
+			
+			// for with single init assignment (increment)
+			for(i++;;) {}
+			
+			// for with single increment assignment
+			for(;;i = 7) {}
+			
+			// for with multiple increment assignments
+			for(;;i = 7, j++, --k) {}
+			
+		'''.parseAsStatements();
+
+		for (statement : statements) {
+			validator.assertNoErrors(statement, IssueCodes.SyntaxError);
+		}
+	}
+
+	@Test
+	def void parseLoopInvalid() {
+		// while parentheses are required
+		validator.assertError('''
+			
+			while true {}
+			
+		'''.parseAsStatement(), CoreDslPackage.Literals.BOOL_CONSTANT, IssueCodes.SyntaxError);
+
+		// do parentheses are required
+		validator.assertError('''
+			
+			do {} while true;
+			
+		'''.parseAsStatement(), CoreDslPackage.Literals.BOOL_CONSTANT, IssueCodes.SyntaxError);
+
+		// do while is required
+		validator.assertError('''
+			
+			do {}
+			
+		'''.parseAsStatement(), CoreDslPackage.Literals.COMPOUND_STATEMENT, IssueCodes.SyntaxError);
 	}
 }
