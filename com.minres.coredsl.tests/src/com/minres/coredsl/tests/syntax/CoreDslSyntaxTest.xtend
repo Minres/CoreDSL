@@ -24,120 +24,121 @@ import static org.junit.Assert.*
 @InjectWith(CoreDslInjectorProvider)
 class CoreDslSyntaxTest {
 
-    @Inject extension ParseHelper<DescriptionContent> parseHelper
+	@Inject extension ParseHelper<DescriptionContent> parseHelper
 
-    @Inject ValidationTestHelper validator
+	@Inject ValidationTestHelper validator
 
-    def Instruction parseAsInstruction(CharSequence str) {
-    	return '''
-        InstructionSet TestISA {
-            instructions {
-                «str»
-            }
-        }
-    	'''.parse().definitions.get(0).instructions.get(0);
-    }
+	def Instruction parseAsInstruction(CharSequence str) {
+		return '''
+			InstructionSet TestISA {
+			    instructions {
+			        «str»
+			    }
+			}
+		'''.parse().definitions.get(0).instructions.get(0);
+	}
 
-    def FunctionDefinition parseAsFunction(CharSequence str) {
-    	return '''
-        InstructionSet TestISA {
-            functions {
-            	«str»
-            }
-        }
-    	'''.parse().definitions.get(0).functions.get(0);
-    }
+	def FunctionDefinition parseAsFunction(CharSequence str) {
+		return '''
+			InstructionSet TestISA {
+			    functions {
+			    	«str»
+			    }
+			}
+		'''.parse().definitions.get(0).functions.get(0);
+	}
 
-    def EList<BlockItem> parseAsStatements(CharSequence str) {
-    	return '''
-        InstructionSet TestISA {
-            functions {
-            	void testFunc() {
-            		«str»
-            	}
-            }
-        }
-    	'''.parse().definitions.get(0).functions.get(0).statement.items;
-    }
-    
-    @Test
-    def void parseDescriptionContentValid() {
-    	
-    	// one core definition, no imports
-    	validator.assertNoErrors('''Core A {}'''.parse(), IssueCodes.SyntaxError)
-    	
-    	// one instruction set, no imports
-    	validator.assertNoErrors('''InstructionSet A {}'''.parse(), IssueCodes.SyntaxError)
-    	
-    	// multiple definitions, no imports
-    	validator.assertNoErrors('''
-    		InstructionSet A {}
-    		Core B {}
-    		InstructionSet C {}
-    		Core D {}
-    	'''.parse(), IssueCodes.SyntaxError)
-    	
-    	// one core definition, imports
-    	validator.assertNoErrors('''
-    		import "a.core_desc"
-    		import "b.core_desc"
-    		Core A {}
-    	'''.parse(), IssueCodes.SyntaxError)
-    	
-    	// one instruction set, imports
-    	validator.assertNoErrors('''
-    		import "a.core_desc"
-    		import "b.core_desc"
-    		InstructionSet A {}
-    	'''.parse(), IssueCodes.SyntaxError)
-    	
-    	// multiple definitions, imports
-    	validator.assertNoErrors('''
+	def EList<BlockItem> parseAsStatements(CharSequence str) {
+		return '''
+			InstructionSet TestISA {
+			    functions {
+			    	void testFunc() {
+			    		«str»
+			    	}
+			    }
+			}
+		'''.parse().definitions.get(0).functions.get(0).statement.items;
+	}
+
+	@Test
+	def void parseDescriptionContentValid() {
+
+		// one core definition, no imports
+		validator.assertNoErrors('''Core A {}'''.parse(), IssueCodes.SyntaxError)
+
+		// one instruction set, no imports
+		validator.assertNoErrors('''InstructionSet A {}'''.parse(), IssueCodes.SyntaxError)
+
+		// multiple definitions, no imports
+		validator.assertNoErrors('''
+			InstructionSet A {}
+			Core B {}
+			InstructionSet C {}
+			Core D {}
+		'''.parse(), IssueCodes.SyntaxError)
+
+		// one core definition, imports
+		validator.assertNoErrors('''
+			import "a.core_desc"
+			import "b.core_desc"
+			Core A {}
+		'''.parse(), IssueCodes.SyntaxError)
+
+		// one instruction set, imports
+		validator.assertNoErrors('''
+			import "a.core_desc"
+			import "b.core_desc"
+			InstructionSet A {}
+		'''.parse(), IssueCodes.SyntaxError)
+
+		// multiple definitions, imports
+		validator.assertNoErrors('''
 			import "a.core_desc"
 			import "b.core_desc"
 			InstructionSet A {}
 			Core B {}
 			InstructionSet C {}
 			Core D {}
-    	'''.parse(), IssueCodes.SyntaxError)
-    	
-    	// all on the same line
-    	validator.assertNoErrors('''import "a.core_desc" import "b.core_desc" Core A {}'''.parse(), IssueCodes.SyntaxError)
-    }
-    
-    @Test
-    def void parseDescriptionContentInvalid() {
-    	
-    	// empty description (for some reason this doesn't even bother creating an instance, but just returns null)
+		'''.parse(), IssueCodes.SyntaxError)
+
+		// all on the same line
+		validator.assertNoErrors('''import "a.core_desc" import "b.core_desc" Core A {}'''.parse(),
+			IssueCodes.SyntaxError)
+	}
+
+	@Test
+	def void parseDescriptionContentInvalid() {
+
+		// empty description (for some reason this doesn't even bother creating an instance, but just returns null)
 		assertNull("".parse())
-    	
-    	// import after definition
+
+		// import after definition
 		validator.assertError('''
 			Core A {}
 			import "a.core_desc"
 		'''.parse(), CoreDslPackage.Literals.DESCRIPTION_CONTENT, IssueCodes.SyntaxError);
-    }
+	}
 
 	@Test
 	def void parseInstructionSetValid() {
-		
+
 		// empty instruction set
 		validator.assertNoErrors('''
 			InstructionSet A {}
 		'''.parse(), IssueCodes.SyntaxError);
-		
+
 		// inheritance
 		validator.assertNoErrors('''
 			InstructionSet B extends A {}
 		'''.parse(), IssueCodes.SyntaxError);
-		
+
 		// single section
 		validator.assertNoErrors('''
 			InstructionSet A { architectural_state { int x; } }
 			InstructionSet B { functions { void x() {} } }
 			InstructionSet C { instructions { x { encoding: 0; behavior: {} } } }
 		'''.parse(), IssueCodes.SyntaxError);
-		
+
 		// section permutations
 		validator.assertNoErrors('''
 			InstructionSet AFI {
@@ -175,7 +176,7 @@ class CoreDslSyntaxTest {
 
 	@Test
 	def void parseInstructionSetInvalid() {
-		
+
 		// empty sections
 		val content = '''
 			InstructionSet A { architectural_state {} }
@@ -185,43 +186,43 @@ class CoreDslSyntaxTest {
 		for (set : content.definitions) {
 			validator.assertError(set, CoreDslPackage.Literals.ISA, IssueCodes.SyntaxError);
 		}
-		
+
 		// multiple inheritance
 		validator.assertError('''
 			InstructionSet A extends B, C {}
 		'''.parse(), CoreDslPackage.Literals.INSTRUCTION_SET, IssueCodes.SyntaxError);
-		
+
 		// provides keyword
 		validator.assertError('''
 			InstructionSet A provides B {}
 		'''.parse(), CoreDslPackage.Literals.INSTRUCTION_SET, IssueCodes.SyntaxError);
 	}
-	
+
 	@Test
 	def void parseCoreDefValid() {
-		
+
 		// empty core
 		validator.assertNoErrors('''
 			Core A {}
 		'''.parse(), IssueCodes.SyntaxError);
-		
+
 		// provides one
 		validator.assertNoErrors('''
 			Core A provides B {}
 		'''.parse(), IssueCodes.SyntaxError);
-		
+
 		// provides multiple
 		validator.assertNoErrors('''
 			Core A provides B, C, D {}
 		'''.parse(), IssueCodes.SyntaxError);
-		
+
 		// single section
 		validator.assertNoErrors('''
 			Core A { architectural_state { int x; } }
 			Core B { functions { void x() {} } }
 			Core C { instructions { x { encoding: 0; behavior: {} } } }
 		'''.parse(), IssueCodes.SyntaxError);
-		
+
 		// section permutations
 		validator.assertNoErrors('''
 			Core AFI {
@@ -259,7 +260,7 @@ class CoreDslSyntaxTest {
 
 	@Test
 	def void parseCoreDefInvalid() {
-		
+
 		// empty sections
 		val content = '''
 			Core A { architectural_state {} }
@@ -269,7 +270,7 @@ class CoreDslSyntaxTest {
 		for (set : content.definitions) {
 			validator.assertError(set, CoreDslPackage.Literals.ISA, IssueCodes.SyntaxError);
 		}
-		
+
 		// extends keyword
 		validator.assertError('''
 			Core A extends B {}
@@ -278,7 +279,7 @@ class CoreDslSyntaxTest {
 
 	@Test
 	def void parseInstructionValid() {
-		
+
 		// without assembly
 		validator.assertNoErrors('''
 			Core A { instructions { x {
@@ -286,7 +287,7 @@ class CoreDslSyntaxTest {
 				behavior: {}
 			} } }
 		'''.parse(), IssueCodes.SyntaxError);
-		
+
 		// with assembly
 		validator.assertNoErrors('''
 			Core A { instructions { x {
@@ -295,7 +296,7 @@ class CoreDslSyntaxTest {
 				behavior: {}
 			} } }
 		'''.parse(), IssueCodes.SyntaxError);
-		
+
 		// complex encoding
 		validator.assertNoErrors('''
 			Core A { instructions { x {
@@ -303,7 +304,7 @@ class CoreDslSyntaxTest {
 				behavior: {}
 			} } }
 		'''.parse(), IssueCodes.SyntaxError);
-		
+
 		// non-compound statement behavior
 		validator.assertNoErrors('''
 			Core A { instructions { x {
@@ -315,7 +316,7 @@ class CoreDslSyntaxTest {
 
 	@Test
 	def void parseInstructionInvalid() {
-		
+
 		// invalid permutations
 		val instructions = #[
 			'_ { }',
@@ -329,84 +330,84 @@ class CoreDslSyntaxTest {
 			'bea { behavior: {} encoding: 11; assembly: ""; }',
 			'bae { behavior: {} assembly: ""; encoding: 11; }'
 		];
-		for(inst : instructions) {
+		for (inst : instructions) {
 			val content = '''Core A { instructions { «inst» } }'''.parse();
 			var issues = validator.validate(content);
 			assertTrue(issues.filter[it.code == IssueCodes.SyntaxError].length > 0);
 		}
 	}
-	
-    @Test
-    def void parseDeclarationsValid() {
-        val statements = '''
-		
-		// single declarator
-		int i;
-		
-		// multiple declarators
-		int i, j, k;
-		
-		// single init declarator
-		int i = 10;
-		
-		// multiple init declarators
-		int i = 10, j = 20, k = 30;
-		
-		// mixed regular and init declarators
-		int i, j = 20, k;
-		
-        '''.parseAsStatements();
-        
+
+	@Test
+	def void parseDeclarationsValid() {
+		val statements = '''
+			
+			// single declarator
+			int i;
+			
+			// multiple declarators
+			int i, j, k;
+			
+			// single init declarator
+			int i = 10;
+			
+			// multiple init declarators
+			int i = 10, j = 20, k = 30;
+			
+			// mixed regular and init declarators
+			int i, j = 20, k;
+			
+		'''.parseAsStatements();
+
 		for (statement : statements) {
 			validator.assertNoErrors(statement, IssueCodes.SyntaxError);
 		}
-    }
-    
-    @Test
-    def void parseTypeSpecifiersValid() {
-        val statements = '''
-		
-		signed<32> i;
-		unsigned<XLEN> i;
-		
-		char i;
-		signed char i;
-		unsigned char i;
-		
-		short i;
-		signed short i;
-		unsigned short i;
-		
-		int i;
-		signed int i;
-		unsigned int i;
-		
-		long i;
-		signed long i;
-		unsigned long i;
-		
-		bool i;
-		float i;
-		double i;
-		
-        '''.parseAsStatements();
-        
+	}
+
+	@Test
+	def void parseTypeSpecifiersValid() {
+		val statements = '''
+			
+			signed<32> i;
+			unsigned<XLEN> i;
+			
+			char i;
+			signed char i;
+			unsigned char i;
+			
+			short i;
+			signed short i;
+			unsigned short i;
+			
+			int i;
+			signed int i;
+			unsigned int i;
+			
+			long i;
+			signed long i;
+			unsigned long i;
+			
+			bool i;
+			float i;
+			double i;
+			
+		'''.parseAsStatements();
+
 		for (statement : statements) {
 			validator.assertNoErrors(statement, IssueCodes.SyntaxError);
 		}
-    }
-    
-    @Test
-    def void parseTypeSpecifiersInvalid() {
-        val statements = '''
-		
-		signed i;
-		unsigned i;
-		
-        '''.parseAsStatements();
-        
+	}
+
+	@Test
+	def void parseTypeSpecifiersInvalid() {
+		val statements = '''
+			
+			signed i;
+			unsigned i;
+			
+		'''.parseAsStatements();
+
 		for (statement : statements) {
 			validator.assertError(statement, CoreDslPackage.Literals.DECLARATOR, IssueCodes.SyntaxError);
 		}
-    }
+	}
 }
