@@ -1,0 +1,39 @@
+// https://github.com/Minres/CoreDSL/wiki/Introduction:-Syntax
+
+Core My32bitRISCVCore {
+  architectural_state {
+             unsigned int    REG_LEN = 32;  // implementation parameter
+             unsigned int    XLEN = 32;     // implementation parameter
+    register unsigned<XLEN>  X[REG_LEN];    // register file
+    register unsigned<XLEN>  PC [[is_pc]];  // single register with attribute
+             unsigned<XLEN>& ZERO = X[0];   // register alias
+    extern   unsigned<8>     MEM[1<<XLEN];  // address space declaration
+  }
+
+  instructions {
+    LUI {
+      encoding: imm[31:12] :: rd[4:0] :: 7'b0110111;
+      behavior: if (rd != 0) X[rd] = imm;
+    }
+    JAL [[no_cont]] {
+      encoding: imm[20:20] :: imm[10:1] :: imm[11:11] :: imm[19:12] :: rd[4:0] :: 7'b1101111;
+      behavior: {
+        if (rd != 0)
+          X[rd] = (unsigned<XLEN>) (PC + 4);
+        PC += (signed) imm;
+      }
+    }
+    LW {
+      encoding: imm[11:0] :: rs1[4:0] :: 3'b010 :: rd[4:0] :: 7'b0000011;
+      behavior: if (rd != 0) {
+        unsigned<XLEN> base = (unsigned<XLEN>) (X[rs1] + (signed) imm);
+        X[rd] = MEM[base] :: MEM[base + 1] :: MEM[base + 2] :: MEM[base + 3];
+      }
+    }
+    XOR {
+      encoding: 7'b0000000 :: rs2[4:0] :: rs1[4:0] :: 3'b100 :: rd[4:0] :: 7'b0110011;
+      behavior: if (rd != 0) X[rd] = X[rs1] ^ X[rs2];
+    }
+    // ... many more instructions, omitted for brevity
+  }
+}
