@@ -15,7 +15,6 @@ import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
-import com.minres.coredsl.coreDsl.IterationStatement
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
 import com.minres.coredsl.coreDsl.StructDeclaration
@@ -31,6 +30,7 @@ import static extension com.minres.coredsl.util.ModelUtil.*
 import com.minres.coredsl.coreDsl.MemberAccessExpression
 import com.minres.coredsl.coreDsl.NamedEntity
 import com.minres.coredsl.coreDsl.EntityReference
+import com.minres.coredsl.coreDsl.ForLoop
 
 /**
  * This class contains custom scoping description.
@@ -102,9 +102,9 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
             default:
                 parent.getScope(reference)
         }
-        if (context instanceof IterationStatement)
-            if (context.startDecl !== null)
-                return Scopes.scopeFor(context.startDecl.declarators.map[it.declarator], parentScope)
+        if (context instanceof ForLoop)
+            if (context.startDeclaration !== null)
+                return Scopes.scopeFor(context.startDeclaration.declarators.map[it.declarator], parentScope)
         return parentScope
     }
 

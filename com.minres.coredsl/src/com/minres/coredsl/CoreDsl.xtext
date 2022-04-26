@@ -54,8 +54,11 @@ ParameterDeclaration: type=TypeSpecifier declarator=Declarator?;
 Statement
     :   CompoundStatement
     |   ExpressionStatement
-    |   SelectionStatement
-    |   IterationStatement
+    |   IfStatement
+    |   SwitchStatement
+    |   WhileLoop
+    |   ForLoop
+    |   DoLoop
     |   JumpStatement
     |   SpawnStatement
     ;
@@ -76,30 +79,30 @@ BlockItem
     ;
 
 ExpressionStatement
-    :   {ExpressionStatement} expr=ExpressionList? ';'
-        
+    :   {ExpressionStatement} expr=AssignmentExpression? ';'
     ;
+    
+//////////////////////////////// Flow Control ////////////////////////////////
 
-SelectionStatement
-    :   IfStatement
-    |   SwitchStatement
-    ;
 IfStatement
     :   'if' '(' cond=ConditionalExpression ')' thenStmt=Statement (=> 'else' elseStmt=Statement)?
     ;
+
 SwitchStatement
     :   'switch' '(' cond=ConditionalExpression ')' '{' items+=LabeledStatement+ '}'
     ;
 
-IterationStatement
-    :   type='while' '(' cond=ConditionalExpression ')' stmt=Statement
-    |   type='do' stmt=Statement 'while' '(' cond=ConditionalExpression ')' ';'
-    |   type='for' '(' ForCondition ')' stmt=Statement
-    ;
+//////////////////////////////// Loops ////////////////////////////////
 
-fragment ForCondition
-	:   (startDecl=Declaration | startExpr=AssignmentExpression? ';') endExpr=ConditionalExpression? ';'  (loopExprs+=AssignmentExpression (',' loopExprs+=AssignmentExpression)*)?
-	;
+WhileLoop: 'while' '(' condition=ConditionalExpression ')' body=Statement;
+
+ForLoop: 'for' '('
+	(startDeclaration=Declaration | startExpression=AssignmentExpression? ';')				// init statement
+	(condition=ConditionalExpression?) ';'													// condition
+	(loopExpressions+=AssignmentExpression (',' loopExpressions+=AssignmentExpression)*)?	// loop statements
+	')' body=Statement;
+
+DoLoop: 'do' body=Statement 'while' '(' condition=ConditionalExpression ')' ';';
 
 JumpStatement
     :   type='continue' ';'
@@ -200,18 +203,18 @@ Designator: LEFT_BR idx=ConstantExpression RIGHT_BR | '.' prop=ID;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Expressions
-ExpressionList  returns Expression
-    :   AssignmentExpression ({Expression.expressions+=current} (',' expressions+=AssignmentExpression)*)
-    ;
 
+// TODO AssignmentExpression should be inserted in the precedence hierarchy between ConditionalExpression and ConcatenationExpression
 AssignmentExpression returns Expression // this is right associative
     :   PrefixExpression ({AssignmentExpression.left=current} assignments+=Assignment)*
     ;
 
+// TODO remove this rule completely and instead use right-recursive pattern for AssignmentExpression
 Assignment:
 	type=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=') right=ConditionalExpression
 	;
 
+// TODO the then and else branches should allow AssignmentExpression
 ConditionalExpression returns Expression
     :   ConcatenationExpression ({ConditionalExpression.cond=current} '?' left=ConditionalExpression ':' right=ConditionalExpression)?
     ;
@@ -219,7 +222,8 @@ ConditionalExpression returns Expression
 ConcatenationExpression returns Expression // right associative rule
     :   LogicalOrExpression ({InfixExpression.left=current} op='::' right=ConcatenationExpression)?
     ;
-    
+
+// TODO issue: all left-associative infix expressions can have at most one operator of the same precedence because they are ? qualified.    
 LogicalOrExpression returns Expression
     :   LogicalAndExpression ({InfixExpression.left=current} op='||' right=LogicalOrExpression)?
     ;
@@ -330,6 +334,8 @@ enum TypeQualifier: CONST='const' | VOLATILE='volatile';
 enum StorageClassSpecifier: EXTERN='extern' | STATIC='static' | REGISTER='register';
 
 enum StructOrUnion:   STRUCT='struct'|UNION='union';
+
+// TODO enum for assignment operators
 
 terminal LEFT_BR: '[';
 

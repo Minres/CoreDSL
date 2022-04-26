@@ -52,7 +52,8 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 				if (e.typeFor === null)
 					error(
 						"incompatible types used",
-						CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
+						// TODO this doesn't necessarily make sense as a location
+						CoreDslPackage.Literals.EXPRESSION__LEFT,
 						TYPE_MISMATCH
 					)
 			case CastExpression: {
@@ -75,7 +76,7 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 						if (!e.left.typeFor.isComparable((e as InfixExpression).right.typeFor))
 							error(
 								"incompatible types used",
-								CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
+								CoreDslPackage.Literals.INFIX_EXPRESSION__OP,
 								TYPE_MISMATCH
 							)
 					case '||',
@@ -93,7 +94,7 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 						if (!e.left.typeFor.isComputable((e as InfixExpression).right.typeFor))
 							error(
 								"incompatible types used",
-								CoreDslPackage.Literals.EXPRESSION__EXPRESSIONS,
+								CoreDslPackage.Literals.INFIX_EXPRESSION__OP,
 								TYPE_MISMATCH
 							)
 					default: {

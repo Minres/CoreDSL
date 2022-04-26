@@ -14,7 +14,6 @@ import com.minres.coredsl.coreDsl.DesignatedInitializer
 import com.minres.coredsl.coreDsl.Designator
 import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.Encoding
-import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.ExpressionStatement
 import com.minres.coredsl.coreDsl.FloatConstant
 import com.minres.coredsl.coreDsl.FunctionDefinition
@@ -25,7 +24,6 @@ import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.IntegerConstant
-import com.minres.coredsl.coreDsl.IterationStatement
 import com.minres.coredsl.coreDsl.JumpStatement
 import com.minres.coredsl.coreDsl.LabeledStatement
 import com.minres.coredsl.coreDsl.ParameterDeclaration
@@ -66,6 +64,9 @@ import com.minres.coredsl.coreDsl.ParenthesisExpression
 import com.minres.coredsl.coreDsl.ExpressionInitializer
 import com.minres.coredsl.coreDsl.ListInitializer
 import com.minres.coredsl.coreDsl.EntityReference
+import com.minres.coredsl.coreDsl.WhileLoop
+import com.minres.coredsl.coreDsl.ForLoop
+import com.minres.coredsl.coreDsl.DoLoop
 
 class Visualizer {
 	
@@ -311,20 +312,33 @@ class Visualizer {
 	}
 	
 	private def dispatch VisualNode genNode(SwitchStatement node) {
-		return makeNode(node, "Switch Statement", 
+		return makeNode(node, "Switch Statement",
 			makeChild("Condition", node.cond),
 			makeGroup("Branches", node.items)
 		);
 	}
 	
-	private def dispatch VisualNode genNode(IterationStatement node) {
-		return makeNode(node, "Loop (" + node.type + ")",
-			makeChild("Condition", node.cond),
-			makeChild("Start Declaration", node.startDecl),
-			makeChild("Start Assignment", node.startExpr),
-			makeChild("Condition", node.endExpr),
-			makeGroup("Loop Assignments", node.loopExprs),
-			makeChild("Body", node.stmt)
+	private def dispatch VisualNode genNode(WhileLoop node) {
+		return makeNode(node, "While Loop",
+			makeChild("Condition", node.condition),
+			makeChild("Body", node.body)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(ForLoop node) {
+		return makeNode(node, "For Loop",
+			makeChild("Start Declaration", node.startDeclaration),
+			makeChild("Start Assignment", node.startExpression),
+			makeChild("Condition", node.condition),
+			makeGroup("Loop Assignments", node.loopExpressions),
+			makeChild("Body", node.body)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(DoLoop node) {
+		return makeNode(node, "Do Loop",
+			makeChild("Body", node.body),
+			makeChild("Condition", node.condition)
 		);
 	}
 	
@@ -527,6 +541,8 @@ class Visualizer {
 		);
 	}
 	
+	//TODO CastExpression
+	
 	private def dispatch VisualNode genNode(EntityReference node) {
 		if(node.target instanceof FunctionDefinition)
 			return makeNode(node, "Function Reference", makeReference("Function", (node.target as FunctionDefinition).name, [node.target]));
@@ -536,12 +552,6 @@ class Visualizer {
 			
 		if(node.target instanceof BitField)
 			return makeNode(node, "Field Reference", makeReference("Field", (node.target as BitField).name, [node.target]));
-	}
-	
-	private def dispatch VisualNode genNode(Expression node) {
-		if(node.expressions.size != 1)
-			throw new RuntimeException("Expected exactly one expression");
-		return visit(node.expressions.get(0));
 	}
 	
 	private def dispatch VisualNode genNode(AssignmentExpression node) {
