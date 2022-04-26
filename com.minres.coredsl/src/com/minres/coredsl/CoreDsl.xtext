@@ -59,13 +59,10 @@ Statement
     |   WhileLoop
     |   ForLoop
     |   DoLoop
-    |   JumpStatement
+    |   ContinueStatement
+    |   BreakStatement
+    |   ReturnStatement
     |   SpawnStatement
-    ;
-
-LabeledStatement
-    :   'case' constExpr=ConstantExpression ':' items+=Statement*
-    |   {LabeledStatement} 'default' ':' items+=Statement*
     ;
 
     
@@ -81,16 +78,26 @@ BlockItem
 ExpressionStatement
     :   {ExpressionStatement} expr=AssignmentExpression? ';'
     ;
+
+SpawnStatement
+    :   'spawn' stmt=Statement
+    ;
     
 //////////////////////////////// Flow Control ////////////////////////////////
 
-IfStatement
-    :   'if' '(' cond=ConditionalExpression ')' thenStmt=Statement (=> 'else' elseStmt=Statement)?
-    ;
+IfStatement:
+	'if' '(' condition=ConditionalExpression ')' thenBody=Statement (=> 'else' elseBody=Statement)?;
 
-SwitchStatement
-    :   'switch' '(' cond=ConditionalExpression ')' '{' items+=LabeledStatement+ '}'
-    ;
+SwitchStatement:
+	'switch' '(' condition=ConditionalExpression ')' '{' sections+=SwitchSection* '}';
+
+SwitchSection:
+	{CaseSection} 'case' condition=ConstantExpression ':' body+=BlockItem* |
+	{DefaultSection} 'default' ':' body+=BlockItem*;
+
+ContinueStatement: {ContinueStatement} 'continue' ';';
+BreakStatement: {BreakStatement} 'break' ';';
+ReturnStatement: {ReturnStatement} 'return' value=ConditionalExpression? ';';
 
 //////////////////////////////// Loops ////////////////////////////////
 
@@ -103,16 +110,6 @@ ForLoop: 'for' '('
 	')' body=Statement;
 
 DoLoop: 'do' body=Statement 'while' '(' condition=ConditionalExpression ')' ';';
-
-JumpStatement
-    :   type='continue' ';'
-    |   type='break' ';'
-    |   type='return' expr=ConditionalExpression? ';'
-    ;
-
-SpawnStatement
-    :   'spawn' stmt=Statement
-    ;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Declarations

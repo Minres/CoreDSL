@@ -457,8 +457,8 @@ class CoreDslSyntaxTest {
 			
 		'''.parseAsStatements().get(0) as IfStatement;
 
-		assertNull(ifstmt.elseStmt);
-		assertNotNull((ifstmt.thenStmt as IfStatement).elseStmt);
+		assertNull(ifstmt.elseBody);
+		assertNotNull((ifstmt.thenBody as IfStatement).elseBody);
 	}
 
 	@Test
@@ -586,14 +586,14 @@ class CoreDslSyntaxTest {
 			
 			switch(5) { case: }
 			
-		'''.parseAsStatement(), CoreDslPackage.Literals.LABELED_STATEMENT, IssueCodes.SyntaxError);
+		'''.parseAsStatement(), CoreDslPackage.Literals.SWITCH_SECTION, IssueCodes.SyntaxError);
 
 		// default must not have a condition
 		validator.assertError('''
 			
 			switch(5) { default 0: }
 			
-		'''.parseAsStatement(), CoreDslPackage.Literals.LABELED_STATEMENT, IssueCodes.SyntaxError);
+		'''.parseAsStatement(), CoreDslPackage.Literals.SWITCH_SECTION, IssueCodes.SyntaxError);
 	}
 
 	@Test
