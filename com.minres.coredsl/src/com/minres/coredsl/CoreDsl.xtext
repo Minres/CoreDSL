@@ -76,8 +76,7 @@ BlockItem
     ;
 
 ExpressionStatement
-    :   {ExpressionStatement} expr=ExpressionList? ';'
-        
+    :   {ExpressionStatement} expr=AssignmentExpression? ';'
     ;
 
 SelectionStatement
@@ -200,18 +199,18 @@ Designator: LEFT_BR idx=ConstantExpression RIGHT_BR | '.' prop=ID;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Expressions
-ExpressionList  returns Expression
-    :   AssignmentExpression ({Expression.expressions+=current} (',' expressions+=AssignmentExpression)*)
-    ;
 
+// TODO issue: there is no grammar rule that accepts both a ConditionalExpression and an AssignmentExpression
 AssignmentExpression returns Expression // this is right associative
     :   PrefixExpression ({AssignmentExpression.left=current} assignments+=Assignment)*
     ;
 
+// TODO remove this rule completely and instead use right-recursive pattern for AssignmentExpression
 Assignment:
 	type=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=') right=ConditionalExpression
 	;
 
+// TODO the then and else branches should allow AssignmentExpression
 ConditionalExpression returns Expression
     :   ConcatenationExpression ({ConditionalExpression.cond=current} '?' left=ConditionalExpression ':' right=ConditionalExpression)?
     ;

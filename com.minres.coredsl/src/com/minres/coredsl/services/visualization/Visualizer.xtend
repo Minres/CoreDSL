@@ -527,6 +527,8 @@ class Visualizer {
 		);
 	}
 	
+	//TODO CastExpression
+	
 	private def dispatch VisualNode genNode(EntityReference node) {
 		if(node.target instanceof FunctionDefinition)
 			return makeNode(node, "Function Reference", makeReference("Function", (node.target as FunctionDefinition).name, [node.target]));
@@ -536,12 +538,6 @@ class Visualizer {
 			
 		if(node.target instanceof BitField)
 			return makeNode(node, "Field Reference", makeReference("Field", (node.target as BitField).name, [node.target]));
-	}
-	
-	private def dispatch VisualNode genNode(Expression node) {
-		if(node.expressions.size != 1)
-			throw new RuntimeException("Expected exactly one expression");
-		return visit(node.expressions.get(0));
 	}
 	
 	private def dispatch VisualNode genNode(AssignmentExpression node) {

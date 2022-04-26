@@ -137,14 +137,6 @@ class TypeProvider {
         return null;
     }
 
-    def dispatch static DataType typeFor(Expression e, ISA ctx) {
-        val types =  e.expressions.map[expr|expr.typeFor(ctx)]
-        val first = types.findFirst[it===null]
-        if(first !== null)
-            return null
-        return types.head
-    }
-
     def static dispatch DataType typeFor(AssignmentExpression e, ISA ctx) {
         return e.assignments.last.right.typeFor(ctx)
     }
