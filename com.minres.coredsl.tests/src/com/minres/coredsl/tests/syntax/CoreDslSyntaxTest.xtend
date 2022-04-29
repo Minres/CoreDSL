@@ -511,6 +511,9 @@ class CoreDslSyntaxTest {
 	def void parseSwitchStatementValid() {
 		val statements = '''
 			
+			// no sections
+			switch(1) { }
+			
 			// simple default
 			switch(1) { default: }
 			
@@ -572,14 +575,6 @@ class CoreDslSyntaxTest {
 			switch(5);
 			
 		'''.parseAsStatement(), CoreDslPackage.Literals.EXPRESSION_STATEMENT, IssueCodes.SyntaxError);
-
-		// at least one section is required (TODO why?)
-		// NOTE: the closing brace is parsed as the end of the (omitted) compound statement, hence the error location
-		validator.assertError('''
-			
-			switch(5) {}
-			
-		'''.parseAsStatement(), CoreDslPackage.Literals.COMPOUND_STATEMENT, IssueCodes.SyntaxError);
 
 		// case needs a condition
 		validator.assertError('''
