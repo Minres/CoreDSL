@@ -24,8 +24,6 @@ import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.IntegerConstant
-import com.minres.coredsl.coreDsl.JumpStatement
-import com.minres.coredsl.coreDsl.LabeledStatement
 import com.minres.coredsl.coreDsl.ParameterDeclaration
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
@@ -67,6 +65,12 @@ import com.minres.coredsl.coreDsl.EntityReference
 import com.minres.coredsl.coreDsl.WhileLoop
 import com.minres.coredsl.coreDsl.ForLoop
 import com.minres.coredsl.coreDsl.DoLoop
+import com.minres.coredsl.coreDsl.CaseSection
+import com.minres.coredsl.coreDsl.DefaultSection
+import com.minres.coredsl.coreDsl.CastExpression
+import com.minres.coredsl.coreDsl.ContinueStatement
+import com.minres.coredsl.coreDsl.BreakStatement
+import com.minres.coredsl.coreDsl.ReturnStatement
 
 class Visualizer {
 	
@@ -289,10 +293,6 @@ class Visualizer {
 	
 	// statements
 	
-	private def dispatch VisualNode genNode(LabeledStatement node) {
-		return makeNode(node, node.constExpr !== null ? "Case" : "Default", node.items);
-	}
-	
 	private def dispatch VisualNode genNode(CompoundStatement node) {
 		return makeNode(node, "Compound Statement", node.items);
 	}
@@ -305,16 +305,29 @@ class Visualizer {
 	
 	private def dispatch VisualNode genNode(IfStatement node) {
 		return makeNode(node, "If Statement", 
-			makeChild("Condition", node.cond),
-			makeChild("Then Branch", node.thenStmt),
-			makeChild("Else Branch", node.elseStmt)
+			makeChild("Condition", node.condition),
+			makeChild("Then Branch", node.thenBody),
+			makeChild("Else Branch", node.elseBody)
 		);
 	}
 	
 	private def dispatch VisualNode genNode(SwitchStatement node) {
 		return makeNode(node, "Switch Statement",
-			makeChild("Condition", node.cond),
-			makeGroup("Branches", node.items)
+			makeChild("Condition", node.condition),
+			makeGroup("Branches", node.sections)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(CaseSection node) {
+		return makeNode(node, "Case",
+			makeChild("Condition", node.condition),
+			makeGroup("Statements", node.body)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(DefaultSection node) {
+		return makeNode(node, "Default",
+			makeGroup("Statements", node.body)
 		);
 	}
 	
@@ -342,9 +355,17 @@ class Visualizer {
 		);
 	}
 	
-	private def dispatch VisualNode genNode(JumpStatement node) {
-		return makeNode(node, "Jump (" + node.type + ")",
-			makeChild("Return Value", node.expr)
+	private def dispatch VisualNode genNode(ContinueStatement node) {
+		return makeNode(node, "Continue");
+	}
+	
+	private def dispatch VisualNode genNode(BreakStatement node) {
+		return makeNode(node, "Break");
+	}
+	
+	private def dispatch VisualNode genNode(ReturnStatement node) {
+		return makeNode(node, "Return",
+			makeChild("Return Value", node.value)
 		);
 	}
 	
@@ -541,7 +562,12 @@ class Visualizer {
 		);
 	}
 	
-	//TODO CastExpression
+	private def dispatch VisualNode genNode(CastExpression node) {
+		return makeNode(node, "Cast Expression",
+			makeChild("Target Type", node.type),
+			makeChild("Operand", node.left)
+		);
+	}
 	
 	private def dispatch VisualNode genNode(EntityReference node) {
 		if(node.target instanceof FunctionDefinition)
