@@ -42,7 +42,6 @@ import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerSignedness
 import com.minres.coredsl.coreDsl.ParenthesisExpression
 import com.minres.coredsl.coreDsl.StringConstant
-import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.NamedEntity
 import com.minres.coredsl.coreDsl.EntityReference
 
@@ -221,8 +220,8 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(Declarator e, ISA ctx) {
-        if (e.eContainer instanceof InitDeclarator && e.eContainer.eContainer instanceof Declaration) {
-            var decl = e.eContainer.eContainer as Declaration
+        if (e.eContainer instanceof Declaration) {
+            var decl = e.eContainer as Declaration
             decl.type.typeFor(ctx)
         } else
             null

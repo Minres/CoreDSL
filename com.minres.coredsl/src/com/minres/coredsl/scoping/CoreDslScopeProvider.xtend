@@ -4,7 +4,6 @@
 package com.minres.coredsl.scoping
 
 import com.minres.coredsl.coreDsl.BitField
-import com.minres.coredsl.coreDsl.BlockItem
 import com.minres.coredsl.coreDsl.CompositeTypeSpecifier
 import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.CoreDef
@@ -17,7 +16,6 @@ import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrimaryExpression
-import com.minres.coredsl.coreDsl.StructDeclaration
 import java.util.List
 import java.util.Set
 import org.eclipse.emf.ecore.EObject
@@ -31,6 +29,8 @@ import com.minres.coredsl.coreDsl.MemberAccessExpression
 import com.minres.coredsl.coreDsl.NamedEntity
 import com.minres.coredsl.coreDsl.EntityReference
 import com.minres.coredsl.coreDsl.ForLoop
+import com.minres.coredsl.coreDsl.Statement
+import com.minres.coredsl.coreDsl.DeclarationStatement
 
 /**
  * This class contains custom scoping description.
@@ -39,14 +39,24 @@ import com.minres.coredsl.coreDsl.ForLoop
  * on how and when to use it.
  */
 class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
+	
+	int nesting = 0;
 
-    override IScope getScope(EObject context, EReference reference){
+	override IScope getScope(EObject context, EReference reference){
+		nesting++;
+		val res = getScopeInternal(context, reference);
+		nesting--;
+		//println('''«'  '.repeat(nesting)»«reference.EReferenceType.name» [«context.class.simpleName»]: «res.allElements.map[it.toString].join(', ')»''');
+		return res;
+	}
+
+    def IScope getScopeInternal(EObject context, EReference reference){
         //println("scopre for "+reference.name+"(class "+reference.EReferenceType.name+") in context "+context.eClass.name)
         if(reference.EReferenceType == CoreDslPackage.Literals.NAMED_ENTITY) {
             switch(context){
                 PrimaryExpression:
                     context.containingStatement.scopeForVariable(reference)
-                BlockItem:
+                Statement:
                     context.scopeForVariable(reference)
                 InstructionSet:
                     Scopes.scopeFor(context.variables, context.superType !== null? context.superType.scopeForVariable(reference) : IScope.NULLSCOPE)
@@ -71,8 +81,8 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
             super.getScope(context, reference)
     }
     
-    def BlockItem containingStatement(EObject obj){
-        if(obj instanceof BlockItem)
+    def Statement containingStatement(EObject obj){
+        if(obj instanceof Statement)
             return obj
         else if(obj.eContainer !== null)
             obj.eContainer.containingStatement
@@ -88,7 +98,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
         Scopes.scopeFor(coreDef.variables, coreDef.contributingType.outerScope)
     }
 
-    def IScope scopeForVariable(BlockItem context, EReference reference) {
+    def IScope scopeForVariable(Statement context, EReference reference) {
         val parent = context.eContainer
         val parentScope = switch (parent) {
             CompoundStatement:
@@ -104,7 +114,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
         }
         if (context instanceof ForLoop)
             if (context.startDeclaration !== null)
-                return Scopes.scopeFor(context.startDeclaration.declarators.map[it.declarator], parentScope)
+                return Scopes.scopeFor(context.startDeclaration.declarators, parentScope)
         return parentScope
     }
 
@@ -141,12 +151,12 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
     /************************************************************************
      * declarationsBefore extension methods begin
      */
-    def Iterable<Declaration> declarationsBefore(EObject object, BlockItem decl){
+    def Iterable<Declaration> declarationsBefore(EObject object, Statement decl){
         switch (object) {
             CompoundStatement:
-                object.items.takeWhile [
+                object.statements.takeWhile [
                     it !== decl
-                ].filter[it instanceof Declaration].map[it as Declaration]
+                ].filter[it instanceof DeclarationStatement].map[(it as DeclarationStatement).declaration]
             InstructionSet:
                 object.allDeclarations.takeWhile[it!==decl]
             CoreDef:
@@ -165,10 +175,10 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
     def Iterable<Declaration> allDeclarations(ISA isa) {
         if(isa instanceof InstructionSet) {
             val declsSuper = isa.superType!==null?isa.superType.allDeclarations:#[]
-            declsSuper + isa.declarations
+            declsSuper + isa.declarations.map[it.declaration]
         } else if(isa instanceof CoreDef){
             val declsSuper = isa.contributingType.map[it.allDeclarations].flatten
-            declsSuper + isa.declarations
+            declsSuper + isa.declarations.map[it.declaration]
         }
     }
     /*
@@ -180,9 +190,9 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
      */
 
     def Iterable<Declarator> variablesDeclaredBefore(EObject stmt, EObject o) {
-        if(o instanceof BlockItem)
+        if(o instanceof Statement)
             stmt.declarationsBefore(o).flatMap[
-                it.declarators.map[it.declarator]
+                it.declarators
             ]
         else
             #[]
@@ -194,22 +204,22 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
     /************************************************************************
      * directDeclarations extension methods begin
      */
-    def dispatch Iterable<Declarator> directDeclarations(Iterable<StructDeclaration> decls) {
-        decls.map[it.declarator].flatten
+    def dispatch Iterable<Declarator> directDeclarations(Iterable<Declaration> decls) {
+        decls.flatMap[it.declarators]
     }
 
     def dispatch Iterable<Declarator> directDeclarations(Declaration decl) {
-        decl.declarators.map[it.declarator]
+        decl.declarators
     }
 
     def dispatch Iterable<Declarator> directDeclarations(CompositeTypeSpecifier spec) {
-        if (spec.declaration.size > 0)
-            spec.declaration.directDeclarations
+        if (spec.declarations.size > 0)
+            spec.declarations.directDeclarations
         else {
             val specifier = spec.eContainer.findCompositeType([
                 CompositeTypeSpecifier d|d.name!==null?d.name==spec.name:false
             ])
-            specifier===null?#[]:specifier.declaration.directDeclarations
+            specifier===null?#[]:specifier.declarations.directDeclarations
         }
     }
     
@@ -223,13 +233,13 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
     /************************************************************************
      * type extension methods begin
      */
-    def dispatch CompositeTypeSpecifier findCompositeType(Declaration object, (CompositeTypeSpecifier)=>boolean predicate){
-        val res = object.eContainer.declarationsBefore(object)
+    def dispatch CompositeTypeSpecifier findCompositeType(DeclarationStatement decl, (CompositeTypeSpecifier)=>boolean predicate){
+        val res = decl.eContainer.declarationsBefore(decl)
             .map[it.type]
             .filter[it instanceof CompositeTypeSpecifier]
             .map[it as CompositeTypeSpecifier]
             .findFirst(predicate)
-        res ?: object.eContainer.eContainer.findCompositeType(predicate)
+        res ?: decl.eContainer.eContainer.findCompositeType(predicate)
     }
         
     def dispatch CompositeTypeSpecifier findCompositeType(ISA isa, (CompositeTypeSpecifier)=>boolean predicate){
