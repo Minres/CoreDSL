@@ -269,7 +269,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
     }
 
     def dispatch Declarator Declarator(PostfixExpression expression) {
-        expression.left.Declarator
+        expression.operand.Declarator
     }
 
     def dispatch Declarator Declarator(EObject object) {

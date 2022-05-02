@@ -77,13 +77,13 @@ DeclarationStatement: declaration=MultiInitDeclaration ';';
 //////////////////////////////// Flow Control ////////////////////////////////
 
 IfStatement:
-	'if' '(' condition=ConditionalExpression ')' thenBody=Statement (=> 'else' elseBody=Statement)?;
+	'if' '(' condition=Expression ')' thenBody=Statement (=> 'else' elseBody=Statement)?;
 
 SwitchStatement:
-	'switch' '(' condition=ConditionalExpression ')' '{' sections+=SwitchSection* '}';
+	'switch' '(' condition=Expression ')' '{' sections+=SwitchSection* '}';
 
 SwitchSection:
-	{CaseSection} 'case' condition=ConstantExpression ':' body+=Statement* |
+	{CaseSection} 'case' condition=Expression ':' body+=Statement* |
 	{DefaultSection} 'default' ':' body+=Statement*;
 
 ContinueStatement: {ContinueStatement} 'continue' ';';
@@ -95,17 +95,17 @@ ReturnStatement: {ReturnStatement} 'return' value=ConditionalExpression? ';';
 LoopStatement: WhileLoop | ForLoop | DoLoop;
 
 WhileLoop:
-	'while' '(' condition=ConditionalExpression ')' body=Statement;
+	'while' '(' condition=Expression ')' body=Statement;
 
 ForLoop:
 	'for' '('
 	(startDeclaration=MultiInitDeclaration | startExpression=AssignmentExpression?) ';'
-	(condition=ConditionalExpression?) ';'
+	(condition=Expression?) ';'
 	(loopExpressions+=AssignmentExpression (',' loopExpressions+=AssignmentExpression)*)?
 	')' body=Statement;
 
 DoLoop:
-	'do' body=Statement 'while' '(' condition=ConditionalExpression ')' ';';
+	'do' body=Statement 'while' '(' condition=Expression ')' ';';
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// Declarations ////////////////////////////////
@@ -122,7 +122,7 @@ Declaration<allowMultiple, allowInit>:
 Declarator<allowInit>:
 	alias?='&'?
 	name=ID
-	(LEFT_BR dimensions+=ConstantExpression RIGHT_BR)*
+	(LEFT_BR dimensions+=Expression RIGHT_BR)*
 	attributes+=Attribute*
 	(<allowInit> t_equals='=' initializer=(ExpressionInitializer | ListInitializer))?;
 
@@ -130,17 +130,17 @@ NamedEntity: FunctionDefinition | Declarator<true> | BitField;
     
 Initializer: ExpressionInitializer | ListInitializer | DesignatedInitializer;
 
-ExpressionInitializer: expr=ConditionalExpression;
+ExpressionInitializer: expr=Expression;
 
 ListInitializer: '{' initializers+=Initializer (',' initializers+=Initializer)* ','? '}';
 
 DesignatedInitializer: (designators+=Designator)+ '=' initializer=(ExpressionInitializer | ListInitializer);
 
-Designator: LEFT_BR idx=ConstantExpression RIGHT_BR | '.' prop=ID;
+Designator: LEFT_BR idx=Expression RIGHT_BR | '.' prop=ID;
 
 Attribute:
 	DoubleLeftBracket type=ID
-	('=' parameters+=ConditionalExpression | '(' parameters+=ConditionalExpression (',' parameters+=ConditionalExpression)* ')')?
+	('=' parameters+=Expression | '(' parameters+=Expression (',' parameters+=Expression)* ')')?
 	DoubleRightBracket;
 
 //////////////////////////////// Type Specifiers ////////////////////////////////
@@ -189,115 +189,85 @@ EnumTypeSpecifier
 
 EnumMemberDeclaration
     :   name=ID
-    |   name=ID '=' expression=ConstantExpression
+    |   name=ID '=' expression=Expression
     ;
 
 /////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// Expressions ////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-// TODO AssignmentExpression should be inserted in the precedence hierarchy between ConditionalExpression and ConcatenationExpression
-AssignmentExpression returns Expression // this is right associative
-    :   PrefixExpression ({AssignmentExpression.left=current} assignments+=Assignment)*
-    ;
+Expression: AssignmentExpression;
 
-// TODO remove this rule completely and instead use right-recursive pattern for AssignmentExpression
-Assignment:
-	type=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=') right=ConditionalExpression
-	;
+AssignmentExpression returns Expression:
+	ConditionalExpression
+	({AssignmentExpression.target=current}
+		operator=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=')
+		value=AssignmentExpression
+	)?;
 
-// TODO the then and else branches should allow AssignmentExpression
-ConditionalExpression returns Expression
-    :   ConcatenationExpression ({ConditionalExpression.cond=current} '?' left=ConditionalExpression ':' right=ConditionalExpression)?
-    ;
+ConditionalExpression returns Expression:
+	ConcatenationExpression
+	({ConditionalExpression.condition=current}
+		'?' thenExpression=AssignmentExpression
+		':' elseExpression=ConditionalExpression
+	)?;
 
-ConcatenationExpression returns Expression // right associative rule
-    :   LogicalOrExpression ({InfixExpression.left=current} op='::' right=ConcatenationExpression)?
-    ;
+ConcatenationExpression returns Expression:
+	LogicalOrExpression
+	({ConcatenationExpression.parts+=current}
+		('::' parts+=LogicalOrExpression)+
+	)?;
 
-// TODO issue: all left-associative infix expressions can have at most one operator of the same precedence because they are ? qualified.
-LogicalOrExpression returns Expression
-    :   LogicalAndExpression ({InfixExpression.left=current} op='||' right=LogicalOrExpression)?
-    ;
+LogicalOrExpression returns Expression: LogicalAndExpression ({InfixExpression.left=current} operator='||' right=LogicalAndExpression)*;
+LogicalAndExpression returns Expression: InclusiveOrExpression ({InfixExpression.left=current} operator='&&' right=InclusiveOrExpression)*;
+InclusiveOrExpression returns Expression: ExclusiveOrExpression ({InfixExpression.left=current} operator='|' right=ExclusiveOrExpression)*;
+ExclusiveOrExpression returns Expression: AndExpression ({InfixExpression.left=current} operator='^' right=AndExpression)*;
+AndExpression returns Expression: EqualityExpression ({InfixExpression.left=current} operator='&' right=EqualityExpression)*;
+EqualityExpression returns Expression: RelationalExpression ({InfixExpression.left=current} operator=('=='|'!=') right=RelationalExpression)*;
+RelationalExpression returns Expression: ShiftExpression ({InfixExpression.left=current} operator=('<'|'>'|'<='|'>=') right=ShiftExpression)*;
+ShiftExpression returns Expression: AdditiveExpression ({InfixExpression.left=current} operator=('<<'|'>>') right=AdditiveExpression)*;
+AdditiveExpression returns Expression: MultiplicativeExpression ({InfixExpression.left=current} operator=('+'|'-') right=MultiplicativeExpression)*;
+MultiplicativeExpression returns Expression: CastExpression ({InfixExpression.left=current} operator=('*' | '/' | '%') right=CastExpression)*;
 
-LogicalAndExpression returns Expression
-    :   InclusiveOrExpression ({InfixExpression.left=current} op='&&' right=LogicalAndExpression)?
-    ;
+CastExpression returns Expression:
+	PrefixExpression
+	| {CastExpression} '(' targetType=TypeSpecifier ')' operand=CastExpression
+	| {CastExpression} '(' signedness=IntegerSignedness ')' operand=CastExpression;
 
-InclusiveOrExpression returns Expression
-    :   ExclusiveOrExpression ({InfixExpression.left=current} op='|' right=InclusiveOrExpression)?
-    ;
-
-ExclusiveOrExpression returns Expression
-    :   AndExpression ({InfixExpression.left=current} op='^' right=ExclusiveOrExpression)?
-    ;
-
-AndExpression returns Expression
-    :   EqualityExpression ({InfixExpression.left=current} op='&' right=AndExpression)?
-    ;
-
-EqualityExpression returns Expression
-    :   RelationalExpression ({InfixExpression.left=current} op=('=='|'!=') right=EqualityExpression)?
-    ;
-
-RelationalExpression returns Expression
-    :   ShiftExpression ({InfixExpression.left=current} op=('<'|'>'|'<='|'>=') right=RelationalExpression)?
-    ;
-
-ShiftExpression returns Expression
-    :   AdditiveExpression ({InfixExpression.left=current} op=('<<'|'>>') right=ShiftExpression)?
-    ;
-
-AdditiveExpression returns Expression
-    :   MultiplicativeExpression ({InfixExpression.left=current} op=('+'|'-') right=AdditiveExpression)?
-    ;
-
-MultiplicativeExpression returns Expression
-    :   CastExpression ({InfixExpression.left=current} op=('*' | '/' | '%') right=MultiplicativeExpression)?
-    ;
-
-CastExpression returns Expression
-    :   PrefixExpression
-    |	{CastExpression} '(' type=TypeSpecifier ')' left=CastExpression
-    |	{CastExpression} '(' signedness=IntegerSignedness ')' left=CastExpression
-    ;
-
-PrefixExpression returns Expression
-    :   PostfixExpression
-    |   {PrefixExpression} op='++' left=PrefixExpression
-    |   {PrefixExpression} op='--' left=PrefixExpression
-    |   {PrefixExpression} op=('&' | '*' | '+' | '-' | '~' | '!') left=CastExpression
-    |   {PrefixExpression} op='sizeof' '(' (left=PostfixExpression |  type=TypeSpecifier ) ')'
-//    |   op='_Alignof' '(' type=TypeSpecifier ')'
+PrefixExpression returns Expression:
+	PostfixExpression
+	| {PrefixExpression} operator=('++' | '--') operand=PrefixExpression
+	| {PrefixExpression} operator=('+' | '-' | '~' | '!') operand=PrefixExpression
     ;
 
 PostfixExpression returns Expression:
 	PrimaryExpression
-	(	{FunctionCallExpression.left=current} '(' (arguments+=ConditionalExpression (',' arguments+=ConditionalExpression)*)? ')'
-	|	{ArrayAccessExpression.left=current} LEFT_BR index=ConditionalExpression (':' endIndex=ConditionalExpression)? RIGHT_BR
-	|	{MemberAccessExpression.left=current} op='.' declarator=[Declarator]
-	|	{MemberAccessExpression.left=current} op='->' declarator=[Declarator]
-	|	{PostfixExpression.left=current} op='++'
-	|	{PostfixExpression.left=current} op='--'
+	(	{FunctionCallExpression.target=current} '(' (arguments+=Expression (',' arguments+=Expression)*)? ')'
+	|	{ArrayAccessExpression.target=current} LEFT_BR index=Expression (':' endIndex=Expression)? RIGHT_BR
+	|	{MemberAccessExpression.target=current} operator='.' declarator=[Declarator]
+	|	{MemberAccessExpression.target=current} operator='->' declarator=[Declarator]
+	|	{PostfixExpression.operand=current} operator='++'
+	|	{PostfixExpression.operand=current} operator='--'
 	)*;
 
-PrimaryExpression: EntityReference | Constant | ParenthesisExpression;
+PrimaryExpression: ParenthesisExpression | EntityReference | IntrinsicExpression | Constant;
 
-ParenthesisExpression: '(' left=ConditionalExpression ')';
+ParenthesisExpression: '(' inner=Expression ')';
 
 EntityReference: target=[NamedEntity];
 
-ConstantExpression returns Expression: ConditionalExpression;
+IntrinsicExpression:
+	function=('sizeof' | 'bitsizeof' | 'alignof' | 'offsetof')
+	'(' (arguments+=(Expression|TypeSpecifier) (',' arguments+=(Expression|TypeSpecifier))*)? ')';
     
-///////////////////////////////////////////////////////////////////////////////
-// Constants
-Constant
-	:	IntegerConstant
-	|	FloatConstant
-	|	CharacterConstant
-	|	BoolConstant
-	|	StringConstant
-	;
+//////////////////////////////// Constants ////////////////////////////////
+
+Constant:
+	IntegerConstant
+	| FloatConstant
+	| CharacterConstant
+	| BoolConstant
+	| StringConstant;
 
 IntegerConstant hidden(WS): value=INTEGER;
 FloatConstant hidden(WS): value=FLOAT;
@@ -306,12 +276,9 @@ BoolConstant: value=BOOLEAN;
 StringConstant: literals+=StringLiteral+;
 StringLiteral: value=ENCSTRINGCONST | value=STRING ;
 
-// the following 2 rules are needed so that XText does not generate a terminal symbol '[[' and '&&'
-// which is always eaten by the Lexer so that a[b[3]] is not recognized
-DoubleLeftBracket hidden(WS, ML_COMMENT, SL_COMMENT): LEFT_BR LEFT_BR;
-DoubleRightBracket hidden(WS, ML_COMMENT, SL_COMMENT): RIGHT_BR RIGHT_BR;
-
-///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// Enumerations ////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
 enum IntegerSignedness : SIGNED='signed' | UNSIGNED='unsigned';
 
@@ -325,7 +292,14 @@ enum StorageClassSpecifier: EXTERN='extern' | STATIC='static' | REGISTER='regist
 
 enum StructOrUnion:   STRUCT='struct'|UNION='union';
 
-// TODO enum for assignment operators
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// Terminal Rules ////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+// The following 2 rules are needed so that XText does not generate the terminal symbols
+// '[[' and ']]', which are always eaten by the lexer so that a[b[3]] is not recognized.
+DoubleLeftBracket hidden(WS, ML_COMMENT, SL_COMMENT): LEFT_BR LEFT_BR;
+DoubleRightBracket hidden(WS, ML_COMMENT, SL_COMMENT): RIGHT_BR RIGHT_BR;
 
 terminal LEFT_BR: '[';
 
