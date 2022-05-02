@@ -192,8 +192,9 @@ EnumMemberDeclaration
     |   name=ID '=' expression=ConstantExpression
     ;
 
-///////////////////////////////////////////////////////////////////////////////
-// Expressions
+/////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// Expressions ////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 // TODO AssignmentExpression should be inserted in the precedence hierarchy between ConditionalExpression and ConcatenationExpression
 AssignmentExpression returns Expression // this is right associative
@@ -255,22 +256,22 @@ MultiplicativeExpression returns Expression
     :   CastExpression ({InfixExpression.left=current} op=('*' | '/' | '%') right=MultiplicativeExpression)?
     ;
 
-CastExpression
+CastExpression returns Expression
     :   PrefixExpression
-    |	'(' type=TypeSpecifier ')' left=CastExpression
-    |	'(' signedness=IntegerSignedness ')' left=CastExpression
+    |	{CastExpression} '(' type=TypeSpecifier ')' left=CastExpression
+    |	{CastExpression} '(' signedness=IntegerSignedness ')' left=CastExpression
     ;
 
-PrefixExpression
+PrefixExpression returns Expression
     :   PostfixExpression
-    |   op='++' left=PrefixExpression
-    |   op='--' left=PrefixExpression
-    |   op=('&' | '*' | '+' | '-' | '~' | '!') left=CastExpression
-    |   op='sizeof' '(' (left=PostfixExpression |  type=TypeSpecifier ) ')'
+    |   {PrefixExpression} op='++' left=PrefixExpression
+    |   {PrefixExpression} op='--' left=PrefixExpression
+    |   {PrefixExpression} op=('&' | '*' | '+' | '-' | '~' | '!') left=CastExpression
+    |   {PrefixExpression} op='sizeof' '(' (left=PostfixExpression |  type=TypeSpecifier ) ')'
 //    |   op='_Alignof' '(' type=TypeSpecifier ')'
     ;
 
-PostfixExpression:
+PostfixExpression returns Expression:
 	PrimaryExpression
 	(	{FunctionCallExpression.left=current} '(' (arguments+=ConditionalExpression (',' arguments+=ConditionalExpression)*)? ')'
 	|	{ArrayAccessExpression.left=current} LEFT_BR index=ConditionalExpression (':' endIndex=ConditionalExpression)? RIGHT_BR

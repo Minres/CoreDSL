@@ -26,8 +26,6 @@ import java.math.BigInteger
 import static extension com.minres.coredsl.typing.TypeProvider.*
 import static extension com.minres.coredsl.util.ModelUtil.*
 import com.minres.coredsl.coreDsl.ISA
-import com.minres.coredsl.coreDsl.CoreDef
-import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.ExpressionStatement
 import com.minres.coredsl.coreDsl.FunctionCallExpression
 import com.minres.coredsl.coreDsl.ArrayAccessExpression
@@ -37,7 +35,6 @@ import com.minres.coredsl.coreDsl.StringConstant
 import com.minres.coredsl.coreDsl.ExpressionInitializer
 import com.minres.coredsl.coreDsl.NamedEntity
 import com.minres.coredsl.coreDsl.EntityReference
-import org.eclipse.xtext.parser.packrat.tokens.AssignmentToken.End
 
 class CoreDSLInterpreter {
 
@@ -54,18 +51,13 @@ class CoreDSLInterpreter {
                 else
                     return null
             }
-            val stmts = switch (context) {
-                CoreDef: {
-                    context.allDefinitions
-                }
-                InstructionSet: {
-                    context.allDefinitions
-                }
-            }.toList
-            val assignments = stmts.filter[it instanceof ExpressionStatement].map [
-                (it as ExpressionStatement).expression
-            ]
-            val declAssignment = assignments.filter [
+            val stmts = context.allDefinitions.toList
+            val assignments = stmts
+            	.filter[it instanceof ExpressionStatement]
+            	.map[(it as ExpressionStatement).expression]
+            	.filter[it instanceof AssignmentExpression]
+            	.map[it as AssignmentExpression];
+            val declAssignment = assignments.filter[
                 it.left instanceof EntityReference && (it.left as EntityReference).target == decl
             ].last
             if (declAssignment === null) {
