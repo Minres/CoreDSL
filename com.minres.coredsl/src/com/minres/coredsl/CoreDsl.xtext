@@ -4,6 +4,10 @@ import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
 generate coreDsl "http://www.minres.com/coredsl/CoreDsl/2.0"
 
+///////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// Top Level Definitions ////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+
 DescriptionContent: (imports+=Import)* definitions+=(InstructionSet | CoreDef)+;
 
 Import: 'import' importURI=STRING;
@@ -13,7 +17,7 @@ InstructionSet : 'InstructionSet' name=ID ( 'extends' superType=[InstructionSet]
 CoreDef: 'Core' name=ID ( 'provides' contributingType+=[InstructionSet] (',' contributingType+=[InstructionSet])*)? '{' ISA '}';
 
 fragment ISA:
-	('architectural_state' '{' (declarations+=Declaration | assignments+=ExpressionStatement)+ '}')? &
+	('architectural_state' '{' (declarations+=DeclarationStatement | assignments+=ExpressionStatement)+ '}')? &
 	('functions' '{' functions+=FunctionDefinition+ '}')? &
 	('instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}')?;
 
@@ -44,45 +48,32 @@ BitField
 
 FunctionDefinition
 	:   extern?='extern' type=TypeSpecifier name=ID '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')' ';'
-	|   type=TypeSpecifier name=ID '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')' attributes+=Attribute* statement=CompoundStatement
+	|   type=TypeSpecifier name=ID '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')' attributes+=Attribute* body=CompoundStatement
 	;
 
-ParameterDeclaration: type=TypeSpecifier declarator=Declarator?;
+////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// Statements ////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////
-// Statements
-Statement
-    :   CompoundStatement
-    |   ExpressionStatement
-    |   IfStatement
-    |   SwitchStatement
-    |   WhileLoop
-    |   ForLoop
-    |   DoLoop
-    |   ContinueStatement
-    |   BreakStatement
-    |   ReturnStatement
-    |   SpawnStatement
-    ;
+Statement:
+	EmptyStatement
+	| SpawnStatement
+	| CompoundStatement
+	| ExpressionStatement
+	| DeclarationStatement
+	| IfStatement
+	| SwitchStatement
+	| ContinueStatement
+	| BreakStatement
+	| ReturnStatement
+	| LoopStatement;
 
-    
-CompoundStatement
-    :   {CompoundStatement} '{' items+=BlockItem* '}'
-    ;
+EmptyStatement: {EmptyStatement} ';';
+SpawnStatement: 'spawn' body=Statement;
+CompoundStatement: {CompoundStatement} '{' statements+=Statement* '}';
+ExpressionStatement: expression=AssignmentExpression ';';
+DeclarationStatement: declaration=MultiInitDeclaration ';';
 
-BlockItem
-    :   Statement
-    |   Declaration
-    ;
-
-ExpressionStatement
-    :   {ExpressionStatement} expr=AssignmentExpression? ';'
-    ;
-
-SpawnStatement
-    :   'spawn' stmt=Statement
-    ;
-    
 //////////////////////////////// Flow Control ////////////////////////////////
 
 IfStatement:
@@ -92,8 +83,8 @@ SwitchStatement:
 	'switch' '(' condition=ConditionalExpression ')' '{' sections+=SwitchSection* '}';
 
 SwitchSection:
-	{CaseSection} 'case' condition=ConstantExpression ':' body+=BlockItem* |
-	{DefaultSection} 'default' ':' body+=BlockItem*;
+	{CaseSection} 'case' condition=ConstantExpression ':' body+=Statement* |
+	{DefaultSection} 'default' ':' body+=Statement*;
 
 ContinueStatement: {ContinueStatement} 'continue' ';';
 BreakStatement: {BreakStatement} 'break' ';';
@@ -101,26 +92,58 @@ ReturnStatement: {ReturnStatement} 'return' value=ConditionalExpression? ';';
 
 //////////////////////////////// Loops ////////////////////////////////
 
-WhileLoop: 'while' '(' condition=ConditionalExpression ')' body=Statement;
+LoopStatement: WhileLoop | ForLoop | DoLoop;
 
-ForLoop: 'for' '('
-	(startDeclaration=Declaration | startExpression=AssignmentExpression? ';')				// init statement
-	(condition=ConditionalExpression?) ';'													// condition
-	(loopExpressions+=AssignmentExpression (',' loopExpressions+=AssignmentExpression)*)?	// loop statements
+WhileLoop:
+	'while' '(' condition=ConditionalExpression ')' body=Statement;
+
+ForLoop:
+	'for' '('
+	(startDeclaration=MultiInitDeclaration | startExpression=AssignmentExpression?) ';'
+	(condition=ConditionalExpression?) ';'
+	(loopExpressions+=AssignmentExpression (',' loopExpressions+=AssignmentExpression)*)?
 	')' body=Statement;
 
-DoLoop: 'do' body=Statement 'while' '(' condition=ConditionalExpression ')' ';';
+DoLoop:
+	'do' body=Statement 'while' '(' condition=ConditionalExpression ')' ';';
 
-///////////////////////////////////////////////////////////////////////////////
-// Declarations
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// Declarations ////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+	
+ParameterDeclaration returns Declaration: Declaration<false, false>;
+MultiInitDeclaration returns Declaration: Declaration<true, true>;
+MultiDeclaration returns Declaration: Declaration<true, false>;
 
-Declaration:
+Declaration<allowMultiple, allowInit>:
 	(storage+=StorageClassSpecifier | qualifiers+=TypeQualifier | attributes+=Attribute)*
-	type=TypeSpecifier (declarators+=InitDeclarator (',' declarators+=InitDeclarator)*)? ';';
+	type=TypeSpecifier (declarators+=Declarator<allowInit> (<allowMultiple> ',' declarators+=Declarator<allowInit>)*)?;
 
-Attribute
-    :  	DoubleLeftBracket type=ID ('=' params+=ConditionalExpression | '(' params+=ConditionalExpression (',' params+=ConditionalExpression)* ')')? DoubleRightBracket
-    ;
+Declarator<allowInit>:
+	alias?='&'?
+	name=ID
+	(LEFT_BR dimensions+=ConstantExpression RIGHT_BR)*
+	attributes+=Attribute*
+	(<allowInit> t_equals='=' initializer=(ExpressionInitializer | ListInitializer))?;
+
+NamedEntity: FunctionDefinition | Declarator<true> | BitField;
+    
+Initializer: ExpressionInitializer | ListInitializer | DesignatedInitializer;
+
+ExpressionInitializer: expr=ConditionalExpression;
+
+ListInitializer: '{' initializers+=Initializer (',' initializers+=Initializer)* ','? '}';
+
+DesignatedInitializer: (designators+=Designator)+ '=' initializer=(ExpressionInitializer | ListInitializer);
+
+Designator: LEFT_BR idx=ConstantExpression RIGHT_BR | '.' prop=ID;
+
+Attribute:
+	DoubleLeftBracket type=ID
+	('=' parameters+=ConditionalExpression | '(' parameters+=ConditionalExpression (',' parameters+=ConditionalExpression)* ')')?
+	DoubleRightBracket;
+
+//////////////////////////////// Type Specifiers ////////////////////////////////
 
 TypeSpecifier
 	:	ValueTypeSpecifier
@@ -154,17 +177,8 @@ VoidTypeSpecifier
 	:	{VoidTypeSpecifier} 'void';
 
 CompositeTypeSpecifier
-    :   composeType=StructOrUnion name=ID? '{' (declaration += StructDeclaration)* '}'
+    :   composeType=StructOrUnion name=ID? '{' (declarations+=MultiDeclaration ';')* '}'
     |   composeType=StructOrUnion name=ID
-    ;
-
-StructDeclaration
-    :   specifier=StructDeclarationSpecifier declarator += Declarator(',' declarator+=Declarator)* ';'
-    ;
-
-StructDeclarationSpecifier
-    :   type=TypeSpecifier
-    |   qualifiers+=TypeQualifier
     ;
 	
 // TODO add optional size specifier after name? (':' size=IntegerTypeSpecifier)?
@@ -177,26 +191,6 @@ EnumMemberDeclaration
     :   name=ID
     |   name=ID '=' expression=ConstantExpression
     ;
-
-InitDeclarator:
-	declarator=Declarator
-	(t_equals='=' initializer=(ExpressionInitializer | ListInitializer))?;
-
-Declarator:
-	alias?='&'?
-	name=ID
-	(LEFT_BR dimensions+=ConstantExpression RIGHT_BR)*
-	attributes+=Attribute*;
-    
-Initializer: ExpressionInitializer | ListInitializer | DesignatedInitializer;
-
-ExpressionInitializer: expr=ConditionalExpression;
-
-ListInitializer: '{' initializers+=Initializer (',' initializers+=Initializer)* ','? '}';
-
-DesignatedInitializer: (designators+=Designator)+ '=' initializer=(ExpressionInitializer | ListInitializer);
-
-Designator: LEFT_BR idx=ConstantExpression RIGHT_BR | '.' prop=ID;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Expressions
@@ -220,7 +214,7 @@ ConcatenationExpression returns Expression // right associative rule
     :   LogicalOrExpression ({InfixExpression.left=current} op='::' right=ConcatenationExpression)?
     ;
 
-// TODO issue: all left-associative infix expressions can have at most one operator of the same precedence because they are ? qualified.    
+// TODO issue: all left-associative infix expressions can have at most one operator of the same precedence because they are ? qualified.
 LogicalOrExpression returns Expression
     :   LogicalAndExpression ({InfixExpression.left=current} op='||' right=LogicalOrExpression)?
     ;
@@ -291,8 +285,6 @@ PrimaryExpression: EntityReference | Constant | ParenthesisExpression;
 ParenthesisExpression: '(' left=ConditionalExpression ')';
 
 EntityReference: target=[NamedEntity];
-
-NamedEntity hidden(): FunctionDefinition | Declarator | BitField;
 
 ConstantExpression returns Expression: ConditionalExpression;
     

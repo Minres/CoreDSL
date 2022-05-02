@@ -46,8 +46,8 @@ class CoreDslInterpreterTest {
         val constants = content.definitions.get(0).declarations
         val rootContext = EvaluationContext.root
         val values  = constants.flatMap[declaration |
-            declaration.declarators.map[initDecl|
-                initDecl.declarator.evaluate(rootContext)
+            declaration.declaration.declarators.map[declarator|
+                declarator.evaluate(rootContext)
             ]
         ].toList
         assertTrue(values.get(0).value instanceof BigInteger)

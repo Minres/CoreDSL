@@ -12,7 +12,6 @@ import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.FloatConstant
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.InfixExpression
-import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.IntegerConstant
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
@@ -47,12 +46,11 @@ class CoreDSLInterpreter {
      * 
      */
     def static Value evaluate(Declarator decl, EvaluationContext ctx) {
-        if (decl.eContainer instanceof InitDeclarator) {
+        if (decl.initializer !== null) {
             val context = ctx.definitionContext
             if (context === null) {
-                val initDecl = (decl.eContainer as InitDeclarator)
-                if (initDecl.initializer instanceof ExpressionInitializer)
-                    return (initDecl.initializer as ExpressionInitializer).expr.valueFor(ctx)
+                if (decl.initializer instanceof ExpressionInitializer)
+                    return (decl.initializer as ExpressionInitializer).expr.valueFor(ctx)
                 else
                     return null
             }
@@ -65,15 +63,14 @@ class CoreDSLInterpreter {
                 }
             }.toList
             val assignments = stmts.filter[it instanceof ExpressionStatement].map [
-                (it as ExpressionStatement).expr 
+                (it as ExpressionStatement).expression
             ]
             val declAssignment = assignments.filter [
                 it.left instanceof EntityReference && (it.left as EntityReference).target == decl
             ].last
             if (declAssignment === null) {
-                val initDecl = (decl.eContainer as InitDeclarator)
-                if (initDecl.initializer instanceof ExpressionInitializer)
-                    return (initDecl.initializer as ExpressionInitializer).expr.valueFor(ctx)
+                if (decl.initializer instanceof ExpressionInitializer)
+                    return (decl.initializer as ExpressionInitializer).expr.valueFor(ctx)
                 else
                     return null
             } else
@@ -208,7 +205,7 @@ class CoreDSLInterpreter {
         	// gather all assignments to this declarator
             val assignments = ctx.definitionContext.allDefinitions.filter [
                 if (it instanceof ExpressionStatement) {
-                	val expr = it.expr
+                	val expr = it.expression
                     if(expr instanceof AssignmentExpression) {
                         val entityRef = expr.left
                         if (entityRef instanceof EntityReference) {
@@ -217,7 +214,7 @@ class CoreDSLInterpreter {
                     }
                 }
                 return false
-            ].map[(it as ExpressionStatement).expr as AssignmentExpression].toList
+            ].map[(it as ExpressionStatement).expression as AssignmentExpression].toList
             
             if (assignments.size > 0) {
                 val assignment = assignments.last;
@@ -225,10 +222,9 @@ class CoreDSLInterpreter {
                 return ctx.newValue(e, res);
             }
         }
-        if (e.eContainer instanceof InitDeclarator) {
-            val initDecl = e.eContainer as InitDeclarator;
-            if (initDecl.initializer instanceof ExpressionInitializer) {
-                val initializer = initDecl.initializer as ExpressionInitializer;
+        if (e.initializer !== null) {
+            if (e.initializer instanceof ExpressionInitializer) {
+                val initializer = e.initializer as ExpressionInitializer;
                 return ctx.newValue(e, initializer.expr.valueFor(ctx))
             } else if (e.eContainer.eContainer.eContainer instanceof ISA) {
                 val directDecl = ctx.definitionContext.effectiveDeclarator(e.name)

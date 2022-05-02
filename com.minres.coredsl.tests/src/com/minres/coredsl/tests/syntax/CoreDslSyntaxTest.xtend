@@ -14,12 +14,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.FunctionDefinition
-import com.minres.coredsl.coreDsl.BlockItem
 import org.eclipse.emf.common.util.EList
 import com.minres.coredsl.validation.IssueCodes
 import com.minres.coredsl.coreDsl.CoreDslPackage
 import static org.junit.jupiter.api.Assertions.*
 import com.minres.coredsl.coreDsl.IfStatement
+import com.minres.coredsl.coreDsl.Statement
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -49,7 +49,7 @@ class CoreDslSyntaxTest {
 		'''.parse().definitions.get(0).functions.get(0);
 	}
 
-	def EList<BlockItem> parseAsStatements(CharSequence str) {
+	def EList<Statement> parseAsStatements(CharSequence str) {
 		return '''
 			InstructionSet TestISA {
 			    functions {
@@ -58,10 +58,10 @@ class CoreDslSyntaxTest {
 			    	}
 			    }
 			}
-		'''.parse().definitions.get(0).functions.get(0).statement.items;
+		'''.parse().definitions.get(0).functions.get(0).body.statements;
 	}
 
-	def BlockItem parseAsStatement(CharSequence str) {
+	def Statement parseAsStatement(CharSequence str) {
 		return str.parseAsStatements().get(0);
 	}
 
@@ -574,7 +574,7 @@ class CoreDslSyntaxTest {
 			
 			switch(5);
 			
-		'''.parseAsStatement(), CoreDslPackage.Literals.EXPRESSION_STATEMENT, IssueCodes.SyntaxError);
+		'''.parseAsStatement(), CoreDslPackage.Literals.EMPTY_STATEMENT, IssueCodes.SyntaxError);
 
 		// case needs a condition
 		validator.assertError('''

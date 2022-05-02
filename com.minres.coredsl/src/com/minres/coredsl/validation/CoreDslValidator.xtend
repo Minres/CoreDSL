@@ -115,7 +115,7 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 			if(info === null || !info.allowedUsage.contains(expectedUsage))
 				error("unexpected attribute '" + attribute.type + "'", feature, ILLEGAL_ATTRIBUTE);
 			
-			if(attribute.params.size() !== info.paramCount)
+			if(attribute.parameters.size() !== info.paramCount)
 				error("attribute '" + info.name + "' requires exactly " + info.paramCount + " parameter(s)", feature, INVALID_ATTRIBUTE_PARAMETERS);
 		}
 	}

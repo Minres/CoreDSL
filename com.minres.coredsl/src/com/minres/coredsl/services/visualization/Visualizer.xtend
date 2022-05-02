@@ -20,17 +20,13 @@ import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.IfStatement
 import com.minres.coredsl.coreDsl.Import
 import com.minres.coredsl.coreDsl.InfixExpression
-import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.IntegerConstant
-import com.minres.coredsl.coreDsl.ParameterDeclaration
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.SpawnStatement
 import com.minres.coredsl.coreDsl.StringLiteral
-import com.minres.coredsl.coreDsl.StructDeclaration
-import com.minres.coredsl.coreDsl.StructDeclarationSpecifier
 import com.minres.coredsl.coreDsl.StructOrUnion
 import com.minres.coredsl.coreDsl.SwitchStatement
 import com.minres.coredsl.services.visualization.VisualElement.DeclarationLiteral
@@ -279,27 +275,20 @@ class Visualizer {
 			makeChild("Return Type", node.type),
 			makeNamedLiteral("Name", node.name),
 			makeGroup("Parameters", node.parameters),
-			makeChild("Body", node.statement),
+			makeChild("Body", node.body),
 			makeGroup("Attributes", node.attributes)
-		);
-	}
-	
-	private def dispatch VisualNode genNode(ParameterDeclaration node) {
-		return makeNode(node, "Parameter",
-			makeChild("Type", node.type),
-			makeChild("Declarator", node.declarator)
 		);
 	}
 	
 	// statements
 	
 	private def dispatch VisualNode genNode(CompoundStatement node) {
-		return makeNode(node, "Compound Statement", node.items);
+		return makeNode(node, "Compound Statement", node.statements);
 	}
 	
 	private def dispatch VisualNode genNode(ExpressionStatement node) {
 		return makeNode(node, "Expression Statement", 
-			makeChild("Expression", node.expr)
+			makeChild("Expression", node.expression)
 		);
 	}
 	
@@ -371,7 +360,7 @@ class Visualizer {
 	
 	private def dispatch VisualNode genNode(SpawnStatement node) {
 		return makeNode(node, "Spawn Statement",
-			makeChild("Body", node.stmt)
+			makeChild("Body", node.body)
 		);
 	}
 	
@@ -390,7 +379,7 @@ class Visualizer {
 	private def dispatch VisualNode genNode(Attribute node) {
 		return makeNode(node, "Attribute",
 			makeNamedLiteral("Type", node.type.toString),
-			makeGroup("Params", node.params)
+			makeGroup("Parameters", node.parameters)
 		);
 	}
 	
@@ -419,7 +408,7 @@ class Visualizer {
 	private def dispatch VisualNode genNode(CompositeTypeSpecifier node) {
 		return makeNode(node, node.composeType == StructOrUnion.STRUCT ? "Struct Type" : "Union Type",
 			makeNamedLiteral("Name", node.name),
-			makeGroup("Declarations", node.declaration)
+			makeGroup("Declarations", node.declarations)
 		)
 	}
 	
@@ -430,32 +419,12 @@ class Visualizer {
 		)
 	}
 	
-	private def dispatch VisualNode genNode(StructDeclaration node) {
-		return makeNode(node, "Struct Declaration",
-			makeChild("Specifier", node.specifier),
-			makeGroup("Declarators", node.declarator)
-		)
-	}
-	
-	private def dispatch VisualNode genNode(StructDeclarationSpecifier node) {
-		return makeNode(node, "Struct Declaration Specifier",
-			makeChild("Type", node.type),
-			makePortGroup("Qualifiers", node.qualifiers.map[qualifier | makeImmediateLiteral(qualifier.toString)])
-		)
-	}
-	
-	private def dispatch VisualNode genNode(InitDeclarator node) {
-		return makeNode(node, "Init Declarator",
-			makeChild("Declarator", node.declarator),
-			makeChild("Initializer", node.initializer)
-		)
-	}
-	
 	private def dispatch VisualNode genNode(Declarator node) {
 		return makeNode(node, node.isAlias ? "Declarator (alias)" : "Declarator",
 			makeDeclaration("Name", node.name, node),
 			makeGroup("Dimensions", node.dimensions),
-			makeGroup("Attributes", node.attributes)
+			makeGroup("Attributes", node.attributes),
+			makeChild("Initializer", node.initializer)
 		);
 	}
 	

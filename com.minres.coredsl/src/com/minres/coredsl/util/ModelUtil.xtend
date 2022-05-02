@@ -13,15 +13,14 @@ import java.util.List
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
-import com.minres.coredsl.coreDsl.BlockItem
-import com.minres.coredsl.coreDsl.InitDeclarator
+import com.minres.coredsl.coreDsl.Statement
 
 class ModelUtil {
     
     static val logger = Logger.getLogger(typeof(ModelUtil));
 
     static def Iterable<Declarator> getStateDeclarators(ISA isa) {
-        isa.declarations.flatMap[it.declarators.map[it.declarator]]
+        isa.declarations.flatMap[it.declaration.declarators]
     }
 
     static def Iterable<Declarator> getStateConstDeclarators(ISA isa) {
@@ -64,10 +63,10 @@ class ModelUtil {
     static def Declarator effectiveDeclarator(ISA isa, String name){
         if(isa instanceof CoreDef) {
             val decl = isa.allDefinitions.filter[it instanceof Declaration].findFirst[
-	           	(it as Declaration).declarators.findFirst[it.declarator.name==name]!==null
+	           	(it as Declaration).declarators.findFirst[it.name==name]!==null
             ]
             if(decl!==null) {
-                return (decl as Declaration).declarators.findFirst[it.declarator.name==name].declarator
+                return (decl as Declaration).declarators.findFirst[it.name==name]
             }
             for(contrib:isa.contributingType.reverseView) {
                 val contribDecl = contrib.effectiveDeclarator(name)
@@ -77,8 +76,7 @@ class ModelUtil {
         } else if(isa instanceof InstructionSet){
             val decl = isa.stateDeclarators.findFirst[it.name==name]
             if(decl!==null) {
-            	val init = decl.eContainer as InitDeclarator
-            	if(init.initializer !== null)
+            	if(decl.initializer !== null)
 	                return decl            	
             }
             val baseDecl = isa.superType.effectiveDeclarator(name)
@@ -88,7 +86,7 @@ class ModelUtil {
         null
     }
         
-    static def Iterable<BlockItem> allDefinitions(ISA isa){
+    static def Iterable<Statement> allDefinitions(ISA isa){
         switch(isa){
             CoreDef:
                 if (isa.contributingType.size == 0)
