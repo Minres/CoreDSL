@@ -53,30 +53,30 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 					error(
 						"incompatible types used",
 						// TODO this doesn't necessarily make sense as a location
-						CoreDslPackage.Literals.EXPRESSION__LEFT,
+						null,
 						TYPE_MISMATCH
 					)
 			case CastExpression: {
-				if ((e as CastExpression).type.typeFor === null)
+				if ((e as CastExpression).targetType.typeFor === null)
 					error(
 						"illegal type used",
-						CoreDslPackage.Literals.CAST_EXPRESSION__TYPE,
+						CoreDslPackage.Literals.CAST_EXPRESSION__TARGET_TYPE,
 						TYPE_ILLEGAL
 					)
 			}
 			case InfixExpression: {
 				val infix = e as InfixExpression
-				switch (infix.op) {
+				switch (infix.operator) {
 					case '<',
 					case '>',
 					case '<=',
 					case '>=',
 					case '==',
 					case '!=':
-						if (!e.left.typeFor.isComparable((e as InfixExpression).right.typeFor))
+						if (!infix.left.typeFor.isComparable(infix.right.typeFor))
 							error(
 								"incompatible types used",
-								CoreDslPackage.Literals.INFIX_EXPRESSION__OP,
+								CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR,
 								TYPE_MISMATCH
 							)
 					case '||',
@@ -91,10 +91,10 @@ class CoreDslValidator extends AbstractCoreDslValidator {
 					case '|',
 					case '^',
 					case '&':
-						if (!e.left.typeFor.isComputable((e as InfixExpression).right.typeFor))
+						if (!infix.left.typeFor.isComputable(infix.right.typeFor))
 							error(
 								"incompatible types used",
-								CoreDslPackage.Literals.INFIX_EXPRESSION__OP,
+								CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR,
 								TYPE_MISMATCH
 							)
 					default: {

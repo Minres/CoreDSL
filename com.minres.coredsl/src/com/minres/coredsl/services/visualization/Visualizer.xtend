@@ -1,6 +1,5 @@
 package com.minres.coredsl.services.visualization
 
-import com.minres.coredsl.coreDsl.Assignment
 import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.Attribute
 import com.minres.coredsl.coreDsl.BitField
@@ -67,6 +66,7 @@ import com.minres.coredsl.coreDsl.CastExpression
 import com.minres.coredsl.coreDsl.ContinueStatement
 import com.minres.coredsl.coreDsl.BreakStatement
 import com.minres.coredsl.coreDsl.ReturnStatement
+import com.minres.coredsl.coreDsl.IntrinsicExpression
 
 class Visualizer {
 	
@@ -484,57 +484,70 @@ class Visualizer {
 		return makeImmediateLiteral(node.value)
 	}
 	
+	private def dispatch VisualNode genNode(AssignmentExpression node) {
+		return makeNode(node, "Assignment Expression",
+			makeChild("Assignment Target", node.target),
+			makeChild("Value", node.value)
+		);
+	}
+	
 	private def dispatch VisualNode genNode(InfixExpression node) {
-		return makeNode(node, "Infix Expression (" + node.op + ")",
+		return makeNode(node, "Infix Expression (" + node.operator + ")",
 			makeChild("Left", node.left),
 			makeChild("Right", node.right)
 		);
 	}
 	
 	private def dispatch VisualNode genNode(PrefixExpression node) {
-		return makeNode(node, "Prefix Expression (" + node.op + ")",
-			makeChild("Operand", node.left)
+		return makeNode(node, "Prefix Expression (" + node.operator + ")",
+			makeChild("Operand", node.operand)
 		);
 	}
 	
 	private def dispatch VisualNode genNode(PostfixExpression node) {
-		return makeNode(node, "Postfix Expression",
-			makeChild("Operand", node.left),
-			makeNamedLiteral("Operator", node.op)
+		return makeNode(node, "Postfix Expression (" + node.operator + ")",
+			makeChild("Operand", node.operand)
 		);
 	}
 	
 	private def dispatch VisualNode genNode(FunctionCallExpression node) {
 		return makeNode(node, "Function Call",
-			makeChild("Target", node.left),
+			makeChild("Target", node.target),
 			makeGroup("Arguments", node.arguments)
 		);
 	}
 	
 	private def dispatch VisualNode genNode(ArrayAccessExpression node) {
 		return makeNode(node, "Array Access",
-			makeChild("Target", node.left),
+			makeChild("Target", node.target),
 			makeChild("Index", node.index)
 		);
 	}
 	
 	private def dispatch VisualNode genNode(MemberAccessExpression node) {
-		return makeNode(node, "Member Access (" + node.op + ")",
-			makeChild("Target", node.left),
+		return makeNode(node, "Member Access (" + node.operator + ")",
+			makeChild("Target", node.target),
 			makeReference("Member", node.declarator?.name, [node.declarator])
 		);
 	}
 	
 	private def dispatch VisualNode genNode(ParenthesisExpression node) {
 		return makeNode(node, "Parenthesis Expression",
-			makeChild("Inner", node.left)
+			makeChild("Inner", node.inner)
 		);
 	}
 	
 	private def dispatch VisualNode genNode(CastExpression node) {
 		return makeNode(node, "Cast Expression",
-			makeChild("Target Type", node.type),
-			makeChild("Operand", node.left)
+			makeChild("Target Type", node.targetType),
+			makeChild("Operand", node.operand)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(IntrinsicExpression node) {
+		return makeNode(node, "Intrinsic Function Call",
+			makeNamedLiteral("Function", node.function),
+			makeGroup("Arguments", node.arguments)
 		);
 	}
 	
@@ -547,15 +560,5 @@ class Visualizer {
 			
 		if(node.target instanceof BitField)
 			return makeNode(node, "Field Reference", makeReference("Field", (node.target as BitField).name, [node.target]));
-	}
-	
-	private def dispatch VisualNode genNode(AssignmentExpression node) {
-		return makeNode(node, "Assignment Expression", node.assignments);
-	}
-	
-	private def dispatch VisualNode genNode(Assignment node) {
-		return makeNode(node, "Assignment (" + node.type + ")",
-			makeChild("Value", node.right)
-		);
 	}
 }

@@ -137,15 +137,15 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(AssignmentExpression e, ISA ctx) {
-        return e.assignments.last.right.typeFor(ctx)
+        return e.value.typeFor(ctx)
     }
 
     def static dispatch DataType typeFor(ConditionalExpression e, ISA ctx) {
-        return e.left.typeFor(ctx)
+        return e.thenExpression.typeFor(ctx)
     }
 
     def static dispatch DataType typeFor(InfixExpression e, ISA ctx) {
-        switch(e.op){
+        switch(e.operator){
             case "||", case "&&", 
             case "==", case "!=", case "<", case ">", case "<=", case ">=": boolType
             case '|', case "&", case "^": {
@@ -172,31 +172,30 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(CastExpression e, ISA ctx) {
-        return e.type.typeFor(ctx)
+        return e.targetType.typeFor(ctx)
     }
 
     def static dispatch DataType typeFor(PrefixExpression e, ISA ctx) {
-        switch(e.op){
+        switch(e.operator){
             case "++",
-            case "--": e.left.typeFor(ctx)
-            case "~": e.left.typeFor(ctx)
+            case "--",
+            case "~": e.operand.typeFor(ctx)
             case "!": boolType
-            case "sizeof": new DataType(DataType.Type.INTEGRAL_UNSIGNED, 32)
-            default: // missing 'case "&", case "*", case "+" , case "-":'
+            default:
                 null
         }
     }
 
     def static dispatch DataType typeFor(PostfixExpression e, ISA ctx) {
-        return e.left.typeFor(ctx);
+        return e.operand.typeFor(ctx);
     }
 
     def static dispatch DataType typeFor(FunctionCallExpression e, ISA ctx) {
-        return e.left.typeFor(ctx);
+        null
     }
 
     def static dispatch DataType typeFor(ArrayAccessExpression e, ISA ctx) {
-        return e.left.typeFor(ctx);
+        return e.target.typeFor(ctx);
     }
 
     def static dispatch DataType typeFor(MemberAccessExpression e, ISA ctx) {
@@ -204,7 +203,7 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(ParenthesisExpression e, ISA ctx) {
-        return e.left.typeFor(ctx);
+        return e.inner.typeFor(ctx);
     }
     
     def static dispatch DataType typeFor(EntityReference e, ISA ctx) {

@@ -26,8 +26,6 @@ import java.math.BigInteger
 import static extension com.minres.coredsl.typing.TypeProvider.*
 import static extension com.minres.coredsl.util.ModelUtil.*
 import com.minres.coredsl.coreDsl.ISA
-import com.minres.coredsl.coreDsl.CoreDef
-import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.ExpressionStatement
 import com.minres.coredsl.coreDsl.FunctionCallExpression
 import com.minres.coredsl.coreDsl.ArrayAccessExpression
@@ -37,7 +35,6 @@ import com.minres.coredsl.coreDsl.StringConstant
 import com.minres.coredsl.coreDsl.ExpressionInitializer
 import com.minres.coredsl.coreDsl.NamedEntity
 import com.minres.coredsl.coreDsl.EntityReference
-import org.eclipse.xtext.parser.packrat.tokens.AssignmentToken.End
 
 class CoreDSLInterpreter {
 
@@ -54,19 +51,14 @@ class CoreDSLInterpreter {
                 else
                     return null
             }
-            val stmts = switch (context) {
-                CoreDef: {
-                    context.allDefinitions
-                }
-                InstructionSet: {
-                    context.allDefinitions
-                }
-            }.toList
-            val assignments = stmts.filter[it instanceof ExpressionStatement].map [
-                (it as ExpressionStatement).expression
-            ]
-            val declAssignment = assignments.filter [
-                it.left instanceof EntityReference && (it.left as EntityReference).target == decl
+            val stmts = context.allDefinitions.toList
+            val assignments = stmts
+            	.filter[it instanceof ExpressionStatement]
+            	.map[(it as ExpressionStatement).expression]
+            	.filter[it instanceof AssignmentExpression]
+            	.map[it as AssignmentExpression];
+            val declAssignment = assignments.filter[
+                it.target instanceof EntityReference && (it.target as EntityReference).target == decl
             ].last
             if (declAssignment === null) {
                 if (decl.initializer instanceof ExpressionInitializer)
@@ -74,7 +66,7 @@ class CoreDSLInterpreter {
                 else
                     return null
             } else
-                (declAssignment as AssignmentExpression).assignments.get(0).right.valueFor(ctx)
+                (declAssignment as AssignmentExpression).value.valueFor(ctx)
         } else
             null
     }
@@ -88,15 +80,15 @@ class CoreDSLInterpreter {
     }
 
     def static dispatch Value valueFor(AssignmentExpression e, EvaluationContext ctx) {
-        return e.assignments.last.valueFor(ctx)
+        return e.value.valueFor(ctx)
     }
 
     def static dispatch Value valueFor(ConditionalExpression e, EvaluationContext ctx) {
-        return e.left.valueFor(ctx)
+        return e.condition.valueFor(ctx).value != 0 ? e.thenExpression.valueFor(ctx) : e.elseExpression.valueFor(ctx)
     }
 
     def static dispatch Value valueFor(InfixExpression e, EvaluationContext ctx) {
-        switch (e.op) {
+        switch (e.operator) {
             case "||",
             case "&&",
             case "==",
@@ -122,7 +114,7 @@ class CoreDSLInterpreter {
                 val r = e.right.valueFor(ctx)
                 !l.isComputable(r)
                     ? null
-                    : switch (e.op) {
+                    : switch (e.operator) {
                     case '+': new Value(l.type, l.value.add(r.value))
                     case '-': new Value(l.type, l.value.sub(r.value))
                     case '*': new Value(l.type, l.value.mul(r.value))
@@ -140,20 +132,18 @@ class CoreDSLInterpreter {
     }
 
     def static dispatch Value valueFor(CastExpression e, EvaluationContext ctx) {
-        return e.type.valueFor(ctx)
+        return e.targetType.valueFor(ctx)
     }
 
     def static dispatch Value valueFor(PrefixExpression e, EvaluationContext ctx) {
-        switch (e.op) {
+        switch (e.operator) {
             case "++",
             case "--":
-                e.left.valueFor(ctx)
+                e.operand.valueFor(ctx)
             case "~":
-                e.left.valueFor(ctx)
+                e.operand.valueFor(ctx)
             case "!":
-                new Value(boolType, e.left.valueFor(ctx).value)
-            case "sizeof":
-                new Value(new DataType(DataType.Type.INTEGRAL_UNSIGNED, 32), -1) // TODO: fix it
+                new Value(boolType, e.operand.valueFor(ctx).value)
             default: // missing 'case "&", case "*", case "+" , case "-":'
                 null
         }
@@ -180,7 +170,7 @@ class CoreDSLInterpreter {
     }
 
     def static dispatch Value valueFor(ParenthesisExpression e, EvaluationContext ctx) {
-        return e.left.valueFor(ctx);
+        return e.inner.valueFor(ctx);
     }
 
     def static dispatch Value valueFor(EntityReference e, EvaluationContext ctx) {
@@ -207,9 +197,9 @@ class CoreDSLInterpreter {
                 if (it instanceof ExpressionStatement) {
                 	val expr = it.expression
                     if(expr instanceof AssignmentExpression) {
-                        val entityRef = expr.left
+                        val entityRef = expr.target
                         if (entityRef instanceof EntityReference) {
-                            return expr.assignments.size > 0 && entityRef.target === e
+                            return entityRef.target === e
                         }
                     }
                 }
@@ -218,7 +208,7 @@ class CoreDSLInterpreter {
             
             if (assignments.size > 0) {
                 val assignment = assignments.last;
-                val res = assignment.assignments.findFirst[! (right instanceof EntityReference)].right.valueFor(ctx)
+                val res = assignment.value.valueFor(ctx)
                 return ctx.newValue(e, res);
             }
         }
