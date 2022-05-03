@@ -59,8 +59,8 @@ class CoreDslLabelProvider extends DefaultEObjectLabelProvider {
     }
 		
 	private def dispatch String getToText(BitField field){
-	    if(field.left !== null && field.right !== null)
-            field.name + "[" + field.left.value.intValue + ":" + field.right.value.intValue + "]"
+	    if(field.startIndex !== null && field.endIndex!== null)
+            field.name + "[" + field.startIndex.value.intValue + ":" + field.endIndex.value.intValue + "]"
 	    else
 		    field.name
 	}

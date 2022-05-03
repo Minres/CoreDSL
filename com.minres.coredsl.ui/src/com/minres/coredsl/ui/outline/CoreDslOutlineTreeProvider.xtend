@@ -46,8 +46,8 @@ class CoreDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
 
 	def void _createChildren(IOutlineNode parentNode, CoreDef modelElement) {
 		val image = imageDispatcher.invoke(modelElement.declarations)
-		if(modelElement.contributingType.size>0)
-      	createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.CORE_DEF__CONTRIBUTING_TYPE, 
+		if(modelElement.providedInstructionSets.size>0)
+      	createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.CORE_DEF__PROVIDED_INSTRUCTION_SETS, 
 	        image, "Contributing", false)
 		if(modelElement.declarations.size>0)
 		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__DECLARATIONS,
