@@ -182,7 +182,7 @@ class CoreDSLInterpreter {
     }
 
     def static dispatch Value valueFor(FunctionDefinition e, EvaluationContext ctx) {
-        e.type.valueFor(ctx)
+        e.returnType.valueFor(ctx)
     }
 
     def static dispatch Value valueFor(Declarator e, EvaluationContext ctx) {
@@ -225,7 +225,7 @@ class CoreDSLInterpreter {
     }
 
     def static dispatch Value valueFor(BitField e, EvaluationContext ctx) {
-        new Value(new DataType(DataType.Type.INTEGRAL_UNSIGNED, e.left.value.intValue), null) // bitfield cannot be evaluated
+        new Value(new DataType(DataType.Type.INTEGRAL_UNSIGNED, e.endIndex.value.intValue - e.startIndex.value.intValue + 1), null) // bitfield cannot be evaluated
     }
 
     def static dispatch Value valueFor(BitValue e, EvaluationContext ctx) {

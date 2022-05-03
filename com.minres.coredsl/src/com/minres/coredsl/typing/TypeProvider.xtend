@@ -6,7 +6,6 @@ import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.BoolConstant
 import com.minres.coredsl.coreDsl.CastExpression
 import com.minres.coredsl.coreDsl.CharacterConstant
-import com.minres.coredsl.coreDsl.CompositeTypeSpecifier
 import com.minres.coredsl.coreDsl.ConditionalExpression
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.Declarator
@@ -20,7 +19,6 @@ import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.StringLiteral
 import com.minres.coredsl.coreDsl.Encoding
-import com.minres.coredsl.coreDsl.Field
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.coreDsl.Constant
@@ -44,6 +42,8 @@ import com.minres.coredsl.coreDsl.ParenthesisExpression
 import com.minres.coredsl.coreDsl.StringConstant
 import com.minres.coredsl.coreDsl.NamedEntity
 import com.minres.coredsl.coreDsl.EntityReference
+import com.minres.coredsl.coreDsl.UserTypeSpecifier
+import com.minres.coredsl.coreDsl.EncodingField
 
 class TypeProvider {
 
@@ -77,12 +77,12 @@ class TypeProvider {
         e.typeFor(e.parentOfType(ISA))
     }
 
-    def static dispatch DataType typeFor(CompositeTypeSpecifier e, ISA ctx) {
-        return new DataType(DataType.Type.COMPOSITE, 0)
-    }
-
     def static dispatch DataType typeFor(EnumTypeSpecifier e, ISA ctx) {
         return new DataType(DataType.Type.INTEGRAL_SIGNED, 32)
+    }
+
+    def static dispatch DataType typeFor(UserTypeSpecifier e, ISA ctx) {
+        return new DataType(DataType.Type.COMPOSITE, 0)
     }
     
     def static dispatch DataType typeFor(VoidTypeSpecifier e, ISA ctx) {
@@ -215,7 +215,7 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(FunctionDefinition e, ISA ctx) {
-        e.type.typeFor(ctx)
+        e.returnType.typeFor(ctx)
     }
 
     def static dispatch DataType typeFor(Declarator e, ISA ctx) {
@@ -228,16 +228,16 @@ class TypeProvider {
 
     def static dispatch DataType  typeFor(Encoding list, ISA ctx) {
         var size=0
-        for(Field f:list.fields)
+        for(EncodingField f:list.fields)
             switch(f){
-                BitField:{size += f.left.value.intValue-f.right.value.intValue+1}
+                BitField:{size += f.endIndex.value.intValue - f.startIndex.value.intValue + 1}
                 BitValue:{size += (f.value as BigIntegerWithRadix).size}
             }
         new DataType(DataType.Type.INTEGRAL_UNSIGNED, size)
     }
 
     def static dispatch DataType typeFor(BitField e, ISA ctx) {
-        new DataType(DataType.Type.INTEGRAL_UNSIGNED, e.left.value.intValue + 1)
+        new DataType(DataType.Type.INTEGRAL_UNSIGNED, e.endIndex.value.intValue - e.startIndex.value.intValue + 1)
     }
 
     def static dispatch DataType typeFor(BitValue e, ISA ctx) {
