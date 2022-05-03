@@ -9,8 +9,6 @@ import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.DescriptionContent
-import com.minres.coredsl.coreDsl.DesignatedInitializer
-import com.minres.coredsl.coreDsl.Designator
 import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.ExpressionStatement
@@ -462,27 +460,11 @@ class Visualizer {
 	}
 	
 	private def dispatch VisualNode genNode(ExpressionInitializer node) {
-		return visit(node.expr);
+		return visit(node.value);
 	}
 	
 	private def dispatch VisualNode genNode(ListInitializer node) {
-		return makeNode(node, "List Initializer",
-			makeGroup("", node.initializers)
-		);
-	}
-	
-	private def dispatch VisualNode genNode(DesignatedInitializer node) {
-		return makeNode(node, "Designated Initializer",
-			makeGroup("Designators", node.designators),
-			makeChild("Initializer", node.initializer)
-		);
-	}
-	
-	private def dispatch VisualNode genNode(Designator node) {
-		return makeNode(node, "Designator",
-			makeChild("Index", node.idx),
-			makeNamedLiteral("Property", node.prop)
-		);
+		return makeNode(node, "List Initializer", node.initializers);
 	}
 	
 	// expressions

@@ -111,19 +111,13 @@ Declarator<allowInit>:
 	name=ID
 	(LEFT_BR dimensions+=Expression RIGHT_BR)*
 	attributes+=Attribute*
-	(<allowInit> t_equals='=' initializer=(ExpressionInitializer | ListInitializer))?;
+	(<allowInit> t_equals='=' initializer=Initializer)?;
 
 NamedEntity: FunctionDefinition | Declarator<true> | BitField;
     
-Initializer: ExpressionInitializer | ListInitializer | DesignatedInitializer;
-
-ExpressionInitializer: expr=Expression;
-
+Initializer: ExpressionInitializer | ListInitializer;
+ExpressionInitializer: value=Expression;
 ListInitializer: '{' initializers+=Initializer (',' initializers+=Initializer)* ','? '}';
-
-DesignatedInitializer: (designators+=Designator)+ '=' initializer=(ExpressionInitializer | ListInitializer);
-
-Designator: LEFT_BR idx=Expression RIGHT_BR | '.' prop=ID;
 
 Attribute:
 	DoubleLeftBracket type=ID

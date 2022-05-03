@@ -47,7 +47,7 @@ class CoreDSLInterpreter {
             val context = ctx.definitionContext
             if (context === null) {
                 if (decl.initializer instanceof ExpressionInitializer)
-                    return (decl.initializer as ExpressionInitializer).expr.valueFor(ctx)
+                    return (decl.initializer as ExpressionInitializer).value.valueFor(ctx)
                 else
                     return null
             }
@@ -62,7 +62,7 @@ class CoreDSLInterpreter {
             ].last
             if (declAssignment === null) {
                 if (decl.initializer instanceof ExpressionInitializer)
-                    return (decl.initializer as ExpressionInitializer).expr.valueFor(ctx)
+                    return (decl.initializer as ExpressionInitializer).value.valueFor(ctx)
                 else
                     return null
             } else
@@ -215,7 +215,7 @@ class CoreDSLInterpreter {
         if (e.initializer !== null) {
             if (e.initializer instanceof ExpressionInitializer) {
                 val initializer = e.initializer as ExpressionInitializer;
-                return ctx.newValue(e, initializer.expr.valueFor(ctx))
+                return ctx.newValue(e, initializer.value.valueFor(ctx))
             } else if (e.eContainer.eContainer.eContainer instanceof ISA) {
                 val directDecl = ctx.definitionContext.effectiveDeclarator(e.name)
                 return directDecl.evaluate(ctx);
