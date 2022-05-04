@@ -9,47 +9,34 @@ generate coreDsl "http://www.minres.com/coredsl/CoreDsl/2.0"
 ///////////////////////////////////////////////////////////////////////////////////////
 
 DescriptionContent: (imports+=Import)* definitions+=(InstructionSet | CoreDef)+;
-
 Import: 'import' importURI=STRING;
 
 InstructionSet : 'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' ISA '}';
-
-CoreDef: 'Core' name=ID ( 'provides' contributingType+=[InstructionSet] (',' contributingType+=[InstructionSet])*)? '{' ISA '}';
+CoreDef: 'Core' name=ID ( 'provides' providedInstructionSets+=[InstructionSet] (',' providedInstructionSets+=[InstructionSet])*)? '{' ISA '}';
 
 fragment ISA:
-	('architectural_state' '{' (declarations+=DeclarationStatement | assignments+=ExpressionStatement)+ '}')? &
+	('architectural_state' '{' (declarations+=DeclarationStatement | assignments+=ExpressionStatement | types+=UserTypeDeclaration)+ '}')? &
 	('functions' '{' functions+=FunctionDefinition+ '}')? &
 	('instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}')?;
+
+FunctionDefinition:
+	extern?='extern'?
+	returnType=TypeSpecifier name=ID
+	'(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')'
+	attributes+=Attribute*
+	body=CompoundStatement;
 
 Instruction:
 	name=ID attributes+=Attribute* '{' 
 		('encoding' ':' encoding=Encoding ';')
 		('assembly' ':' assembly=STRING ';')?
 		('behavior' ':' behavior=Statement)
-	'}'
-;
+	'}';
 
-Encoding
-	:	fields+=Field ('::' fields+=Field)*
-	;
-
-Field
-	: 	BitValue
-	|	BitField
-	;
-
-BitValue
-	: 	value=INTEGER
-	;
-
-BitField
-	:	name=ID LEFT_BR left=IntegerConstant ':' right=IntegerConstant RIGHT_BR 
-	;
-
-FunctionDefinition
-	:   extern?='extern' type=TypeSpecifier name=ID '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')' ';'
-	|   type=TypeSpecifier name=ID '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')' attributes+=Attribute* body=CompoundStatement
-	;
+Encoding: fields+=EncodingField ('::' fields+=EncodingField)*;
+EncodingField: BitValue | BitField;
+BitValue: value=INTEGER;
+BitField: name=ID LEFT_BR startIndex=IntegerConstant ':' endIndex=IntegerConstant RIGHT_BR;
 
 ////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// Statements ////////////////////////////////
@@ -124,73 +111,47 @@ Declarator<allowInit>:
 	name=ID
 	(LEFT_BR dimensions+=Expression RIGHT_BR)*
 	attributes+=Attribute*
-	(<allowInit> t_equals='=' initializer=(ExpressionInitializer | ListInitializer))?;
+	(<allowInit> t_equals='=' initializer=Initializer)?;
 
 NamedEntity: FunctionDefinition | Declarator<true> | BitField;
     
-Initializer: ExpressionInitializer | ListInitializer | DesignatedInitializer;
-
-ExpressionInitializer: expr=Expression;
-
+Initializer: ExpressionInitializer | ListInitializer;
+ExpressionInitializer: value=Expression;
 ListInitializer: '{' initializers+=Initializer (',' initializers+=Initializer)* ','? '}';
-
-DesignatedInitializer: (designators+=Designator)+ '=' initializer=(ExpressionInitializer | ListInitializer);
-
-Designator: LEFT_BR idx=Expression RIGHT_BR | '.' prop=ID;
 
 Attribute:
 	DoubleLeftBracket type=ID
 	('=' parameters+=Expression | '(' parameters+=Expression (',' parameters+=Expression)* ')')?
 	DoubleRightBracket;
 
+//////////////////////////////// Type Declarations ////////////////////////////////
+
+UserTypeDeclaration: StructTypeDeclaration | UnionTypeDeclaration | EnumTypeDeclaration;
+
+StructTypeDeclaration: 'struct' name=ID CompositeTypeDeclaration;
+UnionTypeDeclaration: 'union' name=ID CompositeTypeDeclaration;
+EnumTypeDeclaration: 'enum' name=ID '{' members+=EnumMemberDeclaration (',' members+=EnumMemberDeclaration)* ','? '}';
+
+EnumMemberDeclaration: name=ID ('=' value=Expression)?;
+
+fragment CompositeTypeDeclaration: '{' (members+=MultiDeclaration ';')* '}';
+
 //////////////////////////////// Type Specifiers ////////////////////////////////
 
-TypeSpecifier
-	:	ValueTypeSpecifier
-	|	VoidTypeSpecifier
-	;
+TypeSpecifier: VoidTypeSpecifier | PrimitiveTypeSpecifier | UserTypeSpecifier;
 
-ValueTypeSpecifier
-	:	PrimitiveTypeSpecifier
-	|	CompositeTypeSpecifier
-	|	EnumTypeSpecifier
-	;
+PrimitiveTypeSpecifier: IntegerTypeSpecifier | FloatTypeSpecifier | BoolTypeSpecifier;
 
-PrimitiveTypeSpecifier
-	:	IntegerTypeSpecifier
-	|	FloatTypeSpecifier
-	|	BoolTypeSpecifier
-	;
+IntegerTypeSpecifier: shorthand=IntegerSizeShorthand | signedness=IntegerSignedness (shorthand=IntegerSizeShorthand | '<' size=PrimaryExpression '>');
+FloatTypeSpecifier: shorthand=FloatSizeShorthand;
+BoolTypeSpecifier: {BoolTypeSpecifier} 'bool';
+VoidTypeSpecifier: {VoidTypeSpecifier} 'void';
 
-IntegerTypeSpecifier
-	:	signedness=IntegerSignedness (shorthand=IntegerSizeShorthand | '<' size=PrimaryExpression '>')
-	|	shorthand=IntegerSizeShorthand
-	;
-
-FloatTypeSpecifier
-	:	shorthand=FloatSizeShorthand;
-
-BoolTypeSpecifier
-	:	{BoolTypeSpecifier} 'bool';
-
-VoidTypeSpecifier
-	:	{VoidTypeSpecifier} 'void';
-
-CompositeTypeSpecifier
-    :   composeType=StructOrUnion name=ID? '{' (declarations+=MultiDeclaration ';')* '}'
-    |   composeType=StructOrUnion name=ID
-    ;
+UserTypeSpecifier: StructTypeSpecifier | UnionTypeSpecifier | EnumTypeSpecifier;
 	
-// TODO add optional size specifier after name? (':' size=IntegerTypeSpecifier)?
-EnumTypeSpecifier
-    :   'enum' name=ID? '{' enumerators+=EnumMemberDeclaration (',' enumerators+=EnumMemberDeclaration)* ','? '}'
-    |   'enum' name=ID
-    ;
-
-EnumMemberDeclaration
-    :   name=ID
-    |   name=ID '=' expression=Expression
-    ;
+StructTypeSpecifier: 'struct' target=[StructTypeDeclaration];
+UnionTypeSpecifier: 'union' target=[UnionTypeDeclaration];
+EnumTypeSpecifier: 'enum' target=[EnumTypeDeclaration];
 
 /////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// Expressions ////////////////////////////////
@@ -242,12 +203,12 @@ PrefixExpression returns Expression:
 
 PostfixExpression returns Expression:
 	PrimaryExpression
-	(	{FunctionCallExpression.target=current} '(' (arguments+=Expression (',' arguments+=Expression)*)? ')'
-	|	{ArrayAccessExpression.target=current} LEFT_BR index=Expression (':' endIndex=Expression)? RIGHT_BR
-	|	{MemberAccessExpression.target=current} operator='.' declarator=[Declarator]
-	|	{MemberAccessExpression.target=current} operator='->' declarator=[Declarator]
-	|	{PostfixExpression.operand=current} operator='++'
-	|	{PostfixExpression.operand=current} operator='--'
+	( {FunctionCallExpression.target=current} '(' (arguments+=Expression (',' arguments+=Expression)*)? ')'
+	| {ArrayAccessExpression.target=current} LEFT_BR index=Expression (':' endIndex=Expression)? RIGHT_BR
+	| {MemberAccessExpression.target=current} operator='.' declarator=[Declarator]
+	| {MemberAccessExpression.target=current} operator='->' declarator=[Declarator]
+	| {PostfixExpression.operand=current} operator='++'
+	| {PostfixExpression.operand=current} operator='--'
 	)*;
 
 PrimaryExpression: ParenthesisExpression | EntityReference | IntrinsicExpression | Constant;
@@ -281,16 +242,11 @@ StringLiteral: value=ENCSTRINGCONST | value=STRING ;
 //////////////////////////////////////////////////////////////////////////////
 
 enum IntegerSignedness : SIGNED='signed' | UNSIGNED='unsigned';
-
 enum IntegerSizeShorthand : INT='int' | CHAR='char' | SHORT='short' |  LONG='long';
-
 enum FloatSizeShorthand : FLOAT='float' | DOUBLE='double';
 
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';
-
 enum StorageClassSpecifier: EXTERN='extern' | STATIC='static' | REGISTER='register';
-
-enum StructOrUnion:   STRUCT='struct'|UNION='union';
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// Terminal Rules ////////////////////////////////

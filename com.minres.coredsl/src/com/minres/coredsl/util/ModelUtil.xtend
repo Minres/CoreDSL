@@ -68,7 +68,7 @@ class ModelUtil {
             if(decl!==null) {
                 return (decl as Declaration).declarators.findFirst[it.name==name]
             }
-            for(contrib:isa.contributingType.reverseView) {
+            for(contrib:isa.providedInstructionSets.reverseView) {
                 val contribDecl = contrib.effectiveDeclarator(name)
                 if(contribDecl!==null)
                     return contribDecl
@@ -89,10 +89,10 @@ class ModelUtil {
     static def Iterable<Statement> allDefinitions(ISA isa){
         switch(isa){
             CoreDef:
-                if (isa.contributingType.size == 0)
+                if (isa.providedInstructionSets.size == 0)
                     return isa.declarations + isa.assignments
                 else {
-                    val instrSets = isa.contributingType?.flatMap[it.allInstructionSets]
+                    val instrSets = isa.providedInstructionSets?.flatMap[it.allInstructionSets]
                     val seen = newLinkedHashSet
                     seen.addAll(instrSets)
                     seen.add(isa)
@@ -105,8 +105,8 @@ class ModelUtil {
     
     static def Iterable<Instruction> allInstr(CoreDef core){
         val unique = newLinkedHashMap
-        val instrList = if(core.contributingType.size == 0) core.instructions else {
-            val instrSets = core.contributingType?.map[InstructionSet i| i.allInstructionSets].flatten
+        val instrList = if(core.providedInstructionSets.size == 0) core.instructions else {
+            val instrSets = core.providedInstructionSets?.map[InstructionSet i| i.allInstructionSets].flatten
             val seen = newLinkedHashSet
             seen.addAll(instrSets)
             seen.add(core)
@@ -134,7 +134,7 @@ class ModelUtil {
     }
     
     private static def String getBitEncoding(Encoding encoding) '''«FOR field : encoding.fields»«field.regEx»«ENDFOR»'''
-    private static def dispatch getRegEx(BitField i) '''«FOR idx : i.right.value.intValue .. i.left.value.intValue».«ENDFOR»'''
+    private static def dispatch getRegEx(BitField i) '''«FOR idx : i.endIndex.value.intValue .. i.startIndex.value.intValue».«ENDFOR»'''
     private static def dispatch getRegEx(BitValue i) '''«i.value.toString(2)»'''
     
 }

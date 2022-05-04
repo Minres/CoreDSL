@@ -9,8 +9,6 @@ import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.DescriptionContent
-import com.minres.coredsl.coreDsl.DesignatedInitializer
-import com.minres.coredsl.coreDsl.Designator
 import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.ExpressionStatement
@@ -26,7 +24,6 @@ import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.SpawnStatement
 import com.minres.coredsl.coreDsl.StringLiteral
-import com.minres.coredsl.coreDsl.StructOrUnion
 import com.minres.coredsl.coreDsl.SwitchStatement
 import com.minres.coredsl.services.visualization.VisualElement.DeclarationLiteral
 import com.minres.coredsl.services.visualization.VisualElement.Literal
@@ -45,7 +42,6 @@ import org.eclipse.emf.ecore.EObject
 import com.minres.coredsl.coreDsl.FunctionCallExpression
 import com.minres.coredsl.coreDsl.ArrayAccessExpression
 import com.minres.coredsl.coreDsl.MemberAccessExpression
-import com.minres.coredsl.coreDsl.CompositeTypeSpecifier
 import com.minres.coredsl.coreDsl.EnumTypeSpecifier
 import com.minres.coredsl.coreDsl.BoolTypeSpecifier
 import com.minres.coredsl.coreDsl.VoidTypeSpecifier
@@ -67,6 +63,12 @@ import com.minres.coredsl.coreDsl.ContinueStatement
 import com.minres.coredsl.coreDsl.BreakStatement
 import com.minres.coredsl.coreDsl.ReturnStatement
 import com.minres.coredsl.coreDsl.IntrinsicExpression
+import com.minres.coredsl.coreDsl.StructTypeSpecifier
+import com.minres.coredsl.coreDsl.UnionTypeSpecifier
+import com.minres.coredsl.coreDsl.EnumTypeDeclaration
+import com.minres.coredsl.coreDsl.StructTypeDeclaration
+import com.minres.coredsl.coreDsl.UnionTypeDeclaration
+import com.minres.coredsl.coreDsl.EnumMemberDeclaration
 
 class Visualizer {
 	
@@ -205,7 +207,7 @@ class Visualizer {
 		return makeNode(node, "Core Description",
 			makeGroup("Imports", node.imports),
 			makeGroup("Definitions", node.definitions)
-		)
+		);
 	}
 	
 	private def dispatch VisualNode genNode(Import node) {
@@ -219,8 +221,10 @@ class Visualizer {
 			makeNamedLiteral("Name", node.name),
 			makeNamedLiteral("Super Type", node.superType?.name),
 			makeGroup("Declarations", node.declarations),
+			makeGroup("Assignments", node.assignments),
+			makeGroup("Types", node.types),
 			makeGroup("Functions", node.functions),
-			makeGroup("Attributes", node.commonInstructionAttributes),
+			makeGroup("Instruction Attributes", node.commonInstructionAttributes),
 			makeGroup("Instructions", node.instructions)
 		);
 	}
@@ -228,12 +232,14 @@ class Visualizer {
 	private def dispatch VisualNode genNode(CoreDef node) {
 		return makeNode(node, "Instruction Set",
 			makeNamedLiteral("Name", node.name),
-			makeGroup("Contributing Type", node.contributingType),
+			makeGroup("Provided Instruction Sets", node.providedInstructionSets),
 			makeGroup("Declarations", node.declarations),
+			makeGroup("Assignments", node.assignments),
+			makeGroup("Types", node.types),
 			makeGroup("Functions", node.functions),
-			makeGroup("Attributes", node.commonInstructionAttributes),
+			makeGroup("Instruction Attributes", node.commonInstructionAttributes),
 			makeGroup("Instructions", node.instructions)
-		)
+		);
 	}
 	
 	private def dispatch VisualNode genNode(Instruction node) {
@@ -252,31 +258,24 @@ class Visualizer {
 	private def dispatch VisualNode genNode(BitField node) {
 		return makeNode(node, "Bit Field",
 			makeNamedLiteral("Name", node.name),
-			makeChild("Left", node.left),
-			makeChild("Right", node.right)
-		)
+			makeChild("StartIndex", node.startIndex),
+			makeChild("EndIndex", node.endIndex)
+		);
 	}
 	
 	private def dispatch VisualNode genNode(BitValue node) {
 		return makeNode(node, "Bit Value",
 			makeNamedLiteral("Value", node.value.toString)
-		)
+		);
 	}
 	
 	private def dispatch VisualNode genNode(FunctionDefinition node) {
-		return node.extern
-		? makeNode(node, "Function (extern)",
-			makeChild("Return Type", node.type),
+		return makeNode(node, node.extern ? "Function (extern)" : "Function",
+			makeChild("Return Type", node.returnType),
 			makeNamedLiteral("Name", node.name),
 			makeGroup("Parameters", node.parameters),
-			makeGroup("Attributes", node.attributes)
-		)
-		: makeNode(node, "Function",
-			makeChild("Return Type", node.type),
-			makeNamedLiteral("Name", node.name),
-			makeGroup("Parameters", node.parameters),
-			makeChild("Body", node.body),
-			makeGroup("Attributes", node.attributes)
+			makeGroup("Attributes", node.attributes),
+			makeChild("Body", node.body)
 		);
 	}
 	
@@ -405,18 +404,50 @@ class Visualizer {
 		);
 	}
 	
-	private def dispatch VisualNode genNode(CompositeTypeSpecifier node) {
-		return makeNode(node, node.composeType == StructOrUnion.STRUCT ? "Struct Type" : "Union Type",
-			makeNamedLiteral("Name", node.name),
-			makeGroup("Declarations", node.declarations)
-		)
+	private def dispatch VisualNode genNode(StructTypeSpecifier node) {
+		return makeNode(node, "Struct Type",
+			makeReference("Target", node.target?.name, [node.target])
+		);
+	}
+	
+	private def dispatch VisualNode genNode(UnionTypeSpecifier node) {
+		return makeNode(node, "Union Type",
+			makeReference("Target", node.target?.name, [node.target])
+		);
 	}
 	
 	private def dispatch VisualNode genNode(EnumTypeSpecifier node) {
 		return makeNode(node, "Enum Type",
-			makeNamedLiteral("Name", node.name),
-			makeGroup("Members", node.enumerators)
-		)
+			makeReference("Target", node.target?.name, [node.target])
+		);
+	}
+	
+	private def dispatch VisualNode genNode(StructTypeDeclaration node) {
+		return makeNode(node, "Struct Type Declaration",
+			makeDeclaration("Name", node.name, node),
+			makeGroup("Members", node.members)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(UnionTypeDeclaration node) {
+		return makeNode(node, "Union Type Declaration",
+			makeDeclaration("Name", node.name, node),
+			makeGroup("Members", node.members)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(EnumTypeDeclaration node) {
+		return makeNode(node, "Enum Type Declaration",
+			makeDeclaration("Name", node.name, node),
+			makeGroup("Members", node.members)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(EnumMemberDeclaration node) {
+		return makeNode(node, "Enum Member",
+			makeDeclaration("Name", node.name, node),
+			makeChild("Value", node.value)
+		);
 	}
 	
 	private def dispatch VisualNode genNode(Declarator node) {
@@ -429,45 +460,29 @@ class Visualizer {
 	}
 	
 	private def dispatch VisualNode genNode(ExpressionInitializer node) {
-		return visit(node.expr);
+		return visit(node.value);
 	}
 	
 	private def dispatch VisualNode genNode(ListInitializer node) {
-		return makeNode(node, "List Initializer",
-			makeGroup("", node.initializers)
-		);
-	}
-	
-	private def dispatch VisualNode genNode(DesignatedInitializer node) {
-		return makeNode(node, "Designated Initializer",
-			makeGroup("Designators", node.designators),
-			makeChild("Initializer", node.initializer)
-		);
-	}
-	
-	private def dispatch VisualNode genNode(Designator node) {
-		return makeNode(node, "Designator",
-			makeChild("Index", node.idx),
-			makeNamedLiteral("Property", node.prop)
-		);
+		return makeNode(node, "List Initializer", node.initializers);
 	}
 	
 	// expressions
 	
 	private def dispatch VisualNode genNode(IntegerConstant node) {
-		return makeImmediateLiteral(node.value.toString)
+		return makeImmediateLiteral(node.value.toString);
 	}
 	
 	private def dispatch VisualNode genNode(FloatConstant node) {
-		return makeImmediateLiteral(node.value.toString)
+		return makeImmediateLiteral(node.value.toString);
 	}
 	
 	private def dispatch VisualNode genNode(BoolConstant node) {
-		return makeImmediateLiteral(node.value.toString)
+		return makeImmediateLiteral(node.value.toString);
 	}
 	
 	private def dispatch VisualNode genNode(CharacterConstant node) {
-		return makeImmediateLiteral(node.value)
+		return makeImmediateLiteral(node.value);
 	}
 	
 	private def dispatch VisualNode genNode(StringConstant node) {
@@ -481,7 +496,7 @@ class Visualizer {
 	}
 	
 	private def dispatch VisualNode genNode(StringLiteral node) {
-		return makeImmediateLiteral(node.value)
+		return makeImmediateLiteral(node.value);
 	}
 	
 	private def dispatch VisualNode genNode(AssignmentExpression node) {

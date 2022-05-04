@@ -4,7 +4,6 @@
 package com.minres.coredsl.scoping
 
 import com.minres.coredsl.coreDsl.BitField
-import com.minres.coredsl.coreDsl.CompositeTypeSpecifier
 import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.CoreDslPackage
@@ -31,6 +30,10 @@ import com.minres.coredsl.coreDsl.EntityReference
 import com.minres.coredsl.coreDsl.ForLoop
 import com.minres.coredsl.coreDsl.Statement
 import com.minres.coredsl.coreDsl.DeclarationStatement
+import com.minres.coredsl.coreDsl.UserTypeSpecifier
+import com.minres.coredsl.coreDsl.EnumTypeSpecifier
+import com.minres.coredsl.coreDsl.StructTypeSpecifier
+import com.minres.coredsl.coreDsl.UnionTypeSpecifier
 
 /**
  * This class contains custom scoping description.
@@ -61,7 +64,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
                 InstructionSet:
                     Scopes.scopeFor(context.variables, context.superType !== null? context.superType.scopeForVariable(reference) : IScope.NULLSCOPE)
                 CoreDef:
-                    Scopes.scopeFor(context.variables, context.contributingType.outerScope)
+                    Scopes.scopeFor(context.variables, context.providedInstructionSets.outerScope)
                 default:
                     super.getScope(context, reference)
             }
@@ -95,7 +98,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
     }
 
     def IScope scopeForVariable(CoreDef coreDef, EReference reference) {
-        Scopes.scopeFor(coreDef.variables, coreDef.contributingType.outerScope)
+        Scopes.scopeFor(coreDef.variables, coreDef.providedInstructionSets.outerScope)
     }
 
     def IScope scopeForVariable(Statement context, EReference reference) {
@@ -177,7 +180,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
             val declsSuper = isa.superType!==null?isa.superType.allDeclarations:#[]
             declsSuper + isa.declarations.map[it.declaration]
         } else if(isa instanceof CoreDef){
-            val declsSuper = isa.contributingType.map[it.allDeclarations].flatten
+            val declsSuper = isa.providedInstructionSets.map[it.allDeclarations].flatten
             declsSuper + isa.declarations.map[it.declaration]
         }
     }
@@ -212,15 +215,12 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
         decl.declarators
     }
 
-    def dispatch Iterable<Declarator> directDeclarations(CompositeTypeSpecifier spec) {
-        if (spec.declarations.size > 0)
-            spec.declarations.directDeclarations
-        else {
-            val specifier = spec.eContainer.findCompositeType([
-                CompositeTypeSpecifier d|d.name!==null?d.name==spec.name:false
-            ])
-            specifier===null?#[]:specifier.declarations.directDeclarations
-        }
+    def dispatch Iterable<Declarator> directDeclarations(UserTypeSpecifier spec) {
+    	switch(spec) {
+    		case StructTypeSpecifier: return (spec as StructTypeSpecifier).target.members.flatMap[it.declarators]
+    		case UnionTypeSpecifier: return (spec as UnionTypeSpecifier).target.members.flatMap[it.declarators]
+    		case EnumTypeSpecifier: return #[]
+    	}
     }
     
     def dispatch Iterable<Declarator> directDeclarations(EObject decl) {
@@ -233,25 +233,25 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
     /************************************************************************
      * type extension methods begin
      */
-    def dispatch CompositeTypeSpecifier findCompositeType(DeclarationStatement decl, (CompositeTypeSpecifier)=>boolean predicate){
+    def dispatch UserTypeSpecifier findUserType(DeclarationStatement decl, (UserTypeSpecifier)=>boolean predicate){
         val res = decl.eContainer.declarationsBefore(decl)
             .map[it.type]
-            .filter[it instanceof CompositeTypeSpecifier]
-            .map[it as CompositeTypeSpecifier]
+            .filter[it instanceof UserTypeSpecifier]
+            .map[it as UserTypeSpecifier]
             .findFirst(predicate)
-        res ?: decl.eContainer.eContainer.findCompositeType(predicate)
+        res ?: decl.eContainer.eContainer.findUserType(predicate)
     }
         
-    def dispatch CompositeTypeSpecifier findCompositeType(ISA isa, (CompositeTypeSpecifier)=>boolean predicate){
+    def dispatch UserTypeSpecifier findUserType(ISA isa, (UserTypeSpecifier)=>boolean predicate){
         isa.allDeclarations
             .map[it.type]
-            .filter[it instanceof CompositeTypeSpecifier]
-            .map[it as CompositeTypeSpecifier]
+            .filter[it instanceof UserTypeSpecifier]
+            .map[it as UserTypeSpecifier]
             .findFirst(predicate)
     }
 
-    def dispatch CompositeTypeSpecifier findCompositeType(EObject object, (CompositeTypeSpecifier)=>boolean predicate){
-        object.eContainer.findCompositeType(predicate)
+    def dispatch UserTypeSpecifier findUserType(EObject object, (UserTypeSpecifier)=>boolean predicate){
+        object.eContainer.findUserType(predicate)
     }
     /*
      * type extension methods end
