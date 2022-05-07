@@ -1,0 +1,4 @@
+include 'com.minres.coredsl'
+include 'com.minres.coredsl.ide'
+include 'com.minres.coredsl.web'
+include 'com.minres.coredsl.tests'

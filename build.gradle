@@ -1,0 +1,35 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		gradlePluginPortal()
+	}
+	dependencies {
+		classpath 'org.xtext:xtext-gradle-plugin:3.0.1'
+	}
+}
+
+subprojects {
+	ext.xtextVersion = '2.26.0'
+	repositories {
+		mavenCentral()
+	}
+
+	apply plugin: 'java-library'
+	dependencies {
+		api platform("org.eclipse.xtext:xtext-dev-bom:${xtextVersion}")
+	}
+
+	apply plugin: 'org.xtext.xtend'
+	apply from: "${rootDir}/gradle/source-layout.gradle"
+	apply plugin: 'eclipse'
+
+	group = 'com.minres.coredsl'
+	version = '1.0.0-SNAPSHOT'
+
+	sourceCompatibility = '11'
+	targetCompatibility = '11'
+
+	configurations.all {
+		exclude group: 'asm'
+	}
+}
