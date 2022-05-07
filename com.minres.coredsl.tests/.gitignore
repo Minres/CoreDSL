@@ -4,3 +4,4 @@
 *.xtextbin
 /src-gen/
 /xtend-gen/
+/bin/

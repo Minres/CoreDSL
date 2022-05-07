@@ -5,25 +5,24 @@ package com.minres.coredsl.ui.labeling
 
 import com.google.inject.Inject
 import com.minres.coredsl.coreDsl.BitField
-import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
-import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider
-import org.eclipse.emf.ecore.EObject
-import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.BitValue
-import com.minres.coredsl.coreDsl.Instruction
-import com.minres.coredsl.coreDsl.Statement
 import com.minres.coredsl.coreDsl.CoreDef
-import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.FunctionDefinition
+import com.minres.coredsl.coreDsl.Instruction
+import com.minres.coredsl.coreDsl.InstructionSet
+import com.minres.coredsl.coreDsl.Statement
 import org.eclipse.emf.common.util.EList
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
 
 /**
  * Provides labels for EObjects.
  * 
  * See https://www.eclipse.org/Xtext/documentation/304_ide_concepts.html#label-provider
  */
-class CoreDslLabelProvider extends DefaultEObjectLabelProvider {
+class XtCoreDslLabelProvider extends CoreDslLabelProvider {
 
 	@Inject
 	new(AdapterFactoryLabelProvider delegate) {

@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.EStructuralFeature
  * 
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
-class CoreDslValidator extends AbstractCoreDslValidator {
+class XtCoreDslValidator extends CoreDslValidator {
 
 	/*TODO: 
 	 * * check for cycles in structs

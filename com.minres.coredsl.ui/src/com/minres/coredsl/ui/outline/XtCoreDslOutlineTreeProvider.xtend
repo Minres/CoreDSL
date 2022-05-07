@@ -4,24 +4,18 @@
 package com.minres.coredsl.ui.outline
 
 import com.minres.coredsl.coreDsl.CoreDef
+import com.minres.coredsl.coreDsl.CoreDslPackage
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
+import com.minres.coredsl.coreDsl.NamedEntity
 import com.minres.coredsl.coreDsl.Statement
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode
-import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
 import org.eclipse.xtext.ui.editor.outline.impl.DocumentRootNode
-import com.minres.coredsl.coreDsl.CoreDslPackage
-import com.minres.coredsl.coreDsl.NamedEntity
 
-/**
- * Customization of the default outline structure.
- * 
- * See https://www.eclipse.org/Xtext/documentation/304_ide_concepts.html#outline
- */
-class CoreDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
+class XtCoreDslOutlineTreeProvider extends CoreDslOutlineTreeProvider {
 
 	def void _createChildren(DocumentRootNode outlineNode, DescriptionContent model) {
 		model.definitions.forEach [

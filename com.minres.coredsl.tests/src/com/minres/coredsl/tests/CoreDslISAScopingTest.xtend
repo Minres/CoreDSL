@@ -5,7 +5,6 @@ package com.minres.coredsl.tests
 
 import com.google.inject.Inject
 import com.minres.coredsl.coreDsl.DescriptionContent
-import java.io.FileReader
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -15,8 +14,6 @@ import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.junit.jupiter.api.Assertions.assertFalse
 import static org.junit.jupiter.api.Assertions.assertTrue
-
-import static extension com.google.common.io.CharStreams.*
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)

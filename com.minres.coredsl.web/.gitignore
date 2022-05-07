@@ -4,3 +4,4 @@
 *.xtendbin
 /src-gen/
 /xtend-gen/
+/bin/

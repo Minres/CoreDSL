@@ -5,7 +5,6 @@
 		<groupId>com.minres.coredsl</groupId>
 		<artifactId>com.minres.coredsl.parent</artifactId>
 		<version>2.0.2-SNAPSHOT</version>
-	        <relativePath>..</relativePath>
 	</parent>
 	<artifactId>com.minres.coredsl.feature</artifactId>
 	<packaging>eclipse-feature</packaging>

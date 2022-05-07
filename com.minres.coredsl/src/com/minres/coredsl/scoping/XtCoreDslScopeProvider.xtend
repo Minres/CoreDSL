@@ -41,7 +41,7 @@ import com.minres.coredsl.coreDsl.UnionTypeSpecifier
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#scoping
  * on how and when to use it.
  */
-class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
+class XtCoreDslScopeProvider extends CoreDslScopeProvider {
 	
 	int nesting = 0;
 
