@@ -6,7 +6,6 @@ import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.BoolConstant
 import com.minres.coredsl.coreDsl.CastExpression
 import com.minres.coredsl.coreDsl.CharacterConstant
-import com.minres.coredsl.coreDsl.CompositeTypeSpecifier
 import com.minres.coredsl.coreDsl.ConditionalExpression
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.Declarator
@@ -20,7 +19,6 @@ import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.StringLiteral
 import com.minres.coredsl.coreDsl.Encoding
-import com.minres.coredsl.coreDsl.Field
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.coreDsl.Constant
@@ -42,9 +40,10 @@ import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerSignedness
 import com.minres.coredsl.coreDsl.ParenthesisExpression
 import com.minres.coredsl.coreDsl.StringConstant
-import com.minres.coredsl.coreDsl.InitDeclarator
 import com.minres.coredsl.coreDsl.NamedEntity
 import com.minres.coredsl.coreDsl.EntityReference
+import com.minres.coredsl.coreDsl.UserTypeSpecifier
+import com.minres.coredsl.coreDsl.EncodingField
 
 class TypeProvider {
 
@@ -78,12 +77,12 @@ class TypeProvider {
         e.typeFor(e.parentOfType(ISA))
     }
 
-    def static dispatch DataType typeFor(CompositeTypeSpecifier e, ISA ctx) {
-        return new DataType(DataType.Type.COMPOSITE, 0)
-    }
-
     def static dispatch DataType typeFor(EnumTypeSpecifier e, ISA ctx) {
         return new DataType(DataType.Type.INTEGRAL_SIGNED, 32)
+    }
+
+    def static dispatch DataType typeFor(UserTypeSpecifier e, ISA ctx) {
+        return new DataType(DataType.Type.COMPOSITE, 0)
     }
     
     def static dispatch DataType typeFor(VoidTypeSpecifier e, ISA ctx) {
@@ -101,8 +100,7 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(IntegerTypeSpecifier e, ISA ctx) {
-        val isUnsigned = e.signedness == IntegerSignedness.UNSIGNED;
-        
+        val isUnsigned = e.signedness == IntegerSignedness.UNSIGNED;   
         if (e.size !== null) {
             val sizeValue = e.size.valueFor(EvaluationContext.root(ctx))
             if(sizeValue === null || !(sizeValue.value instanceof BigInteger)) return null
@@ -138,24 +136,16 @@ class TypeProvider {
         return null;
     }
 
-    def dispatch static DataType typeFor(Expression e, ISA ctx) {
-        val types =  e.expressions.map[expr|expr.typeFor(ctx)]
-        val first = types.findFirst[it===null]
-        if(first !== null)
-            return null
-        return types.head
-    }
-
     def static dispatch DataType typeFor(AssignmentExpression e, ISA ctx) {
-        return e.assignments.last.right.typeFor(ctx)
+        return e.value.typeFor(ctx)
     }
 
     def static dispatch DataType typeFor(ConditionalExpression e, ISA ctx) {
-        return e.left.typeFor(ctx)
+        return e.thenExpression.typeFor(ctx)
     }
 
     def static dispatch DataType typeFor(InfixExpression e, ISA ctx) {
-        switch(e.op){
+        switch(e.operator){
             case "||", case "&&", 
             case "==", case "!=", case "<", case ">", case "<=", case ">=": boolType
             case '|', case "&", case "^": {
@@ -182,31 +172,30 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(CastExpression e, ISA ctx) {
-        return e.type.typeFor(ctx)
+        return e.targetType.typeFor(ctx)
     }
 
     def static dispatch DataType typeFor(PrefixExpression e, ISA ctx) {
-        switch(e.op){
+        switch(e.operator){
             case "++",
-            case "--": e.left.typeFor(ctx)
-            case "~": e.left.typeFor(ctx)
+            case "--",
+            case "~": e.operand.typeFor(ctx)
             case "!": boolType
-            case "sizeof": new DataType(DataType.Type.INTEGRAL_UNSIGNED, 32)
-            default: // missing 'case "&", case "*", case "+" , case "-":'
+            default:
                 null
         }
     }
 
     def static dispatch DataType typeFor(PostfixExpression e, ISA ctx) {
-        return e.left.typeFor(ctx);
+        return e.operand.typeFor(ctx);
     }
 
     def static dispatch DataType typeFor(FunctionCallExpression e, ISA ctx) {
-        return e.left.typeFor(ctx);
+        null
     }
 
     def static dispatch DataType typeFor(ArrayAccessExpression e, ISA ctx) {
-        return e.left.typeFor(ctx);
+        return e.target.typeFor(ctx);
     }
 
     def static dispatch DataType typeFor(MemberAccessExpression e, ISA ctx) {
@@ -214,7 +203,7 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(ParenthesisExpression e, ISA ctx) {
-        return e.left.typeFor(ctx);
+        return e.inner.typeFor(ctx);
     }
     
     def static dispatch DataType typeFor(EntityReference e, ISA ctx) {
@@ -226,12 +215,12 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(FunctionDefinition e, ISA ctx) {
-        e.type.typeFor(ctx)
+        e.returnType.typeFor(ctx)
     }
 
     def static dispatch DataType typeFor(Declarator e, ISA ctx) {
-        if (e.eContainer instanceof InitDeclarator && e.eContainer.eContainer instanceof Declaration) {
-            var decl = e.eContainer.eContainer as Declaration
+        if (e.eContainer instanceof Declaration) {
+            var decl = e.eContainer as Declaration
             decl.type.typeFor(ctx)
         } else
             null
@@ -239,16 +228,16 @@ class TypeProvider {
 
     def static dispatch DataType  typeFor(Encoding list, ISA ctx) {
         var size=0
-        for(Field f:list.fields)
+        for(EncodingField f:list.fields)
             switch(f){
-                BitField:{size += f.left.value.intValue-f.right.value.intValue+1}
+                BitField:{size += f.endIndex.value.intValue - f.startIndex.value.intValue + 1}
                 BitValue:{size += (f.value as BigIntegerWithRadix).size}
             }
         new DataType(DataType.Type.INTEGRAL_UNSIGNED, size)
     }
 
     def static dispatch DataType typeFor(BitField e, ISA ctx) {
-        new DataType(DataType.Type.INTEGRAL_UNSIGNED, e.left.value.intValue + 1)
+        new DataType(DataType.Type.INTEGRAL_UNSIGNED, e.endIndex.value.intValue - e.startIndex.value.intValue + 1)
     }
 
     def static dispatch DataType typeFor(BitValue e, ISA ctx) {

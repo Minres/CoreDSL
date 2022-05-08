@@ -4,334 +4,231 @@ import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
 generate coreDsl "http://www.minres.com/coredsl/CoreDsl/2.0"
 
-DescriptionContent
-	: (imports+=Import)* definitions+=ISA+ 
-	;
+///////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// Top Level Definitions ////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 
-Import
-	: 'import' importURI=STRING
-	;
+DescriptionContent: (imports+=Import)* definitions+=(InstructionSet | CoreDef)+;
+Import: 'import' importURI=STRING;
 
-ISA
-	: InstructionSet
-	| CoreDef
-	;
+InstructionSet : 'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' ISA '}';
+CoreDef: 'Core' name=ID ( 'provides' providedInstructionSets+=[InstructionSet] (',' providedInstructionSets+=[InstructionSet])*)? '{' ISA '}';
 
-InstructionSet :
-	'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' 
-        ( SectionArchState (SectionFunctions SectionInstructions? | SectionInstructions)?
-        | SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions)?
-        | SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions)?
-        )
-    '}'
-;
+fragment ISA:
+	('architectural_state' '{' (declarations+=DeclarationStatement | assignments+=ExpressionStatement | types+=UserTypeDeclaration)+ '}')? &
+	('functions' '{' functions+=FunctionDefinition+ '}')? &
+	('instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}')?;
 
-CoreDef:
-	'Core' name=ID ( 'provides' contributingType+=[InstructionSet] (',' contributingType+=[InstructionSet])*)? '{' 
-	    ( SectionArchState (SectionFunctions SectionInstructions? | SectionInstructions)?
-        | SectionFunctions (SectionArchState SectionInstructions? | SectionInstructions)?
-        | SectionInstructions (SectionArchState SectionFunctions? | SectionFunctions)?
-        )
-    '}'
-;
-
-fragment SectionArchState returns ISA:
-    'architectural_state' '{' declarations+=(Declaration | ExpressionStatement)+ '}'
-;
-
-fragment SectionFunctions returns ISA:
-    'functions' '{' functions+=FunctionDefinition+ '}'
-;
-
-fragment SectionInstructions returns ISA:
-    'instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}'
-;
+FunctionDefinition:
+	extern?='extern'?
+	returnType=TypeSpecifier name=ID
+	'(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')'
+	attributes+=Attribute*
+	body=CompoundStatement;
 
 Instruction:
 	name=ID attributes+=Attribute* '{' 
 		('encoding' ':' encoding=Encoding ';')
 		('assembly' ':' assembly=STRING ';')?
 		('behavior' ':' behavior=Statement)
-	'}'
-;
+	'}';
 
-Encoding
-	:	fields+=Field ('::' fields+=Field)*
-	;
+Encoding: fields+=EncodingField ('::' fields+=EncodingField)*;
+EncodingField: BitValue | BitField;
+BitValue: value=INTEGER;
+BitField: name=ID LEFT_BR startIndex=IntegerConstant ':' endIndex=IntegerConstant RIGHT_BR;
 
-Field
-	: 	BitValue
-	|	BitField
-	;
+////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// Statements ////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
-BitValue
-	: 	value=INTEGER
-	;
+Statement:
+	EmptyStatement
+	| SpawnStatement
+	| CompoundStatement
+	| ExpressionStatement
+	| DeclarationStatement
+	| IfStatement
+	| SwitchStatement
+	| ContinueStatement
+	| BreakStatement
+	| ReturnStatement
+	| LoopStatement;
 
-BitField
-	:	name=ID LEFT_BR left=IntegerConstant ':' right=IntegerConstant RIGHT_BR 
-	;
+EmptyStatement: {EmptyStatement} ';';
+SpawnStatement: 'spawn' body=Statement;
+CompoundStatement: {CompoundStatement} '{' statements+=Statement* '}';
+ExpressionStatement: expression=AssignmentExpression ';';
+DeclarationStatement: declaration=MultiInitDeclaration ';';
 
-FunctionDefinition
-	:   extern?='extern' type=TypeSpecifier name=ID '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')' ';'
-	|   type=TypeSpecifier name=ID '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')' attributes+=Attribute* statement=CompoundStatement
-	;
+//////////////////////////////// Flow Control ////////////////////////////////
 
-ParameterDeclaration: type=TypeSpecifier declarator=Declarator?;
+IfStatement:
+	'if' '(' condition=Expression ')' thenBody=Statement (=> 'else' elseBody=Statement)?;
 
-///////////////////////////////////////////////////////////////////////////////
-// Statements
-Statement
-    :   CompoundStatement
-    |   ExpressionStatement
-    |   SelectionStatement
-    |   IterationStatement
-    |   JumpStatement
-    |   SpawnStatement
-    ;
+SwitchStatement:
+	'switch' '(' condition=Expression ')' '{' sections+=SwitchSection* '}';
 
-LabeledStatement
-    :   'case' constExpr=ConstantExpression ':' items+=Statement*
-    |   {LabeledStatement} 'default' ':' items+=Statement*
-    ;
+SwitchSection:
+	{CaseSection} 'case' condition=Expression ':' body+=Statement* |
+	{DefaultSection} 'default' ':' body+=Statement*;
 
-    
-CompoundStatement
-    :   {CompoundStatement} '{' items+=BlockItem* '}'
-    ;
+ContinueStatement: {ContinueStatement} 'continue' ';';
+BreakStatement: {BreakStatement} 'break' ';';
+ReturnStatement: {ReturnStatement} 'return' value=ConditionalExpression? ';';
 
-BlockItem
-    :   Statement
-    |   Declaration
-    ;
+//////////////////////////////// Loops ////////////////////////////////
 
-ExpressionStatement
-    :   {ExpressionStatement} expr=ExpressionList? ';'
-        
-    ;
+LoopStatement: WhileLoop | ForLoop | DoLoop;
 
-SelectionStatement
-    :   IfStatement
-    |   SwitchStatement
-    ;
-IfStatement
-    :   'if' '(' cond=ConditionalExpression ')' thenStmt=Statement (=> 'else' elseStmt=Statement)?
-    ;
-SwitchStatement
-    :   'switch' '(' cond=ConditionalExpression ')' '{' items+=LabeledStatement+ '}'
-    ;
+WhileLoop:
+	'while' '(' condition=Expression ')' body=Statement;
 
-IterationStatement
-    :   type='while' '(' cond=ConditionalExpression ')' stmt=Statement
-    |   type='do' stmt=Statement 'while' '(' cond=ConditionalExpression ')' ';'
-    |   type='for' '(' ForCondition ')' stmt=Statement
-    ;
+ForLoop:
+	'for' '('
+	(startDeclaration=MultiInitDeclaration | startExpression=AssignmentExpression?) ';'
+	(condition=Expression?) ';'
+	(loopExpressions+=AssignmentExpression (',' loopExpressions+=AssignmentExpression)*)?
+	')' body=Statement;
 
-fragment ForCondition
-	:   (startDecl=Declaration | startExpr=AssignmentExpression? ';') endExpr=ConditionalExpression? ';'  (loopExprs+=AssignmentExpression (',' loopExprs+=AssignmentExpression)*)?
-	;
+DoLoop:
+	'do' body=Statement 'while' '(' condition=Expression ')' ';';
 
-JumpStatement
-    :   type='continue' ';'
-    |   type='break' ';'
-    |   type='return' expr=ConditionalExpression? ';'
-    ;
-
-SpawnStatement
-    :   'spawn' stmt=Statement
-    ;
-
-///////////////////////////////////////////////////////////////////////////////
-// Declarations
-
-Declaration:
-	(storage+=StorageClassSpecifier | qualifiers+=TypeQualifier | attributes+=Attribute)*
-	type=TypeSpecifier (declarators+=InitDeclarator (',' declarators+=InitDeclarator)*)? ';';
-
-Attribute
-    :  	DoubleLeftBracket type=ID ('=' params+=ConditionalExpression | '(' params+=ConditionalExpression (',' params+=ConditionalExpression)* ')')? DoubleRightBracket
-    ;
-
-TypeSpecifier
-	:	ValueTypeSpecifier
-	|	VoidTypeSpecifier
-	;
-
-ValueTypeSpecifier
-	:	PrimitiveTypeSpecifier
-	|	CompositeTypeSpecifier
-	|	EnumTypeSpecifier
-	;
-
-PrimitiveTypeSpecifier
-	:	IntegerTypeSpecifier
-	|	FloatTypeSpecifier
-	|	BoolTypeSpecifier
-	;
-
-IntegerTypeSpecifier
-	:	signedness=IntegerSignedness (shorthand=IntegerSizeShorthand | '<' size=PrimaryExpression '>')?
-	|	shorthand=IntegerSizeShorthand
-	;
-
-FloatTypeSpecifier
-	:	shorthand=FloatSizeShorthand;
-
-BoolTypeSpecifier
-	:	{BoolTypeSpecifier} 'bool';
-
-VoidTypeSpecifier
-	:	{VoidTypeSpecifier} 'void';
-
-CompositeTypeSpecifier
-    :   composeType=StructOrUnion name=ID? '{' (declaration += StructDeclaration)* '}'
-    |   composeType=StructOrUnion name=ID
-    ;
-
-StructDeclaration
-    :   specifier=StructDeclarationSpecifier declarator += Declarator(',' declarator+=Declarator)* ';'
-    ;
-
-StructDeclarationSpecifier
-    :   type=TypeSpecifier
-    |   qualifiers+=TypeQualifier
-    ;
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// Declarations ////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 	
-// TODO add optional size specifier after name? (':' size=IntegerTypeSpecifier)?
-EnumTypeSpecifier
-    :   'enum' name=ID? '{' enumerators+=EnumMemberDeclaration (',' enumerators+=EnumMemberDeclaration)* ','? '}'
-    |   'enum' name=ID
-    ;
+ParameterDeclaration returns Declaration: Declaration<false, false>;
+MultiInitDeclaration returns Declaration: Declaration<true, true>;
+MultiDeclaration returns Declaration: Declaration<true, false>;
 
-EnumMemberDeclaration
-    :   name=ID
-    |   name=ID '=' expression=ConstantExpression
-    ;
+Declaration<allowMultiple, allowInit>:
+	(storage+=StorageClassSpecifier | qualifiers+=TypeQualifier | attributes+=Attribute)*
+	type=TypeSpecifier (declarators+=Declarator<allowInit> (<allowMultiple> ',' declarators+=Declarator<allowInit>)*)?;
 
-InitDeclarator:
-	declarator=Declarator ('=' initializer=(ExpressionInitializer | ListInitializer))?;
-
-Declarator:
+Declarator<allowInit>:
 	alias?='&'?
 	name=ID
-	(LEFT_BR dimensions+=ConstantExpression RIGHT_BR)*
-	attributes+=Attribute*;
+	(LEFT_BR dimensions+=Expression RIGHT_BR)*
+	attributes+=Attribute*
+	(<allowInit> t_equals='=' initializer=Initializer)?;
+
+NamedEntity: FunctionDefinition | Declarator<true> | BitField;
     
-Initializer: ExpressionInitializer | ListInitializer | DesignatedInitializer;
-
-ExpressionInitializer: expr=ConditionalExpression;
-
+Initializer: ExpressionInitializer | ListInitializer;
+ExpressionInitializer: value=Expression;
 ListInitializer: '{' initializers+=Initializer (',' initializers+=Initializer)* ','? '}';
 
-DesignatedInitializer: (designators+=Designator)+ '=' initializer=(ExpressionInitializer | ListInitializer);
+Attribute:
+	DoubleLeftBracket type=ID
+	('=' parameters+=Expression | '(' parameters+=Expression (',' parameters+=Expression)* ')')?
+	DoubleRightBracket;
 
-Designator: LEFT_BR idx=ConstantExpression RIGHT_BR | '.' prop=ID;
+//////////////////////////////// Type Declarations ////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////
-// Expressions
-ExpressionList  returns Expression
-    :   AssignmentExpression ({Expression.expressions+=current} (',' expressions+=AssignmentExpression)*)
+UserTypeDeclaration: StructTypeDeclaration | UnionTypeDeclaration | EnumTypeDeclaration;
+
+StructTypeDeclaration: 'struct' name=ID CompositeTypeDeclaration;
+UnionTypeDeclaration: 'union' name=ID CompositeTypeDeclaration;
+EnumTypeDeclaration: 'enum' name=ID '{' members+=EnumMemberDeclaration (',' members+=EnumMemberDeclaration)* ','? '}';
+
+EnumMemberDeclaration: name=ID ('=' value=Expression)?;
+
+fragment CompositeTypeDeclaration: '{' (members+=MultiDeclaration ';')* '}';
+
+//////////////////////////////// Type Specifiers ////////////////////////////////
+
+TypeSpecifier: VoidTypeSpecifier | PrimitiveTypeSpecifier | UserTypeSpecifier;
+
+PrimitiveTypeSpecifier: IntegerTypeSpecifier | FloatTypeSpecifier | BoolTypeSpecifier;
+
+IntegerTypeSpecifier: shorthand=IntegerSizeShorthand | signedness=IntegerSignedness (shorthand=IntegerSizeShorthand | '<' size=PrimaryExpression '>');
+FloatTypeSpecifier: shorthand=FloatSizeShorthand;
+BoolTypeSpecifier: {BoolTypeSpecifier} 'bool';
+VoidTypeSpecifier: {VoidTypeSpecifier} 'void';
+
+UserTypeSpecifier: StructTypeSpecifier | UnionTypeSpecifier | EnumTypeSpecifier;
+	
+StructTypeSpecifier: 'struct' target=[StructTypeDeclaration];
+UnionTypeSpecifier: 'union' target=[UnionTypeDeclaration];
+EnumTypeSpecifier: 'enum' target=[EnumTypeDeclaration];
+
+/////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// Expressions ////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+Expression: AssignmentExpression;
+
+AssignmentExpression returns Expression:
+	ConditionalExpression
+	({AssignmentExpression.target=current}
+		operator=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=')
+		value=AssignmentExpression
+	)?;
+
+ConditionalExpression returns Expression:
+	ConcatenationExpression
+	({ConditionalExpression.condition=current}
+		'?' thenExpression=AssignmentExpression
+		':' elseExpression=ConditionalExpression
+	)?;
+
+ConcatenationExpression returns Expression:
+	LogicalOrExpression
+	({ConcatenationExpression.parts+=current}
+		('::' parts+=LogicalOrExpression)+
+	)?;
+
+LogicalOrExpression returns Expression: LogicalAndExpression ({InfixExpression.left=current} operator='||' right=LogicalAndExpression)*;
+LogicalAndExpression returns Expression: InclusiveOrExpression ({InfixExpression.left=current} operator='&&' right=InclusiveOrExpression)*;
+InclusiveOrExpression returns Expression: ExclusiveOrExpression ({InfixExpression.left=current} operator='|' right=ExclusiveOrExpression)*;
+ExclusiveOrExpression returns Expression: AndExpression ({InfixExpression.left=current} operator='^' right=AndExpression)*;
+AndExpression returns Expression: EqualityExpression ({InfixExpression.left=current} operator='&' right=EqualityExpression)*;
+EqualityExpression returns Expression: RelationalExpression ({InfixExpression.left=current} operator=('=='|'!=') right=RelationalExpression)*;
+RelationalExpression returns Expression: ShiftExpression ({InfixExpression.left=current} operator=('<'|'>'|'<='|'>=') right=ShiftExpression)*;
+ShiftExpression returns Expression: AdditiveExpression ({InfixExpression.left=current} operator=('<<'|'>>') right=AdditiveExpression)*;
+AdditiveExpression returns Expression: MultiplicativeExpression ({InfixExpression.left=current} operator=('+'|'-') right=MultiplicativeExpression)*;
+MultiplicativeExpression returns Expression: CastExpression ({InfixExpression.left=current} operator=('*' | '/' | '%') right=CastExpression)*;
+
+CastExpression returns Expression:
+	PrefixExpression
+	| {CastExpression} '(' targetType=TypeSpecifier ')' operand=CastExpression
+	| {CastExpression} '(' signedness=IntegerSignedness ')' operand=CastExpression;
+
+PrefixExpression returns Expression:
+	PostfixExpression
+	| {PrefixExpression} operator=('++' | '--') operand=PrefixExpression
+	| {PrefixExpression} operator=('+' | '-' | '~' | '!') operand=PrefixExpression
     ;
 
-AssignmentExpression returns Expression // this is right associative
-    :   PrefixExpression ({AssignmentExpression.left=current} assignments+=Assignment)*
-    ;
-
-Assignment:
-	type=('=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=') right=ConditionalExpression
-	;
-
-ConditionalExpression returns Expression
-    :   ConcatenationExpression ({ConditionalExpression.cond=current} '?' left=ConditionalExpression ':' right=ConditionalExpression)?
-    ;
-
-ConcatenationExpression returns Expression // right associative rule
-    :   LogicalOrExpression ({InfixExpression.left=current} op='::' right=ConcatenationExpression)?
-    ;
-    
-LogicalOrExpression returns Expression
-    :   LogicalAndExpression ({InfixExpression.left=current} op='||' right=LogicalOrExpression)?
-    ;
-
-LogicalAndExpression returns Expression
-    :   InclusiveOrExpression ({InfixExpression.left=current} op='&&' right=LogicalAndExpression)?
-    ;
-
-InclusiveOrExpression returns Expression
-    :   ExclusiveOrExpression ({InfixExpression.left=current} op='|' right=InclusiveOrExpression)?
-    ;
-
-ExclusiveOrExpression returns Expression
-    :   AndExpression ({InfixExpression.left=current} op='^' right=ExclusiveOrExpression)?
-    ;
-
-AndExpression returns Expression
-    :   EqualityExpression ({InfixExpression.left=current} op='&' right=AndExpression)?
-    ;
-
-EqualityExpression returns Expression
-    :   RelationalExpression ({InfixExpression.left=current} op=('=='|'!=') right=EqualityExpression)?
-    ;
-
-RelationalExpression returns Expression
-    :   ShiftExpression ({InfixExpression.left=current} op=('<'|'>'|'<='|'>=') right=RelationalExpression)?
-    ;
-
-ShiftExpression returns Expression
-    :   AdditiveExpression ({InfixExpression.left=current} op=('<<'|'>>') right=ShiftExpression)?
-    ;
-
-AdditiveExpression returns Expression
-    :   MultiplicativeExpression ({InfixExpression.left=current} op=('+'|'-') right=AdditiveExpression)?
-    ;
-
-MultiplicativeExpression returns Expression
-    :   CastExpression ({InfixExpression.left=current} op=('*' | '/' | '%') right=MultiplicativeExpression)?
-    ;
-
-CastExpression
-    :   PrefixExpression
-    |	'(' type=TypeSpecifier ')' left=CastExpression
-    ;
-
-PrefixExpression
-    :   PostfixExpression
-    |   op='++' left=PrefixExpression
-    |   op='--' left=PrefixExpression
-    |   op=('&' | '*' | '+' | '-' | '~' | '!') left=CastExpression
-    |   op='sizeof' '(' (left=PostfixExpression |  type=TypeSpecifier ) ')'
-//    |   op='_Alignof' '(' type=TypeSpecifier ')'
-    ;
-
-PostfixExpression:
+PostfixExpression returns Expression:
 	PrimaryExpression
-	(	{FunctionCallExpression.left=current} '(' (arguments+=ConditionalExpression (',' arguments+=ConditionalExpression)*)? ')'
-	|	{ArrayAccessExpression.left=current} LEFT_BR index=ConditionalExpression (':' endIndex=ConditionalExpression)? RIGHT_BR
-	|	{MemberAccessExpression.left=current} op='.' declarator=[Declarator]
-	|	{MemberAccessExpression.left=current} op='->' declarator=[Declarator]
-	|	{PostfixExpression.left=current} op='++'
-	|	{PostfixExpression.left=current} op='--'
+	( {FunctionCallExpression.target=current} '(' (arguments+=Expression (',' arguments+=Expression)*)? ')'
+	| {ArrayAccessExpression.target=current} LEFT_BR index=Expression (':' endIndex=Expression)? RIGHT_BR
+	| {MemberAccessExpression.target=current} operator='.' declarator=[Declarator]
+	| {MemberAccessExpression.target=current} operator='->' declarator=[Declarator]
+	| {PostfixExpression.operand=current} operator='++'
+	| {PostfixExpression.operand=current} operator='--'
 	)*;
 
-PrimaryExpression: EntityReference | Constant | ParenthesisExpression;
+PrimaryExpression: ParenthesisExpression | EntityReference | IntrinsicExpression | Constant;
 
-ParenthesisExpression: '(' left=ConditionalExpression ')';
+ParenthesisExpression: '(' inner=Expression ')';
 
 EntityReference: target=[NamedEntity];
 
-NamedEntity hidden(): FunctionDefinition | Declarator | BitField;
-
-ConstantExpression returns Expression: ConditionalExpression;
+IntrinsicExpression:
+	function=('sizeof' | 'bitsizeof' | 'alignof' | 'offsetof')
+	'(' (arguments+=(Expression|TypeSpecifier) (',' arguments+=(Expression|TypeSpecifier))*)? ')';
     
-///////////////////////////////////////////////////////////////////////////////
-// Constants
-Constant
-	:	IntegerConstant
-	|	FloatConstant
-	|	CharacterConstant
-	|	BoolConstant
-	|	StringConstant
-	;
+//////////////////////////////// Constants ////////////////////////////////
+
+Constant:
+	IntegerConstant
+	| FloatConstant
+	| CharacterConstant
+	| BoolConstant
+	| StringConstant;
 
 IntegerConstant hidden(WS): value=INTEGER;
 FloatConstant hidden(WS): value=FLOAT;
@@ -340,24 +237,25 @@ BoolConstant: value=BOOLEAN;
 StringConstant: literals+=StringLiteral+;
 StringLiteral: value=ENCSTRINGCONST | value=STRING ;
 
-// the following 2 rules are needed so that XText does not generate a terminal symbol '[[' and '&&'
-// which is always eaten by the Lexer so that a[b[3]] is not recognized
-DoubleLeftBracket hidden(WS, ML_COMMENT, SL_COMMENT): LEFT_BR LEFT_BR;
-DoubleRightBracket hidden(WS, ML_COMMENT, SL_COMMENT): RIGHT_BR RIGHT_BR;
-
-///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// Enumerations ////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
 enum IntegerSignedness : SIGNED='signed' | UNSIGNED='unsigned';
-
 enum IntegerSizeShorthand : INT='int' | CHAR='char' | SHORT='short' |  LONG='long';
-
 enum FloatSizeShorthand : FLOAT='float' | DOUBLE='double';
 
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';
-
 enum StorageClassSpecifier: EXTERN='extern' | STATIC='static' | REGISTER='register';
 
-enum StructOrUnion:   STRUCT='struct'|UNION='union';
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// Terminal Rules ////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+// The following 2 rules are needed so that XText does not generate the terminal symbols
+// '[[' and ']]', which are always eaten by the lexer so that a[b[3]] is not recognized.
+DoubleLeftBracket hidden(WS, ML_COMMENT, SL_COMMENT): LEFT_BR LEFT_BR;
+DoubleRightBracket hidden(WS, ML_COMMENT, SL_COMMENT): RIGHT_BR RIGHT_BR;
 
 terminal LEFT_BR: '[';
 

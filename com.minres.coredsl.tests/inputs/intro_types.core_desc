@@ -1,0 +1,30 @@
+// https://github.com/Minres/CoreDSL/wiki/Introduction:-Arithmetic-and-type-conversion-rules
+
+import "https://raw.githubusercontent.com/Minres/RISCV_ISA_CoreDSL/master/RISCVBase.core_desc"
+
+InstructionSet X_LUM extends RISCVBase {
+  instructions {
+    LUMINANCE {
+      encoding: 7'b0 :: rs2[4:0] :: rs1[4:0] :: 3'b011 :: rd[4:0] :: 7'b0010111;
+      behavior: {
+        unsigned<10> r, g, b;
+
+        // Extract a 10-bit-per-channel RGB pixel from GP register file `X`
+        r = X[rs1][29:20];
+        g = X[rs1][19:10];
+        b = X[rs1][ 9: 0];
+
+        // scale for human perception, using 10-bit fractional values
+        r = (unsigned<10>) (r * 218 >> 10); // 18-bit multiplication and shift
+        g = (unsigned<10>) (g * 732 >> 10); // 20-bit multiplication and shift
+        b = (unsigned<10>) (b *  74 >> 10); // 17-bit multiplication and shift
+
+        // compute luminance
+        X[rd] = (r + g + b) / 3;
+        //         ^   ^    ^ 12-bit division
+        //             12-bit addition
+        //         11-bit addition
+      }
+    }
+  }
+}

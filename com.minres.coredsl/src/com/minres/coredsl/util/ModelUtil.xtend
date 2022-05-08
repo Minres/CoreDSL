@@ -14,25 +14,13 @@ import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.Statement
-import com.minres.coredsl.coreDsl.BlockItem
-import com.minres.coredsl.coreDsl.InitDeclarator
 
 class ModelUtil {
     
     static val logger = Logger.getLogger(typeof(ModelUtil));
 
-    static def Iterable<Declaration> getStateDeclarations(ISA isa) {
-        isa.declarations.filter[it instanceof Declaration].map[it as Declaration]
-    }
-
-    static def Iterable<Statement> getStateStatements(ISA isa) {
-        isa.declarations.filter[it instanceof Statement].map[it as Statement]
-    }
-
     static def Iterable<Declarator> getStateDeclarators(ISA isa) {
-    	val declarators = isa.declarations.filter[it instanceof Declaration].map[(it as Declaration)]
-        declarators.map[it.declarators.map[it.declarator]]
-        .flatten
+        isa.declarations.flatMap[it.declaration.declarators]
     }
 
     static def Iterable<Declarator> getStateConstDeclarators(ISA isa) {
@@ -75,12 +63,12 @@ class ModelUtil {
     static def Declarator effectiveDeclarator(ISA isa, String name){
         if(isa instanceof CoreDef) {
             val decl = isa.allDefinitions.filter[it instanceof Declaration].findFirst[
-	           	(it as Declaration).declarators.findFirst[it.declarator.name==name]!==null
+	           	(it as Declaration).declarators.findFirst[it.name==name]!==null
             ]
             if(decl!==null) {
-                return (decl as Declaration).declarators.findFirst[it.declarator.name==name].declarator
+                return (decl as Declaration).declarators.findFirst[it.name==name]
             }
-            for(contrib:isa.contributingType.reverseView) {
+            for(contrib:isa.providedInstructionSets.reverseView) {
                 val contribDecl = contrib.effectiveDeclarator(name)
                 if(contribDecl!==null)
                     return contribDecl
@@ -88,8 +76,7 @@ class ModelUtil {
         } else if(isa instanceof InstructionSet){
             val decl = isa.stateDeclarators.findFirst[it.name==name]
             if(decl!==null) {
-            	val init = decl.eContainer as InitDeclarator
-            	if(init.initializer !== null)
+            	if(decl.initializer !== null)
 	                return decl            	
             }
             val baseDecl = isa.superType.effectiveDeclarator(name)
@@ -98,28 +85,28 @@ class ModelUtil {
         }
         null
     }
-    
-    
-    static def Iterable<BlockItem> allDefinitions(CoreDef core){
-        val blockItemList = if(core.contributingType.size == 0) core.declarations else {
-            val instrSets = core.contributingType?.map[InstructionSet i| i.allInstructionSets].flatten
-            val seen = newLinkedHashSet
-            seen.addAll(instrSets)
-            seen.add(core)
-            seen.map[ISA i| i.declarations].flatten
+        
+    static def Iterable<Statement> allDefinitions(ISA isa){
+        switch(isa){
+            CoreDef:
+                if (isa.providedInstructionSets.size == 0)
+                    return isa.declarations + isa.assignments
+                else {
+                    val instrSets = isa.providedInstructionSets?.flatMap[it.allInstructionSets]
+                    val seen = newLinkedHashSet
+                    seen.addAll(instrSets)
+                    seen.add(isa)
+                    return seen.flatMap[it.declarations + it.assignments]
+                }
+            InstructionSet:
+                return isa.allInstructionSets.flatMap[it.declarations + it.assignments]
         }
-        return blockItemList
     }
-
-    static def Iterable<BlockItem> allDefinitions(InstructionSet core){
-        val blockItemList = core.allInstructionSets.map[ISA i| i.declarations].flatten
-        return blockItemList
-    }
-
+    
     static def Iterable<Instruction> allInstr(CoreDef core){
         val unique = newLinkedHashMap
-        val instrList = if(core.contributingType.size == 0) core.instructions else {
-            val instrSets = core.contributingType?.map[InstructionSet i| i.allInstructionSets].flatten
+        val instrList = if(core.providedInstructionSets.size == 0) core.instructions else {
+            val instrSets = core.providedInstructionSets?.map[InstructionSet i| i.allInstructionSets].flatten
             val seen = newLinkedHashSet
             seen.addAll(instrSets)
             seen.add(core)
@@ -147,7 +134,7 @@ class ModelUtil {
     }
     
     private static def String getBitEncoding(Encoding encoding) '''«FOR field : encoding.fields»«field.regEx»«ENDFOR»'''
-    private static def dispatch getRegEx(BitField i) '''«FOR idx : i.right.value.intValue .. i.left.value.intValue».«ENDFOR»'''
+    private static def dispatch getRegEx(BitField i) '''«FOR idx : i.endIndex.value.intValue .. i.startIndex.value.intValue».«ENDFOR»'''
     private static def dispatch getRegEx(BitValue i) '''«i.value.toString(2)»'''
     
 }

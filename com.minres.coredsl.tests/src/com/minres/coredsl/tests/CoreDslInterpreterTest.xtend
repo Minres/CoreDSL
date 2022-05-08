@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue
 import static org.junit.jupiter.api.Assertions.assertEquals
 
 import static extension com.minres.coredsl.interpreter.CoreDSLInterpreter.*
-import static extension com.minres.coredsl.util.ModelUtil.*
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -44,11 +43,11 @@ class CoreDslInterpreterTest {
         '''.parse
         val issues = validator.validate(content)
         assertTrue(issues.isEmpty())
-        val constants = content.definitions.get(0).stateDeclarations
+        val constants = content.definitions.get(0).declarations
         val rootContext = EvaluationContext.root
         val values  = constants.flatMap[declaration |
-            declaration.declarators.map[initDecl|
-                initDecl.declarator.evaluate(rootContext)
+            declaration.declaration.declarators.map[declarator|
+                declarator.evaluate(rootContext)
             ]
         ].toList
         assertTrue(values.get(0).value instanceof BigInteger)

@@ -3,7 +3,7 @@ Automatic-Module-Name: com.minres.coredsl
 Bundle-ManifestVersion: 2
 Bundle-Name: com.minres.coredsl
 Bundle-Vendor: MINRES Technologies GmbH
-Bundle-Version: 2.0.2.qualifier
+Bundle-Version: 2.0.3.qualifier
 Bundle-SymbolicName: com.minres.coredsl; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext,
@@ -14,13 +14,15 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.xtext.util,
  org.eclipse.emf.common,
  org.antlr.runtime;bundle-version="[3.2.0,3.2.1)",
- org.eclipse.equinox.preferences;bundle-version="3.8.0",
- org.eclipse.emf.mwe.utils,
  org.eclipse.xtend.lib;bundle-version="2.14.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: com.minres.coredsl,
+ com.minres.coredsl.services,
+ com.minres.coredsl.parser.antlr,
  com.minres.coredsl.coreDsl,
+ com.minres.coredsl.validation,
  com.minres.coredsl.coreDsl.util,
+ com.minres.coredsl.serializer,
  com.minres.coredsl.interpreter,
  com.minres.coredsl.parser.antlr.internal,
  com.minres.coredsl.scoping,

@@ -2,18 +2,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.minres.coredsl</groupId>
-	<version>2.0.2-SNAPSHOT</version>
+	<version>2.0.3-SNAPSHOT</version>
 	<artifactId>com.minres.coredsl.parent</artifactId>
 	<packaging>pom</packaging>
 
 	<properties>
-		<xtextVersion>2.22.0</xtextVersion>
-		<mwe2Version>2.11.3</mwe2Version>
+		<xtextVersion>2.26.0</xtextVersion>
+		<mwe2Version>2.12.2</mwe2Version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<!-- Tycho settings -->
-		<tycho-version>1.7.0</tycho-version>
+		<tycho-version>2.6.0</tycho-version>
 		<!-- Define overridable properties for tycho-surefire-plugin -->
 		<platformSystemProperties></platformSystemProperties>
 		<moduleProperties></moduleProperties>
@@ -27,10 +27,8 @@
 		<module>com.minres.coredsl</module>
 		<module>com.minres.coredsl.ide</module>
 		<module>com.minres.coredsl.ui</module>
-		<module>com.minres.coredsl.web</module>
 		<module>com.minres.coredsl.feature</module>
 		<module>com.minres.coredsl.repository</module>
-		<module>com.minres.coredsl.tests</module>
 		<module>com.minres.coredsl.ui.tests</module>
 	</modules>
 	<dependencyManagement>
@@ -142,6 +140,19 @@
 								<id>org.eclipse.rcp</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
+							<!-- to force the same version of jdt.compiler.apt and jdt.core
+								(for xtext-maven-plugin)
+								see https://github.com/eclipse/xtext-maven/issues/146 -->
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.jdt.compiler.apt</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.jdt.compiler.tool</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
 						</extraRequirements>
 					</dependency-resolution>
 				</configuration>
@@ -225,6 +236,7 @@
 										</versionRange>
 										<goals>
 											<goal>compile</goal>
+											<goal>testCompile</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
@@ -247,6 +259,25 @@
 											<goal>build-qualifier-aggregator</goal>
 											<goal>validate-id</goal>
 											<goal>validate-version</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.eclipse.tycho
+										</groupId>
+										<artifactId>
+											target-platform-configuration
+										</artifactId>
+										<versionRange>
+											[2.4.0,)
+										</versionRange>
+										<goals>
+											<goal>target-platform</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
@@ -285,11 +316,6 @@
 						<useUIHarness>false</useUIHarness>
 					</configuration>
 				</plugin>
-				<plugin>
-                    <groupId>com.devexperts.bintray</groupId>
-                    <artifactId>bintray-maven-plugin</artifactId>
-                    <version>1.2</version>
-                </plugin>
 			</plugins>
 		</pluginManagement>
 	</build>

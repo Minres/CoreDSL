@@ -6,3 +6,5 @@ target
 /src-gen/
 /xtend-gen/
 /model/
+/bin/
+/build/

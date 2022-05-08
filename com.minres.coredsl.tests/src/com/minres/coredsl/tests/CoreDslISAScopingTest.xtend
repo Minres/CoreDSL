@@ -5,7 +5,6 @@ package com.minres.coredsl.tests
 
 import com.google.inject.Inject
 import com.minres.coredsl.coreDsl.DescriptionContent
-import java.io.FileReader
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -15,8 +14,6 @@ import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.junit.jupiter.api.Assertions.assertFalse
 import static org.junit.jupiter.api.Assertions.assertTrue
-
-import static extension com.google.common.io.CharStreams.*
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -175,9 +172,9 @@ class CoreDslISAScopingTest {
     @Test
     def void globalScopeFromFile() {
         val content = '''
-        import "inputs/isa_1.core_desc"
+        import "https://raw.githubusercontent.com/Minres/RISCV_ISA_CoreDSL/master/RISCVBase.core_desc"
         
-        InstructionSet TestISA2 extends RVI {
+        InstructionSet TestISA2 extends RISCVBase {
             instructions {
                 Inst1 {
                     encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
@@ -191,12 +188,6 @@ class CoreDslISAScopingTest {
         '''.parse
         val issues = validator.validate(content)
         assertTrue(issues.isEmpty())
-    }
-    
-    @Test
-    def void firExample() {
-        val content = new FileReader('inputs/fir.core_desc').readLines.join('\n').parse
-        validator.assertNoErrors(content)
     }
     
     //@Test

@@ -77,10 +77,10 @@ class CoreDslTerminalsTest {
         validator.assertNoErrors(content)
 
         val compound = ((content.definitions.get(0) as InstructionSet).instructions.get(0).behavior as CompoundStatement)
-        for (el : compound.items) {
+        for (el : compound.statements) {
             if (el instanceof ExpressionStatement) {
-                val expr = el.expr.expressions.get(0) as AssignmentExpression
-                val rhs = expr.assignments.get(0).right as IntegerConstant
+                val expr = el.expression as AssignmentExpression
+                val rhs = expr.value as IntegerConstant
                 assertEquals(rhs.value.intValue, 42)
             }
         }
@@ -106,11 +106,11 @@ class CoreDslTerminalsTest {
         validator.assertNoErrors(content)
 
         val compound = ((content.definitions.get(0) as InstructionSet).instructions.get(0).behavior as CompoundStatement)
-        for (el : compound.items.subList(3, compound.items.size())) {
+        for (el : compound.statements.subList(3, compound.statements.size())) {
             if (el instanceof ExpressionStatement) {
-                val expr = el.expr.expressions.get(0) as AssignmentExpression
-                val lhsName = ((expr.left as EntityReference).target as Declarator).name;
-                val rhs = expr.assignments.get(0).right as FloatConstant
+                val expr = el.expression as AssignmentExpression
+                val lhsName = ((expr.target as EntityReference).target as Declarator).name;
+                val rhs = expr.value as FloatConstant
                 val floatValue = rhs.value.doubleValue
                 if (lhsName == "d" || lhsName == "f")
                     assertTrue(Math.abs(floatValue - 3.14) < 1e-6)

@@ -4,8 +4,7 @@
 	<parent>
 		<groupId>com.minres.coredsl</groupId>
 		<artifactId>com.minres.coredsl.parent</artifactId>
-		<version>2.0.2-SNAPSHOT</version>
-        	<relativePath>..</relativePath>
+		<version>2.0.3-SNAPSHOT</version>
 	</parent>
 	<artifactId>com.minres.coredsl</artifactId>
 	<packaging>eclipse-plugin</packaging>
@@ -15,7 +14,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.6.0</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<id>mwe2Launcher</id>
@@ -37,26 +36,6 @@
 					<cleanupDaemonThreads>false</cleanupDaemonThreads><!-- see https://bugs.eclipse.org/bugs/show_bug.cgi?id=475098#c3 -->
 				</configuration>
 				<dependencies>
-					<dependency>
-						<groupId>org.eclipse.emf</groupId>
-						<artifactId>org.eclipse.emf.mwe2.launch</artifactId>
-						<version>${mwe2Version}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.eclipse.xtext</groupId>
-						<artifactId>org.eclipse.xtext.common.types</artifactId>
-						<version>${xtextVersion}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.eclipse.xtext</groupId>
-						<artifactId>org.eclipse.xtext.xtext.generator</artifactId>
-						<version>${xtextVersion}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.eclipse.xtext</groupId>
-						<artifactId>org.eclipse.xtext.xbase</artifactId>
-						<version>${xtextVersion}</version>
-					</dependency>
 					<dependency>
 						<groupId>org.eclipse.xtext</groupId>
 						<artifactId>xtext-antlr-generator</artifactId>

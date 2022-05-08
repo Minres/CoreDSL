@@ -4,8 +4,7 @@
 	<parent>
 		<groupId>com.minres.coredsl</groupId>
 		<artifactId>com.minres.coredsl.parent</artifactId>
-		<version>2.0.2-SNAPSHOT</version>
-	        <relativePath>..</relativePath>
+		<version>2.0.3-SNAPSHOT</version>
 	</parent>
 	<artifactId>com.minres.coredsl.ide</artifactId>
 	<packaging>eclipse-plugin</packaging>
@@ -48,7 +47,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.1.1</version>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 						<id>copy-dependencies</id>
@@ -118,7 +117,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.1</version>
+				<version>3.2.4</version>
 				<configuration>
 					<transformers>
 						<transformer
@@ -128,6 +127,9 @@
 						<transformer
 							implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 							<resource>plugin.properties</resource>
+						</transformer>
+						<transformer 
+							implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer">
 						</transformer>
 					</transformers>
 					<artifactSet>
