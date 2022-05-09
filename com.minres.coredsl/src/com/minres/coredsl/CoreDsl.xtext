@@ -20,11 +20,9 @@ fragment ISA:
 	('instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}')?;
 
 FunctionDefinition:
-	extern?='extern'?
-	returnType=TypeSpecifier name=ID
-	'(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')'
-	attributes+=Attribute*
-	body=CompoundStatement;
+    extern?='extern' returnType=TypeSpecifier name=ID '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')' ';'
+    | returnType=TypeSpecifier name=ID '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')' attributes+=Attribute* body=CompoundStatement
+    ;
 
 Instruction:
 	name=ID attributes+=Attribute* '{' 
