@@ -237,7 +237,9 @@ class TypeProvider {
     }
 
     def static dispatch DataType typeFor(BitField e, ISA ctx) {
-        new DataType(DataType.Type.INTEGRAL_UNSIGNED, e.endIndex.value.intValue - e.startIndex.value.intValue + 1)
+        val left = e.startIndex.value.intValue
+        val right = e.endIndex.value.intValue
+        new DataType(DataType.Type.INTEGRAL_UNSIGNED,  (left>right?left-right:right-left)  + 1)
     }
 
     def static dispatch DataType typeFor(BitValue e, ISA ctx) {

@@ -38,37 +38,26 @@ import com.minres.coredsl.coreDsl.EntityReference
 
 class CoreDSLInterpreter {
 
-    /* TODO: 
-     * 
-     * 
-     */
     def static Value evaluate(Declarator decl, EvaluationContext ctx) {
-        if (decl.initializer !== null) {
-            val context = ctx.definitionContext
-            if (context === null) {
-                if (decl.initializer instanceof ExpressionInitializer)
-                    return (decl.initializer as ExpressionInitializer).value.valueFor(ctx)
-                else
-                    return null
-            }
-            val stmts = context.allDefinitions.toList
-            val assignments = stmts
-            	.filter[it instanceof ExpressionStatement]
-            	.map[(it as ExpressionStatement).expression]
-            	.filter[it instanceof AssignmentExpression]
-            	.map[it as AssignmentExpression];
-            val declAssignment = assignments.filter[
-                it.target instanceof EntityReference && (it.target as EntityReference).target == decl
-            ].last
-            if (declAssignment === null) {
-                if (decl.initializer instanceof ExpressionInitializer)
-                    return (decl.initializer as ExpressionInitializer).value.valueFor(ctx)
-                else
-                    return null
-            } else
-                (declAssignment as AssignmentExpression).value.valueFor(ctx)
-        } else
-            null
+        val context = ctx.definitionContext
+        if (context === null) {
+            if (decl.initializer instanceof ExpressionInitializer)
+                return (decl.initializer as ExpressionInitializer).value.valueFor(ctx)
+            else
+                return null
+        }
+        val assignmentValues = context.allStateDeclarations
+                .flatMap[it.declaration.declarators]
+            	.filter[it== decl && it.initializer !== null && it.initializer instanceof ExpressionInitializer]
+            	.map[(it.initializer as ExpressionInitializer).value] +
+            context.allStateAssignments
+                .map[it.expression as AssignmentExpression]
+                .filter[
+                    val x = it.target.primary.target
+                    x === decl
+                ]
+                .map[it.value]
+        assignmentValues.size > 0? assignmentValues.last.valueFor(ctx ): null
     }
 
     def static dispatch Value valueFor(TypeSpecifier e, EvaluationContext ctx) {
