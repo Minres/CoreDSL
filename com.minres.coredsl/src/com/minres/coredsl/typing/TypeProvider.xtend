@@ -230,7 +230,11 @@ class TypeProvider {
         var size=0
         for(EncodingField f:list.fields)
             switch(f){
-                BitField:{size += f.endIndex.value.intValue - f.startIndex.value.intValue + 1}
+                BitField:{
+                    val left = f.startIndex.value.intValue
+                    val right = f.endIndex.value.intValue
+                    size +=  (left>right?left-right:right-left)  + 1
+                }
                 BitValue:{size += (f.value as BigIntegerWithRadix).size}
             }
         new DataType(DataType.Type.INTEGRAL_UNSIGNED, size)
