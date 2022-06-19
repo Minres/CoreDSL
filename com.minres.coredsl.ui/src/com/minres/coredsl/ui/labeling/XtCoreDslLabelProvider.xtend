@@ -24,75 +24,78 @@ import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
  */
 class XtCoreDslLabelProvider extends CoreDslLabelProvider {
 
-	@Inject
-	new(AdapterFactoryLabelProvider delegate) {
-		super(delegate);
-	}
-	
-	def text(CoreDef core) {
-		'Core ' + core.name
+    @Inject
+    new(AdapterFactoryLabelProvider delegate) {
+        super(delegate);
     }
 
-	def text(InstructionSet isa) {
-		'ISA ' + isa.name
+    def text(CoreDef core) {
+        'Core ' + core.name
     }
 
-	def text(Declaration decl) {
-		decl.declarators.map[it.name].join(', ')
+    def text(InstructionSet isa) {
+        'ISA ' + isa.name
     }
 
-	def text(Instruction ele) {
-		ele.name
+    def text(Declaration decl) {
+        decl.declarators.map[it.name].join(', ')
     }
 
-	def text(FunctionDefinition ele) {
-		ele.name
+    def text(Instruction ele) {
+        if (ele.attributes.size > 0)
+            return '''«ele.name» [«FOR attr : ele.attributes SEPARATOR ', '»«attr.type»«ENDFOR»]'''
+        else
+            ele.name
     }
 
-	def text(Encoding ele) {
-		'encoding: ' + ele.fields.map[it.toText].join('::')
+    def text(FunctionDefinition ele) {
+        ele.name
     }
 
-    def text(EObject ele){
+    def text(Encoding ele) {
+        'encoding: ' + ele.fields.map[it.toText].join('::')
+    }
+
+    def text(EObject ele) {
         ele.eClass.name
     }
-		
-	private def dispatch String getToText(BitField field){
-	    if(field.startIndex !== null && field.endIndex!== null)
+
+    private def dispatch String getToText(BitField field) {
+        if (field.startIndex !== null && field.endIndex !== null)
             field.name + "[" + field.startIndex.value.intValue + ":" + field.endIndex.value.intValue + "]"
-	    else
-		    field.name
-	}
-	
-	private def dispatch String getToText(BitValue value){
-		value.value.toString(2)
-	}
-	
-	def image(CoreDef e){
-		'application.png'
-	}
+        else
+            field.name
+    }
 
-	def image(InstructionSet e){
-		'package.png'
-	}
-	
-	def image(Instruction e){
-		'brick.png'
-	}
-	
-	def image(Statement e){
-		'script.png'
-	}
-	
-	def image(Encoding e){
-		'pill.png'
-	}
+    private def dispatch String getToText(BitValue value) {
+        value.value.toString(2)
+    }
 
-	def image(EObject e){
-		'brick.png'
-	}
+    def image(CoreDef e) {
+        'application.png'
+    }
 
-	def image(EList<?> e){
-		'folder_brick.png'
-	}
+    def image(InstructionSet e) {
+        'package.png'
+    }
+
+    def image(Instruction e) {
+        'brick.png'
+    }
+
+    def image(Statement e) {
+        'script.png'
+    }
+
+    def image(Encoding e) {
+        'pill.png'
+    }
+
+    def image(EObject e) {
+        'brick.png'
+    }
+
+    def image(EList<?> e) {
+        'folder_brick.png'
+    }
 }

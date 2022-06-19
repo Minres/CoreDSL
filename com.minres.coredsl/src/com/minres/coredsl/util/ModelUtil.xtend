@@ -14,6 +14,12 @@ import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.Statement
+import com.minres.coredsl.coreDsl.DeclarationStatement
+import com.minres.coredsl.coreDsl.ExpressionStatement
+import com.minres.coredsl.coreDsl.EntityReference
+import com.minres.coredsl.coreDsl.Expression
+import com.minres.coredsl.coreDsl.CastExpression
+import com.minres.coredsl.coreDsl.ArrayAccessExpression
 
 class ModelUtil {
     
@@ -25,7 +31,7 @@ class ModelUtil {
 
     static def Iterable<Declarator> getStateConstDeclarators(ISA isa) {
         isa.stateDeclarators.filter[
-        	val decl = it.eContainer.eContainer as Declaration
+        	val decl = it.eContainer as Declaration
         	!decl.storage.contains(StorageClassSpecifier.EXTERN) && 
         	!decl.storage.contains(StorageClassSpecifier.REGISTER) && 
         	!it.alias
@@ -34,14 +40,14 @@ class ModelUtil {
 
     static def Iterable<Declarator> getStateExternDeclarators(ISA isa) {
         isa.stateDeclarators.filter[
-        	val decl = it.eContainer.eContainer as Declaration
+        	val decl = it.eContainer as Declaration
         	decl.storage.contains(StorageClassSpecifier.EXTERN)
         ]
     }
     
     static def Iterable<Declarator> getStateRegisterDeclarators(ISA isa) {
         isa.stateDeclarators.filter[
-        	val decl = it.eContainer.eContainer as Declaration
+        	val decl = it.eContainer as Declaration
         	decl.storage.contains(StorageClassSpecifier.REGISTER)
         ]
     }
@@ -103,6 +109,28 @@ class ModelUtil {
         }
     }
     
+    static def Iterable<DeclarationStatement> allStateDeclarations(ISA isa){
+        switch (isa) {
+            CoreDef: {
+                isa.declarations + isa.providedInstructionSets?.map[it.allStateDeclarations].flatten
+            }
+            InstructionSet: {
+                isa.declarations + isa.superType.declarations
+            }
+        }
+    }
+
+    static def Iterable<ExpressionStatement> allStateAssignments(ISA isa){
+        switch (isa) {
+            CoreDef: {
+                isa.assignments + isa.providedInstructionSets?.map[it.allStateAssignments].flatten
+            }
+            InstructionSet: {
+                isa.assignments + isa.superType.assignments
+            }
+        }
+    }
+
     static def Iterable<Instruction> allInstr(CoreDef core){
         val unique = newLinkedHashMap
         val instrList = if(core.providedInstructionSets.size == 0) core.instructions else {
@@ -131,6 +159,15 @@ class ModelUtil {
         val s = if(core.superType !== null) core.superType.allInstructionSets else newLinkedList
         s.add(core)
         return s
+    }
+    
+    def static EntityReference getPrimary(Expression expr) {
+        switch (expr) {
+            EntityReference case expr.target !== null: return expr
+            CastExpression: return expr.operand.primary
+            ArrayAccessExpression: return expr.target.primary
+            default: return null
+        }
     }
     
     private static def String getBitEncoding(Encoding encoding) '''«FOR field : encoding.fields»«field.regEx»«ENDFOR»'''
