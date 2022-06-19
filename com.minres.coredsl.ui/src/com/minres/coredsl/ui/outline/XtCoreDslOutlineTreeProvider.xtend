@@ -54,9 +54,9 @@ class XtCoreDslOutlineTreeProvider extends CoreDslOutlineTreeProvider {
 			image, "Instructions", false)
 	}
 
-	def void _createChildren(IOutlineNode parentNode, Instruction stmt) {
-		createNode(parentNode, stmt.encoding)
-		createNode(parentNode, stmt.behavior)
+	def void _createChildren(IOutlineNode parentNode, Instruction instr) {
+		createNode(parentNode, instr.encoding)
+		createNode(parentNode, instr.behavior)
 	}
 
 	def boolean _isLeaf(NamedEntity variable) {
