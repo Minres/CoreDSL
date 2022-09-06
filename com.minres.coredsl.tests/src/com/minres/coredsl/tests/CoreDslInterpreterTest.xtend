@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue
 import static org.junit.jupiter.api.Assertions.assertEquals
 
 import static extension com.minres.coredsl.interpreter.CoreDSLInterpreter.*
+import static extension com.minres.coredsl.util.ModelUtil.*
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)

@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull
 import static org.junit.jupiter.api.Assertions.assertTrue
 
 import static extension com.minres.coredsl.typing.TypeProvider.*
+import static extension com.minres.coredsl.util.ModelUtil.*
 import com.minres.coredsl.coreDsl.IntegerSignedness
 import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerSizeShorthand
