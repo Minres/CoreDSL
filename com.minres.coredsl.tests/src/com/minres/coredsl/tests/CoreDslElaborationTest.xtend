@@ -380,6 +380,28 @@ class CoreDslElaborationTest {
 	}
 
 	@Test
+	def void invalidParameterDeclaration() {
+		// error: alias parameter
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					int &x = 1;
+				}
+			}
+			Core X provides A {}
+		''', error(IssueCodes.InvalidIsaParameterDeclaration));
+		// error: array parameter
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					int x[16] = 1;
+				}
+			}
+			Core X provides A {}
+		''', error(IssueCodes.InvalidIsaParameterDeclaration));
+	}
+
+	@Test
 	def void errorValues() {
 		// error: unassigned parameter
 		testErrors('''

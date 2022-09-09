@@ -24,7 +24,7 @@ class IssueCodes {
 	public static val InvalidIsaParameterAssignmentExpression = _prefix + 'InvalidIsaParameterAssignmentExpression';
 	public static val InvalidIsaParameterAssignmentOperator = _prefix + 'InvalidIsaParameterAssignmentOperator';
 	public static val InvalidIsaParameterAssignmentTarget = _prefix + 'InvalidIsaParameterAssignmentTarget';
-	public static val InvalidIsaParameterQualifier = _prefix + 'InvalidIsaParameterQualifier';
+	public static val InvalidIsaParameterDeclaration = _prefix + 'InvalidIsaParameterDeclaration';
 	public static val InvalidIsaParameterType = _prefix + 'InvalidIsaParameterType';
 	public static val UnassignedIsaParameter = _prefix + 'UnassignedIsaParameter';
 	public static val IndeterminableIsaStateElementValue = _prefix + 'IndeterminableIsaStateElementValue';

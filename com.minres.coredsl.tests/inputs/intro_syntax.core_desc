@@ -6,7 +6,7 @@ Core My32bitRISCVCore {
              unsigned int    XLEN = 32;     // implementation parameter
     register unsigned<XLEN>  X[REG_LEN];    // register file
     register unsigned<XLEN>  PC [[is_pc]];  // single register with attribute
-             unsigned<XLEN>& ZERO = X[0];   // register alias
+    register unsigned<XLEN>& ZERO = X[0];   // register alias
     extern   unsigned<8>     MEM[1<<XLEN];  // address space declaration
   }
 

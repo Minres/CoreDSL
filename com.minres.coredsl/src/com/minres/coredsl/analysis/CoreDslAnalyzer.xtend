@@ -139,7 +139,7 @@ class CoreDslAnalyzer {
 					IssueCodes.StorageClassSpecifierOnLocalVariable);
 			}
 		} else {
-			if(declaration.storageClassSpecifier === StorageClassSpecifier.PARAM) {
+			if(declaration.isParameter) {
 				if(!(declaration.type instanceof IntegerTypeSpecifier ||
 					declaration.type instanceof BoolTypeSpecifier)) {
 					ctx.acceptor.acceptError("ISA parameters may only have integer types (signed, unsigned, bool)",
@@ -151,7 +151,7 @@ class CoreDslAnalyzer {
 					if(qualifier === TypeQualifier.VOLATILE) {
 						ctx.acceptor.acceptError("ISA parameters may not be declared as volatile", declaration,
 							CoreDslPackage.Literals.DECLARATION__QUALIFIERS, i,
-							IssueCodes.InvalidIsaParameterQualifier);
+							IssueCodes.InvalidIsaParameterDeclaration);
 					}
 				}
 			}
@@ -184,6 +184,17 @@ class CoreDslAnalyzer {
 		if(declarator.isConst && declarator.initializer === null) {
 			ctx.acceptor.acceptError("An identifier declared as const must be initialized", declarator,
 				CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.UninitializedConstant);
+		}
+
+		if(declarator.isParameter) {
+			if(declarator.isAlias) {
+				ctx.acceptor.acceptError("An ISA parameter may not be declared as an alias", declarator,
+					CoreDslPackage.Literals.DECLARATOR__ALIAS, -1, IssueCodes.InvalidIsaParameterDeclaration);
+			}
+			if(!declarator.dimensions.empty) {
+				ctx.acceptor.acceptError("An ISA parameter may not be declared as an array", declarator,
+					CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, 1, IssueCodes.InvalidIsaParameterDeclaration);
+			}
 		}
 	}
 
