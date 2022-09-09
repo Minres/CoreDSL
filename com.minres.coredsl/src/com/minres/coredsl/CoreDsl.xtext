@@ -245,11 +245,11 @@ StringLiteral: value=ENCSTRINGCONST | value=STRING ;
 //////////////////////////////////////////////////////////////////////////////
 
 enum IntegerSignedness : SIGNED='signed' | UNSIGNED='unsigned';
-enum IntegerSizeShorthand : INT='int' | CHAR='char' | SHORT='short' |  LONG='long';
+enum IntegerSizeShorthand : INT='int' | CHAR='char' | SHORT='short' | LONG='long';
 enum FloatSizeShorthand : FLOAT='float' | DOUBLE='double';
 
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';
-enum StorageClassSpecifier: EXTERN='extern' | STATIC='static' | REGISTER='register';
+enum StorageClassSpecifier: EXTERN='extern' | REGISTER='register' | PARAM='param';
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// Terminal Rules ////////////////////////////////
