@@ -5,6 +5,8 @@ package com.minres.coredsl.tests
 
 import com.google.inject.Inject
 import com.minres.coredsl.coreDsl.DescriptionContent
+import com.minres.coredsl.validation.IssueCodes
+import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -12,6 +14,7 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 
+import static org.junit.Assert.assertEquals
 import static org.junit.jupiter.api.Assertions.assertTrue
 
 @ExtendWith(InjectionExtension)
@@ -24,22 +27,36 @@ class CoreDslElaborationTest {
 
 	@Test
 	def void valid() {
-		val validPrograms = #[
+		val programs = #[
 			'''
 				InstructionSet A {
-				    architectural_state {
-				        int x;
-				    }
+					architectural_state {
+						int x;
+					}
 				}
 				Core X provides A {
-				    architectural_state {
-				        x = 1;
-				    }
+					architectural_state {
+						x = 1;
+					}
+				}
+			''',
+			'''
+				InstructionSet Base {
+					architectural_state {
+						int x;
+					}
+				}
+				InstructionSet A extends Base {}
+				InstructionSet B extends Base {}
+				Core X provides A, B {
+					architectural_state {
+						x = 1;
+					}
 				}
 			'''
 		];
 
-		for (program : validPrograms) {
+		for (program : programs) {
 			val content = program.parse();
 
 			val issues = validator.validate(content);
@@ -52,5 +69,396 @@ class CoreDslElaborationTest {
 
 			assertTrue(issues.empty);
 		}
+	}
+
+	private static class IssueDescription {
+		val Severity severity;
+		val String code;
+
+		new(Severity severity, String issueCode) {
+			this.severity = severity;
+			this.code = issueCode;
+		}
+	}
+
+	def private static error(String code) {
+		return new IssueDescription(Severity.ERROR, code);
+	}
+
+	def private static warning(String code) {
+		return new IssueDescription(Severity.WARNING, code);
+	}
+
+	def void testErrors(String program, IssueDescription... expectedIssues) {
+		println("====================================");
+		println(program);
+		val content = program.parse();
+
+		val issues = validator.validate(content).sortBy[it.severity].sortBy[it.code];
+		val expected = expectedIssues.sortBy[it.severity].sortBy[it.code];
+
+		println("Issues:");
+		for (issue : issues) {
+			println('''«issue.severity»: «issue.code» («issue.message»)''');
+		}
+		println("Expected:");
+		for (issue : expected) {
+			println('''«issue.severity»: «issue.code»''');
+		}
+		println();
+
+		assertEquals(expected.size, issues.size);
+		for (var i = 0; i < Math.min(expected.size, issues.size); i++) {
+			assertEquals(expected.get(i).severity, issues.get(i).severity);
+			assertEquals(expected.get(i).code, issues.get(i).code);
+		}
+	}
+
+	@Test
+	def void duplicateIsaStateElement1() {
+		// error, warning: duplicate parameter within the same instruction set
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					int x;
+					int x;
+				}
+			}
+		''', error(IssueCodes.DuplicateIsaStateElement), warning(IssueCodes.DuplicateIsaStateElement));
+		// error, warning: duplicate parameter in derived instruction set
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					int x;
+				}
+			}
+			InstructionSet B extends A {
+				architectural_state {
+					int x;
+				}
+			}
+		''', error(IssueCodes.DuplicateIsaStateElement), warning(IssueCodes.DuplicateIsaStateElement));
+		// error, warning: duplicate parameter in core definition
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					int x;
+				}
+			}
+			Core X provides A {
+				architectural_state {
+					int x = 32;
+				}
+			}
+		''', error(IssueCodes.DuplicateIsaStateElement), warning(IssueCodes.DuplicateIsaStateElement));
+
+		// error, error: duplicate register within the same instruction set
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					register int x;
+					register int x;
+				}
+			}
+		''', error(IssueCodes.DuplicateIsaStateElement), error(IssueCodes.DuplicateIsaStateElement));
+		// error, error: duplicate register in derived instruction set
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					register int x;
+				}
+			}
+			InstructionSet B extends A {
+				architectural_state {
+					register int x;
+				}
+			}
+		''', error(IssueCodes.DuplicateIsaStateElement), error(IssueCodes.DuplicateIsaStateElement));
+		// error, error: duplicate register in core definition
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					register int x;
+				}
+			}
+			Core X provides A {
+				architectural_state {
+					register int x;
+				}
+			}
+		''', error(IssueCodes.DuplicateIsaStateElement), error(IssueCodes.DuplicateIsaStateElement));
+
+		// error, error: duplicate extern within the same instruction set
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					extern int x;
+					extern int x;
+				}
+			}
+		''', error(IssueCodes.DuplicateIsaStateElement), error(IssueCodes.DuplicateIsaStateElement));
+		// error, error: duplicate extern in derived instruction set
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					extern int x;
+				}
+			}
+			InstructionSet B extends A {
+				architectural_state {
+					extern int x;
+				}
+			}
+		''', error(IssueCodes.DuplicateIsaStateElement), error(IssueCodes.DuplicateIsaStateElement));
+		// error, error: duplicate extern in core definition
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					extern int x;
+				}
+			}
+			Core X provides A {
+				architectural_state {
+					extern int x;
+				}
+			}
+		''', error(IssueCodes.DuplicateIsaStateElement), error(IssueCodes.DuplicateIsaStateElement));
+	}
+
+	@Test
+	def void duplicateIsaStateElement2() {
+		// warning: conflicting parameters visible from the same core
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					int x;
+				}
+			}
+			InstructionSet B {
+				architectural_state {
+					int x;
+				}
+			}
+			Core X provides A, B {
+				architectural_state {
+					x = 1;
+				}
+			}
+		''', warning(IssueCodes.DuplicateIsaStateElement));
+		// error: conflicting registers visible from the same core
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					register int x;
+				}
+			}
+			InstructionSet B {
+				architectural_state {
+					register int x;
+				}
+			}
+			Core X provides A, B {}
+		''', error(IssueCodes.DuplicateIsaStateElement));
+		// error: conflicting externs visible from the same core
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					extern int x;
+				}
+			}
+			InstructionSet B {
+				architectural_state {
+					extern int x;
+				}
+			}
+			Core X provides A, B {}
+		''', error(IssueCodes.DuplicateIsaStateElement));
+	}
+
+	@Test
+	def void mismatchingSignatures() {
+		// error: conflicting storage class (param, register)
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					param int x = 1;
+				}
+			}
+			InstructionSet B {
+				architectural_state {
+					register int x;
+				}
+			}
+			Core X provides A, B {}
+		''', error(IssueCodes.MismatchingIsaStateElementSignatures));
+		// error: conflicting storage class (param, extern)
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					param int x = 1;
+				}
+			}
+			InstructionSet B {
+				architectural_state {
+					extern int x;
+				}
+			}
+			Core X provides A, B {}
+		''', error(IssueCodes.MismatchingIsaStateElementSignatures));
+		// error: conflicting storage class (register, extern)
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					register int x;
+				}
+			}
+			InstructionSet B {
+				architectural_state {
+					extern int x;
+				}
+			}
+			Core X provides A, B {}
+		''', error(IssueCodes.MismatchingIsaStateElementSignatures));
+
+		// error: conflicting const qualifier
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					const int x = 1;
+				}
+			}
+			InstructionSet B {
+				architectural_state {
+					int x = 1;
+				}
+			}
+			Core X provides A, B {}
+		''', error(IssueCodes.MismatchingIsaStateElementSignatures));
+		// error: conflicting volatile qualifier
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					volatile extern int x;
+				}
+			}
+			InstructionSet B {
+				architectural_state {
+					extern int x;
+				}
+			}
+			Core X provides A, B {}
+		''', error(IssueCodes.MismatchingIsaStateElementSignatures));
+
+		// error: conflicting types
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					signed int x = 1;
+				}
+			}
+			InstructionSet B {
+				architectural_state {
+					unsigned int x = 1;
+				}
+			}
+			Core X provides A, B {}
+		''', error(IssueCodes.MismatchingIsaStateElementSignatures));
+		// error: conflicting types
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					unsigned<32> x = 1;
+				}
+			}
+			InstructionSet B {
+				architectural_state {
+					unsigned<33> x = 1;
+				}
+			}
+			Core X provides A, B {}
+		''', error(IssueCodes.MismatchingIsaStateElementSignatures));
+	}
+
+	@Test
+	def void errorValues() {
+		// error: unassigned parameter
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					int x;
+				}
+			}
+			Core X provides A {}
+		''', error(IssueCodes.UnassignedIsaParameter));
+		// error: dependency on unassigned value
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					int x;
+					int y;
+				}
+			}
+			Core X provides A {
+				architectural_state {
+					y = x;
+				}
+			}
+		''', error(IssueCodes.UnassignedIsaParameter), error(IssueCodes.IndeterminableIsaStateElementValue));
+		// error: cyclic value dependency
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					int x;
+					int y;
+				}
+			}
+			Core X provides A {
+				architectural_state {
+					x = y;
+					y = x;
+				}
+			}
+		''', error(IssueCodes.IndeterminableIsaStateElementValue));
+	}
+
+	@Test
+	def void errorTypes() {
+		// error: void type
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					extern void x;
+				}
+			}
+			Core X provides A {}
+		''', error(IssueCodes.VoidDeclaration));
+		// error: non-integral parameter type
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					float x = 1;
+				}
+			}
+			Core X provides A {}
+		''', error(IssueCodes.InvalidIsaParameterType));
+		// error: cyclic type dependency
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					unsigned<bitsizeof(y)> x = 1;
+					unsigned<bitsizeof(x)> y = 1;
+				}
+			}
+			Core X provides A {}
+		''', error(IssueCodes.IndeterminableIsaStateElementType));
+		// error: cyclic type-value dependency
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					unsigned<x> x = bitsizeof(x);
+				}
+			}
+			Core X provides A {}
+		''', error(IssueCodes.IndeterminableIsaStateElementType), error(IssueCodes.IndeterminableIsaStateElementValue));
 	}
 }
