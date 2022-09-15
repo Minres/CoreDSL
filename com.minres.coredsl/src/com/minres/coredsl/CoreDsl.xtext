@@ -2,7 +2,8 @@ grammar com.minres.coredsl.CoreDsl with org.eclipse.xtext.common.Terminals
 
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
-generate coreDsl "http://www.minres.com/coredsl/CoreDsl/2.0"
+// generate coreDsl "http://www.minres.com/coredsl/CoreDsl/2.0"
+import "http://www.minres.com/coredsl/CoreDsl/2.0"
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// Top Level Definitions ////////////////////////////////

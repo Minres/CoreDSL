@@ -5,6 +5,6 @@
 		<package
 			uri = "http://www.minres.com/coredsl/CoreDsl/2.0"
 			class = "com.minres.coredsl.coreDsl.CoreDslPackage"
-			genModel = "model/generated/CoreDsl.genmodel" />
+			genModel = "model/CoreDsl.genmodel" />
 	</extension>
 </plugin>

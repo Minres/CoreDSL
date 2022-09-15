@@ -5,6 +5,5 @@ target
 *.xtextbin
 /src-gen/
 /xtend-gen/
-/model/
 /bin/
 /build/
