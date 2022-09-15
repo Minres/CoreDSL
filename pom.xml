@@ -29,6 +29,7 @@
 		<module>com.minres.coredsl.ui</module>
 		<module>com.minres.coredsl.feature</module>
 		<module>com.minres.coredsl.repository</module>
+        <!-- <module>com.minres.coredsl.tests</module> -->
 		<module>com.minres.coredsl.ui.tests</module>
 	</modules>
 	<dependencyManagement>

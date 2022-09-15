@@ -261,10 +261,10 @@
     <eLiterals name="VOLATILE" value="1" literal="volatile"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="StorageClassSpecifier">
+    <eLiterals name="PARAM" literal="param"/>
     <eLiterals name="EXTERN" value="1" literal="extern"/>
     <eLiterals name="STATIC" value="2" literal="static"/>
     <eLiterals name="REGISTER" value="3" literal="register"/>
-    <eLiterals name="PARAM" literal="param"/>
     <eLiterals name="ALIAS" value="4" literal="alias"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="CaseSection" eSuperTypes="#//SwitchSection">
