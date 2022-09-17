@@ -11,22 +11,23 @@ import com.google.inject.Inject;
 /**
  * Provides labels for EObjects.
  * 
- * See https://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#label-provider
+ * See
+ * https://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#label-provider
  */
 public class CoreDslLabelProvider extends DefaultEObjectLabelProvider {
 
-	@Inject
-	public CoreDslLabelProvider(AdapterFactoryLabelProvider delegate) {
-		super(delegate);
-	}
+    @Inject
+    public CoreDslLabelProvider(AdapterFactoryLabelProvider delegate) {
+        super(delegate);
+    }
 
-	// Labels and icons can be computed like this:
+    // Labels and icons can be computed like this:
 
-	//	String text(Greeting ele) {
-	//		return "A greeting to " + ele.getName();
-	//	}
-	//
-	//	String image(Greeting ele) {
-	//		return "Greeting.gif";
-	//	}
+    // String text(Greeting ele) {
+    // return "A greeting to " + ele.getName();
+    // }
+    //
+    // String image(Greeting ele) {
+    // return "Greeting.gif";
+    // }
 }

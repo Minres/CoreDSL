@@ -3,13 +3,13 @@
  */
 package com.minres.coredsl;
 
-
 /**
- * Initialization support for running Xtext languages without Equinox extension registry.
+ * Initialization support for running Xtext languages without Equinox extension
+ * registry.
  */
 public class CoreDslStandaloneSetup extends CoreDslStandaloneSetupGenerated {
 
-	public static void doSetup() {
-		new CoreDslStandaloneSetup().createInjectorAndDoEMFRegistration();
-	}
+    public static void doSetup() {
+        new CoreDslStandaloneSetup().createInjectorAndDoEMFRegistration();
+    }
 }

@@ -3,7 +3,6 @@
  */
 package com.minres.coredsl.ide;
 
-
 /**
  * Use this class to register ide components.
  */

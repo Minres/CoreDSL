@@ -9,73 +9,77 @@ import org.eclipse.xtext.util.Strings;
 
 import com.minres.coredsl.util.BigIntegerWithRadix;
 
-
 public class INTEGERValueConverter extends AbstractLexerBasedConverter<BigInteger> {
-	@Override
-	protected String toEscapedString(BigInteger value) {
-		return value.toString();
-	}
+    @Override
+    protected String toEscapedString(BigInteger value) {
+        return value.toString();
+    }
 
-	@Override
-	protected void assertValidValue(BigInteger value) {
-		super.assertValidValue(value);
-		if (value.compareTo(BigInteger.ZERO)==-1)
-			throw new ValueConverterException(getRuleName() + "-value may not be negative (value: " + value + ").", null, null);
-	}
+    @Override
+    protected void assertValidValue(BigInteger value) {
+        super.assertValidValue(value);
+        if (value.compareTo(BigInteger.ZERO) == -1)
+            throw new ValueConverterException(getRuleName() + "-value may not be negative (value: " + value + ").",
+                    null, null);
+    }
 
-	@Override
-	public BigInteger toValue(String string, INode node) throws ValueConverterException {
-		if (Strings.isEmpty(string))
-			throw new ValueConverterException("Couldn't convert empty string to an integer value.", node, null);
-		try {
-			if(string.contains("'")) {
-				// Verilog-style literal <size>'<radix><value>
-				String s = string.toLowerCase();
-				if(s.contains("u") || s.contains("l"))
-					throw new ValueConverterException("Verilog literals cannot have 'u' and 'l' suffixes", node, null);
-				
-				String[] token = s.split("'");
-				int size = Integer.parseInt(token[0]);
-				String lit = token[1].substring(1);
-				switch (token[1].charAt(0)) {
-					case 'h': return new BigIntegerWithRadix(lit, 16, size, BigIntegerWithRadix.TYPE.UNDEF);
-					case 'b': return new BigIntegerWithRadix(lit, 2, size, BigIntegerWithRadix.TYPE.UNDEF);
-					case 'o': return new BigIntegerWithRadix(lit, 8, size, BigIntegerWithRadix.TYPE.UNDEF);
-					default: return new BigIntegerWithRadix(lit, 10, size, BigIntegerWithRadix.TYPE.UNDEF);
-				}
-			} else {
-				// C-style literal
-				BigIntegerWithRadix.TYPE type = BigIntegerWithRadix.TYPE.SIGNED;
-				if(string.contains("u") || string.contains("U"))
-					type = BigIntegerWithRadix.TYPE.UNSIGNED;
+    @Override
+    public BigInteger toValue(String string, INode node) throws ValueConverterException {
+        if (Strings.isEmpty(string))
+            throw new ValueConverterException("Couldn't convert empty string to an integer value.", node, null);
+        try {
+            if (string.contains("'")) {
+                // Verilog-style literal <size>'<radix><value>
+                String s = string.toLowerCase();
+                if (s.contains("u") || s.contains("l"))
+                    throw new ValueConverterException("Verilog literals cannot have 'u' and 'l' suffixes", node, null);
 
-				String s = string.toLowerCase().replaceAll("[ul]", "");
+                String[] token = s.split("'");
+                int size = Integer.parseInt(token[0]);
+                String lit = token[1].substring(1);
+                switch (token[1].charAt(0)) {
+                case 'h':
+                    return new BigIntegerWithRadix(lit, 16, size, BigIntegerWithRadix.TYPE.UNDEF);
+                case 'b':
+                    return new BigIntegerWithRadix(lit, 2, size, BigIntegerWithRadix.TYPE.UNDEF);
+                case 'o':
+                    return new BigIntegerWithRadix(lit, 8, size, BigIntegerWithRadix.TYPE.UNDEF);
+                default:
+                    return new BigIntegerWithRadix(lit, 10, size, BigIntegerWithRadix.TYPE.UNDEF);
+                }
+            } else {
+                // C-style literal
+                BigIntegerWithRadix.TYPE type = BigIntegerWithRadix.TYPE.SIGNED;
+                if (string.contains("u") || string.contains("U"))
+                    type = BigIntegerWithRadix.TYPE.UNSIGNED;
 
-				int size = 32;
-				if(s.endsWith("ll")) 
-					size = 128;
-				else if(s.endsWith("l")) 
-					size = 64;
-				else if(s.startsWith("0x"))
-					size = (s.length()-2) * 4; 
-				else if(s.startsWith("0b"))
-					size = s.length() - 2;
-				else if(s.length()>1 && s.startsWith("0"))
-					size =(s.length()-1) * 3;
-				
-				if(s.startsWith("0x")){
-					return new BigIntegerWithRadix(string.substring(2), 16, size, type);
-				} else if(s.startsWith("0b")){
-					return new BigIntegerWithRadix(string.substring(2), 2, size, type);
-				} else if(s.length()>1 && s.startsWith("0")){
-					return new BigIntegerWithRadix(s, 8, size, type);
-				} else {
-					return new BigIntegerWithRadix(s, 10, size, type);
-				}
-			}
-		} catch (NumberFormatException e) {
-			throw new ValueConverterException("Couldn't convert '" + string + "' to an integer value.", node, e);
-		}
-	}
+                String s = string.toLowerCase().replaceAll("[ul]", "");
+
+                int size = 32;
+                if (s.endsWith("ll"))
+                    size = 128;
+                else if (s.endsWith("l"))
+                    size = 64;
+                else if (s.startsWith("0x"))
+                    size = (s.length() - 2) * 4;
+                else if (s.startsWith("0b"))
+                    size = s.length() - 2;
+                else if (s.length() > 1 && s.startsWith("0"))
+                    size = (s.length() - 1) * 3;
+
+                if (s.startsWith("0x")) {
+                    return new BigIntegerWithRadix(string.substring(2), 16, size, type);
+                } else if (s.startsWith("0b")) {
+                    return new BigIntegerWithRadix(string.substring(2), 2, size, type);
+                } else if (s.length() > 1 && s.startsWith("0")) {
+                    return new BigIntegerWithRadix(s, 8, size, type);
+                } else {
+                    return new BigIntegerWithRadix(s, 10, size, type);
+                }
+            }
+        } catch (NumberFormatException e) {
+            throw new ValueConverterException("Couldn't convert '" + string + "' to an integer value.", node, e);
+        }
+    }
 
 }

@@ -14,9 +14,9 @@ import org.eclipse.xtext.util.Modules2;
  */
 public class CoreDslIdeSetup extends CoreDslStandaloneSetup {
 
-	@Override
-	public Injector createInjector() {
-		return Guice.createInjector(Modules2.mixin(new CoreDslRuntimeModule(), new CoreDslIdeModule()));
-	}
-	
+    @Override
+    public Injector createInjector() {
+        return Guice.createInjector(Modules2.mixin(new CoreDslRuntimeModule(), new CoreDslIdeModule()));
+    }
+
 }

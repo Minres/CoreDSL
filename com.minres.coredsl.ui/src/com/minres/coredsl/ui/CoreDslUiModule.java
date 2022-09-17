@@ -16,22 +16,22 @@ import com.minres.coredsl.ui.outline.XtCoreDslOutlineTreeProvider;
  */
 public class CoreDslUiModule extends AbstractCoreDslUiModule {
 
-	public CoreDslUiModule(AbstractUIPlugin plugin) {
-		super(plugin);
-	}
+    public CoreDslUiModule(AbstractUIPlugin plugin) {
+        super(plugin);
+    }
 
-	@Override
-	public Class<? extends ILabelProvider> bindILabelProvider() {
-		return XtCoreDslLabelProvider.class;
-	}
+    @Override
+    public Class<? extends ILabelProvider> bindILabelProvider() {
+        return XtCoreDslLabelProvider.class;
+    }
 
-	@Override
-	public Class<? extends IOutlineTreeProvider> bindIOutlineTreeProvider() {
-		return XtCoreDslOutlineTreeProvider.class;
-	}
-	
-	@Override
-	public Class<? extends IOutlineTreeStructureProvider> bindIOutlineTreeStructureProvider() {
-		return XtCoreDslOutlineTreeProvider.class;
-	}
+    @Override
+    public Class<? extends IOutlineTreeProvider> bindIOutlineTreeProvider() {
+        return XtCoreDslOutlineTreeProvider.class;
+    }
+
+    @Override
+    public Class<? extends IOutlineTreeStructureProvider> bindIOutlineTreeStructureProvider() {
+        return XtCoreDslOutlineTreeProvider.class;
+    }
 }

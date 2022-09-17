@@ -3,9 +3,9 @@
  */
 package com.minres.coredsl.web;
 
-
 /**
- * Use this class to register additional components to be used within the web application.
+ * Use this class to register additional components to be used within the web
+ * application.
  */
 public class CoreDslWebModule extends AbstractCoreDslWebModule {
 }

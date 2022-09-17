@@ -10,28 +10,28 @@ import org.eclipse.xtext.conversion.ValueConverter;
 import com.google.inject.Inject;
 
 public class CoreDslTerminalConverters extends DefaultTerminalConverters {
-        @Inject
-        private FLOATValueConverter floatValueConverter;
-        
-        @Inject
-        private INTEGERValueConverter intValueConverter;
-        
-        @Inject
-        private BOOLEANValueConverter boolValueConverter;
+    @Inject
+    private FLOATValueConverter floatValueConverter;
 
-        @ValueConverter(rule = "FLOAT")
-        public IValueConverter<BigDecimal> FLOAT() {
-                return floatValueConverter;
-        }
+    @Inject
+    private INTEGERValueConverter intValueConverter;
 
-        @ValueConverter(rule = "INTEGER")
-        public IValueConverter<BigInteger> INTEGER() {
-                return intValueConverter;
-        }
+    @Inject
+    private BOOLEANValueConverter boolValueConverter;
 
-        @ValueConverter(rule = "BOOLEAN")
-        public IValueConverter<Boolean> BOOLEAN() {
-                return boolValueConverter;
-        }
+    @ValueConverter(rule = "FLOAT")
+    public IValueConverter<BigDecimal> FLOAT() {
+        return floatValueConverter;
+    }
+
+    @ValueConverter(rule = "INTEGER")
+    public IValueConverter<BigInteger> INTEGER() {
+        return intValueConverter;
+    }
+
+    @ValueConverter(rule = "BOOLEAN")
+    public IValueConverter<Boolean> BOOLEAN() {
+        return boolValueConverter;
+    }
 
 }

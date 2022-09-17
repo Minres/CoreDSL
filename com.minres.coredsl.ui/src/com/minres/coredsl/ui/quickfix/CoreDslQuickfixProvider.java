@@ -8,7 +8,8 @@ import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider;
 /**
  * Custom quickfixes.
  *
- * See https://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#quick-fixes
+ * See
+ * https://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#quick-fixes
  */
 public class CoreDslQuickfixProvider extends DefaultQuickfixProvider {
 

@@ -17,33 +17,34 @@ import com.minres.coredsl.validation.CoreDslValidator;
 import com.minres.coredsl.validation.XtCoreDslValidator;
 
 /**
- * Use this class to register components to be used at runtime / without the Equinox extension registry.
+ * Use this class to register components to be used at runtime / without the
+ * Equinox extension registry.
  */
 public class CoreDslRuntimeModule extends AbstractCoreDslRuntimeModule {
-	@Override
-	public Class<? extends IValueConverterService> bindIValueConverterService() {
-		return CoreDslTerminalConverters.class;
-	}
+    @Override
+    public Class<? extends IValueConverterService> bindIValueConverterService() {
+        return CoreDslTerminalConverters.class;
+    }
 
-	@Override
-	public Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
-		return ImportUriGlobalScopeProvider.class;
-	}
+    @Override
+    public Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
+        return ImportUriGlobalScopeProvider.class;
+    }
 
-	public Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
-		return CoreDslResourceDescriptionStrategy.class;
-		//return XtextResourceDescriptionStrategy.class;
+    public Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
+        return CoreDslResourceDescriptionStrategy.class;
+        // return XtextResourceDescriptionStrategy.class;
 
-	}
-	
-	@Override
-	public Class<? extends IScopeProvider> bindIScopeProvider() {
-		return XtCoreDslScopeProvider.class;
-	}
+    }
 
-	@Override
-	@SingletonBinding(eager=true)
-	public Class<? extends CoreDslValidator> bindCoreDslValidator() {
-		return XtCoreDslValidator.class;
-	}
+    @Override
+    public Class<? extends IScopeProvider> bindIScopeProvider() {
+        return XtCoreDslScopeProvider.class;
+    }
+
+    @Override
+    @SingletonBinding(eager = true)
+    public Class<? extends CoreDslValidator> bindCoreDslValidator() {
+        return XtCoreDslValidator.class;
+    }
 }
