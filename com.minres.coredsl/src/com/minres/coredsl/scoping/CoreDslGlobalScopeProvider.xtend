@@ -26,7 +26,6 @@ class CoreDslGlobalScopeProvider extends ImportUriGlobalScopeProvider {
         return cache.get(CoreDslGlobalScopeProvider.getSimpleName(), resource, new Provider<LinkedHashSet<URI>>() {
             override get() {
                 val uniqueImportURIs = collectImportUris(resource, new LinkedHashSet<URI>(5))
-
                 val uriIter = uniqueImportURIs.iterator()
                 while(uriIter.hasNext()) {
                     if (!EcoreUtil2.isValidUri(resource, uriIter.next()))
@@ -38,7 +37,6 @@ class CoreDslGlobalScopeProvider extends ImportUriGlobalScopeProvider {
             def LinkedHashSet<URI> collectImportUris(Resource resource, LinkedHashSet<URI> uniqueImportURIs) {
                 val resourceDescription = descriptionManager.getResourceDescription(resource)
                 val models = resourceDescription.getExportedObjectsByType(CoreDslPackage.Literals.DESCRIPTION_CONTENT)
-                
                 models.forEach[
                     val userData = getUserData(CoreDslResourceDescriptionStrategy.INCLUDES)
                     if(userData !== null) {
@@ -51,7 +49,6 @@ class CoreDslGlobalScopeProvider extends ImportUriGlobalScopeProvider {
                         ]
                     }
                 ]
-                
                 return uniqueImportURIs
             }
         });

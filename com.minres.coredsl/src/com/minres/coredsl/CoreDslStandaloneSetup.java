@@ -3,6 +3,8 @@
  */
 package com.minres.coredsl;
 
+import com.minres.coredsl.CoreDslStandaloneSetupGenerated;
+
 /**
  * Initialization support for running Xtext languages without Equinox extension
  * registry.

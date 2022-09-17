@@ -8,6 +8,7 @@ import com.google.inject.Injector;
 import com.minres.coredsl.CoreDslRuntimeModule;
 import com.minres.coredsl.CoreDslStandaloneSetup;
 import com.minres.coredsl.ide.CoreDslIdeModule;
+
 import org.eclipse.xtext.util.Modules2;
 
 /**

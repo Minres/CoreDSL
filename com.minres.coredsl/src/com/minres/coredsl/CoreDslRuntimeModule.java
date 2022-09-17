@@ -10,7 +10,9 @@ import org.eclipse.xtext.scoping.IScopeProvider;
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider;
 import org.eclipse.xtext.service.SingletonBinding;
 
+import com.minres.coredsl.AbstractCoreDslRuntimeModule;
 import com.minres.coredsl.converter.CoreDslTerminalConverters;
+import com.minres.coredsl.scoping.CoreDslGlobalScopeProvider;
 import com.minres.coredsl.scoping.CoreDslResourceDescriptionStrategy;
 import com.minres.coredsl.scoping.XtCoreDslScopeProvider;
 import com.minres.coredsl.validation.CoreDslValidator;
@@ -28,13 +30,13 @@ public class CoreDslRuntimeModule extends AbstractCoreDslRuntimeModule {
 
     @Override
     public Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
-        return ImportUriGlobalScopeProvider.class;
+        return CoreDslGlobalScopeProvider.class;
+        //return ImportUriGlobalScopeProvider.class;
     }
 
     public Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
         return CoreDslResourceDescriptionStrategy.class;
         // return XtextResourceDescriptionStrategy.class;
-
     }
 
     @Override
@@ -48,3 +50,4 @@ public class CoreDslRuntimeModule extends AbstractCoreDslRuntimeModule {
         return XtCoreDslValidator.class;
     }
 }
+

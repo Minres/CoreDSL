@@ -7,6 +7,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.minres.coredsl.CoreDslRuntimeModule;
 import com.minres.coredsl.CoreDslStandaloneSetup;
+
 import org.eclipse.xtext.util.Modules2;
 
 /**
