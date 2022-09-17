@@ -24,6 +24,7 @@
 	</properties>
 	<modules>
 		<module>com.minres.coredsl.target</module>
+        <module>com.minres.coredsl.mwe</module>
 		<module>com.minres.coredsl</module>
 		<module>com.minres.coredsl.ide</module>
 		<module>com.minres.coredsl.ui</module>

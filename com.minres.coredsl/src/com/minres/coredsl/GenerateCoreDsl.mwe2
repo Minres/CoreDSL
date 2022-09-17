@@ -2,12 +2,13 @@ module com.minres.coredsl.GenerateCoreDsl
 
 import org.eclipse.xtext.xtext.generator.*
 import org.eclipse.xtext.xtext.generator.model.project.*
+import com.minres.coredsl.mwe2.*
 
 var rootPath = ".."
 
 Workflow {
 	
-	component = XtextGenerator {
+	component = CoreDSLXtextGenerator {
 		configuration = {
 			project = StandardProjectConfig {
 				baseName = "com.minres.coredsl"
