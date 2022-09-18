@@ -39,8 +39,11 @@ class IssueCodes {
 
 	// declaration issues
 	public static val StorageClassSpecifierOnLocalVariable = _prefix + 'StorageClassSpecifierOnLocalVariable';
-	public static val DuplicateStorageClassSpecifier = _prefix + 'DuplicateStorageClassSpecifier';
+	public static val AliasLocalVariable = _prefix + 'AliasLocalVariable';
+	public static val MultipleStorageClassSpecifiers = _prefix + 'MultipleStorageClassSpecifiers';
 	public static val DuplicateQualifier = _prefix + 'DuplicateQualifier';
 	public static val UninitializedConstant = _prefix + 'UninitializedConstant';
+	public static val UninitializedAlias = _prefix + 'UninitializedAlias';
+	public static val MixedAliasnessDeclaration = _prefix + 'MixedAliasnessDeclaration';
 	public static val VoidDeclaration = _prefix + 'VoidDeclaration';
 }

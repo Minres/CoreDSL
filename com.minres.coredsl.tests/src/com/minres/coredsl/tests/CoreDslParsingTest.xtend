@@ -23,7 +23,7 @@ class CoreDslParsingTest {
     def CharSequence addInstructionContext(CharSequence str)'''
         InstructionSet TestISA {
             architectural_state { 
-                register [[is_pc]] int PC ;
+                register int PC [[is_pc]];
                 register int Xreg[32];
                 register float Freg[32];
             }
@@ -142,7 +142,7 @@ class CoreDslParsingTest {
         val content = '''
             InstructionSet TestISA {
                 architectural_state {
-                	register [[is_pc]] int PC;
+                	register int PC [[is_pc]];
                     register float Freg[32];
                     register bool F_ready[32] [[is_interlock_for=Freg]];  // use attribute to indicate purpose of F_ready
                 }

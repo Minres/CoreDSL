@@ -106,7 +106,7 @@ MultiInitDeclaration returns Declaration: Declaration<true, true>;
 MultiDeclaration returns Declaration: Declaration<true, false>;
 
 Declaration<allowMultiple, allowInit>:
-	(storage+=StorageClassSpecifier | qualifiers+=TypeQualifier | attributes+=Attribute)*
+	(storage+=StorageClassSpecifier | qualifiers+=TypeQualifier)*
 	type=TypeSpecifier (declarators+=Declarator<allowInit> (<allowMultiple> ',' declarators+=Declarator<allowInit>)*)?;
 
 Declarator<allowInit>:
@@ -249,7 +249,7 @@ enum IntegerSizeShorthand : INT='int' | CHAR='char' | SHORT='short' | LONG='long
 enum FloatSizeShorthand : FLOAT='float' | DOUBLE='double';
 
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';
-enum StorageClassSpecifier: EXTERN='extern' | REGISTER='register' | PARAM='param';
+enum StorageClassSpecifier: EXTERN='extern' | REGISTER='register';
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// Terminal Rules ////////////////////////////////

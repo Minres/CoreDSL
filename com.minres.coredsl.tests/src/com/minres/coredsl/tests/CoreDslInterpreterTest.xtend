@@ -36,7 +36,7 @@ class CoreDslInterpreterTest {
                 int a = 42;
                 int b = a + 5;
                 int XLEN = a + b;
-                register [[is_pc]] int PC ;
+                register int PC [[is_pc]];
                 register int Xreg[XLEN];
                 register float Freg[a];
             }

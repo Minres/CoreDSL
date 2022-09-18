@@ -18,7 +18,7 @@ class CoreDslConstantExpressionEvaluator {
 	def static dispatch ConstantValue evaluate(ElaborationContext ctx, EntityReference expression) {
 		val declarator = expression.target.castOrNull(Declarator);
 
-		if(declarator === null || !declarator.isParameter) {
+		if(declarator === null || !ctx.actx.isIsaParameter(declarator)) {
 			if(ctx.isInElaborationScope(expression)) {
 				ctx.acceptor.acceptError("Identifiers in constant expressions may only refer to ISA parameters",
 					expression, CoreDslPackage.Literals.ENTITY_REFERENCE__TARGET, -1,

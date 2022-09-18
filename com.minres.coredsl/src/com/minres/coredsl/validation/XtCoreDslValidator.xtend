@@ -138,11 +138,6 @@ class XtCoreDslValidator extends CoreDslValidator {
 	}
 
 	@Check
-	def checkAttributeNames(Declaration decl) {
-		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.DECLARATOR__ATTRIBUTES);
-	}
-
-	@Check
 	def checkAttributeNames(Declarator decl) {
 		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.DECLARATOR__ATTRIBUTES);
 	}

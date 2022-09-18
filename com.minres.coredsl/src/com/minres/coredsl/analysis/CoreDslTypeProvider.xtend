@@ -2,18 +2,22 @@ package com.minres.coredsl.analysis
 
 import com.minres.coredsl.coreDsl.BoolTypeSpecifier
 import com.minres.coredsl.coreDsl.CoreDslPackage
+import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.Declarator
+import com.minres.coredsl.coreDsl.FloatSizeShorthand
+import com.minres.coredsl.coreDsl.FloatTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerSignedness
 import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
 import com.minres.coredsl.coreDsl.TypeSpecifier
+import com.minres.coredsl.coreDsl.VoidTypeSpecifier
 import com.minres.coredsl.type.CoreDslType
 import com.minres.coredsl.type.ErrorType
-import com.minres.coredsl.type.IntegerType
-import com.minres.coredsl.validation.IssueCodes
-import com.minres.coredsl.coreDsl.VoidTypeSpecifier
-import com.minres.coredsl.type.VoidType
-import com.minres.coredsl.coreDsl.FloatTypeSpecifier
-import com.minres.coredsl.coreDsl.FloatSizeShorthand
 import com.minres.coredsl.type.FloatType
+import com.minres.coredsl.type.IntegerType
+import com.minres.coredsl.type.VoidType
+import com.minres.coredsl.validation.IssueCodes
+
+import static extension com.minres.coredsl.util.ModelExtensions.*
 
 abstract class CoreDslTypeProvider {
 	private new() {

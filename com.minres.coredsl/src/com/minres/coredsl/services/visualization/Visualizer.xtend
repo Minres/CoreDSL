@@ -367,7 +367,6 @@ class Visualizer {
 		return makeNode(node, "Declaration",
 			makePortGroup("Storage", node.storage.map[specifier | makeImmediateLiteral(specifier.toString)]),
 			makePortGroup("Qualifiers", node.qualifiers.map[qualifier | makeImmediateLiteral(qualifier.toString)]),
-			makeGroup("Attributes", node.attributes),
 			makeChild("Type", node.type),
 			makeGroup("Declarators", node.declarators)
 		);

@@ -27,6 +27,7 @@ class ElaborationContext {
 		}
 	}
 
+	public val AnalysisContext actx;
 	public val ValidationMessageAcceptor acceptor;
 
 	public val ISA root;
@@ -39,30 +40,33 @@ class ElaborationContext {
 	public val Map<Expression, ConstantValue> calculatedValues = new HashMap();
 	public var gatherPhaseDone = false;
 
-	new(ISA root, ValidationMessageAcceptor acceptor) {
+	new(ISA root, AnalysisContext actx) {
 		this.root = root;
-		this.acceptor = acceptor;
+		this.actx = actx;
+		this.acceptor = actx.acceptor;
 		isPartialElaboration = root instanceof InstructionSet;
 	}
 
 	def isInElaborationScope(EObject obj) {
 		return obj.parentOfType(ISA) == root;
 	}
-	
+
 	def getCalculatedValue(Declarator declarator) {
 		return getCalculatedValue(declarator.name);
 	}
-	
+
 	def getCalculatedValue(String name) {
-		CompilerAssertion.assertThat(gatherPhaseDone, "Calculated results may not be accessed before the gathering phase finishes");
+		CompilerAssertion.assertThat(gatherPhaseDone,
+			"Calculated results may not be accessed before the gathering phase finishes");
 		val info = declInfo.get(name);
 		val expression = info?.assignments.last();
 		val result = calculatedValues.get(expression);
 		return result !== null ? result : ConstantValue.indeterminate;
 	}
-	
+
 	def getCalculatedType(String name) {
-		CompilerAssertion.assertThat(gatherPhaseDone, "Calculated results may not be accessed before the gathering phase finishes");
+		CompilerAssertion.assertThat(gatherPhaseDone,
+			"Calculated results may not be accessed before the gathering phase finishes");
 		val info = declInfo.get(name);
 		val declarator = info?.declarators.last();
 		return CoreDslTypeProvider.getSpecifiedType(this, declarator.type);

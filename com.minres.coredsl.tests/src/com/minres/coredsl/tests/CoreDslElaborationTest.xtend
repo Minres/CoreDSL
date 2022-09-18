@@ -53,6 +53,15 @@ class CoreDslElaborationTest {
 						x = 1;
 					}
 				}
+			''',
+			'''
+				InstructionSet A {
+					architectural_state {
+						register int x;
+						int &y = x;
+					}
+				}
+				Core X provides A {}
 			'''
 		];
 
@@ -281,7 +290,7 @@ class CoreDslElaborationTest {
 		testErrors('''
 			InstructionSet A {
 				architectural_state {
-					param int x = 1;
+					int x = 1;
 				}
 			}
 			InstructionSet B {
@@ -295,7 +304,7 @@ class CoreDslElaborationTest {
 		testErrors('''
 			InstructionSet A {
 				architectural_state {
-					param int x = 1;
+					int x = 1;
 				}
 			}
 			InstructionSet B {
@@ -381,15 +390,6 @@ class CoreDslElaborationTest {
 
 	@Test
 	def void invalidParameterDeclaration() {
-		// error: alias parameter
-		testErrors('''
-			InstructionSet A {
-				architectural_state {
-					int &x = 1;
-				}
-			}
-			Core X provides A {}
-		''', error(IssueCodes.InvalidIsaParameterDeclaration));
 		// error: array parameter
 		testErrors('''
 			InstructionSet A {

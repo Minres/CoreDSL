@@ -20,7 +20,7 @@ import static extension com.minres.coredsl.util.ModelExtensions.*
 class CoreDslElaborator {
 
 	def static ElaborationContext elaborate(AnalysisContext actx, ISA isa) {
-		val ctx = new ElaborationContext(isa, actx.acceptor);
+		val ctx = new ElaborationContext(isa, actx);
 
 		buildElaborationOrder(ctx, isa);
 		gatherDeclarationsAndAssignments(ctx);
@@ -110,7 +110,7 @@ class CoreDslElaborator {
 						val info = ctx.declInfo.get(decl.name);
 						info.declarators.add(decl);
 
-						if(decl.initializer instanceof ExpressionInitializer) {
+						if(decl.initializer instanceof ExpressionInitializer && !decl.isAlias) {
 							val expr = (decl.initializer as ExpressionInitializer).value;
 							ctx.calculationQueue.add(expr);
 							info.assignments.add(expr);
@@ -175,7 +175,7 @@ class CoreDslElaborator {
 
 			for (info : ctx.declInfo.values) {
 				if(info.assignments.empty) {
-					if(info.declarators.get(0).isParameter) {
+					if(ctx.actx.isIsaParameter(info.declarators.get(0))) {
 						unassignedParameters.add(info.name);
 					}
 				} else {
@@ -203,9 +203,8 @@ class CoreDslElaborator {
 			}
 
 			if(!invalidValues.empty) {
-				ctx.acceptor.acceptError(
-					"The values of the following state elements could not be determined: " +
-						invalidValues.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
+				ctx.acceptor.acceptError("The values of the following state elements could not be determined: " +
+					invalidValues.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
 					IssueCodes.InvalidIsaStateElementValue);
 			}
 
@@ -217,9 +216,8 @@ class CoreDslElaborator {
 			}
 
 			if(!invalidTypes.empty) {
-				ctx.acceptor.acceptError(
-					"The types of the following state elements could not be determined: " +
-						invalidTypes.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
+				ctx.acceptor.acceptError("The types of the following state elements could not be determined: " +
+					invalidTypes.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
 					IssueCodes.InvalidIsaStateElementType);
 			}
 		}
@@ -236,12 +234,7 @@ class CoreDslElaborator {
 			string += 'volatile ';
 		}
 
-		val storage = declarator.storageClassSpecifier;
-		if(storage === null) {
-			string += isIsaStateElement ? '<invalid storage class> ' : '';
-		} else {
-			string += storage.literal + ' ';
-		}
+		string += ctx.actx.getStorageClass(declarator).name + ' ';
 
 		val type = CoreDslTypeProvider.getSpecifiedType(ctx, declarator.type);
 		string += type;
@@ -264,23 +257,15 @@ class CoreDslElaborator {
 							" has been declared multiple times with mismatching signatures (in " + declaringIsas + ")",
 						ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
 						IssueCodes.MismatchingIsaStateElementSignatures);
+				} else if(ctx.actx.isIsaParameter(info.declarators.get(0))) {
+					ctx.acceptor.acceptWarning(
+						"ISA parameter " + info.name + " has been declared multiple times (in " + declaringIsas + ")",
+						ctx.root, CoreDslPackage.Literals.ISA__NAME, -1, IssueCodes.DuplicateIsaStateElement);
 				} else {
-					val storage = info.declarators.get(0).storageClassSpecifier;
-					switch (storage) {
-						case PARAM: {
-							ctx.acceptor.acceptWarning(
-								"ISA parameter " + info.name + " has been declared multiple times (in " +
-									declaringIsas + ")", ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
-								IssueCodes.DuplicateIsaStateElement);
-						}
-						case EXTERN,
-						case REGISTER: {
-							ctx.acceptor.acceptError(
-								"ISA state element " + info.name + " has been declared multiple times (in " +
-									declaringIsas + ")", ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
-								IssueCodes.DuplicateIsaStateElement);
-						}
-					}
+					ctx.acceptor.acceptError(
+						"ISA state element " + info.name + " has been declared multiple times (in " +
+							declaringIsas + ")", ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
+						IssueCodes.DuplicateIsaStateElement);
 				}
 			}
 		}
