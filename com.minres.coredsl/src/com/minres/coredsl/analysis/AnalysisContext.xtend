@@ -9,10 +9,10 @@ import java.util.Set
 import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.coreDsl.DescriptionContent
 
-class AnalysisContext {
-
-	public val ValidationMessageAcceptor acceptor;
+class AnalysisContext extends ProxyMessageAcceptor {
+	public val DescriptionContent root;
 
 	public val Map<Declaration, StorageClass> storageClasses = new LinkedHashMap();
 
@@ -20,8 +20,9 @@ class AnalysisContext {
 	public val Map<ISA, Set<String>> exposedDeclarations = new LinkedHashMap();
 	public val Map<ISA, ElaborationContext> elaborationResults = new LinkedHashMap();
 
-	new(ValidationMessageAcceptor acceptor) {
-		this.acceptor = acceptor;
+	new(ValidationMessageAcceptor acceptor, DescriptionContent root) {
+		super(acceptor, root, null, null, -1);
+		this.root = root;
 	}
 
 	def getStorageClass(Declaration declaration) {

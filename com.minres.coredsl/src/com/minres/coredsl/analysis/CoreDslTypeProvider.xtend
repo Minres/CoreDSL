@@ -2,8 +2,6 @@ package com.minres.coredsl.analysis
 
 import com.minres.coredsl.coreDsl.BoolTypeSpecifier
 import com.minres.coredsl.coreDsl.CoreDslPackage
-import com.minres.coredsl.coreDsl.Declaration
-import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.FloatSizeShorthand
 import com.minres.coredsl.coreDsl.FloatTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerSignedness
@@ -16,8 +14,6 @@ import com.minres.coredsl.type.FloatType
 import com.minres.coredsl.type.IntegerType
 import com.minres.coredsl.type.VoidType
 import com.minres.coredsl.validation.IssueCodes
-
-import static extension com.minres.coredsl.util.ModelExtensions.*
 
 abstract class CoreDslTypeProvider {
 	private new() {
@@ -46,20 +42,20 @@ abstract class CoreDslTypeProvider {
 			val exactSize = size.value.intValueExact();
 
 			if(exactSize < 0) {
-				ctx.acceptor.acceptError('Integer type size must not be negative', specifier,
+				ctx.acceptError('Integer type size must not be negative', specifier,
 					CoreDslPackage.Literals.INTEGER_TYPE_SPECIFIER__SIZE, -1, IssueCodes.InvalidIntegerTypeSize);
 				return ErrorType.invalid;
 			}
 
 			if(exactSize == 0 && signed) {
-				ctx.acceptor.acceptError('signed<0> is not a valid type', specifier,
+				ctx.acceptError('signed<0> is not a valid type', specifier,
 					CoreDslPackage.Literals.INTEGER_TYPE_SPECIFIER__SIZE, -1, IssueCodes.InvalidIntegerTypeSize);
 				return ErrorType.invalid;
 			}
 
 			return new IntegerType(exactSize, signed);
 		} catch(ArithmeticException e) {
-			ctx.acceptor.acceptError('Integer type size must not exceed Integer.MAX_VALUE', specifier,
+			ctx.acceptError('Integer type size must not exceed Integer.MAX_VALUE', specifier,
 				CoreDslPackage.Literals.INTEGER_TYPE_SPECIFIER__SIZE, -1, IssueCodes.InvalidIntegerTypeSize);
 			return ErrorType.invalid;
 		}
@@ -78,7 +74,7 @@ abstract class CoreDslTypeProvider {
 	}
 
 	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, TypeSpecifier spec) {
-		ctx.acceptor.acceptError(spec.class.simpleName + " is currently not supported", spec.eContainer,
+		ctx.acceptError(spec.class.simpleName + " is currently not supported", spec.eContainer,
 			spec.eContainingFeature, -1, IssueCodes.UnsupportedLanguageFeature);
 
 		return ErrorType.invalid;

@@ -19,11 +19,8 @@ class CoreDslConstantExpressionEvaluator {
 		val declarator = expression.target.castOrNull(Declarator);
 
 		if(declarator === null || !ctx.actx.isIsaParameter(declarator)) {
-			if(ctx.isInElaborationScope(expression)) {
-				ctx.acceptor.acceptError("Identifiers in constant expressions may only refer to ISA parameters",
-					expression, CoreDslPackage.Literals.ENTITY_REFERENCE__TARGET, -1,
-					IssueCodes.InvalidConstantExpressionIdentifier);
-			}
+			ctx.acceptError("Identifiers in constant expressions may only refer to ISA parameters", expression,
+				CoreDslPackage.Literals.ENTITY_REFERENCE__TARGET, -1, IssueCodes.InvalidConstantExpressionIdentifier);
 			return ConstantValue.invalid;
 		}
 
@@ -53,16 +50,13 @@ class CoreDslConstantExpressionEvaluator {
 				if(right.value != BigInteger.ZERO)
 					return new ConstantValue(left.value / right.value);
 
-				// This error does not necessarily occur during elaboration of the lexical context, so we always report it
-				ctx.acceptor.acceptError("Division by zero during elaboration of " + ctx.root.name, expression,
-					CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR, -1, IssueCodes.DivisionByZero);
+				ctx.acceptError("Division by zero", expression, CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR, -1,
+					IssueCodes.DivisionByZero);
 			}
 			default: {
-				if(ctx.isInElaborationScope(expression)) {
-					ctx.acceptor.acceptError("Infix expression " + expression.operator +
-						" is currently unsupported in constant expressions", expression,
-						CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR, -1, IssueCodes.UnsupportedLanguageFeature);
-				}
+				ctx.acceptError("Infix expression " + expression.operator +
+					" is currently unsupported in constant expressions", expression,
+					CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR, -1, IssueCodes.UnsupportedLanguageFeature);
 			}
 		}
 
@@ -104,21 +98,16 @@ class CoreDslConstantExpressionEvaluator {
 				}
 			}
 			default: {
-				if(ctx.isInElaborationScope(expression)) {
-					ctx.acceptor.acceptError('intrinsic function ' + expression.function +
-						' is not allowed in constant expression', expression.eContainer, expression.eContainingFeature,
-						-1, IssueCodes.InvalidConstantExpressionNode);
-				}
+				ctx.acceptError('intrinsic function ' + expression.function + ' is not allowed in constant expression',
+					expression.eContainer, expression.eContainingFeature, -1, IssueCodes.InvalidConstantExpressionNode);
 			}
 		}
 		return ConstantValue.invalid;
 	}
 
 	def static dispatch ConstantValue evaluate(ElaborationContext ctx, Expression expression) {
-		if(ctx.isInElaborationScope(expression)) {
-			ctx.acceptor.acceptError(expression.eClass.name + ' is not allowed in constant expression',
-				expression.eContainer, expression.eContainingFeature, -1, IssueCodes.InvalidConstantExpressionNode);
-		}
+		ctx.acceptError(expression.eClass.name + ' is not allowed in constant expression', expression.eContainer,
+			expression.eContainingFeature, -1, IssueCodes.InvalidConstantExpressionNode);
 
 		return ConstantValue.invalid;
 	}

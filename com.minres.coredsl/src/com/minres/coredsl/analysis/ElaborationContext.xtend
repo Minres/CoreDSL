@@ -12,11 +12,11 @@ import java.util.List
 import java.util.Map
 import java.util.Stack
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.coreDsl.CoreDslPackage
 
-class ElaborationContext {
+class ElaborationContext extends ProxyMessageAcceptor {
 	static class IsaStateDeclarationInfo {
 		public val String name;
 		public val List<Declarator> declarators = new ArrayList();
@@ -28,7 +28,6 @@ class ElaborationContext {
 	}
 
 	public val AnalysisContext actx;
-	public val ValidationMessageAcceptor acceptor;
 
 	public val ISA root;
 	public val boolean isPartialElaboration;
@@ -41,10 +40,14 @@ class ElaborationContext {
 	public var gatherPhaseDone = false;
 
 	new(ISA root, AnalysisContext actx) {
+		super(actx.baseAcceptor, root, root, CoreDslPackage.Literals.ISA__NAME, -1);
 		this.root = root;
 		this.actx = actx;
-		this.acceptor = actx.acceptor;
 		isPartialElaboration = root instanceof InstructionSet;
+	}
+
+	override getErrorDescription(EObject object) {
+		return "Error in instruction set " + object.parentOfType(ISA)?.name;
 	}
 
 	def isInElaborationScope(EObject obj) {

@@ -29,7 +29,7 @@ import static extension com.minres.coredsl.util.ModelExtensions.*
 class CoreDslAnalyzer {
 
 	def static void analyze(DescriptionContent desc, ValidationMessageAcceptor acceptor) {
-		val ctx = new AnalysisContext(acceptor);
+		val ctx = new AnalysisContext(acceptor, desc);
 
 		for (isa : desc.definitions) {
 			analyzeIsaArchState(ctx, isa);
@@ -75,7 +75,7 @@ class CoreDslAnalyzer {
 
 					for (decl : statement.declaration.declarators) {
 						if(!declaredNames.add(decl.name)) {
-							ctx.acceptor.acceptError(
+							ctx.acceptError(
 								'An ISA state element with the name ' + decl.name + ' has already been declared', decl,
 								CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.DuplicateIsaStateElement);
 						}
@@ -85,7 +85,7 @@ class CoreDslAnalyzer {
 					val assignment = statement.expression.castOrNull(AssignmentExpression);
 
 					if(assignment === null) {
-						ctx.acceptor.acceptError(
+						ctx.acceptError(
 							'Only assignment expressions are allowed in ISA level expression statements', statement,
 							CoreDslPackage.Literals.EXPRESSION_STATEMENT__EXPRESSION, -1,
 							IssueCodes.InvalidIsaParameterAssignmentExpression);
@@ -93,7 +93,7 @@ class CoreDslAnalyzer {
 					}
 
 					if(assignment.operator != '=') {
-						ctx.acceptor.acceptError(
+						ctx.acceptError(
 							'Only regular assignments (=) are allowed in ISA level expression statements', assignment,
 							CoreDslPackage.Literals.ASSIGNMENT_EXPRESSION__OPERATOR, -1,
 							IssueCodes.InvalidIsaParameterAssignmentOperator);
@@ -104,7 +104,7 @@ class CoreDslAnalyzer {
 					val declarator = entityReference?.target.castOrNull(Declarator);
 
 					if(declarator === null || !ctx.isIsaParameter(declarator) || declarator.isConst) {
-						ctx.acceptor.acceptError('ISA level assignment must assign to a non-constant ISA parameter',
+						ctx.acceptError('ISA level assignment must assign to a non-constant ISA parameter',
 							assignment, CoreDslPackage.Literals.ASSIGNMENT_EXPRESSION__TARGET, -1,
 							IssueCodes.InvalidIsaParameterAssignmentTarget);
 						return;
@@ -120,7 +120,7 @@ class CoreDslAnalyzer {
 		analyzeTypeSpecifier(ctx, declaration.type);
 
 		if(declaration.type instanceof VoidTypeSpecifier) {
-			ctx.acceptor.acceptError("Identifiers may not be declared as type void", declaration,
+			ctx.acceptError("Identifiers may not be declared as type void", declaration,
 				CoreDslPackage.Literals.DECLARATION__TYPE, -1, IssueCodes.VoidDeclaration);
 		}
 
@@ -128,7 +128,7 @@ class CoreDslAnalyzer {
 		for (var i = 0; i < declaration.qualifiers.size; i++) {
 			val qualifier = declaration.qualifiers.get(i);
 			if(!seenQualifiers.add(qualifier)) {
-				ctx.acceptor.acceptError("Duplicate qualifier " + qualifier.literal, declaration,
+				ctx.acceptError("Duplicate qualifier " + qualifier.literal, declaration,
 					CoreDslPackage.Literals.DECLARATION__QUALIFIERS, i, IssueCodes.DuplicateQualifier);
 			}
 		}
@@ -141,7 +141,7 @@ class CoreDslAnalyzer {
 				val hasAliasDeclarator = declaration.declarators.findFirst[it.alias] !== null;
 
 				if(hasNonAliasDeclarator && hasAliasDeclarator) {
-					ctx.acceptor.acceptError("A declaration may not mix non-alias and alias declarators", declaration,
+					ctx.acceptError("A declaration may not mix non-alias and alias declarators", declaration,
 						CoreDslPackage.Literals.DECLARATION__DECLARATORS, -1, IssueCodes.MixedAliasnessDeclaration);
 				} else {
 					storageClass = hasAliasDeclarator ? StorageClass.alias : StorageClass.param;
@@ -160,13 +160,13 @@ class CoreDslAnalyzer {
 						default: CompilerAssertion.fail("Invalid storage class specifier")
 					}
 				} else {
-					ctx.acceptor.acceptError("Storage class specifiers are only allowed on ISA level declarations",
+					ctx.acceptError("Storage class specifiers are only allowed on ISA level declarations",
 						declaration, CoreDslPackage.Literals.DECLARATION__STORAGE, -1,
 						IssueCodes.StorageClassSpecifierOnLocalVariable);
 				}
 			}
 			default: {
-				ctx.acceptor.acceptError("A declaration may not specify more than one storage class", declaration,
+				ctx.acceptError("A declaration may not specify more than one storage class", declaration,
 					CoreDslPackage.Literals.DECLARATION__STORAGE, 1 /* show it on the second specifier */ ,
 					IssueCodes.MultipleStorageClassSpecifiers);
 			}
@@ -175,14 +175,14 @@ class CoreDslAnalyzer {
 
 		if(storageClass === StorageClass.param) {
 			if(!(declaration.type instanceof IntegerTypeSpecifier || declaration.type instanceof BoolTypeSpecifier)) {
-				ctx.acceptor.acceptError("ISA parameters may only have integer types (signed, unsigned, bool)",
+				ctx.acceptError("ISA parameters may only have integer types (signed, unsigned, bool)",
 					declaration, CoreDslPackage.Literals.DECLARATION__TYPE, -1, IssueCodes.InvalidIsaParameterType);
 			}
 
 			for (var i = 0; i < declaration.qualifiers.size; i++) {
 				val qualifier = declaration.qualifiers.get(i);
 				if(qualifier === TypeQualifier.VOLATILE) {
-					ctx.acceptor.acceptError("ISA parameters may not be declared as volatile", declaration,
+					ctx.acceptError("ISA parameters may not be declared as volatile", declaration,
 						CoreDslPackage.Literals.DECLARATION__QUALIFIERS, i, IssueCodes.InvalidIsaParameterDeclaration);
 				}
 			}
@@ -199,24 +199,24 @@ class CoreDslAnalyzer {
 
 	def static analyzeDeclarator(AnalysisContext ctx, Declarator declarator, boolean isIsaStateElement) {
 		if(declarator.isConst && declarator.initializer === null) {
-			ctx.acceptor.acceptError("An identifier declared as const must be initialized", declarator,
+			ctx.acceptError("An identifier declared as const must be initialized", declarator,
 				CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.UninitializedConstant);
 		}
 
 		if(declarator.isAlias) {
 			if(!isIsaStateElement) {
-				ctx.acceptor.acceptError("A local variable may not be declared as alias", declarator,
+				ctx.acceptError("A local variable may not be declared as alias", declarator,
 					CoreDslPackage.Literals.DECLARATOR__ALIAS, -1, IssueCodes.AliasLocalVariable);
 			}
 
 			if(declarator.initializer === null) {
-				ctx.acceptor.acceptError("An identifier declared as alias must be initialized", declarator,
+				ctx.acceptError("An identifier declared as alias must be initialized", declarator,
 					CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.UninitializedAlias);
 			}
 		}
 
 		if(!declarator.dimensions.empty && ctx.isIsaParameter(declarator)) {
-			ctx.acceptor.acceptError("An ISA parameter may not be declared as an array", declarator,
+			ctx.acceptError("An ISA parameter may not be declared as an array", declarator,
 				CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, 1, IssueCodes.InvalidIsaParameterDeclaration);
 		}
 

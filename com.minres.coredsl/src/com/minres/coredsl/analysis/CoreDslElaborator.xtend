@@ -43,7 +43,7 @@ class CoreDslElaborator {
 			if(providedInstructionSets.add(iset)) {
 				buildElaborationOrder(ctx, iset);
 			} else {
-				ctx.acceptor.acceptError(
+				ctx.acceptError(
 					'Core provides the instruction set ' + iset.name + ' multiple times',
 					core,
 					CoreDslPackage.Literals.CORE_DEF__PROVIDED_INSTRUCTION_SETS,
@@ -69,7 +69,7 @@ class CoreDslElaborator {
 			val stack = ctx.currentInheritanceStack;
 			val chain = stack.subList(stack.indexOf(iset), stack.size) + #[iset];
 
-			ctx.acceptor.acceptError('Cyclic instruction set inheritance: ' + chain.map[it.name].join(' -> '), iset,
+			ctx.acceptError('Cyclic instruction set inheritance: ' + chain.map[it.name].join(' -> '), iset,
 				CoreDslPackage.Literals.INSTRUCTION_SET__SUPER_TYPE, -1, IssueCodes.CyclicInstructionSetInheritance);
 
 			return;
@@ -166,60 +166,59 @@ class CoreDslElaborator {
 	}
 
 	def private static void validateResults(ElaborationContext ctx) {
-		if(!ctx.isPartialElaboration) {
-			val unassignedParameters = new ArrayList();
-			val indeterminableValues = new ArrayList();
-			val invalidValues = new ArrayList();
-			val indeterminableTypes = new ArrayList();
-			val invalidTypes = new ArrayList();
+		if(ctx.isPartialElaboration) return;
 
-			for (info : ctx.declInfo.values) {
-				if(info.assignments.empty) {
-					if(ctx.actx.isIsaParameter(info.declarators.get(0))) {
-						unassignedParameters.add(info.name);
-					}
-				} else {
-					val value = ctx.getCalculatedValue(info.name);
-					if(value.isIndeterminate) indeterminableValues.add(info.name);
-					if(value.isInvalid) invalidValues.add(info.name);
+		val unassignedParameters = new ArrayList();
+		val indeterminableValues = new ArrayList();
+		val invalidValues = new ArrayList();
+		val indeterminableTypes = new ArrayList();
+		val invalidTypes = new ArrayList();
 
-					val type = ctx.getCalculatedType(info.name);
-					if(type.isIndeterminate) indeterminableTypes.add(info.name);
-					if(type.isInvalid) invalidTypes.add(info.name);
+		for (info : ctx.declInfo.values) {
+			if(info.assignments.empty) {
+				if(ctx.actx.isIsaParameter(info.declarators.get(0))) {
+					unassignedParameters.add(info.name);
 				}
-			}
+			} else {
+				val value = ctx.getCalculatedValue(info.name);
+				if(value.isIndeterminate) indeterminableValues.add(info.name);
+				if(value.isInvalid) invalidValues.add(info.name);
 
-			if(!unassignedParameters.empty) {
-				ctx.acceptor.acceptError(
-					"The following ISA parameters are never assigned: " + unassignedParameters.join(', '), ctx.root,
-					CoreDslPackage.Literals.ISA__NAME, -1, IssueCodes.UnassignedIsaParameter);
+				val type = ctx.getCalculatedType(info.name);
+				if(type.isIndeterminate) indeterminableTypes.add(info.name);
+				if(type.isInvalid) invalidTypes.add(info.name);
 			}
+		}
 
-			if(!indeterminableValues.empty) {
-				ctx.acceptor.acceptError(
-					"The values of the following state elements could not be determined because they depend on other indeterminable values: " +
-						indeterminableValues.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
-					IssueCodes.IndeterminableIsaStateElementValue);
-			}
+		if(!unassignedParameters.empty) {
+			ctx.acceptError("The following ISA parameters are never assigned: " + unassignedParameters.join(', '),
+				ctx.root, CoreDslPackage.Literals.ISA__NAME, -1, IssueCodes.UnassignedIsaParameter);
+		}
 
-			if(!invalidValues.empty) {
-				ctx.acceptor.acceptError("The values of the following state elements could not be determined: " +
-					invalidValues.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
-					IssueCodes.InvalidIsaStateElementValue);
-			}
+		if(!indeterminableValues.empty) {
+			ctx.acceptError(
+				"The values of the following state elements could not be determined because they depend on other indeterminable values: " +
+					indeterminableValues.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
+				IssueCodes.IndeterminableIsaStateElementValue);
+		}
 
-			if(!indeterminableTypes.empty) {
-				ctx.acceptor.acceptError(
-					"The types of the following state elements could not be determined because they depend on other indeterminable values: " +
-						indeterminableTypes.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
-					IssueCodes.IndeterminableIsaStateElementType);
-			}
+		if(!invalidValues.empty) {
+			ctx.acceptError("The values of the following state elements could not be determined: " +
+				invalidValues.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
+				IssueCodes.InvalidIsaStateElementValue);
+		}
 
-			if(!invalidTypes.empty) {
-				ctx.acceptor.acceptError("The types of the following state elements could not be determined: " +
-					invalidTypes.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
-					IssueCodes.InvalidIsaStateElementType);
-			}
+		if(!indeterminableTypes.empty) {
+			ctx.acceptError(
+				"The types of the following state elements could not be determined because they depend on other indeterminable values: " +
+					indeterminableTypes.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
+				IssueCodes.IndeterminableIsaStateElementType);
+		}
+
+		if(!invalidTypes.empty) {
+			ctx.acceptError("The types of the following state elements could not be determined: " +
+				invalidTypes.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
+				IssueCodes.InvalidIsaStateElementType);
 		}
 	}
 
@@ -252,17 +251,17 @@ class CoreDslElaborator {
 			if(signatures.length > 0) {
 				val signature = signatures.get(0);
 				if(signatures.filter[it != signature].size > 0) {
-					ctx.acceptor.acceptError(
+					ctx.acceptError(
 						"ISA state element " + info.name +
 							" has been declared multiple times with mismatching signatures (in " + declaringIsas + ")",
 						ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
 						IssueCodes.MismatchingIsaStateElementSignatures);
 				} else if(ctx.actx.isIsaParameter(info.declarators.get(0))) {
-					ctx.acceptor.acceptWarning(
+					ctx.acceptWarning(
 						"ISA parameter " + info.name + " has been declared multiple times (in " + declaringIsas + ")",
 						ctx.root, CoreDslPackage.Literals.ISA__NAME, -1, IssueCodes.DuplicateIsaStateElement);
 				} else {
-					ctx.acceptor.acceptError(
+					ctx.acceptError(
 						"ISA state element " + info.name + " has been declared multiple times (in " +
 							declaringIsas + ")", ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
 						IssueCodes.DuplicateIsaStateElement);
