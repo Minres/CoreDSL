@@ -39,10 +39,15 @@ class CoreDslGlobalScopeProvider extends ImportUriGlobalScopeProvider {
                 val models = resourceDescription.getExportedObjectsByType(CoreDslPackage.Literals.DESCRIPTION_CONTENT)
                 models.forEach[
                     val userData = getUserData(CoreDslResourceDescriptionStrategy.INCLUDES)
-                    if(userData !== null) {
+                    if(userData !== null && userData.length>0) {
                         SPLITTER.split(userData).forEach[uri |
                             var includedUri = URI.createURI(uri)
-                            includedUri = includedUri.resolve(resource.URI)
+                            try {
+                                includedUri = includedUri.resolve(resource.URI)                            
+                            } catch(IllegalArgumentException e) {
+                                val currentPath = new java.io.File(".").getCanonicalPath();
+                                includedUri = includedUri.resolve(URI::createFileURI(currentPath+"/"))
+                            }
                             if(uniqueImportURIs.add(includedUri)) {
                                 collectImportUris(resource.getResourceSet().getResource(includedUri, true), uniqueImportURIs)
                             }
