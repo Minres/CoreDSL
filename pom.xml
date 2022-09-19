@@ -25,7 +25,7 @@
 	<modules>
 		<module>com.minres.coredsl.target</module>
 		<module>com.minres.coredsl</module>
-        <!--<module>com.minres.coredsl.tests</module>-->
+        <module>com.minres.coredsl.tests</module>
 		<module>com.minres.coredsl.ide</module>
 		<module>com.minres.coredsl.ui</module>
 		<module>com.minres.coredsl.feature</module>
