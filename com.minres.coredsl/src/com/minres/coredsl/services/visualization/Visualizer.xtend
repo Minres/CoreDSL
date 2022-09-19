@@ -220,8 +220,7 @@ class Visualizer {
 		return makeNode(node, "Instruction Set",
 			makeNamedLiteral("Name", node.name),
 			makeNamedLiteral("Super Type", node.superType?.name),
-			makeGroup("Declarations", node.declarations),
-			makeGroup("Assignments", node.assignments),
+			makeGroup("Architectural State", node.archStateBody),
 			makeGroup("Types", node.types),
 			makeGroup("Functions", node.functions),
 			makeGroup("Instruction Attributes", node.commonInstructionAttributes),
@@ -233,8 +232,7 @@ class Visualizer {
 		return makeNode(node, "Instruction Set",
 			makeNamedLiteral("Name", node.name),
 			makeGroup("Provided Instruction Sets", node.providedInstructionSets),
-			makeGroup("Declarations", node.declarations),
-			makeGroup("Assignments", node.assignments),
+			makeGroup("Architectural State", node.archStateBody),
 			makeGroup("Types", node.types),
 			makeGroup("Functions", node.functions),
 			makeGroup("Instruction Attributes", node.commonInstructionAttributes),
@@ -369,7 +367,6 @@ class Visualizer {
 		return makeNode(node, "Declaration",
 			makePortGroup("Storage", node.storage.map[specifier | makeImmediateLiteral(specifier.toString)]),
 			makePortGroup("Qualifiers", node.qualifiers.map[qualifier | makeImmediateLiteral(qualifier.toString)]),
-			makeGroup("Attributes", node.attributes),
 			makeChild("Type", node.type),
 			makeGroup("Declarators", node.declarators)
 		);

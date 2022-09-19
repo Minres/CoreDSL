@@ -34,11 +34,6 @@ class CoreDslTerminalsTest {
 
     def CharSequence addBehaviorContext(CharSequence str) '''
         InstructionSet TestISA {
-            architectural_state { 
-                [[is_pc]] int PC ;
-                int Xreg[32];
-                float Freg[32];
-            }
             instructions {
             	FOO {
             		encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  

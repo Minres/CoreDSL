@@ -113,7 +113,7 @@ class CoreDslISAScopingTest {
             InstructionSet TestISA {
             architectural_state {
                 int CCC = 42;
-                unsigned int X[32];
+                register unsigned int X[32];
             }
 
             functions {
@@ -143,7 +143,7 @@ class CoreDslISAScopingTest {
         InstructionSet TestISA {
             architectural_state {
                 int CCC = 42;
-                unsigned int X[32];
+                register unsigned int X[32];
             }
 
             functions {
@@ -357,8 +357,8 @@ class CoreDslISAScopingTest {
         val content = '''
         InstructionSet TestISA {
             architectural_state {
-                int X[32];
-                int PC;
+                register int X[32];
+                register int PC;
             }
             functions {
                 void maybe_corrupt_PC(int i) {

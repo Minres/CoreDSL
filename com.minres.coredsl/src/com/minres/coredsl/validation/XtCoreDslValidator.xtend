@@ -22,6 +22,8 @@ import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.validation.KnownAttributes.AttributeUsage
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EStructuralFeature
+import com.minres.coredsl.coreDsl.DescriptionContent
+import com.minres.coredsl.analysis.CoreDslAnalyzer
 
 /**
  * This class contains custom validation rules. 
@@ -42,6 +44,11 @@ class XtCoreDslValidator extends CoreDslValidator {
 	public static val TYPE_ILLEGAL = ISSUE_CODE_PREFIX + "TypeIllegal"
 	public static val ILLEGAL_ATTRIBUTE = ISSUE_CODE_PREFIX + "IllegalAttribute"
 	public static val INVALID_ATTRIBUTE_PARAMETERS = ISSUE_CODE_PREFIX + "InvalidAttributeParameters"
+
+	@Check
+	def analyze(DescriptionContent desc) {
+		CoreDslAnalyzer.analyze(desc, this);
+	}
 
 	// @Check
 	def checkType(Expression e) {
@@ -128,11 +135,6 @@ class XtCoreDslValidator extends CoreDslValidator {
 	@Check
 	def checkAttributeNames(Instruction instr) {
 		checkAttributes(instr.attributes, KnownAttributes.AttributeUsage.instruction, CoreDslPackage.Literals.INSTRUCTION__ATTRIBUTES);
-	}
-
-	@Check
-	def checkAttributeNames(Declaration decl) {
-		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.DECLARATOR__ATTRIBUTES);
 	}
 
 	@Check

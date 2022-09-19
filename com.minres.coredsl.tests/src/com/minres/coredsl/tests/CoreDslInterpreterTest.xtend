@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue
 import static org.junit.jupiter.api.Assertions.assertEquals
 
 import static extension com.minres.coredsl.interpreter.CoreDSLInterpreter.*
+import static extension com.minres.coredsl.util.ModelUtil.*
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -35,9 +36,9 @@ class CoreDslInterpreterTest {
                 int a = 42;
                 int b = a + 5;
                 int XLEN = a + b;
-                [[is_pc]] int PC ;
-                int Xreg[XLEN];
-                float Freg[a];
+                register int PC [[is_pc]];
+                register int Xreg[XLEN];
+                register float Freg[a];
             }
         }
         '''.parse

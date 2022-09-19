@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull
 import static org.junit.jupiter.api.Assertions.assertTrue
 
 import static extension com.minres.coredsl.typing.TypeProvider.*
+import static extension com.minres.coredsl.util.ModelUtil.*
 import com.minres.coredsl.coreDsl.IntegerSignedness
 import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerSizeShorthand
@@ -32,9 +33,9 @@ class CoreDslTypeTest {
         InstructionSet TestISA {
             architectural_state {
                 unsigned int XLEN;
-                unsigned int FLEN;
-                int CSR_SIZE;
-                unsigned<XLEN> X[32];
+                unsigned int FLEN = 0;
+                int CSR_SIZE = 0;
+                register unsigned<XLEN> X[32];
             }
         }
         Core TestCore provides TestISA {

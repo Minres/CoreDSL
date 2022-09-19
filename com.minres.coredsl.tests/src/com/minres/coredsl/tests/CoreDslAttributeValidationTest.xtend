@@ -41,7 +41,7 @@ class CoreDslAttributeValidationTest {
 			InstructionSet AttributeValidationTestInstructionSet {
 			    architectural_state {
 			        unsigned int XLEN;
-			        unsigned<XLEN> field «declAttribString»;
+			        register unsigned<XLEN> field «declAttribString»;
 			    }
 			    functions {
 			    	void fun() «funcAttribString» {}
@@ -80,7 +80,7 @@ class CoreDslAttributeValidationTest {
 			InstructionSet AttributeValidationTestInstructionSet {
 			    architectural_state {
 			        unsigned int XLEN;
-			        unsigned<XLEN> field «attribString»;
+			        register unsigned<XLEN> field «attribString»;
 			    }
 			    functions {
 			    	void fun() «attribString» {}
@@ -130,7 +130,7 @@ class CoreDslAttributeValidationTest {
 			InstructionSet AttributeValidationTestInstructionSet {
 			    architectural_state {
 			        unsigned int XLEN;
-					unsigned<XLEN> field «declAttribString»;
+					register unsigned<XLEN> field «declAttribString»;
 			    }
 			    functions {
 			    	void fun() «funcAttribString» {}

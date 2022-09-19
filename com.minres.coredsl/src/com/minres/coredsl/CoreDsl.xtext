@@ -15,7 +15,7 @@ InstructionSet : 'InstructionSet' name=ID ( 'extends' superType=[InstructionSet]
 CoreDef: 'Core' name=ID ( 'provides' providedInstructionSets+=[InstructionSet] (',' providedInstructionSets+=[InstructionSet])*)? '{' ISA '}';
 
 fragment ISA:
-	('architectural_state' '{' (declarations+=DeclarationStatement | assignments+=ExpressionStatement | types+=UserTypeDeclaration)+ '}')? &
+	('architectural_state' '{' (archStateBody+=DeclarationStatement | archStateBody+=ExpressionStatement | types+=UserTypeDeclaration)+ '}')? &
 	('functions' '{' functions+=FunctionDefinition+ '}')? &
 	('instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}')?;
 
@@ -106,7 +106,7 @@ MultiInitDeclaration returns Declaration: Declaration<true, true>;
 MultiDeclaration returns Declaration: Declaration<true, false>;
 
 Declaration<allowMultiple, allowInit>:
-	(storage+=StorageClassSpecifier | qualifiers+=TypeQualifier | attributes+=Attribute)*
+	(storage+=StorageClassSpecifier | qualifiers+=TypeQualifier)*
 	type=TypeSpecifier (declarators+=Declarator<allowInit> (<allowMultiple> ',' declarators+=Declarator<allowInit>)*)?;
 
 Declarator<allowInit>:
@@ -245,11 +245,11 @@ StringLiteral: value=ENCSTRINGCONST | value=STRING ;
 //////////////////////////////////////////////////////////////////////////////
 
 enum IntegerSignedness : SIGNED='signed' | UNSIGNED='unsigned';
-enum IntegerSizeShorthand : INT='int' | CHAR='char' | SHORT='short' |  LONG='long';
+enum IntegerSizeShorthand : INT='int' | CHAR='char' | SHORT='short' | LONG='long';
 enum FloatSizeShorthand : FLOAT='float' | DOUBLE='double';
 
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';
-enum StorageClassSpecifier: EXTERN='extern' | STATIC='static' | REGISTER='register';
+enum StorageClassSpecifier: EXTERN='extern' | REGISTER='register';
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// Terminal Rules ////////////////////////////////

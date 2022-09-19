@@ -24,11 +24,11 @@ class XtCoreDslOutlineTreeProvider extends CoreDslOutlineTreeProvider {
 	}
 
 	def void _createChildren(IOutlineNode parentNode, InstructionSet modelElement) {
-		val image = imageDispatcher.invoke(modelElement.declarations)
+		val image = imageDispatcher.invoke(modelElement.archStateBody)
 		if(modelElement.superType !==null)
 		  	createEObjectNode(parentNode, modelElement.superType);
-		if(modelElement.declarations.size>0)
-		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__DECLARATIONS,
+		if(modelElement.archStateBody.size>0)
+		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__ARCH_STATE_BODY,
 			image, "State", false)
 		if(modelElement.functions.size>0)
 		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__FUNCTIONS,
@@ -39,12 +39,12 @@ class XtCoreDslOutlineTreeProvider extends CoreDslOutlineTreeProvider {
 	}
 
 	def void _createChildren(IOutlineNode parentNode, CoreDef modelElement) {
-		val image = imageDispatcher.invoke(modelElement.declarations)
+		val image = imageDispatcher.invoke(modelElement.archStateBody)
 		if(modelElement.providedInstructionSets.size>0)
       	createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.CORE_DEF__PROVIDED_INSTRUCTION_SETS, 
 	        image, "Contributing", false)
-		if(modelElement.declarations.size>0)
-		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__DECLARATIONS,
+		if(modelElement.archStateBody.size>0)
+		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__ARCH_STATE_BODY,
 			image, "State", false)
 		if(modelElement.functions.size>0)
 		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__FUNCTIONS,

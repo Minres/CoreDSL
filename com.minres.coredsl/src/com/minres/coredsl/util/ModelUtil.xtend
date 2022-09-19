@@ -91,7 +91,15 @@ class ModelUtil {
         }
         null
     }
-        
+    
+    static def Iterable<DeclarationStatement> declarations(ISA isa){
+        return isa.archStateBody.filter(DeclarationStatement)
+    }
+    
+    static def Iterable<ExpressionStatement> assignments(ISA isa){
+        return isa.archStateBody.filter(ExpressionStatement)
+    }
+    
     static def Iterable<Statement> allDefinitions(ISA isa){
         switch(isa){
             CoreDef:
@@ -105,17 +113,17 @@ class ModelUtil {
                     return seen.flatMap[it.declarations + it.assignments]
                 }
             InstructionSet:
-                return isa.allInstructionSets.flatMap[it.declarations + it.assignments]
+                return isa.allInstructionSets.flatMap[it.archStateBody]
         }
     }
     
     static def Iterable<DeclarationStatement> allStateDeclarations(ISA isa){
         switch (isa) {
             CoreDef: {
-                isa.declarations + isa.providedInstructionSets?.map[it.allStateDeclarations].flatten
+                isa.declarations + isa.providedInstructionSets?.flatMap[it.allStateDeclarations]
             }
             InstructionSet: {
-                isa.declarations + isa.superType.declarations
+                isa.declarations + isa.superType?.allStateDeclarations
             }
         }
     }
@@ -123,10 +131,10 @@ class ModelUtil {
     static def Iterable<ExpressionStatement> allStateAssignments(ISA isa){
         switch (isa) {
             CoreDef: {
-                isa.assignments + isa.providedInstructionSets?.map[it.allStateAssignments].flatten
+                isa.assignments + isa.providedInstructionSets?.flatMap[it.allStateAssignments]
             }
             InstructionSet: {
-                isa.assignments + isa.superType.assignments
+                isa.assignments + isa.superType?.allStateAssignments
             }
         }
     }
