@@ -1,6 +1,6 @@
 // https://github.com/Minres/CoreDSL/wiki/Introduction:-Arithmetic-and-type-conversion-rules
 
-import "https://raw.githubusercontent.com/Minres/RISCV_ISA_CoreDSL/master/RISCVBase.core_desc"
+import "inputs/RISCVBase.core_desc"
 
 InstructionSet X_LUM extends RISCVBase {
   instructions {

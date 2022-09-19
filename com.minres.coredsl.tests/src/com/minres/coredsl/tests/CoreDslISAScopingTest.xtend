@@ -172,7 +172,7 @@ class CoreDslISAScopingTest {
     @Test
     def void globalScopeFromFile() {
         val content = '''
-        import "https://raw.githubusercontent.com/Minres/RISCV_ISA_CoreDSL/master/RISCVBase.core_desc"
+        import "inputs/RISCVBase.core_desc"
         
         InstructionSet TestISA2 extends RISCVBase {
             instructions {
