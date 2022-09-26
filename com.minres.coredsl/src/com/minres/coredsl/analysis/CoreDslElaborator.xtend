@@ -183,11 +183,11 @@ class CoreDslElaborator {
 				val value = ctx.getCalculatedValue(info.name);
 				if(value.isIndeterminate) indeterminableValues.add(info.name);
 				if(value.isInvalid) invalidValues.add(info.name);
-
-				val type = ctx.getCalculatedType(info.name);
-				if(type.isIndeterminate) indeterminableTypes.add(info.name);
-				if(type.isInvalid) invalidTypes.add(info.name);
 			}
+
+			val type = ctx.getCalculatedType(info.name);
+			if(type.isIndeterminate) indeterminableTypes.add(info.name);
+			if(type.isInvalid) invalidTypes.add(info.name);
 		}
 
 		if(!unassignedParameters.empty) {
