@@ -1,0 +1,54 @@
+InstructionSet A {
+	architectural_state {
+		int x = 1;
+		int y = 1 / x;
+		
+		struct T {
+			int a;
+			int b;
+			int c;
+			union U u;
+		}
+		
+		union U {
+			int f1;
+			enum E f2;
+		}
+		
+		enum E {
+			e1, e2
+		}
+		
+		register struct T t;
+	}
+	functions {
+		void test() {
+			t.a = offsetof(t.u, f1);
+			t.u.f2 = e1;
+			test();
+		}
+	}
+	instructions {
+		TEST {
+			encoding: field[0:31];
+			assembly: "";
+			behavior: {
+				int f = field;
+			}
+		}
+	}
+}
+
+Core C provides A {
+	architectural_state {
+		y = 2;
+		x = 1;
+	}
+	functions {
+		void test2() {
+			t.a = offsetof(t.u, f1);
+			t.u.f1 = e1;
+			test();
+		}
+	}
+}
