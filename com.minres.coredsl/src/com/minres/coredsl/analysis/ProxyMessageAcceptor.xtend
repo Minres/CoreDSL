@@ -26,7 +26,7 @@ class ProxyMessageAcceptor implements ValidationMessageAcceptor {
 	}
 
 	def isInScope(EObject object) {
-		return object.isDescendantOf(lexicalScope);
+		return object.isDescendantOfOrSelf(lexicalScope);
 	}
 
 	def getErrorDescription(EObject object) {

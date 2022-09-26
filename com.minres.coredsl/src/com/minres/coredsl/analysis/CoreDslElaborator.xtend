@@ -247,7 +247,7 @@ class CoreDslElaborator {
 	def private static void checkDuplicateDeclarations(ElaborationContext ctx) {
 		for (info : ctx.declInfo.values.filter[it.declarators.size > 1]) {
 			val signatures = info.declarators.map[it.getSignatureString(ctx, true)];
-			val declaringIsas = info.declarators.map[it.parentOfType(ISA).name].join(', ');
+			val declaringIsas = info.declarators.map[it.ancestorOfType(ISA).name].join(', ');
 			if(signatures.length > 0) {
 				val signature = signatures.get(0);
 				if(signatures.filter[it != signature].size > 0) {
