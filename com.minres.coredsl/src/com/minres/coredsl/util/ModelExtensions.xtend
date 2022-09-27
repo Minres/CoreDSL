@@ -14,8 +14,12 @@ abstract class ModelExtensions {
 		return null;
 	}
 
-	static def <T extends EObject> T parentOfType(EObject obj, Class<T> type) {
-		var cur = obj.eContainer;
+	static def <T extends EObject> T ancestorOfType(EObject obj, Class<T> type) {
+		return ancestorOfTypeOrSelf(obj.eContainer, type);
+	}
+
+	static def <T extends EObject> T ancestorOfTypeOrSelf(EObject obj, Class<T> type) {
+		var cur = obj;
 		while(cur !== null) {
 			if(type.isInstance(cur)) return cur as T;
 			cur = cur.eContainer;
@@ -24,7 +28,11 @@ abstract class ModelExtensions {
 	}
 
 	static def boolean isDescendantOf(EObject obj, EObject potentialAncestor) {
-		var cur = obj.eContainer;
+		return isDescendantOf(obj.eContainer, potentialAncestor);
+	}
+
+	static def boolean isDescendantOfOrSelf(EObject obj, EObject potentialAncestor) {
+		var cur = obj;
 		while(cur !== null) {
 			if(cur === potentialAncestor) return true;
 			cur = cur.eContainer;

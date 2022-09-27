@@ -463,21 +463,13 @@ class CoreDslElaborationTest {
 			}
 			Core X provides A {}
 		''', error(IssueCodes.InvalidIsaParameterType));
-		// error: cyclic type dependency
-		testErrors('''
-			InstructionSet A {
-				architectural_state {
-					unsigned<bitsizeof(y)> x = 1;
-					unsigned<bitsizeof(x)> y = 1;
-				}
-			}
-			Core X provides A {}
-		''', error(IssueCodes.IndeterminableIsaStateElementType));
 		// error: cyclic type-value dependency
 		testErrors('''
 			InstructionSet A {
 				architectural_state {
-					unsigned<x> x = bitsizeof(x);
+					int x;
+					extern unsigned<x> y;
+					x = bitsizeof(y);
 				}
 			}
 			Core X provides A {}

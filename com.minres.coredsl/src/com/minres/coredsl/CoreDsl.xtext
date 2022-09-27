@@ -11,7 +11,7 @@ generate coreDsl "http://www.minres.com/coredsl/CoreDsl/2.0"
 DescriptionContent: (imports+=Import)* definitions+=(InstructionSet | CoreDef)+;
 Import: 'import' importURI=STRING;
 
-InstructionSet : 'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' ISA '}';
+InstructionSet: 'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' ISA '}';
 CoreDef: 'Core' name=ID ( 'provides' providedInstructionSets+=[InstructionSet] (',' providedInstructionSets+=[InstructionSet])*)? '{' ISA '}';
 
 fragment ISA:
@@ -116,7 +116,7 @@ Declarator<allowInit>:
 	attributes+=Attribute*
 	(<allowInit> t_equals='=' initializer=Initializer)?;
 
-NamedEntity: FunctionDefinition | Declarator<true> | BitField;
+NamedEntity: FunctionDefinition | Declarator<true> | BitField | EnumMemberDeclaration;
     
 Initializer: ExpressionInitializer | ListInitializer;
 ExpressionInitializer: value=Expression;
@@ -221,7 +221,7 @@ ParenthesisExpression: '(' inner=Expression ')';
 EntityReference: target=[NamedEntity];
 
 IntrinsicExpression:
-	function=('sizeof' | 'bitsizeof' | 'alignof' | 'offsetof')
+	function=('sizeof' | 'bitsizeof' | 'alignof' | 'bitalignof' | 'offsetof' | 'bitoffsetof')
 	'(' (arguments+=(Expression|TypeSpecifier) (',' arguments+=(Expression|TypeSpecifier))*)? ')';
     
 //////////////////////////////// Constants ////////////////////////////////

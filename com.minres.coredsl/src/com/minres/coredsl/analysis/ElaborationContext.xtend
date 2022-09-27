@@ -47,11 +47,13 @@ class ElaborationContext extends ProxyMessageAcceptor {
 	}
 
 	override getErrorDescription(EObject object) {
-		return "Error in instruction set " + object.parentOfType(ISA)?.name;
+		val isa = object.ancestorOfTypeOrSelf(ISA);
+		if(isa === null) return "Error";
+		return "Error in instruction set " + isa.name;
 	}
 
 	def isInElaborationScope(EObject obj) {
-		return obj.parentOfType(ISA) == root;
+		return obj.ancestorOfType(ISA) == root;
 	}
 
 	def getCalculatedValue(Declarator declarator) {
