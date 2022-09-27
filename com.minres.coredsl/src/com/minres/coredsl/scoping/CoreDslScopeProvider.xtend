@@ -47,7 +47,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 //   EntityReference.target
 	override IScope getScope(EObject context, EReference reference) {
 
-		println('''Trying to resolve «reference.EType.name» «(reference.eContainer as EClass).name».«reference.name» on «context.eClass.name»''');
+		//println('''Trying to resolve «reference.EType.name» «(reference.eContainer as EClass).name».«reference.name» on «context.eClass.name»''');
 
 		switch (reference) {
 			case CoreDslPackage.Literals.CORE_DEF__PROVIDED_INSTRUCTION_SETS,
