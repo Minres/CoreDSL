@@ -1,8 +1,14 @@
 package com.minres.coredsl.util
 
+import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.Declarator
+import com.minres.coredsl.coreDsl.ISA
+import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.TypeQualifier
+import java.util.ArrayList
+import java.util.HashSet
+import java.util.List
 import org.eclipse.emf.ecore.EObject
 
 abstract class ModelExtensions {
@@ -68,5 +74,25 @@ abstract class ModelExtensions {
 
 	static def isConst(Declarator decl) {
 		return decl.declaration.isConst;
+	}
+
+	// ISA extensions
+	static def getElaborationOrder(ISA isa) {
+		var order = new ArrayList();
+		getElaborationOrder(isa, order, new HashSet());
+		return order;
+	}
+
+	private static def dispatch void getElaborationOrder(InstructionSet iset, List<ISA> order, HashSet<ISA> seen) {
+		if(!seen.add(iset)) return;
+		if(iset.superType !== null) getElaborationOrder(iset.superType, order, seen);
+		order.add(iset);
+	}
+
+	private static def dispatch void getElaborationOrder(CoreDef core, List<ISA> order, HashSet<ISA> seen) {
+		for (iset : core.providedInstructionSets) {
+			getElaborationOrder(iset, order, seen);
+		}
+		order.add(core);
 	}
 }

@@ -81,7 +81,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 	}
 
 	def private static Iterable<UserTypeDeclaration> getTypeScope(EObject context) {
-		return context.ancestorOfTypeOrSelf(ISA).types;
+		return context.ancestorOfTypeOrSelf(ISA).elaborationOrder.flatMap[it.types];
 	}
 
 	def private static IScope getStructTypeScope(EObject context) {
