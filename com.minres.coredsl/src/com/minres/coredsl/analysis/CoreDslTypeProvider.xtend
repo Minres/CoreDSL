@@ -14,6 +14,9 @@ import com.minres.coredsl.type.FloatType
 import com.minres.coredsl.type.IntegerType
 import com.minres.coredsl.type.VoidType
 import com.minres.coredsl.validation.IssueCodes
+import com.minres.coredsl.coreDsl.StructTypeSpecifier
+import com.minres.coredsl.type.CompositeType
+import com.minres.coredsl.coreDsl.UnionTypeSpecifier
 
 abstract class CoreDslTypeProvider {
 	private new() {
@@ -71,6 +74,16 @@ abstract class CoreDslTypeProvider {
 
 	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, VoidTypeSpecifier spec) {
 		return VoidType.instance;
+	}
+
+	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, StructTypeSpecifier spec) {
+		if(spec.target === null) return ErrorType.invalid;
+		return new CompositeType(spec.target);
+	}
+
+	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, UnionTypeSpecifier spec) {
+		if(spec.target === null) return ErrorType.invalid;
+		return new CompositeType(spec.target);
 	}
 
 	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, TypeSpecifier spec) {

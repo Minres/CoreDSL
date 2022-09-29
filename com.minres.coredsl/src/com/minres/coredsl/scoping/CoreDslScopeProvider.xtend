@@ -35,6 +35,7 @@ import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.coreDsl.CastExpression
 
 class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 // Possible references:
@@ -98,7 +99,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 
 	/**
 	 * Finds the type specifier determining the type of the expression, if such a specifier exists.
-	 * Applicable to entity references targeting a declarator, member accesses and function calls.
+	 * Applicable to entity references targeting a declarator, member accesses, function calls and type casts.
 	 * */
 	def private static TypeSpecifier findTypeSpecifier(Expression expression) {
 		switch (expression) {
@@ -116,6 +117,9 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 			FunctionCallExpression: {
 				val function = expression.target.castOrNull(FunctionDefinition);
 				return function?.returnType;
+			}
+			CastExpression: {
+				return expression.targetType;
 			}
 		}
 	}
