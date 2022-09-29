@@ -6,17 +6,17 @@ import com.minres.coredsl.coreDsl.FloatSizeShorthand
 import com.minres.coredsl.coreDsl.FloatTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerSignedness
 import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
+import com.minres.coredsl.coreDsl.StructTypeSpecifier
 import com.minres.coredsl.coreDsl.TypeSpecifier
+import com.minres.coredsl.coreDsl.UnionTypeSpecifier
 import com.minres.coredsl.coreDsl.VoidTypeSpecifier
+import com.minres.coredsl.type.CompositeType
 import com.minres.coredsl.type.CoreDslType
 import com.minres.coredsl.type.ErrorType
 import com.minres.coredsl.type.FloatType
 import com.minres.coredsl.type.IntegerType
 import com.minres.coredsl.type.VoidType
 import com.minres.coredsl.validation.IssueCodes
-import com.minres.coredsl.coreDsl.StructTypeSpecifier
-import com.minres.coredsl.type.CompositeType
-import com.minres.coredsl.coreDsl.UnionTypeSpecifier
 
 abstract class CoreDslTypeProvider {
 	private new() {

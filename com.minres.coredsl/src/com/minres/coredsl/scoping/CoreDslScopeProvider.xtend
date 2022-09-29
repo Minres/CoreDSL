@@ -1,6 +1,7 @@
 package com.minres.coredsl.scoping
 
 import com.minres.coredsl.coreDsl.BitField
+import com.minres.coredsl.coreDsl.CastExpression
 import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.CoreDslPackage
@@ -28,14 +29,12 @@ import com.minres.coredsl.coreDsl.UnionTypeDeclaration
 import com.minres.coredsl.coreDsl.UnionTypeSpecifier
 import com.minres.coredsl.coreDsl.UserTypeDeclaration
 import java.util.HashSet
-import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 
 import static extension com.minres.coredsl.util.ModelExtensions.*
-import com.minres.coredsl.coreDsl.CastExpression
 
 class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 // Possible references:
