@@ -1,5 +1,6 @@
 package com.minres.coredsl.analysis
 
+import com.minres.coredsl.coreDsl.CoreDslPackage
 import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.ISA
@@ -14,7 +15,6 @@ import java.util.Stack
 import org.eclipse.emf.ecore.EObject
 
 import static extension com.minres.coredsl.util.ModelExtensions.*
-import com.minres.coredsl.coreDsl.CoreDslPackage
 
 class ElaborationContext extends ProxyMessageAcceptor {
 	static class IsaStateDeclarationInfo {

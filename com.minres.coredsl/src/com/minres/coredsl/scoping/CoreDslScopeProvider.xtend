@@ -1,6 +1,7 @@
 package com.minres.coredsl.scoping
 
 import com.minres.coredsl.coreDsl.BitField
+import com.minres.coredsl.coreDsl.CastExpression
 import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.CoreDslPackage
@@ -28,7 +29,6 @@ import com.minres.coredsl.coreDsl.UnionTypeDeclaration
 import com.minres.coredsl.coreDsl.UnionTypeSpecifier
 import com.minres.coredsl.coreDsl.UserTypeDeclaration
 import java.util.HashSet
-import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.scoping.IScope
@@ -81,7 +81,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 	}
 
 	def private static Iterable<UserTypeDeclaration> getTypeScope(EObject context) {
-		return context.ancestorOfTypeOrSelf(ISA).types;
+		return context.ancestorOfTypeOrSelf(ISA).elaborationOrder.flatMap[it.types];
 	}
 
 	def private static IScope getStructTypeScope(EObject context) {
@@ -98,7 +98,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 
 	/**
 	 * Finds the type specifier determining the type of the expression, if such a specifier exists.
-	 * Applicable to entity references targeting a declarator, member accesses and function calls.
+	 * Applicable to entity references targeting a declarator, member accesses, function calls and type casts.
 	 * */
 	def private static TypeSpecifier findTypeSpecifier(Expression expression) {
 		switch (expression) {
@@ -116,6 +116,9 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 			FunctionCallExpression: {
 				val function = expression.target.castOrNull(FunctionDefinition);
 				return function?.returnType;
+			}
+			CastExpression: {
+				return expression.targetType;
 			}
 		}
 	}

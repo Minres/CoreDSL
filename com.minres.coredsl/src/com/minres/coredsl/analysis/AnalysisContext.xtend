@@ -2,6 +2,7 @@ package com.minres.coredsl.analysis
 
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.Declarator
+import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.ISA
 import java.util.LinkedHashMap
 import java.util.Map
@@ -9,7 +10,6 @@ import java.util.Set
 import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
 import static extension com.minres.coredsl.util.ModelExtensions.*
-import com.minres.coredsl.coreDsl.DescriptionContent
 
 class AnalysisContext extends ProxyMessageAcceptor {
 	public val DescriptionContent root;

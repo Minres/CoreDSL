@@ -3,11 +3,11 @@ package com.minres.coredsl.analysis
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.diagnostics.Severity
+import org.eclipse.xtext.nodemodel.INode
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
 import static extension com.minres.coredsl.util.ModelExtensions.*
-import org.eclipse.xtext.nodemodel.util.NodeModelUtils
-import org.eclipse.xtext.nodemodel.INode
 
 class ProxyMessageAcceptor implements ValidationMessageAcceptor {
 	protected val ValidationMessageAcceptor baseAcceptor;

@@ -6,8 +6,11 @@ import com.minres.coredsl.coreDsl.FloatSizeShorthand
 import com.minres.coredsl.coreDsl.FloatTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerSignedness
 import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
+import com.minres.coredsl.coreDsl.StructTypeSpecifier
 import com.minres.coredsl.coreDsl.TypeSpecifier
+import com.minres.coredsl.coreDsl.UnionTypeSpecifier
 import com.minres.coredsl.coreDsl.VoidTypeSpecifier
+import com.minres.coredsl.type.CompositeType
 import com.minres.coredsl.type.CoreDslType
 import com.minres.coredsl.type.ErrorType
 import com.minres.coredsl.type.FloatType
@@ -71,6 +74,16 @@ abstract class CoreDslTypeProvider {
 
 	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, VoidTypeSpecifier spec) {
 		return VoidType.instance;
+	}
+
+	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, StructTypeSpecifier spec) {
+		if(spec.target === null) return ErrorType.invalid;
+		return new CompositeType(spec.target);
+	}
+
+	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, UnionTypeSpecifier spec) {
+		if(spec.target === null) return ErrorType.invalid;
+		return new CompositeType(spec.target);
 	}
 
 	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, TypeSpecifier spec) {
