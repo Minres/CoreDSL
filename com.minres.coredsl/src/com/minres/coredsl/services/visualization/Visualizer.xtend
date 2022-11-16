@@ -40,7 +40,7 @@ import java.util.Map
 import java.util.function.Supplier
 import org.eclipse.emf.ecore.EObject
 import com.minres.coredsl.coreDsl.FunctionCallExpression
-import com.minres.coredsl.coreDsl.ArrayAccessExpression
+import com.minres.coredsl.coreDsl.IndexAccessExpression
 import com.minres.coredsl.coreDsl.MemberAccessExpression
 import com.minres.coredsl.coreDsl.EnumTypeSpecifier
 import com.minres.coredsl.coreDsl.BoolTypeSpecifier
@@ -529,10 +529,11 @@ class Visualizer {
 		);
 	}
 	
-	private def dispatch VisualNode genNode(ArrayAccessExpression node) {
-		return makeNode(node, "Array Access",
+	private def dispatch VisualNode genNode(IndexAccessExpression node) {
+		return makeNode(node, node.endIndex === null ? "Index Access" : "Range Access",
 			makeChild("Target", node.target),
-			makeChild("Index", node.index)
+			makeChild("Index", node.index),
+			makeChild("End Index", node.endIndex)
 		);
 	}
 	

@@ -19,7 +19,7 @@ import com.minres.coredsl.coreDsl.ExpressionStatement
 import com.minres.coredsl.coreDsl.EntityReference
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.CastExpression
-import com.minres.coredsl.coreDsl.ArrayAccessExpression
+import com.minres.coredsl.coreDsl.IndexAccessExpression
 
 class ModelUtil {
     
@@ -173,7 +173,7 @@ class ModelUtil {
         switch (expr) {
             EntityReference case expr.target !== null: return expr
             CastExpression: return expr.operand.primary
-            ArrayAccessExpression: return expr.target.primary
+            IndexAccessExpression: return expr.target.primary
             default: return null
         }
     }

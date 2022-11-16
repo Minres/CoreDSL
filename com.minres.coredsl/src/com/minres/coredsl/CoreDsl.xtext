@@ -207,7 +207,7 @@ PrefixExpression returns Expression:
 PostfixExpression returns Expression:
 	PrimaryExpression
 	( {FunctionCallExpression.target=current} '(' (arguments+=Expression (',' arguments+=Expression)*)? ')'
-	| {ArrayAccessExpression.target=current} LEFT_BR index=Expression (':' endIndex=Expression)? RIGHT_BR
+	| {IndexAccessExpression.target=current} LEFT_BR index=Expression (':' endIndex=Expression)? RIGHT_BR
 	| {MemberAccessExpression.target=current} operator='.' declarator=[Declarator]
 	| {MemberAccessExpression.target=current} operator='->' declarator=[Declarator]
 	| {PostfixExpression.operand=current} operator='++'

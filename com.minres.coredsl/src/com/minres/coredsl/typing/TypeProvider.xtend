@@ -31,7 +31,7 @@ import com.minres.coredsl.interpreter.EvaluationContext
 import java.math.BigInteger
 import com.minres.coredsl.coreDsl.FunctionCallExpression
 import com.minres.coredsl.coreDsl.MemberAccessExpression
-import com.minres.coredsl.coreDsl.ArrayAccessExpression
+import com.minres.coredsl.coreDsl.IndexAccessExpression
 import com.minres.coredsl.coreDsl.VoidTypeSpecifier
 import com.minres.coredsl.coreDsl.FloatTypeSpecifier
 import com.minres.coredsl.coreDsl.FloatSizeShorthand
@@ -194,7 +194,7 @@ class TypeProvider {
         null
     }
 
-    def static dispatch DataType typeFor(ArrayAccessExpression e, ISA ctx) {
+    def static dispatch DataType typeFor(IndexAccessExpression e, ISA ctx) {
         return e.target.typeFor(ctx);
     }
 

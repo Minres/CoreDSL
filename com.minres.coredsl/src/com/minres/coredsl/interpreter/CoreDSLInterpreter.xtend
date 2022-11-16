@@ -28,7 +28,7 @@ import static extension com.minres.coredsl.util.ModelUtil.*
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.ExpressionStatement
 import com.minres.coredsl.coreDsl.FunctionCallExpression
-import com.minres.coredsl.coreDsl.ArrayAccessExpression
+import com.minres.coredsl.coreDsl.IndexAccessExpression
 import com.minres.coredsl.coreDsl.MemberAccessExpression
 import com.minres.coredsl.coreDsl.ParenthesisExpression
 import com.minres.coredsl.coreDsl.StringConstant
@@ -148,7 +148,7 @@ class CoreDSLInterpreter {
         return null;
     }
 
-    def static dispatch Value valueFor(ArrayAccessExpression e, EvaluationContext ctx) {
+    def static dispatch Value valueFor(IndexAccessExpression e, EvaluationContext ctx) {
         // TODO do we want to support this?
         return null;
     }
