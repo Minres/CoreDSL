@@ -70,15 +70,15 @@ IfStatement:
 	'if' '(' condition=Expression ')' thenBody=Statement (=> 'else' elseBody=Statement)?;
 
 SwitchStatement:
-	'switch' '(' condition=Expression ')' '{' sections+=SwitchSection* '}';
+	'switch' '(' condition=Expression ')' '{' sections+=SwitchSection* t_end='}';
 
 SwitchSection:
-	{CaseSection} 'case' condition=Expression ':' body+=Statement* |
-	{DefaultSection} 'default' ':' body+=Statement*;
+	{CaseSection} t_case='case' condition=Expression ':' body+=Statement* |
+	{DefaultSection} t_default='default' ':' body+=Statement*;
 
 ContinueStatement: {ContinueStatement} 'continue' ';';
 BreakStatement: {BreakStatement} 'break' ';';
-ReturnStatement: {ReturnStatement} 'return' value=ConditionalExpression? ';';
+ReturnStatement: {ReturnStatement} t_return='return' value=ConditionalExpression? ';';
 
 //////////////////////////////// Loops ////////////////////////////////
 

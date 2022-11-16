@@ -46,4 +46,16 @@ class IssueCodes {
 	public static val UninitializedAlias = _prefix + 'UninitializedAlias';
 	public static val MixedAliasnessDeclaration = _prefix + 'MixedAliasnessDeclaration';
 	public static val VoidDeclaration = _prefix + 'VoidDeclaration';
+	
+	// statement issues
+	public static val InvalidStatementExpression = _prefix + 'InvalidStatementExpression';
+	public static val ReturnStatementOutsideFunction = _prefix + 'ReturnStatementOutsideFunction';
+	public static val ReturnWithValueInVoidFunction = _prefix + 'ReturnWithValueInVoidFunction';
+	public static val ReturnWithoutValueInNonVoidFunction = _prefix + 'ReturnWithoutValueInNonVoidFunction';
+	public static val ReturnTypeNotConvertible = _prefix + 'ReturnTypeNotConvertible';
+	public static val NonScalarCondition = _prefix + 'NonScalarCondition';
+	public static val SwitchConditionTypeInvalid = _prefix + 'SwitchConditionTypeInvalid';
+	public static val SwitchMultipleDefaultSections = _prefix + 'SwitchMultipleDefaultSections';
+	public static val SwitchDuplicateCaseSection = _prefix + 'SwitchDuplicateCaseSection';
+	public static val SwitchCaseConditionOutOfRange = _prefix + 'SwitchCaseConditionOutOfRange';
 }

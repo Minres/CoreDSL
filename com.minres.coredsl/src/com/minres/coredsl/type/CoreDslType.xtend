@@ -7,6 +7,7 @@ abstract class CoreDslType {
 	int bitSize;
 	
 	def isPrimitiveType() { return false; }
+	def isScalarType() { return false; } // primitive and pointer
 	def isIntegerType() { return false; }
 	def isFloatType() { return false; }
 	def isStructType() { return false; }

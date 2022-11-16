@@ -17,6 +17,7 @@ import com.minres.coredsl.type.FloatType
 import com.minres.coredsl.type.IntegerType
 import com.minres.coredsl.type.VoidType
 import com.minres.coredsl.validation.IssueCodes
+import java.math.BigInteger
 
 abstract class CoreDslTypeProvider {
 	private new() {
@@ -91,5 +92,27 @@ abstract class CoreDslTypeProvider {
 			spec.eContainingFeature, -1, IssueCodes.UnsupportedLanguageFeature);
 
 		return ErrorType.invalid;
+	}
+	
+	def static boolean canTypeHoldValue(CoreDslType type, BigInteger value) {
+		return canImplicitlyConvert(getSmallestTypeForValue(value), type);
+	}
+	
+	def static IntegerType getSmallestTypeForValue(BigInteger value) {
+		val valueSigned = value.signum < 0;
+		val valueBits = value.bitLength + (valueSigned ? 1 : 0);
+		return new IntegerType(valueBits, valueSigned);
+	}
+	
+	def static dispatch boolean canImplicitlyConvert(IntegerType from, IntegerType to) {
+		if(from.bitSize > to.bitSize) return false;
+		if(from.signed && !to.signed) return false;
+		if(!from.signed && to.signed && from.bitSize == to.bitSize) return false;
+		return true;
+	}
+	
+	// fallback for invalid conversions
+	def static dispatch boolean canImplicitlyConvert(CoreDslType from, CoreDslType to) {
+		return false;
 	}
 }

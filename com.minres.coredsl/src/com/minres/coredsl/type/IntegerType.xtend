@@ -14,6 +14,7 @@ class IntegerType extends CoreDslType {
 	}
 
 	override isPrimitiveType() { return true; }
+	override isScalarType() { return true; }
 	override isIntegerType() { return true; }
 	
 	override toString() { return isSigned ? '''signed<«bitSize»>''' : '''unsigned<«bitSize»>'''; }
