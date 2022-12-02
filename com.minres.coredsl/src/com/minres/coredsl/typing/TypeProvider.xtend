@@ -4,46 +4,40 @@ import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.BoolConstant
+import com.minres.coredsl.coreDsl.BoolTypeSpecifier
 import com.minres.coredsl.coreDsl.CastExpression
-import com.minres.coredsl.coreDsl.CharacterConstant
 import com.minres.coredsl.coreDsl.ConditionalExpression
+import com.minres.coredsl.coreDsl.Constant
 import com.minres.coredsl.coreDsl.Declaration
 import com.minres.coredsl.coreDsl.Declarator
+import com.minres.coredsl.coreDsl.Encoding
+import com.minres.coredsl.coreDsl.EncodingField
+import com.minres.coredsl.coreDsl.EntityReference
 import com.minres.coredsl.coreDsl.EnumTypeSpecifier
 import com.minres.coredsl.coreDsl.Expression
-import com.minres.coredsl.coreDsl.FloatConstant
+import com.minres.coredsl.coreDsl.FunctionCallExpression
 import com.minres.coredsl.coreDsl.FunctionDefinition
+import com.minres.coredsl.coreDsl.ISA
+import com.minres.coredsl.coreDsl.IndexAccessExpression
 import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.IntegerConstant
+import com.minres.coredsl.coreDsl.IntegerSignedness
+import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
+import com.minres.coredsl.coreDsl.MemberAccessExpression
+import com.minres.coredsl.coreDsl.NamedEntity
+import com.minres.coredsl.coreDsl.ParenthesisExpression
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
-import com.minres.coredsl.coreDsl.StringLiteral
-import com.minres.coredsl.coreDsl.Encoding
-import com.minres.coredsl.coreDsl.ISA
+import com.minres.coredsl.coreDsl.StringConstant
 import com.minres.coredsl.coreDsl.TypeSpecifier
-import com.minres.coredsl.coreDsl.Constant
-import com.minres.coredsl.util.BigDecimalWithSize
+import com.minres.coredsl.coreDsl.UserTypeSpecifier
+import com.minres.coredsl.coreDsl.VoidTypeSpecifier
+import com.minres.coredsl.interpreter.EvaluationContext
 import com.minres.coredsl.util.BigIntegerWithRadix
+import java.math.BigInteger
 
 import static extension com.minres.coredsl.interpreter.CoreDSLInterpreter.*
 import static extension com.minres.coredsl.util.ModelUtil.*
-import com.minres.coredsl.interpreter.EvaluationContext
-import java.math.BigInteger
-import com.minres.coredsl.coreDsl.FunctionCallExpression
-import com.minres.coredsl.coreDsl.MemberAccessExpression
-import com.minres.coredsl.coreDsl.IndexAccessExpression
-import com.minres.coredsl.coreDsl.VoidTypeSpecifier
-import com.minres.coredsl.coreDsl.FloatTypeSpecifier
-import com.minres.coredsl.coreDsl.FloatSizeShorthand
-import com.minres.coredsl.coreDsl.BoolTypeSpecifier
-import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
-import com.minres.coredsl.coreDsl.IntegerSignedness
-import com.minres.coredsl.coreDsl.ParenthesisExpression
-import com.minres.coredsl.coreDsl.StringConstant
-import com.minres.coredsl.coreDsl.NamedEntity
-import com.minres.coredsl.coreDsl.EntityReference
-import com.minres.coredsl.coreDsl.UserTypeSpecifier
-import com.minres.coredsl.coreDsl.EncodingField
 
 class TypeProvider {
 
@@ -87,12 +81,6 @@ class TypeProvider {
     
     def static dispatch DataType typeFor(VoidTypeSpecifier e, ISA ctx) {
 		return new DataType(DataType.Type.VOID, 0)    	
-    }
-    
-    def static dispatch DataType typeFor(FloatTypeSpecifier e, ISA ctx) {
-    	if(e.shorthand == FloatSizeShorthand.DOUBLE)
-    		return new DataType(DataType.Type.FLOAT, 64)
-    	return new DataType(DataType.Type.FLOAT, 32) 
     }
     
     def static dispatch DataType typeFor(BoolTypeSpecifier e, ISA ctx) {
@@ -255,23 +243,11 @@ class TypeProvider {
         new DataType(value.type==BigIntegerWithRadix.TYPE.UNSIGNED?DataType.Type.INTEGRAL_UNSIGNED:DataType.Type.INTEGRAL_SIGNED, value.size)
     }
 
-    def static dispatch DataType typeFor(FloatConstant e, ISA ctx) {
-        new DataType(DataType.Type.FLOAT, (e.value as BigDecimalWithSize).size)
-    }
-
     def static dispatch DataType typeFor(BoolConstant e, ISA ctx) {
         boolType
     }
-
-    def static dispatch DataType typeFor(CharacterConstant e, ISA ctx) {
-        new DataType(DataType.Type.INTEGRAL_SIGNED, 8)
-    }
     
     def static dispatch DataType typeFor(StringConstant e, ISA ctx) {
-        new DataType(DataType.Type.INTEGRAL_SIGNED, 0)
-    }
-    
-    def static dispatch DataType typeFor(StringLiteral e, ISA ctx) {
         new DataType(DataType.Type.INTEGRAL_SIGNED, 0)
     }
     

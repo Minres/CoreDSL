@@ -5,36 +5,32 @@ import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.BoolConstant
 import com.minres.coredsl.coreDsl.CastExpression
-import com.minres.coredsl.coreDsl.CharacterConstant
 import com.minres.coredsl.coreDsl.ConditionalExpression
 import com.minres.coredsl.coreDsl.Declarator
+import com.minres.coredsl.coreDsl.EntityReference
 import com.minres.coredsl.coreDsl.Expression
-import com.minres.coredsl.coreDsl.FloatConstant
+import com.minres.coredsl.coreDsl.ExpressionInitializer
+import com.minres.coredsl.coreDsl.ExpressionStatement
+import com.minres.coredsl.coreDsl.FunctionCallExpression
 import com.minres.coredsl.coreDsl.FunctionDefinition
+import com.minres.coredsl.coreDsl.ISA
+import com.minres.coredsl.coreDsl.IndexAccessExpression
 import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.IntegerConstant
+import com.minres.coredsl.coreDsl.MemberAccessExpression
+import com.minres.coredsl.coreDsl.NamedEntity
+import com.minres.coredsl.coreDsl.ParenthesisExpression
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
-import com.minres.coredsl.coreDsl.StringLiteral
+import com.minres.coredsl.coreDsl.StringConstant
 import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.typing.DataType
-import com.minres.coredsl.util.BigDecimalWithSize
 import com.minres.coredsl.util.BigIntegerWithRadix
 import java.math.BigDecimal
 import java.math.BigInteger
 
 import static extension com.minres.coredsl.typing.TypeProvider.*
 import static extension com.minres.coredsl.util.ModelUtil.*
-import com.minres.coredsl.coreDsl.ISA
-import com.minres.coredsl.coreDsl.ExpressionStatement
-import com.minres.coredsl.coreDsl.FunctionCallExpression
-import com.minres.coredsl.coreDsl.IndexAccessExpression
-import com.minres.coredsl.coreDsl.MemberAccessExpression
-import com.minres.coredsl.coreDsl.ParenthesisExpression
-import com.minres.coredsl.coreDsl.StringConstant
-import com.minres.coredsl.coreDsl.ExpressionInitializer
-import com.minres.coredsl.coreDsl.NamedEntity
-import com.minres.coredsl.coreDsl.EntityReference
 
 class CoreDSLInterpreter {
 
@@ -225,23 +221,11 @@ class CoreDSLInterpreter {
         new Value(e.typeFor(ctx.definitionContext), e.value as BigIntegerWithRadix)
     }
 
-    def static dispatch Value valueFor(FloatConstant e, EvaluationContext ctx) {
-        new Value(e.typeFor(ctx.definitionContext), e.value as BigDecimalWithSize)
-    }
-
     def static dispatch Value valueFor(BoolConstant e, EvaluationContext ctx) {
         new Value(boolType, e.isValue ? 1 : 0)
     }
 
-    def static dispatch Value valueFor(CharacterConstant e, EvaluationContext ctx) {
-        new Value(new DataType(DataType.Type.INTEGRAL_SIGNED, 8), BigInteger.valueOf(e.value.charAt(0)))
-    }
-
     def static dispatch Value valueFor(StringConstant e, EvaluationContext ctx) {
-        new Value(new DataType(DataType.Type.INTEGRAL_SIGNED, 0), null)
-    }
-
-    def static dispatch Value valueFor(StringLiteral e, EvaluationContext ctx) {
         new Value(new DataType(DataType.Type.INTEGRAL_SIGNED, 0), null)
     }
 
