@@ -2,8 +2,6 @@ package com.minres.coredsl.analysis
 
 import com.minres.coredsl.coreDsl.BoolTypeSpecifier
 import com.minres.coredsl.coreDsl.CoreDslPackage
-import com.minres.coredsl.coreDsl.FloatSizeShorthand
-import com.minres.coredsl.coreDsl.FloatTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerSignedness
 import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
 import com.minres.coredsl.coreDsl.StructTypeSpecifier
@@ -13,7 +11,6 @@ import com.minres.coredsl.coreDsl.VoidTypeSpecifier
 import com.minres.coredsl.type.CompositeType
 import com.minres.coredsl.type.CoreDslType
 import com.minres.coredsl.type.ErrorType
-import com.minres.coredsl.type.FloatType
 import com.minres.coredsl.type.IntegerType
 import com.minres.coredsl.type.VoidType
 import com.minres.coredsl.validation.IssueCodes
@@ -67,10 +64,6 @@ abstract class CoreDslTypeProvider {
 
 	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, BoolTypeSpecifier spec) {
 		return IntegerType.bool;
-	}
-
-	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, FloatTypeSpecifier spec) {
-		return spec.shorthand === FloatSizeShorthand.DOUBLE ? FloatType.doublePrecision : FloatType.singlePrecision;
 	}
 
 	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, VoidTypeSpecifier spec) {

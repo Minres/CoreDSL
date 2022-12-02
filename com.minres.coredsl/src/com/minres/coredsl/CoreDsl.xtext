@@ -143,10 +143,9 @@ fragment CompositeTypeDeclaration: '{' (members+=MultiDeclaration ';')* '}';
 
 TypeSpecifier: VoidTypeSpecifier | PrimitiveTypeSpecifier | UserTypeSpecifier;
 
-PrimitiveTypeSpecifier: IntegerTypeSpecifier | FloatTypeSpecifier | BoolTypeSpecifier;
+PrimitiveTypeSpecifier: IntegerTypeSpecifier | BoolTypeSpecifier;
 
 IntegerTypeSpecifier: shorthand=IntegerSizeShorthand | signedness=IntegerSignedness (shorthand=IntegerSizeShorthand | '<' size=PrimaryExpression '>');
-FloatTypeSpecifier: shorthand=FloatSizeShorthand;
 BoolTypeSpecifier: {BoolTypeSpecifier} 'bool';
 VoidTypeSpecifier: {VoidTypeSpecifier} 'void';
 
@@ -226,19 +225,11 @@ IntrinsicExpression:
     
 //////////////////////////////// Constants ////////////////////////////////
 
-Constant:
-	IntegerConstant
-	| FloatConstant
-	| CharacterConstant
-	| BoolConstant
-	| StringConstant;
+Constant: IntegerConstant | BoolConstant | StringConstant;
 
 IntegerConstant hidden(WS): value=INTEGER;
-FloatConstant hidden(WS): value=FLOAT;
-CharacterConstant: value=CHARCONST;
 BoolConstant: value=BOOLEAN;
-StringConstant: literals+=StringLiteral+;
-StringLiteral: value=ENCSTRINGCONST | value=STRING ;
+StringConstant: value=STRING;
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// Enumerations ////////////////////////////////
@@ -246,7 +237,6 @@ StringLiteral: value=ENCSTRINGCONST | value=STRING ;
 
 enum IntegerSignedness : SIGNED='signed' | UNSIGNED='unsigned';
 enum IntegerSizeShorthand : INT='int' | CHAR='char' | SHORT='short' | LONG='long';
-enum FloatSizeShorthand : FLOAT='float' | DOUBLE='double';
 
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';
 enum StorageClassSpecifier: EXTERN='extern' | REGISTER='register';
@@ -261,33 +251,25 @@ DoubleLeftBracket hidden(WS, ML_COMMENT, SL_COMMENT): LEFT_BR LEFT_BR;
 DoubleRightBracket hidden(WS, ML_COMMENT, SL_COMMENT): RIGHT_BR RIGHT_BR;
 
 terminal LEFT_BR: '[';
-
 terminal RIGHT_BR: ']';
 
-terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false' ;
+terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false';
 
-terminal FLOAT returns ecore::EBigDecimal:  (('0'..'9')+ '.' ('0'..'9')*) (('e' | 'E') ('+' | '-')? ('0'..'9')+)? ('f'|'F'|'l'|'L')?;
+terminal INTEGER returns ecore::EBigInteger: (BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT | VLOGINT);
 
-terminal INTEGER returns ecore::EBigInteger:  (BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT | VLOGINT) ('u'|'U')? (('l'|'L') ('l'|'L')?)?;
+terminal fragment BINARYINT: ('0b' | '0B') BIN_DIGIT+ ('_' BIN_DIGIT+)*;
+terminal fragment OCTALINT: '0' ('_')? OCT_DIGIT+ ('_' OCT_DIGIT+)*;
+terminal fragment DECIMALINT: '0' | ('1'..'9') DEC_DIGIT* ('_' DEC_DIGIT+)*;
+terminal fragment HEXADECIMALINT: ('0x'|'0X') HEX_DIGIT+ ('_' HEX_DIGIT+)*;
+terminal fragment VLOGINT: DEC_DIGIT+ "'" ('b' BIN_DIGIT+ | 'o' OCT_DIGIT+ | 'd' DEC_DIGIT+ | 'h' HEX_DIGIT+); 
 
-terminal fragment BINARYINT:	('0b' | '0B') '0'..'1' (('_')? '0'..'1')*;
-
-terminal fragment OCTALINT:   '0' ('_')? '0'..'7' (('_')? '0'..'7')*;
-
-terminal fragment DECIMALINT:   '0' | '1'..'9' (('_')? '0'..'9')*;
-
-terminal fragment HEXADECIMALINT:   ('0x'|'0X') ('0'..'9'|'a'..'f'|'A'..'F')  (('_')? ('0'..'9'|'a'..'f'|'A'..'F'))*;
-
-terminal fragment VLOGINT: ('0'..'9')+ "'" ('b' ('0'..'1')+ | 'o' ('0'..'7')+ | 'd' ('0'..'9')+ | 'h' ('0'..'9'|'a'..'f'|'A'..'F')+); 
-
-terminal CHARCONST:	('u'|'U'|'L')? "'" ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|"'") )* "'";
+terminal fragment BIN_DIGIT: '0'..'1';
+terminal fragment OCT_DIGIT: '0'..'7';
+terminal fragment DEC_DIGIT: '0'..'9';
+terminal fragment HEX_DIGIT: DEC_DIGIT | 'a'..'f' | 'A'..'F';
 
 @Override 
 terminal INT returns ecore::EInt: '~this one has been deactivated';
     
 @Override 
-terminal ID : '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
-
-// do we need to override the built-in STRING rule?
-
-terminal ENCSTRINGCONST	:	('u8'|'u'|'U'|'L') '"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';
+terminal ID : ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
