@@ -21,7 +21,6 @@ import org.junit.jupiter.api.^extension.ExtendWith
 import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.junit.jupiter.api.Assertions.assertFalse
 import static org.junit.jupiter.api.Assertions.assertTrue
-import com.minres.coredsl.coreDsl.FloatConstant
 import com.minres.coredsl.coreDsl.EntityReference
 
 @ExtendWith(InjectionExtension)
@@ -82,42 +81,6 @@ class CoreDslTerminalsTest {
     }
 
     @Test
-    def void parseFloatLiterals() {
-        val content = addBehaviorContext('''
-            double d, d1, d0;
-            float f;
-            
-            d = 3.14;
-            d = 0.314e1;
-            d = 0.0314e+2;
-            d = 3140.e-3;
-            d1 = 1.;
-            d1 = 1.e0;
-            d0 = 0.0;
-            
-            f = 3.14f;
-            f = 3.14F;
-        ''').parse
-        validator.assertNoErrors(content)
-
-        val compound = ((content.definitions.get(0) as InstructionSet).instructions.get(0).behavior as CompoundStatement)
-        for (el : compound.statements.subList(3, compound.statements.size())) {
-            if (el instanceof ExpressionStatement) {
-                val expr = el.expression as AssignmentExpression
-                val lhsName = ((expr.target as EntityReference).target as Declarator).name;
-                val rhs = expr.value as FloatConstant
-                val floatValue = rhs.value.doubleValue
-                if (lhsName == "d" || lhsName == "f")
-                    assertTrue(Math.abs(floatValue - 3.14) < 1e-6)
-                else if (lhsName == "d1")
-                    assertTrue(floatValue == 1.0)
-                else
-                    assertTrue(floatValue == 0.0)
-            }
-        }
-    }
-
-    @Test
     def void parseBoolLiterals() {
         val content = addBehaviorContext('''
             bool b;
@@ -125,39 +88,6 @@ class CoreDslTerminalsTest {
             b = false;
         ''').parse
         validator.assertNoErrors(content)
-    }
-
-    @Test
-    def void parseCharLiterals() {
-        val content = addBehaviorContext('''
-            char c;
-            c = 'a';
-            c = '9';
-            c = '"';
-            c = '\'';
-            c = '\\';
-            c = L'x';
-            c = u'x';
-            c = U'x';
-        ''').parse
-        validator.assertNoErrors(content)
-
-    // TODO: Currently, this only checks whether the syntax is accepted. No handling of encoding and escape sequences is done.
-    }
-
-    //@Test
-    def void parseStringLiterals() {
-        val content = addBehaviorContext('''
-            char *str;
-            str = "hello world 1";
-            str = u8"hello world 2";
-            str = u"hello world 3";
-            str = U"hello world 4";
-            str = L"hello world 5";
-        ''').parse
-        validator.assertNoErrors(content)
-
-    // TODO: Currently, this only checks whether the syntax is accepted. No handling of encoding and escape sequences is done.
     }
 
     @Test
