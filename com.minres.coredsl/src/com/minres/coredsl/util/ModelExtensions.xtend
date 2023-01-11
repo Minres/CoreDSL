@@ -10,14 +10,12 @@ import java.util.ArrayList
 import java.util.HashSet
 import java.util.List
 import org.eclipse.emf.ecore.EObject
+import com.minres.coredsl.coreDsl.DeclarationStatement
+import static extension com.minres.coredsl.util.DataExtensions.*
+import org.eclipse.xtend.lib.macro.declaration.EnumerationTypeDeclaration
 
 abstract class ModelExtensions {
 	private new() {
-	}
-
-	static def <T extends EObject> castOrNull(EObject obj, Class<T> type) {
-		if(type.isInstance(obj)) return obj as T;
-		return null;
 	}
 
 	static def <T extends EObject> T ancestorOfType(EObject obj, Class<T> type) {
@@ -46,26 +44,35 @@ abstract class ModelExtensions {
 		return false;
 	}
 
-	static def <T> boolean isOneOf(T value, T... options) {
-		return options.contains(value);
-	}
-
 	// Declaration extensions
 	static def isVolatile(Declaration decl) {
-		return decl.qualifiers.contains(TypeQualifier.VOLATILE);
+		return decl !== null && decl.qualifiers.contains(TypeQualifier.VOLATILE);
 	}
 
 	static def isConst(Declaration decl) {
-		return decl.qualifiers.contains(TypeQualifier.CONST);
+		return decl !== null && decl.qualifiers.contains(TypeQualifier.CONST);
+	}
+
+	static def isIsaStateElement(Declaration decl) {
+		return decl !== null && decl.eContainer instanceof DeclarationStatement &&
+			decl.eContainer.eContainer instanceof ISA;
+	}
+
+	static def isIsaParameter(Declaration decl) {
+		return decl.isIsaStateElement && decl.storage.empty && decl.declarators.findFirst[it.isAlias] === null;
 	}
 
 	// Declarator extensions
+	static def isEnumMember(Declarator decl) {
+		return decl.eContainer instanceof EnumerationTypeDeclaration;
+	}
+	
 	static def getDeclaration(Declarator decl) {
-		return (decl.eContainer as Declaration);
+		return decl.eContainer.castOrNull(Declaration);
 	}
 
 	static def getType(Declarator decl) {
-		return decl.declaration.type;
+		return decl.declaration?.type;
 	}
 
 	static def isVolatile(Declarator decl) {
@@ -74,6 +81,14 @@ abstract class ModelExtensions {
 
 	static def isConst(Declarator decl) {
 		return decl.declaration.isConst;
+	}
+
+	static def isIsaStateElement(Declarator decl) {
+		return decl.declaration.isIsaStateElement;
+	}
+
+	static def isIsaParameter(Declarator decl) {
+		return decl.declaration.isIsaParameter;
 	}
 
 	// ISA extensions

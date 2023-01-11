@@ -1,6 +1,6 @@
 // https://github.com/Minres/CoreDSL/wiki/Introduction:-Concurrency
 
-import "inputs/RISCVBase.core_desc"
+import "RISCVBase.core_desc"
 
 InstructionSet ZeroOverheadLoop extends RISCVBase {
   architectural_state { register unsigned<XLEN> count, start_PC, end_PC; }

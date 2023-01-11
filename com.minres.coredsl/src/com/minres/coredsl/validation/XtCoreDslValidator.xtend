@@ -47,7 +47,12 @@ class XtCoreDslValidator extends CoreDslValidator {
 
 	@Check
 	def analyze(DescriptionContent desc) {
-		CoreDslAnalyzer.analyze(desc, this);
+		try {
+			CoreDslAnalyzer.analyze(desc, this);
+		}
+		catch(Exception e) {
+			acceptError("An internal error occurred during analysis: " + e, desc, null, -1, IssueCodes.InternalCompilerError)
+		}
 	}
 
 	// @Check

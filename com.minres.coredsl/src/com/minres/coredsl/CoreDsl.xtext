@@ -23,7 +23,7 @@ FunctionDefinition:
     extern?='extern'
     returnType=TypeSpecifier name=ID
     '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')'
-    attributes+=Attribute* ';'
+    attributes+=Attribute* t_semicolon=';'
     |
     returnType=TypeSpecifier name=ID
     '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')'
@@ -60,7 +60,7 @@ Statement:
 
 EmptyStatement: {EmptyStatement} ';';
 SpawnStatement: 'spawn' body=Statement;
-CompoundStatement: {CompoundStatement} '{' statements+=Statement* '}';
+CompoundStatement: {CompoundStatement} t_openingBrace='{' statements+=Statement* t_closingBrace='}';
 ExpressionStatement: expression=AssignmentExpression ';';
 DeclarationStatement: declaration=MultiInitDeclaration ';';
 
@@ -116,7 +116,7 @@ Declarator<allowInit>:
 	attributes+=Attribute*
 	(<allowInit> t_equals='=' initializer=Initializer)?;
 
-NamedEntity: FunctionDefinition | Declarator<true> | BitField | EnumMemberDeclaration;
+NamedEntity: FunctionDefinition | Declarator<true> | BitField;
     
 Initializer: ExpressionInitializer | ListInitializer;
 ExpressionInitializer: value=Expression;
@@ -129,15 +129,11 @@ Attribute:
 
 //////////////////////////////// Type Declarations ////////////////////////////////
 
-UserTypeDeclaration: StructTypeDeclaration | UnionTypeDeclaration | EnumTypeDeclaration;
-
-StructTypeDeclaration: 'struct' name=ID CompositeTypeDeclaration;
-UnionTypeDeclaration: 'union' name=ID CompositeTypeDeclaration;
-EnumTypeDeclaration: 'enum' name=ID '{' members+=EnumMemberDeclaration (',' members+=EnumMemberDeclaration)* ','? '}';
-
-EnumMemberDeclaration: name=ID ('=' value=Expression)?;
-
-fragment CompositeTypeDeclaration: '{' (members+=MultiDeclaration ';')* '}';
+UserTypeDeclaration: CompositeTypeDeclaration | EnumTypeDeclaration;
+CompositeTypeDeclaration : StructTypeDeclaration | UnionTypeDeclaration;
+StructTypeDeclaration: 'struct' name=ID '{' (members+=MultiDeclaration ';')* '}';
+UnionTypeDeclaration: 'union' name=ID '{' (members+=MultiDeclaration ';')* '}';
+EnumTypeDeclaration: 'enum' name=ID '{' members+=Declarator<true> (',' members+=Declarator<true>)* ','? '}';
 
 //////////////////////////////// Type Specifiers ////////////////////////////////
 
@@ -171,8 +167,8 @@ AssignmentExpression returns Expression:
 ConditionalExpression returns Expression:
 	ConcatenationExpression
 	({ConditionalExpression.condition=current}
-		'?' thenExpression=AssignmentExpression
-		':' elseExpression=ConditionalExpression
+		t_question='?' thenExpression=AssignmentExpression
+		t_colon=':' elseExpression=ConditionalExpression
 	)?;
 
 ConcatenationExpression returns Expression:
@@ -206,9 +202,8 @@ PrefixExpression returns Expression:
 PostfixExpression returns Expression:
 	PrimaryExpression
 	( {FunctionCallExpression.target=current} '(' (arguments+=Expression (',' arguments+=Expression)*)? ')'
-	| {IndexAccessExpression.target=current} LEFT_BR index=Expression (':' endIndex=Expression)? RIGHT_BR
+	| {IndexAccessExpression.target=current} LEFT_BR index=Expression (t_colon=':' endIndex=Expression)? RIGHT_BR
 	| {MemberAccessExpression.target=current} operator='.' declarator=[Declarator]
-	| {MemberAccessExpression.target=current} operator='->' declarator=[Declarator]
 	| {PostfixExpression.operand=current} operator='++'
 	| {PostfixExpression.operand=current} operator='--'
 	)*;

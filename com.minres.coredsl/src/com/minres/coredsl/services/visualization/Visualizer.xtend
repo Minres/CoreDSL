@@ -19,7 +19,6 @@ import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.DoLoop
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.EntityReference
-import com.minres.coredsl.coreDsl.EnumMemberDeclaration
 import com.minres.coredsl.coreDsl.EnumTypeDeclaration
 import com.minres.coredsl.coreDsl.EnumTypeSpecifier
 import com.minres.coredsl.coreDsl.ExpressionInitializer
@@ -427,13 +426,6 @@ class Visualizer {
 		return makeNode(node, "Enum Type Declaration",
 			makeDeclaration("Name", node.name, node),
 			makeGroup("Members", node.members)
-		);
-	}
-	
-	private def dispatch VisualNode genNode(EnumMemberDeclaration node) {
-		return makeNode(node, "Enum Member",
-			makeDeclaration("Name", node.name, node),
-			makeChild("Value", node.value)
 		);
 	}
 	
