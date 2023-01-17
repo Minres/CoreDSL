@@ -10,6 +10,7 @@ import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.coreDsl.UnionTypeSpecifier
 import com.minres.coredsl.coreDsl.VoidTypeSpecifier
 import com.minres.coredsl.type.CoreDslType
+import com.minres.coredsl.type.EnumType
 import com.minres.coredsl.type.ErrorType
 import com.minres.coredsl.type.IntegerType
 import com.minres.coredsl.type.VoidType
@@ -20,72 +21,96 @@ abstract class CoreDslTypeProvider {
 	private new() {
 	}
 
-	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, IntegerTypeSpecifier specifier) {
-		val signed = specifier.signedness !== IntegerSignedness.UNSIGNED;
-		if(specifier.size === null) {
-			switch (specifier.shorthand) {
-				case CHAR:
-					return new IntegerType(8, signed)
-				case SHORT:
-					return new IntegerType(16, signed)
-				case INT:
-					return new IntegerType(32, signed)
-				case LONG:
-					return new IntegerType(64, signed)
+	def static CoreDslType getSpecifiedType(AnalysisContext ctx, TypeSpecifier typeSpecifier) {
+		if(ctx.isSpecifiedTypeSet(typeSpecifier))
+			return ctx.getSpecifiedType(typeSpecifier);
+
+		val type = calculateSpecifiedType(ctx, typeSpecifier);
+
+		if(!type.isIndeterminate)
+			ctx.setSpecifiedType(typeSpecifier, type);
+
+		return type;
+	}
+
+	def private static CoreDslType calculateSpecifiedType(AnalysisContext ctx, TypeSpecifier typeSpecifier) {
+		switch (typeSpecifier) {
+			VoidTypeSpecifier: {
+				return VoidType.instance;
 			}
-		}
+			BoolTypeSpecifier: {
+				return IntegerType.bool;
+			}
+			IntegerTypeSpecifier: {
+				val signed = typeSpecifier.signedness !== IntegerSignedness.UNSIGNED;
+				if(typeSpecifier.size === null) {
+					switch (typeSpecifier.shorthand) {
+						case CHAR:
+							return new IntegerType(8, signed)
+						case SHORT:
+							return new IntegerType(16, signed)
+						case INT:
+							return new IntegerType(32, signed)
+						case LONG:
+							return new IntegerType(64, signed)
+					}
+				}
 
-		// TODO don't check two places for the value
-		var size = ctx.calculatedValues.get(specifier.size);
-		if(size === null) size = CoreDslConstantExpressionEvaluator.evaluate(ctx, specifier.size);
-		if(size === null) return ErrorType.indeterminate;
-		if(size === ConstantValue.invalid) return ErrorType.invalid;
+				val size = CoreDslConstantExpressionEvaluator.evaluate(ctx, typeSpecifier.size);
+				if(size === ConstantValue.indeterminate) return ErrorType.indeterminate;
+				if(size === ConstantValue.invalid) return ErrorType.invalid;
 
-		try {
-			val exactSize = size.value.intValueExact();
+				try {
+					val exactSize = size.value.intValueExact();
 
-			if(exactSize <= 0) {
-				ctx.acceptError('Integer type size must be greater than 0', specifier,
-					CoreDslPackage.Literals.INTEGER_TYPE_SPECIFIER__SIZE, -1, IssueCodes.InvalidIntegerTypeSize);
+					if(exactSize <= 0) {
+						ctx.acceptError('Integer type size must be greater than 0', typeSpecifier,
+							CoreDslPackage.Literals.INTEGER_TYPE_SPECIFIER__SIZE, -1,
+							IssueCodes.InvalidIntegerTypeSize);
+						return ErrorType.invalid;
+					}
+
+					return new IntegerType(exactSize, signed);
+				} catch(ArithmeticException e) {
+					ctx.acceptError('Integer type size must not exceed Integer.MAX_VALUE', typeSpecifier,
+						CoreDslPackage.Literals.INTEGER_TYPE_SPECIFIER__SIZE, -1, IssueCodes.InvalidIntegerTypeSize);
+					return ErrorType.invalid;
+				}
+			}
+			EnumTypeSpecifier: {
+				if(typeSpecifier.target === null || typeSpecifier.target.eIsProxy)
+					return ErrorType.invalid;
+
+				if(!ctx.isUserTypeInstanceSet(typeSpecifier.target))
+					return ErrorType.indeterminate;
+
+				return ctx.getUserTypeInstance(typeSpecifier.target);
+			}
+			StructTypeSpecifier: {
+				if(typeSpecifier.target === null || typeSpecifier.target.eIsProxy)
+					return ErrorType.invalid;
+
+				if(!ctx.isUserTypeInstanceSet(typeSpecifier.target))
+					return ErrorType.indeterminate;
+
+				return ctx.getUserTypeInstance(typeSpecifier.target);
+			}
+			UnionTypeSpecifier: {
+				if(typeSpecifier.target === null || typeSpecifier.target.eIsProxy)
+					return ErrorType.invalid;
+
+				if(!ctx.isUserTypeInstanceSet(typeSpecifier.target))
+					return ErrorType.indeterminate;
+
+				return ctx.getUserTypeInstance(typeSpecifier.target);
+			}
+			default: {
+				ctx.acceptError(typeSpecifier.class.simpleName + " is currently not supported", typeSpecifier, null, -1,
+					IssueCodes.UnsupportedLanguageFeature);
+
 				return ErrorType.invalid;
 			}
-
-			return new IntegerType(exactSize, signed);
-		} catch(ArithmeticException e) {
-			ctx.acceptError('Integer type size must not exceed Integer.MAX_VALUE', specifier,
-				CoreDslPackage.Literals.INTEGER_TYPE_SPECIFIER__SIZE, -1, IssueCodes.InvalidIntegerTypeSize);
-			return ErrorType.invalid;
 		}
-	}
-
-	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, BoolTypeSpecifier spec) {
-		return IntegerType.bool;
-	}
-
-	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, VoidTypeSpecifier spec) {
-		return VoidType.instance;
-	}
-
-	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, EnumTypeSpecifier spec) {
-		if(spec.target === null) return ErrorType.invalid;
-		return ctx.getUserTypeInstance(spec.target);
-	}
-
-	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, StructTypeSpecifier spec) {
-		if(spec.target === null) return ErrorType.invalid;
-		return ctx.getUserTypeInstance(spec.target);
-	}
-
-	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, UnionTypeSpecifier spec) {
-		if(spec.target === null) return ErrorType.invalid;
-		return ctx.getUserTypeInstance(spec.target);
-	}
-
-	def static dispatch CoreDslType getSpecifiedType(ElaborationContext ctx, TypeSpecifier spec) {
-		ctx.acceptError(spec.class.simpleName + " is currently not supported", spec.eContainer,
-			spec.eContainingFeature, -1, IssueCodes.UnsupportedLanguageFeature);
-
-		return ErrorType.invalid;
 	}
 
 	def static boolean canTypeHoldValue(CoreDslType type, BigInteger value) {
@@ -104,45 +129,39 @@ abstract class CoreDslTypeProvider {
 		val bSize = signed && !b.signed ? b.bitSize + 1 : b.bitSize;
 		return new IntegerType(Math.max(aSize, bSize), signed);
 	}
-
-	def static dispatch boolean canImplicitlyConvert(IntegerType from, IntegerType to) {
-		if(from.bitSize > to.bitSize) return false;
-		if(from.signed && !to.signed) return false;
-		if(!from.signed && to.signed && from.bitSize == to.bitSize) return false;
-		return true;
+	
+	def private static boolean canImplicitlyConvert(IntegerType from, IntegerType to) {
+			if(from.bitSize > to.bitSize) return false;
+			if(from.signed && !to.signed) return false;
+			if(!from.signed && to.signed && from.bitSize == to.bitSize) return false;
+			return true;
 	}
 
-	// error was reported on a nested node already
-	def static dispatch boolean canImplicitlyConvert(ErrorType from, CoreDslType to) {
-		return true;
-	}
+	def static boolean canImplicitlyConvert(CoreDslType from, CoreDslType to) {
+		// allow all conversions involving error types to avoid follow-up errors
+		if(from.isError || to.isError) return true;
 
-	// error was reported on a nested node already
-	def static dispatch boolean canImplicitlyConvert(CoreDslType from, ErrorType to) {
-		return true;
-	}
+		if(from.isIntegerType && to.isIntegerType) {
+			return canImplicitlyConvert(from as IntegerType, to as IntegerType);
+		}
 
-	// fallback for invalid conversions
-	def static dispatch boolean canImplicitlyConvert(CoreDslType from, CoreDslType to) {
+		if(from.isIntegerType && to.isEnumType) {
+			return canImplicitlyConvert(from as IntegerType, (to as EnumType).baseType);
+		}
+
+		if(from.isEnumType && to.isIntegerType) {
+			return canImplicitlyConvert((from as EnumType).baseType, to as IntegerType);
+		}
+
 		return false;
 	}
 
-	def static dispatch boolean canExplicitlyConvert(IntegerType from, IntegerType to) {
-		return true;
-	}
+	def static boolean canExplicitlyConvert(CoreDslType from, CoreDslType to) {
+		// allow all conversions involving error types to avoid follow-up errors
+		if(from.isError || to.isError) return true;
 
-	// error was reported on a nested node already
-	def static dispatch boolean canExplicitlyConvert(ErrorType from, CoreDslType to) {
-		return true;
-	}
+		if(from.isIntegerType && to.isIntegerType) return true;
 
-	// error was reported on a nested node already
-	def static dispatch boolean canExplicitlyConvert(CoreDslType from, ErrorType to) {
-		return true;
-	}
-
-	// fallback for invalid conversions
-	def static dispatch boolean canExplicitlyConvert(CoreDslType from, CoreDslType to) {
 		return false;
 	}
 }

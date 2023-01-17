@@ -12,4 +12,6 @@ class ArrayType extends AggregateType {
 	}
 	
 	override isArrayType() { return true; }
+	
+	override toString() { return '''«elementType»[«count»]'''; }
 }

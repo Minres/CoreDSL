@@ -14,4 +14,6 @@ class EnumType extends CoreDslType {
 	}
 	
 	override isEnumType() { return true; }
+	
+	override toString() { return '''enum «declaration.name» («baseType»)'''; }
 }

@@ -216,7 +216,7 @@ class Visualizer {
 			makeNamedLiteral("Name", node.name),
 			makeNamedLiteral("Super Type", node.superType?.name),
 			makeGroup("Architectural State", node.archStateBody),
-			makeGroup("Types", node.types),
+			makeGroup("Types", node.typeDeclarations),
 			makeGroup("Functions", node.functions),
 			makeGroup("Instruction Attributes", node.commonInstructionAttributes),
 			makeGroup("Instructions", node.instructions)
@@ -228,7 +228,7 @@ class Visualizer {
 			makeNamedLiteral("Name", node.name),
 			makeGroup("Provided Instruction Sets", node.providedInstructionSets),
 			makeGroup("Architectural State", node.archStateBody),
-			makeGroup("Types", node.types),
+			makeGroup("Types", node.typeDeclarations),
 			makeGroup("Functions", node.functions),
 			makeGroup("Instruction Attributes", node.commonInstructionAttributes),
 			makeGroup("Instructions", node.instructions)

@@ -82,7 +82,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 	}
 
 	def private static Iterable<UserTypeDeclaration> getTypeScope(EObject context) {
-		return context.ancestorOfTypeOrSelf(ISA).elaborationOrder.flatMap[it.types];
+		return context.ancestorOfTypeOrSelf(ISA).elaborationOrder.flatMap[it.typeDeclarations];
 	}
 
 	def private static IScope getStructTypeScope(EObject context) {
@@ -191,7 +191,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 		if(!seen.add(isa)) return #[]; // recursion error
 		
 		val declarations = isa.archStateBody.filter(DeclarationStatement).flatMap[it.declaration.declarators];
-		val enumMembers = isa.types.filter(EnumTypeDeclaration).flatMap[it.members];
+		val enumMembers = isa.typeDeclarations.filter(EnumTypeDeclaration).flatMap[it.members];
 		val functions = isa.functions;
 		
 		val entities = declarations + enumMembers + functions;
@@ -214,7 +214,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 		.takeWhile[it !== child] //
 		.filter(DeclarationStatement) //
 		.flatMap[it.declaration.declarators];
-		val enumMembers = context.types.filter(EnumTypeDeclaration).flatMap[it.members];
+		val enumMembers = context.typeDeclarations.filter(EnumTypeDeclaration).flatMap[it.members];
 		return Scopes.scopeFor(declarations + enumMembers + context.functions, getInheritedScope(context));
 	}
 

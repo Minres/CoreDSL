@@ -4,7 +4,6 @@ import com.minres.coredsl.coreDsl.*
 import com.minres.coredsl.type.ArrayType
 import com.minres.coredsl.type.CompositeType
 import com.minres.coredsl.type.CoreDslType
-import com.minres.coredsl.type.EnumType
 import com.minres.coredsl.type.ErrorType
 import com.minres.coredsl.type.FunctionType
 import com.minres.coredsl.type.IntegerType
@@ -22,106 +21,46 @@ import static extension com.minres.coredsl.util.ModelExtensions.*
 
 class CoreDslAnalyzer {
 
-	def static AnalysisContext analyze(DescriptionContent desc, ValidationMessageAcceptor acceptor) {
-		val ctx = new AnalysisContext(acceptor, desc);
-		val sharedCache = new ElaborationContext.SharedResultsCache();
+	def static AnalysisResults analyze(DescriptionContent desc, ValidationMessageAcceptor acceptor) {
+		val results = new AnalysisResults(desc);
 
 		for (isa : desc.definitions) {
-			val ectx = CoreDslElaborator.elaborate(isa, acceptor, sharedCache);
-			ctx.elaborationResults.put(isa, ectx);
+			val ectx = CoreDslElaborator.elaborate(isa, acceptor);
+			results.results.put(isa, ectx.analysisContext);
 		}
 
-		for (ectx : ctx.elaborationResults.values) {
+		for (ctx : results.results.values) {
 			try {
-				analyzeIsa(ectx, ectx.root);
+				analyzeIsa(ctx, ctx.root);
 			} catch(Exception e) {
-				ctx.acceptError("An internal error occurred during analysis: " + e, ectx.root,
+				ctx.acceptError("An internal error occurred during analysis: " + e, ctx.root,
 					CoreDslPackage.Literals.ISA__NAME, -1, IssueCodes.InternalCompilerError)
 			}
 		}
 
-		return ctx;
-	}
-
-	def private static void validateResults(ElaborationContext ctx) {
-		if(ctx.isPartialElaboration) return;
-
-		val unassignedParameters = new ArrayList();
-		val indeterminableValues = new ArrayList();
-		val invalidValues = new ArrayList();
-		val indeterminableTypes = new ArrayList();
-		val invalidTypes = new ArrayList();
-
-		for (info : ctx.declInfo.values) {
-			if(info.assignments.empty) {
-				if(ctx.sharedCache.isIsaParameter(info.declarators.get(0))) {
-					unassignedParameters.add(info.name);
-				}
-			} else {
-				val value = ctx.getCalculatedValue(info.name);
-				if(value.isIndeterminate) indeterminableValues.add(info.name);
-				if(value.isInvalid) invalidValues.add(info.name);
-			}
-
-			val type = ctx.getCalculatedType(info.name);
-			if(type.isIndeterminate) indeterminableTypes.add(info.name);
-			if(type.isInvalid) invalidTypes.add(info.name);
-		}
-
-		// TODO report errors in analyzer instead, so they are properly forwarded to deriving ISAs
-		if(!unassignedParameters.empty) {
-			ctx.acceptError("The following ISA parameters are never assigned: " + unassignedParameters.join(', '),
-				ctx.root, CoreDslPackage.Literals.ISA__NAME, -1, IssueCodes.UnassignedIsaParameter);
-		}
-
-		if(!indeterminableValues.empty) {
-			ctx.acceptError(
-				"The values of the following state elements could not be determined because they depend on other indeterminable values: " +
-					indeterminableValues.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
-				IssueCodes.IndeterminableIsaStateElementValue);
-		}
-
-		if(!invalidValues.empty) {
-			ctx.acceptError("The values of the following state elements could not be determined: " +
-				invalidValues.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
-				IssueCodes.InvalidIsaStateElementValue);
-		}
-
-		if(!indeterminableTypes.empty) {
-			ctx.acceptError(
-				"The types of the following state elements could not be determined because they depend on other indeterminable values: " +
-					indeterminableTypes.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
-				IssueCodes.IndeterminableIsaStateElementType);
-		}
-
-		if(!invalidTypes.empty) {
-			ctx.acceptError("The types of the following state elements could not be determined: " +
-				invalidTypes.join(', '), ctx.root, CoreDslPackage.Literals.ISA__NAME, -1,
-				IssueCodes.InvalidIsaStateElementType);
-		}
+		return results;
 	}
 
 	// /////////////////////////////////////////////////////////////////////////
 	// ////////////////////////////// Top level ////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////
-	// The analyze* methods may run multiple times for different elaboration contexts.
-	def static dispatch void analyzeIsa(ElaborationContext ctx, CoreDef core) {
+	def static dispatch void analyzeIsa(AnalysisContext ctx, CoreDef core) {
 		for (iset : core.providedInstructionSets) {
 			analyzeIsa(ctx, iset);
 		}
 		analyzeIsaShared(ctx, core);
 	}
 
-	def static dispatch void analyzeIsa(ElaborationContext ctx, InstructionSet iset) {
+	def static dispatch void analyzeIsa(AnalysisContext ctx, InstructionSet iset) {
 		if(iset.superType !== null) {
 			analyzeIsa(ctx, iset.superType);
 		}
 		analyzeIsaShared(ctx, iset);
 	}
 
-	def private static void analyzeIsaShared(ElaborationContext ctx, ISA isa) {
+	def private static void analyzeIsaShared(AnalysisContext ctx, ISA isa) {
 		// types
-		for (typeDecl : isa.types) {
+		for (typeDecl : isa.typeDeclarations) {
 			analyzeTypeDeclaration(ctx, typeDecl);
 		}
 
@@ -146,7 +85,7 @@ class CoreDslAnalyzer {
 	 * 2. If the function is not marked 'extern', it must specify a body. <i>(MissingFunctionBody)</i><br>
 	 * 2. If the function is not marked 'extern' and its return type is not void, all execution paths must end with a return statement. <i>(MissingReturnStatement)</i><br>
 	 */
-	def static analyzeFunction(ElaborationContext ctx, FunctionDefinition definition) {
+	def static analyzeFunction(AnalysisContext ctx, FunctionDefinition definition) {
 		val returnType = analyzeTypeSpecifier(ctx, definition.returnType);
 		val parameterTypes = definition.parameters.map[analyzeFunctionParameter(ctx, it)];
 
@@ -175,12 +114,11 @@ class CoreDslAnalyzer {
 
 	/**
 	 * 1. Function parameters may not be declared as aliases. <i>(ReferenceParameterDeclaration)</i><br>
-	 * 2. Parameter declarations must have exactly one declarator. This should be guaranteed by the parser, so a violation of the rule throws a CompilerAssertion.<br>
 	 * <br>
 	 * In addition, all semantic restrictions for regular declarations must be fulfilled.
-	 * @see CoreDslAnalyzer#analyzeDeclaration(ElaborationContext, Declaration) 
+	 * @see CoreDslAnalyzer#analyzeDeclaration(AnalysisContext, Declaration) 
 	 */
-	def static CoreDslType analyzeFunctionParameter(ElaborationContext ctx, Declaration parameter) {
+	def static CoreDslType analyzeFunctionParameter(AnalysisContext ctx, Declaration parameter) {
 		CompilerAssertion.assertThat(parameter.declarators.size == 1,
 			"Parameter declaration must have exactly one declarator");
 
@@ -189,7 +127,7 @@ class CoreDslAnalyzer {
 		val declarator = parameter.declarators.get(0);
 
 		if(declarator.isAlias) {
-			ctx.acceptError("Function parameters max not be passed by reference", declarator,
+			ctx.acceptError("Function parameters may not be passed by reference", declarator,
 				CoreDslPackage.Literals.DECLARATOR__ALIAS, -1, IssueCodes.ReferenceParameterDeclaration);
 		}
 
@@ -207,12 +145,12 @@ class CoreDslAnalyzer {
 
 	def static dispatch boolean isReturnTerminated(Statement statement) { return false; }
 
-	def static analyzeInstruction(ElaborationContext ctx, Instruction instruction) {
+	def static analyzeInstruction(AnalysisContext ctx, Instruction instruction) {
 		analyzeInstructionEncoding(ctx, instruction.encoding);
 		analyzeStatement(ctx, instruction.behavior);
 	}
 
-	def static analyzeInstructionEncoding(ElaborationContext ctx, Encoding encoding) {
+	def static analyzeInstructionEncoding(AnalysisContext ctx, Encoding encoding) {
 		val highestAccessedBits = new HashMap<String, Integer>();
 
 		for (field : encoding.fields.filter(BitField)) {
@@ -228,19 +166,18 @@ class CoreDslAnalyzer {
 		}
 
 		for (field : encoding.fields.filter(BitField)) {
-			val nodeInfo = ctx.getOrCreateNodeInfo(field);
-			if(!nodeInfo.isTypeSet) {
-				nodeInfo.type = IntegerType.unsigned(highestAccessedBits.get(field.name) + 1);
+			val type = IntegerType.unsigned(highestAccessedBits.get(field.name) + 1);
+
+			if(!ctx.isDeclaredTypeSet(field)) {
+				ctx.setDeclaredType(field, type);
 			}
-			ctx.acceptInfo("Type: " + nodeInfo.type, field, CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1,
-				IssueCodes.DebugInfo);
 		}
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
 	// ////////////////////////////// Statements ////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////
-	def static dispatch void analyzeStatement(ElaborationContext ctx, CompoundStatement statement) {
+	def static dispatch void analyzeStatement(AnalysisContext ctx, CompoundStatement statement) {
 		var unreachable = false;
 		for (nested : statement.statements) {
 			analyzeStatement(ctx, nested);
@@ -255,7 +192,7 @@ class CoreDslAnalyzer {
 		}
 	}
 
-	def static dispatch void analyzeStatement(ElaborationContext ctx, DeclarationStatement statement) {
+	def static dispatch void analyzeStatement(AnalysisContext ctx, DeclarationStatement statement) {
 		val isIsaStateElement = statement.eContainer instanceof ISA;
 		analyzeDeclaration(ctx, statement.declaration, isIsaStateElement);
 	}
@@ -286,7 +223,7 @@ class CoreDslAnalyzer {
 	/**
 	 * 1. The expression must be a statement expression. <i>(InvalidStatementExpression)</i>
 	 */
-	def static dispatch void analyzeStatement(ElaborationContext ctx, ExpressionStatement statement) {
+	def static dispatch void analyzeStatement(AnalysisContext ctx, ExpressionStatement statement) {
 		val expression = statement.expression;
 		analyzeExpression(ctx, expression);
 
@@ -299,7 +236,7 @@ class CoreDslAnalyzer {
 	/**
 	 * 1. The condition must be an expression with a scalar type. <i>(NonScalarCondition)</i>
 	 */
-	def static dispatch void analyzeStatement(ElaborationContext ctx, IfStatement statement) {
+	def static dispatch void analyzeStatement(AnalysisContext ctx, IfStatement statement) {
 		val conditionType = analyzeExpression(ctx, statement.condition);
 
 		if(!conditionType.isScalarType) {
@@ -319,7 +256,7 @@ class CoreDslAnalyzer {
 	 * 3. At most one case section may be present for each given value. <i>(SwitchDuplicateCaseSection)</i><br>
 	 * 4. Each case section's value must be representable by the type of the switch condition. <i>(SwitchCaseConditionOutOfRange)</i>
 	 */
-	def static dispatch void analyzeStatement(ElaborationContext ctx, SwitchStatement statement) {
+	def static dispatch void analyzeStatement(AnalysisContext ctx, SwitchStatement statement) {
 		val conditionType = analyzeExpression(ctx, statement.condition);
 
 		var defaultFound = false;
@@ -363,7 +300,7 @@ class CoreDslAnalyzer {
 	/**
 	 * 1. The continue statement must be contained within a loop statement. <i>(StrayControlFlowStatement)</i>
 	 */
-	def static dispatch void analyzeStatement(ElaborationContext ctx, ContinueStatement statement) {
+	def static dispatch void analyzeStatement(AnalysisContext ctx, ContinueStatement statement) {
 		if(statement.ancestorOfType(LoopStatement) === null) {
 			ctx.acceptError("Unexpected continue statement", statement, null, -1, IssueCodes.StrayControlFlowStatement);
 		}
@@ -372,7 +309,7 @@ class CoreDslAnalyzer {
 	/**
 	 * 1. The break statement must be contained within a loop or switch statement. <i>(StrayControlFlowStatement)</i>
 	 */
-	def static dispatch void analyzeStatement(ElaborationContext ctx, BreakStatement statement) {
+	def static dispatch void analyzeStatement(AnalysisContext ctx, BreakStatement statement) {
 		if(statement.ancestorOfType(LoopStatement) === null && statement.ancestorOfType(SwitchStatement) === null) {
 			ctx.acceptError("Unexpected break statement", statement, null, -1, IssueCodes.StrayControlFlowStatement);
 		}
@@ -384,7 +321,7 @@ class CoreDslAnalyzer {
 	 * 3. If the function's return type is not void, the return statement must declare a value. <i>(ReturnWithoutValueInNonVoidFunction)</i><br>
 	 * 4. The type of the return statement's value expression must be implicitly convertible to the function's return type. <i>(ReturnTypeNotConvertible)</i>
 	 */
-	def static dispatch void analyzeStatement(ElaborationContext ctx, ReturnStatement statement) {
+	def static dispatch void analyzeStatement(AnalysisContext ctx, ReturnStatement statement) {
 		val function = statement.ancestorOfType(FunctionDefinition);
 		val returnType = analyzeTypeSpecifier(ctx, function?.returnType);
 		val valueType = statement.value !== null ? analyzeExpression(ctx, statement.value) : null;
@@ -407,7 +344,7 @@ class CoreDslAnalyzer {
 	/**
 	 * 1. The condition must be an expression with a scalar type. <i>(NonScalarCondition)</i>
 	 */
-	def static dispatch void analyzeStatement(ElaborationContext ctx, WhileLoop statement) {
+	def static dispatch void analyzeStatement(AnalysisContext ctx, WhileLoop statement) {
 		val conditionType = analyzeExpression(ctx, statement.condition);
 
 		if(!conditionType.isScalarType) {
@@ -423,7 +360,7 @@ class CoreDslAnalyzer {
 	 * 2. If present, the start expression must be a statement expression. <i>(InvalidStatementExpression)</i><br>
 	 * 3. All loop expressions must be statement expressions. <i>(InvalidStatementExpression)</i>
 	 */
-	def static dispatch void analyzeStatement(ElaborationContext ctx, ForLoop statement) {
+	def static dispatch void analyzeStatement(AnalysisContext ctx, ForLoop statement) {
 		val conditionType = analyzeExpression(ctx, statement.condition);
 
 		if(!conditionType.isScalarType) {
@@ -458,7 +395,7 @@ class CoreDslAnalyzer {
 	/**
 	 * 1. The condition must be an expression with a scalar type. <i>(NonScalarCondition)</i>
 	 */
-	def static dispatch void analyzeStatement(ElaborationContext ctx, DoLoop statement) {
+	def static dispatch void analyzeStatement(AnalysisContext ctx, DoLoop statement) {
 		val conditionType = analyzeExpression(ctx, statement.condition);
 
 		if(!conditionType.isScalarType) {
@@ -469,7 +406,7 @@ class CoreDslAnalyzer {
 		analyzeStatement(ctx, statement.body);
 	}
 
-	def static dispatch void analyzeStatement(ElaborationContext ctx, Statement statement) {
+	def static dispatch void analyzeStatement(AnalysisContext ctx, Statement statement) {
 		// TODO spawn statement
 		ctx.acceptInfo("Analysis for this node is not supported yet", statement, null, -1,
 			IssueCodes.UnsupportedLanguageFeature);
@@ -478,13 +415,7 @@ class CoreDslAnalyzer {
 	// ////////////////////////////////////////////////////////////////////////////
 	// ////////////////////////////// Declarations ////////////////////////////////
 	// ////////////////////////////////////////////////////////////////////////////
-	def static dispatch CoreDslType analyzeTypeDeclaration(ElaborationContext ctx, EnumTypeDeclaration declaration) {
-		// TODO rework the way enums are parsed. currently there is no way to refer to an enum member, because it is not a NamedEntity.
-		// TODO adjust CoreDslScopeProvider such that enum members can see previous members
-		var BigInteger minValue = null;
-		var BigInteger maxValue = null;
-		var BigInteger nextValue = null;
-
+	def static dispatch CoreDslType analyzeTypeDeclaration(AnalysisContext ctx, EnumTypeDeclaration declaration) {
 		for (member : declaration.members) {
 			val initializer = member.initializer;
 			switch (initializer) {
@@ -492,54 +423,11 @@ class CoreDslAnalyzer {
 					ctx.acceptError("Enum members must not use list initializers", initializer, null, 1,
 						IssueCodes.InvalidListInitializer);
 				}
-				ExpressionInitializer: {
-					analyzeExpression(ctx, initializer.value);
-					val value = CoreDslConstantExpressionEvaluator.evaluate(ctx, initializer.value);
-					ctx.setConstantValue(member, value);
-
-					if(value.isValid) {
-						if(nextValue === null) {
-							minValue = value.value;
-							maxValue = value.value;
-							nextValue = value.value.add(BigInteger.ONE);
-						} else {
-							minValue = minValue.min(value.value);
-							maxValue = maxValue.max(value.value);
-							// c spec says that we continue from the new value, even if it is not the largest value so far
-							nextValue = value.value.add(BigInteger.ONE)
-						}
-					} else {
-						// invalid enum members don't modify the auto-increment counter
-					}
-				}
-				default: {
-					if(nextValue === null) {
-						ctx.setConstantValue(member, new ConstantValue(BigInteger.ZERO));
-						minValue = BigInteger.ZERO;
-						maxValue = BigInteger.ZERO;
-						nextValue = BigInteger.ONE;
-					} else {
-						ctx.setConstantValue(member, new ConstantValue(nextValue));
-						minValue = minValue.min(nextValue);
-						maxValue = maxValue.max(nextValue);
-						nextValue = nextValue.add(BigInteger.ONE);
-					}
-				}
 			}
 		}
-
-		if(minValue === null) minValue = BigInteger.ZERO;
-		if(maxValue === null) maxValue = BigInteger.ZERO;
-		val minType = CoreDslTypeProvider.getSmallestTypeForValue(minValue);
-		val maxType = CoreDslTypeProvider.getSmallestTypeForValue(maxValue);
-		val commonType = CoreDslTypeProvider.getSmallestCommonType(minType, maxType);
-		val enumType = new EnumType(declaration, commonType);
-
-		return ctx.setUserTypeInstance(declaration, enumType);
 	}
 
-	def static dispatch CoreDslType analyzeTypeDeclaration(ElaborationContext ctx,
-		CompositeTypeDeclaration declaration) {
+	def static dispatch CoreDslType analyzeTypeDeclaration(AnalysisContext ctx, CompositeTypeDeclaration declaration) {
 		val fields = new ArrayList<Declarator>();
 		var int bitSize = 0;
 
@@ -548,7 +436,7 @@ class CoreDslAnalyzer {
 
 			for (field : decl.declarators) {
 				fields.add(field);
-				ctx.setFieldOffset(field, bitSize);
+				ctx.setFieldOffset(field, new ConstantValue(bitSize));
 
 				// TODO alignment?
 				val type = ctx.getDeclaredType(field);
@@ -564,11 +452,11 @@ class CoreDslAnalyzer {
 		return ctx.setUserTypeInstance(declaration as UserTypeDeclaration, compositeType);
 	}
 
-	def static CoreDslType analyzeTypeSpecifier(ElaborationContext ctx, TypeSpecifier typeSpecifier) {
+	def static CoreDslType analyzeTypeSpecifier(AnalysisContext ctx, TypeSpecifier typeSpecifier) {
 		return CoreDslTypeProvider.getSpecifiedType(ctx, typeSpecifier);
 	}
 
-	def static void analyzeDeclaration(ElaborationContext ctx, Declaration declaration, boolean isIsaStateElement) {
+	def static void analyzeDeclaration(AnalysisContext ctx, Declaration declaration, boolean isIsaStateElement) {
 		if(declaration.type instanceof VoidTypeSpecifier) {
 			ctx.acceptError("Declarations may not use type void", declaration,
 				CoreDslPackage.Literals.DECLARATION__TYPE, -1, IssueCodes.VoidDeclaration);
@@ -589,7 +477,7 @@ class CoreDslAnalyzer {
 				IssueCodes.MultipleStorageClassSpecifiers);
 		}
 
-		if(isIsaStateElement && declaration.declarators.any[ctx.sharedCache.isIsaParameter(it)]) {
+		if(isIsaStateElement && declaration.declarators.any[ctx.getStorageClass(it) === StorageClass.param]) {
 			if(!(declaration.type instanceof IntegerTypeSpecifier || declaration.type instanceof BoolTypeSpecifier)) {
 				ctx.acceptError("ISA parameters may only have integer types (signed, unsigned, bool)", declaration,
 					CoreDslPackage.Literals.DECLARATION__TYPE, -1, IssueCodes.InvalidIsaParameterType);
@@ -624,15 +512,14 @@ class CoreDslAnalyzer {
 	 * 5. Array dimension specifiers must be non-negative constant values. <i>(InvalidArraySize)</i><br>
 	 * 6. [Warning] Array dimension specifiers should not be zero. <i>(InvalidArraySize)</i>
 	 * 
-	 * @see CoreDslAnalyzer#analyzeAliasDeclarator(ElaborationContext, Declarator, CoreDslType, boolean)
+	 * @see CoreDslAnalyzer#analyzeAliasDeclarator(AnalysisContext, Declarator, CoreDslType, boolean)
 	 */
-	def static void analyzeDeclarator(ElaborationContext ctx, Declarator declarator, CoreDslType declarationType,
+	def static void analyzeDeclarator(AnalysisContext ctx, Declarator declarator, CoreDslType declarationType,
 		boolean isIsaStateElement) {
 		var type = declarationType;
 
-		if(isIsaStateElement) {
-			ctx.setStorageClass(declarator, ctx.sharedCache.getStorageClass(declarator));
-		} else {
+		// storage class of state elements and type members has already been set during elaboration
+		if(!isIsaStateElement && !declarator.isUserTypeMember) {
 			ctx.setStorageClass(declarator, StorageClass.local);
 		}
 
@@ -645,7 +532,7 @@ class CoreDslAnalyzer {
 
 			// rightmost size specifier is the innermost one, so process them in reverse order
 			for (var i = declarator.dimensions.size() - 1; i >= 0; i--) {
-				val size = CoreDslConstantExpressionEvaluator.tryEvaluate(ctx, declarator.dimensions.get(i));
+				val size = CoreDslConstantExpressionEvaluator.evaluate(ctx, declarator.dimensions.get(i));
 				if(size.isValid) {
 					if(size.value.intValueExact < 0) {
 						type = new ArrayType(type, 0);
@@ -666,7 +553,10 @@ class CoreDslAnalyzer {
 			}
 		}
 
-		ctx.setDeclaredType(declarator, type);
+		// type of state elements and type members has already been set during elaboration
+		if(!isIsaStateElement && !declarator.isUserTypeMember) {
+			ctx.setDeclaredType(declarator, type);
+		}
 
 		if(declarator.isConst && declarator.initializer === null) {
 			ctx.acceptError("An identifier declared as const must be initialized", declarator,
@@ -700,9 +590,9 @@ class CoreDslAnalyzer {
 	 * 3. The expression's type must exactly match the declared type of the alias. <i>(InvalidAssignmentType)</i><br>
 	 * 4. The initialization expression must be a valid alias source.
 	 * 
-	 * @see CoreDslAnalyzer#analyzeAliasSource(ElaborationContext, Declarator, Expression)
+	 * @see CoreDslAnalyzer#analyzeAliasSource(AnalysisContext, Declarator, Expression)
 	 */
-	def static analyzeAliasDeclarator(ElaborationContext ctx, Declarator declarator, CoreDslType type,
+	def static analyzeAliasDeclarator(AnalysisContext ctx, Declarator declarator, CoreDslType type,
 		boolean isIsaStateElement) {
 		CompilerAssertion.assertThat(declarator.isAlias, "analyzeAliasDeclarator called with non-alias declarator");
 
@@ -742,9 +632,9 @@ class CoreDslAnalyzer {
 	 * 2. The identifier must refer to a declarator with storage class 'extern' or 'register'. <i>(InvalidAliasSource)</i><br>
 	 * 3. Index and range accesses must be in range [0, elementCount). <i>(IndexOutOfRange)</i>
 	 * 
-	 * @see CoreDslAnalyzer#checkIndexAccessBounds(ElaborationContext, BigInteger, int, IndexAccessExpression, EStructuralFeature)
+	 * @see CoreDslAnalyzer#checkIndexAccessBounds(AnalysisContext, BigInteger, int, IndexAccessExpression, EStructuralFeature)
 	 */
-	def static void analyzeAliasSource(ElaborationContext ctx, Declarator declarator, Expression expression) {
+	def static void analyzeAliasSource(AnalysisContext ctx, Declarator declarator, Expression expression) {
 		// this assumes that the entire expression subtree has already been analyzed,
 		// so that ctx.getExpressionValue and ctx.getExpressionType don't throw.
 		switch expression {
@@ -834,7 +724,7 @@ class CoreDslAnalyzer {
 	 * 2. The index value must not be greater than or equal to the element count. <i>(IndexOutOfRange)</i><br>
 	 * 3. [Implementation Restriction] The index value must fit into a 32 bit integer. <i>(IndexOutOfRange)</i>
 	 */
-	def private static void checkIndexAccessBounds(ElaborationContext ctx, BigInteger value, int elementCount,
+	def private static void checkIndexAccessBounds(AnalysisContext ctx, BigInteger value, int elementCount,
 		IndexAccessExpression expression, EStructuralFeature feature) {
 		try {
 			val intValue = value.intValueExact;
@@ -854,11 +744,11 @@ class CoreDslAnalyzer {
 	// ///////////////////////////////////////////////////////////////////////////
 	// ////////////////////////////// Expressions ////////////////////////////////
 	// ///////////////////////////////////////////////////////////////////////////
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, BoolConstant expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, BoolConstant expression) {
 		return ctx.setExpressionType(expression, IntegerType.bool);
 	}
 
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, IntegerConstant expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, IntegerConstant expression) {
 		return ctx.setExpressionType(expression, CoreDslTypeProvider.getSmallestTypeForValue(expression.value));
 	}
 
@@ -866,9 +756,9 @@ class CoreDslAnalyzer {
 	 * 1. The type of the right-hand side expression must be implicitly convertible to the type of the left-hand side expression. <i>(InvalidAssignmentType)</i><br>
 	 * 2. If a compound assignment operator is used, both types must be integer types. <i>(InvalidOperationType)</i><br>
 	 * 3. The left-hand side expression must be assignable. <i>(InvalidAssignmentTarget)</i>
-	 * @see CoreDslAnalyzer#analyzeAssignmentTarget(ElaborationContext, Expression)
+	 * @see CoreDslAnalyzer#analyzeAssignmentTarget(AnalysisContext, Expression)
 	 */
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, AssignmentExpression expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, AssignmentExpression expression) {
 		var targetType = analyzeExpression(ctx, expression.target);
 		var valueType = analyzeExpression(ctx, expression.value);
 
@@ -889,7 +779,7 @@ class CoreDslAnalyzer {
 		return ctx.setExpressionType(expression, targetType);
 	}
 
-	def static dispatch void analyzeAssignmentTarget(ElaborationContext ctx, EntityReference expression) {
+	def static dispatch void analyzeAssignmentTarget(AnalysisContext ctx, EntityReference expression) {
 		switch (expression.target) {
 			FunctionDefinition: {
 				ctx.acceptError("Cannot assign to function", expression, null, -1, IssueCodes.InvalidAssignmentTarget);
@@ -900,8 +790,9 @@ class CoreDslAnalyzer {
 			}
 			Declarator: {
 				var declarator = expression.target as Declarator;
+				val isIsaLevelAssignment = expression.ancestorOfType(ExpressionStatement)?.eContainer instanceof ISA;
 
-				if(declarator.isConst || declarator.isIsaParameter) {
+				if(declarator.isConst || declarator.isIsaParameter && !isIsaLevelAssignment) {
 					ctx.acceptError("Cannot assign to constant", expression, null, -1,
 						IssueCodes.InvalidAssignmentTarget);
 				}
@@ -912,11 +803,11 @@ class CoreDslAnalyzer {
 		}
 	}
 
-	def static dispatch void analyzeAssignmentTarget(ElaborationContext ctx, IndexAccessExpression expression) {
+	def static dispatch void analyzeAssignmentTarget(AnalysisContext ctx, IndexAccessExpression expression) {
 		analyzeAssignmentTarget(ctx, expression.target);
 	}
 
-	def static dispatch void analyzeAssignmentTarget(ElaborationContext ctx, MemberAccessExpression expression) {
+	def static dispatch void analyzeAssignmentTarget(AnalysisContext ctx, MemberAccessExpression expression) {
 		analyzeAssignmentTarget(ctx, expression.target);
 		if(expression.declarator.isConst) {
 			ctx.acceptError("Cannot assign constant field '" + expression.declarator.name + "'", expression,
@@ -924,7 +815,7 @@ class CoreDslAnalyzer {
 		}
 	}
 
-	def static dispatch void analyzeAssignmentTarget(ElaborationContext ctx, Expression expression) {
+	def static dispatch void analyzeAssignmentTarget(AnalysisContext ctx, Expression expression) {
 		ctx.acceptError("Invalid assignment target", expression, null, -1, IssueCodes.InvalidAssignmentTarget);
 	}
 
@@ -933,7 +824,7 @@ class CoreDslAnalyzer {
 	 * 2. A signedness cast can only be applied to integer type expressions. <i>(InvalidCast)</i><br>
 	 * 3. [Warning] The target type should be different from the value type. <i>(IdentityCast)</i>
 	 */
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, CastExpression expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, CastExpression expression) {
 		val valueType = analyzeExpression(ctx, expression.operand);
 		if(expression.targetType !== null) {
 			val targetType = analyzeTypeSpecifier(ctx, expression.targetType);
@@ -963,7 +854,7 @@ class CoreDslAnalyzer {
 		}
 	}
 
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, ConcatenationExpression expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, ConcatenationExpression expression) {
 		val parts = expression.parts.map[analyzeExpression(ctx, it)];
 		var width = 0;
 
@@ -979,7 +870,7 @@ class CoreDslAnalyzer {
 	 * 1. The condition must be an expression with a scalar type. <i>(NonScalarCondition)</i><br>
 	 * 2. One of the two options' type has to be implicitly convertible to the other one. <i>(IncompatibleOptionTypes)</i>
 	 */
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, ConditionalExpression expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, ConditionalExpression expression) {
 		val conditionType = analyzeExpression(ctx, expression.condition);
 		val thenType = analyzeExpression(ctx, expression.thenExpression);
 		val elseType = analyzeExpression(ctx, expression.elseExpression);
@@ -989,8 +880,8 @@ class CoreDslAnalyzer {
 				CoreDslPackage.Literals.CONDITIONAL_EXPRESSION__CONDITION, -1, IssueCodes.NonScalarCondition);
 		}
 
-		if(thenType.isError) return ctx.setExpressionType(expression, ctx.setExpressionType(expression, thenType));
-		if(elseType.isError) return ctx.setExpressionType(expression, ctx.setExpressionType(expression, elseType));
+		if(thenType.isError) return ctx.setExpressionType(expression, thenType);
+		if(elseType.isError) return ctx.setExpressionType(expression, elseType);
 
 		if(thenType == elseType) {
 			return ctx.setExpressionType(expression, thenType);
@@ -1008,16 +899,19 @@ class CoreDslAnalyzer {
 
 	/**
 	 * 1. The entity reference may not reference a function. <i>(ReferenceToFunction)</i>
-	 * @see CoreDslAnalyzer#_analyzeExpression(ElaborationContext, FunctionCallExpression)
+	 * @see CoreDslAnalyzer#_analyzeExpression(AnalysisContext, FunctionCallExpression)
 	 */
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, EntityReference expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, EntityReference expression) {
 		if(expression.target instanceof FunctionDefinition) {
 			ctx.acceptError("Function used like a variable", expression, null, -1, IssueCodes.ReferenceToFunction);
 			return ctx.setExpressionType(expression, ErrorType.invalid);
 		}
 
+		if(!ctx.isDeclaredTypeSet(expression.target))
+			return ErrorType.indeterminate;
+
 		val type = ctx.getDeclaredType(expression.target);
-		ctx.acceptInfo("Type: " + type, expression, null, -1, IssueCodes.DebugInfo);
+		// ctx.acceptInfo("Type: " + type, expression, null, -1, IssueCodes.DebugInfo);
 		return ctx.setExpressionType(expression, type);
 	}
 
@@ -1026,7 +920,7 @@ class CoreDslAnalyzer {
 	 * 2. The number of arguments must match the number of parameters of the function. <i>(InvalidArgumentCount)</i><br>
 	 * 3. Each argument must be implicitly convertible to the corresponding parameter's type. <i>(InvalidArgumentType)</i>
 	 */
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, FunctionCallExpression expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, FunctionCallExpression expression) {
 		var function = expression.target.castOrNull(EntityReference)?.target.castOrNull(FunctionDefinition);
 		var arguments = expression.arguments.map[analyzeExpression(ctx, it)];
 
@@ -1062,9 +956,9 @@ class CoreDslAnalyzer {
 	 * 2. The index must be an expression with an integer type. <i>(InvalidIndexType)</i><br>
 	 * 3. If present, the end index must be an expression with an integer type. <i>(InvalidIndexType)</i><br>
 	 * 4. If an end index is present, the two indices must follow one of the patterns described <a href="https://github.com/Minres/CoreDSL/wiki/Expressions#range-operator">here</a>. <i>(InvalidRangePattern)</i>
-	 * @see CoreDslAnalyzer#getRangeSize(ElaborationContext, Expression, Expression)
+	 * @see CoreDslAnalyzer#getRangeSize(AnalysisContext, Expression, Expression)
 	 */
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, IndexAccessExpression expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, IndexAccessExpression expression) {
 		val targetType = analyzeExpression(ctx, expression.target);
 		val indexType = analyzeExpression(ctx, expression.index);
 
@@ -1108,7 +1002,7 @@ class CoreDslAnalyzer {
 	/**
 	 * Implements the patterns described <a href="https://github.com/Minres/CoreDSL/wiki/Expressions#range-operator">here</a>.
 	 */
-	def static Integer getRangeSize(ElaborationContext ctx, Expression start, Expression end) {
+	def static Integer getRangeSize(AnalysisContext ctx, Expression start, Expression end) {
 		if(start instanceof EntityReference && end instanceof InfixExpression ||
 			start instanceof InfixExpression && end instanceof EntityReference) {
 			val reference = start instanceof EntityReference ? start as EntityReference : end as EntityReference;
@@ -1177,7 +1071,7 @@ class CoreDslAnalyzer {
 	 * <b>Operator %</b><br>
 	 * 1. Both operands must have integer types.<br>
 	 */
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, InfixExpression expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, InfixExpression expression) {
 		val leftType = analyzeExpression(ctx, expression.left);
 		val rightType = analyzeExpression(ctx, expression.right);
 
@@ -1333,7 +1227,7 @@ class CoreDslAnalyzer {
 		}
 	}
 
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, IntrinsicExpression expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, IntrinsicExpression expression) {
 		val argumentCount = expression.arguments.size();
 		val argumentTypes = new ArrayList(expression.arguments.length);
 		for (argument : expression.arguments) {
@@ -1372,17 +1266,16 @@ class CoreDslAnalyzer {
 		}
 	}
 
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, MemberAccessExpression expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, MemberAccessExpression expression) {
 		val member = expression.declarator;
-		
-		if(!ctx.tryGetNodeInfo(member)?.isTypeSet) {
+
+		if(member === null || member.eIsProxy)
 			return ErrorType.invalid;
-		}
-		
+
 		return ctx.getDeclaredType(member);
 	}
 
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, ParenthesisExpression expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, ParenthesisExpression expression) {
 		return ctx.setExpressionType(expression, analyzeExpression(ctx, expression.inner));
 	}
 
@@ -1391,7 +1284,7 @@ class CoreDslAnalyzer {
 	 * 2. Result type is the same as the operand type.<br>
 	 * 3. The operand must be a valid assignment target.<br>
 	 */
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, PostfixExpression expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, PostfixExpression expression) {
 		var operandType = analyzeExpression(ctx, expression.operand);
 		analyzeAssignmentTarget(ctx, expression.operand);
 
@@ -1428,7 +1321,7 @@ class CoreDslAnalyzer {
 	 * 1. The operand must have a scalar type.<br>
 	 * 2. Result type is unsigned&lt;1&gt;.
 	 */
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, PrefixExpression expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, PrefixExpression expression) {
 		var operandType = analyzeExpression(ctx, expression.operand);
 
 		switch (expression.operator) {
@@ -1483,7 +1376,7 @@ class CoreDslAnalyzer {
 		}
 	}
 
-	def static dispatch CoreDslType analyzeExpression(ElaborationContext ctx, Expression expression) {
+	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, Expression expression) {
 		ctx.acceptInfo("Analysis for this node is not supported yet", expression, null, -1,
 			IssueCodes.UnsupportedLanguageFeature);
 		return ctx.setExpressionType(expression, ErrorType.indeterminate);

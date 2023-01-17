@@ -2,17 +2,21 @@ package com.minres.coredsl.util
 
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.DeclarationStatement
 import com.minres.coredsl.coreDsl.Declarator
+import com.minres.coredsl.coreDsl.EnumTypeDeclaration
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.InstructionSet
+import com.minres.coredsl.coreDsl.StructTypeDeclaration
 import com.minres.coredsl.coreDsl.TypeQualifier
+import com.minres.coredsl.coreDsl.UnionTypeDeclaration
+import com.minres.coredsl.coreDsl.UserTypeDeclaration
 import java.util.ArrayList
 import java.util.HashSet
 import java.util.List
 import org.eclipse.emf.ecore.EObject
-import com.minres.coredsl.coreDsl.DeclarationStatement
+
 import static extension com.minres.coredsl.util.DataExtensions.*
-import org.eclipse.xtend.lib.macro.declaration.EnumerationTypeDeclaration
 
 abstract class ModelExtensions {
 	private new() {
@@ -63,10 +67,22 @@ abstract class ModelExtensions {
 	}
 
 	// Declarator extensions
-	static def isEnumMember(Declarator decl) {
-		return decl.eContainer instanceof EnumerationTypeDeclaration;
+	static def isUserTypeMember(Declarator decl) {
+		return decl.ancestorOfType(UserTypeDeclaration) !== null;
 	}
-	
+
+	static def isStructMember(Declarator decl) {
+		return decl.ancestorOfType(StructTypeDeclaration) !== null;
+	}
+
+	static def isUnionMember(Declarator decl) {
+		return decl.ancestorOfType(UnionTypeDeclaration) !== null;
+	}
+
+	static def isEnumMember(Declarator decl) {
+		return decl.eContainer instanceof EnumTypeDeclaration;
+	}
+
 	static def getDeclaration(Declarator decl) {
 		return decl.eContainer.castOrNull(Declaration);
 	}

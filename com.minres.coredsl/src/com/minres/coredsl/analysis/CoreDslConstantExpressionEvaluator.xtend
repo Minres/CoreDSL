@@ -7,21 +7,46 @@ import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.IntegerConstant
 import com.minres.coredsl.coreDsl.IntrinsicExpression
+import com.minres.coredsl.coreDsl.ParenthesisExpression
 import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.validation.IssueCodes
 import java.math.BigInteger
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.coreDsl.PrefixExpression
 
 class CoreDslConstantExpressionEvaluator {
 
-	def private static dispatch ConstantValue evaluateImpl(ElaborationContext ctx, EntityReference expression,
+	def static ConstantValue tryEvaluate(AnalysisContext ctx, Expression expression) {
+		return evaluate(ctx, expression, true);
+	}
+
+	def static ConstantValue evaluate(AnalysisContext ctx, Expression expression) {
+		return evaluate(ctx, expression, false);
+	}
+
+	def private static ConstantValue evaluate(AnalysisContext ctx, Expression expression, boolean suppressErrors) {
+		if(ctx.isExpressionValueSet(expression))
+			return ctx.getExpressionValue(expression);
+
+		val value = evaluateImpl(ctx, expression, suppressErrors);
+
+		if(!value.isIndeterminate)
+			ctx.setExpressionValue(expression, value);
+
+		return value;
+	}
+
+	def private static dispatch ConstantValue evaluateImpl(AnalysisContext ctx, EntityReference expression,
 		boolean suppressErrors) {
 		val declarator = expression.target.castOrNull(Declarator);
 
+		if(declarator !== null && !ctx.isStorageClassSet(declarator))
+			return ConstantValue.indeterminate;
+
 		if(declarator === null ||
-			!ctx.sharedCache.getStorageClass(declarator).isOneOf(StorageClass.param, StorageClass.enumConstant)) {
+			!ctx.getStorageClass(declarator).isOneOf(StorageClass.param, StorageClass.enumConstant)) {
 			if(!suppressErrors) {
 				ctx.acceptError(
 					"Identifiers in constant expressions may only refer to ISA parameters or enum constants",
@@ -31,16 +56,23 @@ class CoreDslConstantExpressionEvaluator {
 			return ConstantValue.invalid;
 		}
 
-		val value = ctx.getCalculatedValue(declarator);
-		return value !== null ? value : ConstantValue.indeterminate;
+		if(ctx.isConstantValueSet(declarator))
+			return ctx.getConstantValue(declarator);
+
+		return ConstantValue.indeterminate;
 	}
 
-	def private static dispatch ConstantValue evaluateImpl(ElaborationContext ctx, IntegerConstant expression,
+	def private static dispatch ConstantValue evaluateImpl(AnalysisContext ctx, IntegerConstant expression,
 		boolean suppressErrors) {
 		return new ConstantValue(expression.value);
 	}
 
-	def private static dispatch ConstantValue evaluateImpl(ElaborationContext ctx, InfixExpression expression,
+	def private static dispatch ConstantValue evaluateImpl(AnalysisContext ctx, ParenthesisExpression expression,
+		boolean suppressErrors) {
+		return evaluateImpl(ctx, expression.inner, suppressErrors);
+	}
+
+	def private static dispatch ConstantValue evaluateImpl(AnalysisContext ctx, InfixExpression expression,
 		boolean suppressErrors) {
 		val left = evaluate(ctx, expression.left, suppressErrors);
 		val right = evaluate(ctx, expression.right, suppressErrors);
@@ -74,14 +106,14 @@ class CoreDslConstantExpressionEvaluator {
 		return ConstantValue.invalid;
 	}
 
-	def private static ConstantValue getTypeSize(ElaborationContext ctx, TypeSpecifier specifier, boolean inBytes) {
+	def private static ConstantValue getTypeSize(AnalysisContext ctx, TypeSpecifier specifier, boolean inBytes) {
 		val type = CoreDslTypeProvider.getSpecifiedType(ctx, specifier);
 		if(type.isInvalid) return ConstantValue.invalid;
 		if(type.isIndeterminate) return ConstantValue.indeterminate;
 		return new ConstantValue(inBytes ? (type.bitSize + 7) / 8 : type.bitSize);
 	}
 
-	def private static dispatch ConstantValue evaluateImpl(ElaborationContext ctx, IntrinsicExpression expression,
+	def private static dispatch ConstantValue evaluateImpl(AnalysisContext ctx, IntrinsicExpression expression,
 		boolean suppressErrors) {
 		switch (expression.function) {
 			case 'bitsizeof',
@@ -100,6 +132,7 @@ class CoreDslConstantExpressionEvaluator {
 							}
 						}
 						Expression: {
+							// TODO
 						}
 					}
 				}
@@ -116,34 +149,31 @@ class CoreDslConstantExpressionEvaluator {
 		return ConstantValue.invalid;
 	}
 
-	def private static dispatch ConstantValue evaluateImpl(ElaborationContext ctx, Expression expression,
+	def private static dispatch ConstantValue evaluateImpl(AnalysisContext ctx, PrefixExpression expression,
+		boolean suppressErrors) {
+		switch (expression.operator) {
+			case '-': {
+				val operand = evaluateImpl(ctx, expression.operand, suppressErrors);
+				if(operand.isError) return operand;
+				return new ConstantValue(operand.value.negate());
+			}
+			default: {
+				if(!suppressErrors) {
+					ctx.acceptError('prefix operator ' + expression.operator + ' is not allowed in constant expression',
+						expression.eContainer, expression.eContainingFeature, -1,
+						IssueCodes.InvalidConstantExpressionNode);
+				}
+				return ConstantValue.invalid;
+			}
+		}
+	}
+
+	def private static dispatch ConstantValue evaluateImpl(AnalysisContext ctx, Expression expression,
 		boolean suppressErrors) {
 		if(!suppressErrors) {
 			ctx.acceptError(expression.eClass.name + ' is not allowed in constant expression', expression, null, -1,
 				IssueCodes.InvalidConstantExpressionNode);
 		}
 		return ConstantValue.invalid;
-	}
-
-	def private static ConstantValue evaluate(ElaborationContext ctx, Expression expression, boolean suppressErrors) {
-		val nodeInfo = ctx.getOrCreateNodeInfo(expression);
-		if(nodeInfo.isValueSet) {
-			return nodeInfo.value;
-		}
-
-		val value = evaluateImpl(ctx, expression, suppressErrors);
-		if(!value.isIndeterminate) {
-			nodeInfo.value = value;
-		}
-
-		return value;
-	}
-
-	def static ConstantValue tryEvaluate(ElaborationContext ctx, Expression expression) {
-		return evaluate(ctx, expression, true);
-	}
-
-	def static ConstantValue evaluate(ElaborationContext ctx, Expression expression) {
-		return evaluate(ctx, expression, false);
 	}
 }

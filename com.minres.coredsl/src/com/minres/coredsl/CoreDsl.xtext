@@ -15,7 +15,7 @@ InstructionSet: 'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] 
 CoreDef: 'Core' name=ID ( 'provides' providedInstructionSets+=[InstructionSet] (',' providedInstructionSets+=[InstructionSet])*)? '{' ISA '}';
 
 fragment ISA:
-	('architectural_state' '{' (archStateBody+=DeclarationStatement | archStateBody+=ExpressionStatement | types+=UserTypeDeclaration)+ '}')? &
+	('architectural_state' '{' (archStateBody+=DeclarationStatement | archStateBody+=ExpressionStatement | typeDeclarations+=UserTypeDeclaration)+ '}')? &
 	('functions' '{' functions+=FunctionDefinition+ '}')? &
 	('instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}')?;
 
