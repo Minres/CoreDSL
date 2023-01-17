@@ -990,12 +990,12 @@ class CoreDslAnalyzer {
 			if(elementCount === null) {
 				ctx.acceptError("Invalid range pattern", expression,
 					CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1, IssueCodes.InvalidRangePattern);
-				return ErrorType.invalid;
+				return ctx.setExpressionType(expression, ErrorType.invalid);
 			}
 
-			return new IntegerType(elementType.bitSize * elementCount, false);
+			return ctx.setExpressionType(expression, new IntegerType(elementType.bitSize * elementCount, false));
 		} else {
-			return elementType;
+			return ctx.setExpressionType(expression, elementType);
 		}
 	}
 
