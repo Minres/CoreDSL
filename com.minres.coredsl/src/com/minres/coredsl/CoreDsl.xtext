@@ -257,7 +257,7 @@ terminal fragment BINARYINT: ('0b' | '0B') BIN_DIGIT+ ('_' BIN_DIGIT+)*;
 terminal fragment OCTALINT: '0' ('_')? OCT_DIGIT+ ('_' OCT_DIGIT+)*;
 terminal fragment DECIMALINT: '0' | ('1'..'9') DEC_DIGIT* ('_' DEC_DIGIT+)*;
 terminal fragment HEXADECIMALINT: ('0x'|'0X') HEX_DIGIT+ ('_' HEX_DIGIT+)*;
-terminal fragment VLOGINT: DEC_DIGIT+ "'" ('b' BIN_DIGIT+ | 'o' OCT_DIGIT+ | 'd' DEC_DIGIT+ | 'h' HEX_DIGIT+); 
+terminal fragment VLOGINT: DEC_DIGIT+ "'" 's'? ('b' BIN_DIGIT+ | 'o' OCT_DIGIT+ | 'd' DEC_DIGIT+ | 'h' HEX_DIGIT+); 
 
 terminal fragment BIN_DIGIT: '0'..'1';
 terminal fragment OCT_DIGIT: '0'..'7';
