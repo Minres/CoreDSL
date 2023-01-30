@@ -116,7 +116,7 @@ Declarator<allowInit>:
 	attributes+=Attribute*
 	(<allowInit> t_equals='=' initializer=Initializer)?;
 
-NamedEntity: FunctionDefinition | Declarator<true> | BitField | EnumMemberDeclaration;
+NamedEntity: FunctionDefinition | Declarator<true> | BitField;
     
 Initializer: ExpressionInitializer | ListInitializer;
 ExpressionInitializer: value=Expression;
@@ -129,15 +129,11 @@ Attribute:
 
 //////////////////////////////// Type Declarations ////////////////////////////////
 
-UserTypeDeclaration: StructTypeDeclaration | UnionTypeDeclaration | EnumTypeDeclaration;
-
-StructTypeDeclaration: 'struct' name=ID CompositeTypeDeclaration;
-UnionTypeDeclaration: 'union' name=ID CompositeTypeDeclaration;
-EnumTypeDeclaration: 'enum' name=ID '{' members+=EnumMemberDeclaration (',' members+=EnumMemberDeclaration)* ','? '}';
-
-EnumMemberDeclaration: name=ID ('=' value=Expression)?;
-
-fragment CompositeTypeDeclaration: '{' (members+=MultiDeclaration ';')* '}';
+UserTypeDeclaration: CompositeTypeDeclaration | EnumTypeDeclaration;
+CompositeTypeDeclaration : StructTypeDeclaration | UnionTypeDeclaration;
+StructTypeDeclaration: 'struct' name=ID '{' (members+=MultiDeclaration ';')* '}';
+UnionTypeDeclaration: 'union' name=ID '{' (members+=MultiDeclaration ';')* '}';
+EnumTypeDeclaration: 'enum' name=ID '{' members+=Declarator<true> (',' members+=Declarator<true>)* ','? '}';
 
 //////////////////////////////// Type Specifiers ////////////////////////////////
 
