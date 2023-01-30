@@ -6,12 +6,14 @@ import org.eclipse.xtend.lib.annotations.Data
 abstract class CoreDslType {
 	int bitSize;
 	
+	def isFunctionType() { return false; }
 	def isPrimitiveType() { return false; }
 	def isScalarType() { return false; } // primitive and pointer
 	def isIntegerType() { return false; }
 	def isFloatType() { return false; }
 	def isStructType() { return false; }
 	def isUnionType() { return false; }
+	def isArrayType() { return false; }
 	def isEnumType() { return false; }
 	def isVoid() { return false; }
 	
