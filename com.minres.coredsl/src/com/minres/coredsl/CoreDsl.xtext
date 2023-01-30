@@ -15,7 +15,7 @@ InstructionSet: 'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] 
 CoreDef: 'Core' name=ID ( 'provides' providedInstructionSets+=[InstructionSet] (',' providedInstructionSets+=[InstructionSet])*)? '{' ISA '}';
 
 fragment ISA:
-	('architectural_state' '{' (archStateBody+=DeclarationStatement | archStateBody+=ExpressionStatement | types+=UserTypeDeclaration)+ '}')? &
+	('architectural_state' '{' (archStateBody+=DeclarationStatement | archStateBody+=ExpressionStatement | typeDeclarations+=UserTypeDeclaration)+ '}')? &
 	('functions' '{' functions+=FunctionDefinition+ '}')? &
 	('instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}')?;
 
@@ -23,7 +23,7 @@ FunctionDefinition:
     extern?='extern'
     returnType=TypeSpecifier name=ID
     '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')'
-    attributes+=Attribute* ';'
+    attributes+=Attribute* t_semicolon=';'
     |
     returnType=TypeSpecifier name=ID
     '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')'
@@ -60,7 +60,7 @@ Statement:
 
 EmptyStatement: {EmptyStatement} ';';
 SpawnStatement: 'spawn' body=Statement;
-CompoundStatement: {CompoundStatement} '{' statements+=Statement* '}';
+CompoundStatement: {CompoundStatement} t_openingBrace='{' statements+=Statement* t_closingBrace='}';
 ExpressionStatement: expression=AssignmentExpression ';';
 DeclarationStatement: declaration=MultiInitDeclaration ';';
 
@@ -167,8 +167,8 @@ AssignmentExpression returns Expression:
 ConditionalExpression returns Expression:
 	ConcatenationExpression
 	({ConditionalExpression.condition=current}
-		'?' thenExpression=AssignmentExpression
-		':' elseExpression=ConditionalExpression
+		t_question='?' thenExpression=AssignmentExpression
+		t_colon=':' elseExpression=ConditionalExpression
 	)?;
 
 ConcatenationExpression returns Expression:
@@ -202,9 +202,8 @@ PrefixExpression returns Expression:
 PostfixExpression returns Expression:
 	PrimaryExpression
 	( {FunctionCallExpression.target=current} '(' (arguments+=Expression (',' arguments+=Expression)*)? ')'
-	| {IndexAccessExpression.target=current} LEFT_BR index=Expression (':' endIndex=Expression)? RIGHT_BR
+	| {IndexAccessExpression.target=current} LEFT_BR index=Expression (t_colon=':' endIndex=Expression)? RIGHT_BR
 	| {MemberAccessExpression.target=current} operator='.' declarator=[Declarator]
-	| {MemberAccessExpression.target=current} operator='->' declarator=[Declarator]
 	| {PostfixExpression.operand=current} operator='++'
 	| {PostfixExpression.operand=current} operator='--'
 	)*;
