@@ -15,6 +15,7 @@ class ProxyMessageAcceptor implements ValidationMessageAcceptor {
 	protected val EObject reportObject;
 	protected val EStructuralFeature reportFeature;
 	protected val int reportIndex;
+	protected var int suspensionDepth;
 
 	new(ValidationMessageAcceptor baseAcceptor, EObject lexicalScope, EObject reportObject,
 		EStructuralFeature reportFeature, int reportIndex) {
@@ -24,6 +25,12 @@ class ProxyMessageAcceptor implements ValidationMessageAcceptor {
 		this.reportFeature = reportFeature;
 		this.reportIndex = reportIndex;
 	}
+
+	def void suspendReporting() { suspensionDepth++; }
+
+	def void resumeReporting() { suspensionDepth++; }
+
+	def boolean isReportingSuspended() { return suspensionDepth > 0; }
 
 	def isInScope(EObject object) {
 		return object.isDescendantOfOrSelf(lexicalScope);
@@ -105,6 +112,7 @@ class ProxyMessageAcceptor implements ValidationMessageAcceptor {
 
 	def accept(Severity severity, String message, EObject object, EStructuralFeature feature, int index, String code,
 		String[] issueData) {
+		if(isReportingSuspended()) return;
 		if(isInScope(object)) {
 			acceptDirect(severity, message, object, feature, index, code, issueData);
 		} else {
@@ -114,6 +122,7 @@ class ProxyMessageAcceptor implements ValidationMessageAcceptor {
 
 	def accept(Severity severity, String message, EObject object, int offset, int length, String code,
 		String[] issueData) {
+		if(isReportingSuspended()) return;
 		if(isInScope(object)) {
 			acceptDirect(severity, message, object, offset, length, code, issueData);
 		} else {

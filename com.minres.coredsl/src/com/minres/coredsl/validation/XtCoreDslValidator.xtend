@@ -3,27 +3,17 @@
  */
 package com.minres.coredsl.validation
 
-import com.minres.coredsl.coreDsl.CastExpression
-import com.minres.coredsl.coreDsl.CoreDslPackage
-import com.minres.coredsl.coreDsl.Expression
-import com.minres.coredsl.coreDsl.InfixExpression
-import com.minres.coredsl.coreDsl.PostfixExpression
-import com.minres.coredsl.coreDsl.PrefixExpression
-import com.minres.coredsl.coreDsl.PrimaryExpression
-
-import static extension com.minres.coredsl.typing.TypeProvider.*
-import org.eclipse.xtext.validation.Check
-import com.minres.coredsl.coreDsl.ISA
+import com.minres.coredsl.analysis.CoreDslAnalyzer
 import com.minres.coredsl.coreDsl.Attribute
-import com.minres.coredsl.coreDsl.Instruction
-import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.CoreDslPackage
 import com.minres.coredsl.coreDsl.Declarator
+import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.FunctionDefinition
-import com.minres.coredsl.validation.KnownAttributes.AttributeUsage
+import com.minres.coredsl.coreDsl.ISA
+import com.minres.coredsl.coreDsl.Instruction
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EStructuralFeature
-import com.minres.coredsl.coreDsl.DescriptionContent
-import com.minres.coredsl.analysis.CoreDslAnalyzer
+import org.eclipse.xtext.validation.Check
 
 /**
  * This class contains custom validation rules. 
@@ -32,98 +22,27 @@ import com.minres.coredsl.analysis.CoreDslAnalyzer
  */
 class XtCoreDslValidator extends CoreDslValidator {
 
-	/*TODO: 
-	 * * check for cycles in structs
-	 * * check for member selection
-	 * * check for return statements
-	 * * check for duplicate fields
-	 * 
-	 */
-	protected static val ISSUE_CODE_PREFIX = "com.minres.coredsl."
-	public static val TYPE_MISMATCH = ISSUE_CODE_PREFIX + "TypeMismatch"
-	public static val TYPE_ILLEGAL = ISSUE_CODE_PREFIX + "TypeIllegal"
-	public static val ILLEGAL_ATTRIBUTE = ISSUE_CODE_PREFIX + "IllegalAttribute"
-	public static val INVALID_ATTRIBUTE_PARAMETERS = ISSUE_CODE_PREFIX + "InvalidAttributeParameters"
-
 	@Check
 	def analyze(DescriptionContent desc) {
-		CoreDslAnalyzer.analyze(desc, this);
-	}
-
-	// @Check
-	def checkType(Expression e) {
-		switch (e) {
-			case PrimaryExpression,
-			case PostfixExpression,
-			case PrefixExpression:
-				if (e.typeFor === null)
-					error(
-						"incompatible types used",
-						// TODO this doesn't necessarily make sense as a location
-						null,
-						TYPE_MISMATCH
-					)
-			case CastExpression: {
-				if ((e as CastExpression).targetType.typeFor === null)
-					error(
-						"illegal type used",
-						CoreDslPackage.Literals.CAST_EXPRESSION__TARGET_TYPE,
-						TYPE_ILLEGAL
-					)
-			}
-			case InfixExpression: {
-				val infix = e as InfixExpression
-				switch (infix.operator) {
-					case '<',
-					case '>',
-					case '<=',
-					case '>=',
-					case '==',
-					case '!=':
-						if (!infix.left.typeFor.isComparable(infix.right.typeFor))
-							error(
-								"incompatible types used",
-								CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR,
-								TYPE_MISMATCH
-							)
-					case '||',
-					case '&&',
-					case '<<',
-					case '>>',
-					case '+',
-					case '-',
-					case '*',
-					case '/',
-					case '%',
-					case '|',
-					case '^',
-					case '&':
-						if (!infix.left.typeFor.isComputable(infix.right.typeFor))
-							error(
-								"incompatible types used",
-								CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR,
-								TYPE_MISMATCH
-							)
-					default: {
-					} // '::'
-				}
-			}
-//            case ConditionalExpression: {
-//            }
-//            case AssignmentExpression: {
-//            }
+		try {
+			CoreDslAnalyzer.analyze(desc, this);
+		}
+		catch(Exception e) {
+			acceptError("An internal error occurred during analysis: " + e, desc, null, -1, IssueCodes.InternalCompilerError);
 		}
 	}
+	
+	// TODO move all of this to the analyzer
 	
 	def checkAttributes(EList<Attribute> attributes, KnownAttributes.AttributeUsage expectedUsage, EStructuralFeature feature) {
 		for(Attribute attribute : attributes) {
 			val info = KnownAttributes.byName(attribute.type);
 			
 			if(info === null || !info.allowedUsage.contains(expectedUsage))
-				error("unexpected attribute '" + attribute.type + "'", feature, ILLEGAL_ATTRIBUTE);
+				error("unexpected attribute '" + attribute.type + "'", feature, IssueCodes.InvalidAttributePlacement);
 			
 			if(attribute.parameters.size() !== info.paramCount)
-				error("attribute '" + info.name + "' requires exactly " + info.paramCount + " parameter(s)", feature, INVALID_ATTRIBUTE_PARAMETERS);
+				error("attribute '" + info.name + "' requires exactly " + info.paramCount + " parameter(s)", feature, IssueCodes.InvalidAttributeParameters);
 		}
 	}
 

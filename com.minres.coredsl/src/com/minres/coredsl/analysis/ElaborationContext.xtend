@@ -11,13 +11,16 @@ import java.util.HashMap
 import java.util.LinkedList
 import java.util.List
 import java.util.Map
+import java.util.Set
 import java.util.Stack
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
 import static extension com.minres.coredsl.util.ModelExtensions.*
 
 class ElaborationContext extends ProxyMessageAcceptor {
-	static class IsaStateDeclarationInfo {
+
+	static class ElaborationDeclarationInfo {
 		public val String name;
 		public val List<Declarator> declarators = new ArrayList();
 		public val List<Expression> assignments = new ArrayList();
@@ -25,25 +28,33 @@ class ElaborationContext extends ProxyMessageAcceptor {
 		new(String name) {
 			this.name = name;
 		}
+		
+		def isEffectiveAssignment(Expression expression) {
+			return !assignments.empty && assignments.last() === expression;
+		}
 	}
-
-	public val AnalysisContext actx;
+	
+	static interface CalculationJob {
+		/** @returns true, if the job was successful and can be removed from the queue */
+		def boolean tryCalculate();
+	}
 
 	public val ISA root;
 	public val boolean isPartialElaboration;
+	public val AnalysisContext analysisContext;
+
 	public val List<ISA> elaborationOrder = new ArrayList();
 	public val Stack<InstructionSet> currentInheritanceStack = new Stack();
 
-	public val Map<String, IsaStateDeclarationInfo> declInfo = new HashMap();
-	public val List<Expression> calculationQueue = new LinkedList();
-	public val Map<Expression, ConstantValue> calculatedValues = new HashMap();
-	public var gatherPhaseDone = false;
+	public val Map<String, ElaborationDeclarationInfo> declInfo = new HashMap();
+	public val List<CalculationJob> calculationQueue = new LinkedList();
+	public val Map<ISA, Set<String>> exposedNames = new HashMap();
 
-	new(ISA root, AnalysisContext actx) {
-		super(actx.baseAcceptor, root, root, CoreDslPackage.Literals.ISA__NAME, -1);
+	new(ISA root, ValidationMessageAcceptor acceptor) {
+		super(acceptor, root, root, CoreDslPackage.Literals.ISA__NAME, -1);
 		this.root = root;
-		this.actx = actx;
 		isPartialElaboration = root instanceof InstructionSet;
+		analysisContext = new AnalysisContext(root, acceptor);
 	}
 
 	override getErrorDescription(EObject object) {
@@ -56,24 +67,19 @@ class ElaborationContext extends ProxyMessageAcceptor {
 		return obj.ancestorOfType(ISA) == root;
 	}
 
-	def getCalculatedValue(Declarator declarator) {
-		return getCalculatedValue(declarator.name);
+	def areExposedNamesSet(ISA isa) {
+		return exposedNames.containsKey(isa);
 	}
 
-	def getCalculatedValue(String name) {
-		CompilerAssertion.assertThat(gatherPhaseDone,
-			"Calculated results may not be accessed before the gathering phase finishes");
-		val info = declInfo.get(name);
-		val expression = info?.assignments.last();
-		val result = calculatedValues.get(expression);
-		return result !== null ? result : ConstantValue.indeterminate;
+	def getExposedNames(ISA isa) {
+		val result = exposedNames.get(isa);
+		CompilerAssertion.assertThat(result !== null, "Exposed names for ISA " + isa.name + " have not been set");
+		return result;
 	}
 
-	def getCalculatedType(String name) {
-		CompilerAssertion.assertThat(gatherPhaseDone,
-			"Calculated results may not be accessed before the gathering phase finishes");
-		val info = declInfo.get(name);
-		val declarator = info?.declarators.last();
-		return CoreDslTypeProvider.getSpecifiedType(this, declarator.type);
+	def setExposedNames(ISA isa, Set<String> names) {
+		CompilerAssertion.assertThat(!areExposedNamesSet(isa),
+			"Exposed names for ISA " + isa.name + " have already been set");
+		exposedNames.put(isa, names);
 	}
 }
