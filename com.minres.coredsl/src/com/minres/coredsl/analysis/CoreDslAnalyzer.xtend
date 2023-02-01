@@ -72,6 +72,7 @@ import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
 
 class CoreDslAnalyzer {
+	public static var boolean emitDebugInfo = false;
 
 	def static AnalysisResults analyze(DescriptionContent desc, ValidationMessageAcceptor acceptor) {
 		val results = new AnalysisResults(desc);
