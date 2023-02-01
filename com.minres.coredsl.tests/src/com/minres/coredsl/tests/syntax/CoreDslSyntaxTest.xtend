@@ -392,8 +392,6 @@ class CoreDslSyntaxTest {
 			unsigned long i;
 			
 			bool i;
-			float i;
-			double i;
 			
 		'''.parseAsStatements();
 

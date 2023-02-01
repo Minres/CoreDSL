@@ -394,10 +394,9 @@ class CoreDslElaborationTest {
 		testErrors('''
 			InstructionSet A {
 				architectural_state {
-					int x[16] = 1;
+					int x[16];
 				}
 			}
-			Core X provides A {}
 		''', error(IssueCodes.InvalidIsaParameterDeclaration));
 	}
 
@@ -452,16 +451,15 @@ class CoreDslElaborationTest {
 					extern void x;
 				}
 			}
-			Core X provides A {}
 		''', error(IssueCodes.VoidDeclaration));
 		// error: non-integral parameter type
 		testErrors('''
 			InstructionSet A {
 				architectural_state {
-					float x = 1;
+					struct T { int f; }
+					struct T x;
 				}
 			}
-			Core X provides A {}
 		''', error(IssueCodes.InvalidIsaParameterType));
 		// error: cyclic type-value dependency
 		testErrors('''

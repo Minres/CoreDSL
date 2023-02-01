@@ -37,7 +37,7 @@ class CoreDslCoreScopingTest {
                     encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     assembly: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior:
-                        X[rd] = X[rs1] + X[rs2];
+                        X[rd] = (unsigned int)(X[rs1] + X[rs2]);
                 }
             }
         }
@@ -48,7 +48,7 @@ class CoreDslCoreScopingTest {
                     encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000001;  
                     assembly: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior:
-                        X[rd] = X[rs1] - X[rs2];
+                        X[rd] = (unsigned int)(X[rs1] - X[rs2]);
                 }
             }
         	
