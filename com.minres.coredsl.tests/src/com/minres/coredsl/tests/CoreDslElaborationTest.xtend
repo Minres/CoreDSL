@@ -401,6 +401,39 @@ class CoreDslElaborationTest {
 	}
 
 	@Test
+	def void validParameters() {
+		// warning: duplicate, but compatible parameter declarations
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					int x;
+				}
+			}
+			InstructionSet B {
+				architectural_state {
+					int x = 1;
+				}
+			}
+			Core C provides A, B {}
+		''', warning(IssueCodes.DuplicateIsaStateElement));
+		
+		// warning: duplicate, but compatible parameter declarations
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					int x = 1;
+				}
+			}
+			InstructionSet B {
+				architectural_state {
+					int x;
+				}
+			}
+			Core C provides A, B {}
+		''', warning(IssueCodes.DuplicateIsaStateElement));
+	}
+
+	@Test
 	def void errorValues() {
 		// error: unassigned parameter
 		testErrors('''
