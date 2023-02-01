@@ -11,6 +11,7 @@ class IssueCodes {
 	// utility issues
 	public static val DebugInfo = _prefix + 'DebugInfo';
 	public static val UnsupportedLanguageFeature = _prefix + 'UnsupportedLanguageFeature';
+	public static val InternalCompilerError = _prefix + 'InternalCompilerError';
 
 	// type issues
 	public static val InvalidIntegerTypeSize = _prefix + 'InvalidIntegerTypeSize';
@@ -31,6 +32,13 @@ class IssueCodes {
 	public static val IndeterminableIsaStateElementType = _prefix + 'IndeterminableIsaStateElementType';
 	public static val InvalidIsaStateElementValue = _prefix + 'InvalidIsaStateElementValue';
 	public static val InvalidIsaStateElementType = _prefix + 'InvalidIsaStateElementType';
+	public static val InvalidAttributePlacement = _prefix + 'InvalidAttributePlacement';
+	public static val InvalidAttributeParameters = _prefix + 'InvalidAttributeParameters';
+	
+	// function issues
+	public static val MissingFunctionBody = _prefix + 'MissingFunctionBody';
+	public static val ExternFunctionWithBody = _prefix + 'ExternFunctionWithBody';
+	public static val MissingReturnStatement = _prefix + 'MissingReturnStatement';
 
 	// constant expression issues
 	public static val InvalidConstantExpressionNode = _prefix + 'InvalidConstantExpressionNode';
@@ -44,6 +52,43 @@ class IssueCodes {
 	public static val DuplicateQualifier = _prefix + 'DuplicateQualifier';
 	public static val UninitializedConstant = _prefix + 'UninitializedConstant';
 	public static val UninitializedAlias = _prefix + 'UninitializedAlias';
-	public static val MixedAliasnessDeclaration = _prefix + 'MixedAliasnessDeclaration';
 	public static val VoidDeclaration = _prefix + 'VoidDeclaration';
+	public static val InvalidArraySize = _prefix + 'InvalidArraySize';
+	public static val ArraySizeIsZero = _prefix + 'ArraySizeIsZero';
+	public static val ReferenceParameterDeclaration = _prefix + 'ReferenceParameterDeclaration';
+	public static val InvalidListInitializer = _prefix + 'InvalidListInitializer';
+	public static val InvalidAliasSource = _prefix + 'InvalidAliasSource';
+	
+	// statement issues
+	public static val UnreachableCode = _prefix + 'UnreachableCode';
+	public static val InvalidStatementExpression = _prefix + 'InvalidStatementExpression';
+	public static val ReturnStatementOutsideFunction = _prefix + 'ReturnStatementOutsideFunction';
+	public static val ReturnWithValueInVoidFunction = _prefix + 'ReturnWithValueInVoidFunction';
+	public static val ReturnWithoutValueInNonVoidFunction = _prefix + 'ReturnWithoutValueInNonVoidFunction';
+	public static val ReturnTypeNotConvertible = _prefix + 'ReturnTypeNotConvertible';
+	public static val NonScalarCondition = _prefix + 'NonScalarCondition';
+	public static val SwitchConditionTypeInvalid = _prefix + 'SwitchConditionTypeInvalid';
+	public static val SwitchMultipleDefaultSections = _prefix + 'SwitchMultipleDefaultSections';
+	public static val SwitchDuplicateCaseSection = _prefix + 'SwitchDuplicateCaseSection';
+	public static val SwitchCaseConditionOutOfRange = _prefix + 'SwitchCaseConditionOutOfRange';
+	public static val StrayControlFlowStatement = _prefix + 'StrayControlFlowStatement';
+	
+	// expression issues
+	public static val InvalidAssignmentTarget = _prefix + 'InvalidAssignmentTarget';
+	public static val InvalidAssignmentType = _prefix + 'InvalidAssignmentType';
+	public static val InvalidOperationType = _prefix + 'InvalidOperationType';
+	public static val InvalidCast = _prefix + 'InvalidCast';
+	public static val IdentityCast = _prefix + 'IdentityCast';
+	public static val IncompatibleOptionTypes = _prefix + 'IncompatibleOptionTypes';
+	public static val ReferenceToFunction = _prefix + 'ReferenceToFunction';
+	public static val InvalidFunction = _prefix + 'InvalidFunction';
+	public static val InvalidArgumentCount = _prefix + 'InvalidArgumentCount';
+	public static val InvalidArgumentType = _prefix + 'InvalidArgumentType';
+	public static val NonIndexableExpression = _prefix + 'NonIndexableExpression';
+	public static val InvalidIndexType = _prefix + 'InvalidIndexType';
+	public static val InvalidRangePattern = _prefix + 'InvalidRangePattern';
+	public static val ShiftAlwaysZero = _prefix + 'ShiftAlwaysZero';
+	public static val UnknownIntrinsicFunction = _prefix + 'UnknownIntrinsicFunction';
+	public static val SizeOfNotExact = _prefix + 'SizeOfNotExact';
+	public static val IndexOutOfRange = _prefix + 'IndexOutOfRange';
 }

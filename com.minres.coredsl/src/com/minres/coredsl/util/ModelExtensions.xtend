@@ -2,22 +2,24 @@ package com.minres.coredsl.util
 
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.DeclarationStatement
 import com.minres.coredsl.coreDsl.Declarator
+import com.minres.coredsl.coreDsl.EnumTypeDeclaration
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.InstructionSet
+import com.minres.coredsl.coreDsl.StructTypeDeclaration
 import com.minres.coredsl.coreDsl.TypeQualifier
+import com.minres.coredsl.coreDsl.UnionTypeDeclaration
+import com.minres.coredsl.coreDsl.UserTypeDeclaration
 import java.util.ArrayList
 import java.util.HashSet
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 
+import static extension com.minres.coredsl.util.DataExtensions.*
+
 abstract class ModelExtensions {
 	private new() {
-	}
-
-	static def <T extends EObject> castOrNull(EObject obj, Class<T> type) {
-		if(type.isInstance(obj)) return obj as T;
-		return null;
 	}
 
 	static def <T extends EObject> T ancestorOfType(EObject obj, Class<T> type) {
@@ -46,26 +48,47 @@ abstract class ModelExtensions {
 		return false;
 	}
 
-	static def <T> boolean isOneOf(T value, T... options) {
-		return options.contains(value);
-	}
-
 	// Declaration extensions
 	static def isVolatile(Declaration decl) {
-		return decl.qualifiers.contains(TypeQualifier.VOLATILE);
+		return decl !== null && decl.qualifiers.contains(TypeQualifier.VOLATILE);
 	}
 
 	static def isConst(Declaration decl) {
-		return decl.qualifiers.contains(TypeQualifier.CONST);
+		return decl !== null && decl.qualifiers.contains(TypeQualifier.CONST);
+	}
+
+	static def isIsaStateElement(Declaration decl) {
+		return decl !== null && decl.eContainer instanceof DeclarationStatement &&
+			decl.eContainer.eContainer instanceof ISA;
+	}
+
+	static def isIsaParameter(Declaration decl) {
+		return decl.isIsaStateElement && decl.storage.empty && decl.declarators.findFirst[it.isAlias] === null;
 	}
 
 	// Declarator extensions
+	static def isUserTypeMember(Declarator decl) {
+		return decl.ancestorOfType(UserTypeDeclaration) !== null;
+	}
+
+	static def isStructMember(Declarator decl) {
+		return decl.ancestorOfType(StructTypeDeclaration) !== null;
+	}
+
+	static def isUnionMember(Declarator decl) {
+		return decl.ancestorOfType(UnionTypeDeclaration) !== null;
+	}
+
+	static def isEnumMember(Declarator decl) {
+		return decl.eContainer instanceof EnumTypeDeclaration;
+	}
+
 	static def getDeclaration(Declarator decl) {
-		return (decl.eContainer as Declaration);
+		return decl.eContainer.castOrNull(Declaration);
 	}
 
 	static def getType(Declarator decl) {
-		return decl.declaration.type;
+		return decl.declaration?.type;
 	}
 
 	static def isVolatile(Declarator decl) {
@@ -74,6 +97,14 @@ abstract class ModelExtensions {
 
 	static def isConst(Declarator decl) {
 		return decl.declaration.isConst;
+	}
+
+	static def isIsaStateElement(Declarator decl) {
+		return decl.declaration.isIsaStateElement;
+	}
+
+	static def isIsaParameter(Declarator decl) {
+		return decl.declaration.isIsaParameter;
 	}
 
 	// ISA extensions

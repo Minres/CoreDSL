@@ -12,6 +12,7 @@ class FloatType extends CoreDslType {
 	}
 
 	override isPrimitiveType() { return true; }
+	override isScalarType() { return true; }
 	override isFloatType() { return true; }
 	
 	override toString() { return bitSize == 64 ? 'double' : 'float'; }

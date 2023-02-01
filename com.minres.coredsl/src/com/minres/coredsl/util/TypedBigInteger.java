@@ -2,43 +2,42 @@ package com.minres.coredsl.util;
 
 import java.math.BigInteger;
 
-public class BigIntegerWithRadix extends BigInteger {
+public class TypedBigInteger extends BigInteger {
+	private static final long serialVersionUID = -2568538931532373089L;
+	
+	final int radix;
+	final int size;
+    final boolean signed;
 
-    public enum TYPE {
-        UNDEF, SIGNED, UNSIGNED
-    };
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -791774651890225679L;
-
-    private int radix;
-
-    private int size = 0;
-
-    private TYPE type = TYPE.UNDEF;
-
-    public BigIntegerWithRadix(String val, int radix, int size, TYPE type) {
-        super(val, radix);
+    public TypedBigInteger(String digits, int radix) {
+        super(digits, radix);
         this.radix = radix;
-        this.size = size;
-        this.type = type;
+        this.signed = signum() < 0;
+        this.size = Math.max(signed ? bitLength() + 1 : bitLength(), 1);
     }
 
+    public TypedBigInteger(String digits, int radix, int size, boolean signed) {
+        super(digits, radix);
+        this.radix = radix;
+        this.size = Math.max(size, 1);
+        this.signed = signed;
+    }
+    
     public int getRadix() {
-        return radix;
-    }
+		return radix;
+	}
 
-    public int getSize() {
-        return size;
-    }
+	public int getSize() {
+		return size;
+	}
 
-    public TYPE getType() {
-        return type;
-    }
+	public boolean isSigned() {
+		return signed;
+	}
 
-    @Override
+	// TODO these implementations don't make much sense to me
+	
+	@Override
     public String toString() {
         return toString(radix);
     }

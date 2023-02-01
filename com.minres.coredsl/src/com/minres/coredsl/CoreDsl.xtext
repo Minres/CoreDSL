@@ -15,7 +15,7 @@ InstructionSet: 'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] 
 CoreDef: 'Core' name=ID ( 'provides' providedInstructionSets+=[InstructionSet] (',' providedInstructionSets+=[InstructionSet])*)? '{' ISA '}';
 
 fragment ISA:
-	('architectural_state' '{' (archStateBody+=DeclarationStatement | archStateBody+=ExpressionStatement | types+=UserTypeDeclaration)+ '}')? &
+	('architectural_state' '{' (archStateBody+=DeclarationStatement | archStateBody+=ExpressionStatement | typeDeclarations+=UserTypeDeclaration)+ '}')? &
 	('functions' '{' functions+=FunctionDefinition+ '}')? &
 	('instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}')?;
 
@@ -23,7 +23,7 @@ FunctionDefinition:
     extern?='extern'
     returnType=TypeSpecifier name=ID
     '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')'
-    attributes+=Attribute* ';'
+    attributes+=Attribute* t_semicolon=';'
     |
     returnType=TypeSpecifier name=ID
     '(' (parameters+=ParameterDeclaration (',' parameters+=ParameterDeclaration)*)? ')'
@@ -60,7 +60,7 @@ Statement:
 
 EmptyStatement: {EmptyStatement} ';';
 SpawnStatement: 'spawn' body=Statement;
-CompoundStatement: {CompoundStatement} '{' statements+=Statement* '}';
+CompoundStatement: {CompoundStatement} t_openingBrace='{' statements+=Statement* t_closingBrace='}';
 ExpressionStatement: expression=AssignmentExpression ';';
 DeclarationStatement: declaration=MultiInitDeclaration ';';
 
@@ -70,15 +70,15 @@ IfStatement:
 	'if' '(' condition=Expression ')' thenBody=Statement (=> 'else' elseBody=Statement)?;
 
 SwitchStatement:
-	'switch' '(' condition=Expression ')' '{' sections+=SwitchSection* '}';
+	'switch' '(' condition=Expression ')' '{' sections+=SwitchSection* t_end='}';
 
 SwitchSection:
-	{CaseSection} 'case' condition=Expression ':' body+=Statement* |
-	{DefaultSection} 'default' ':' body+=Statement*;
+	{CaseSection} t_case='case' condition=Expression ':' body+=Statement* |
+	{DefaultSection} t_default='default' ':' body+=Statement*;
 
 ContinueStatement: {ContinueStatement} 'continue' ';';
 BreakStatement: {BreakStatement} 'break' ';';
-ReturnStatement: {ReturnStatement} 'return' value=ConditionalExpression? ';';
+ReturnStatement: {ReturnStatement} t_return='return' value=ConditionalExpression? ';';
 
 //////////////////////////////// Loops ////////////////////////////////
 
@@ -116,7 +116,7 @@ Declarator<allowInit>:
 	attributes+=Attribute*
 	(<allowInit> t_equals='=' initializer=Initializer)?;
 
-NamedEntity: FunctionDefinition | Declarator<true> | BitField | EnumMemberDeclaration;
+NamedEntity: FunctionDefinition | Declarator<true> | BitField;
     
 Initializer: ExpressionInitializer | ListInitializer;
 ExpressionInitializer: value=Expression;
@@ -129,24 +129,19 @@ Attribute:
 
 //////////////////////////////// Type Declarations ////////////////////////////////
 
-UserTypeDeclaration: StructTypeDeclaration | UnionTypeDeclaration | EnumTypeDeclaration;
-
-StructTypeDeclaration: 'struct' name=ID CompositeTypeDeclaration;
-UnionTypeDeclaration: 'union' name=ID CompositeTypeDeclaration;
-EnumTypeDeclaration: 'enum' name=ID '{' members+=EnumMemberDeclaration (',' members+=EnumMemberDeclaration)* ','? '}';
-
-EnumMemberDeclaration: name=ID ('=' value=Expression)?;
-
-fragment CompositeTypeDeclaration: '{' (members+=MultiDeclaration ';')* '}';
+UserTypeDeclaration: CompositeTypeDeclaration | EnumTypeDeclaration;
+CompositeTypeDeclaration : StructTypeDeclaration | UnionTypeDeclaration;
+StructTypeDeclaration: 'struct' name=ID '{' (members+=MultiDeclaration ';')* '}';
+UnionTypeDeclaration: 'union' name=ID '{' (members+=MultiDeclaration ';')* '}';
+EnumTypeDeclaration: 'enum' name=ID '{' members+=Declarator<true> (',' members+=Declarator<true>)* ','? '}';
 
 //////////////////////////////// Type Specifiers ////////////////////////////////
 
 TypeSpecifier: VoidTypeSpecifier | PrimitiveTypeSpecifier | UserTypeSpecifier;
 
-PrimitiveTypeSpecifier: IntegerTypeSpecifier | FloatTypeSpecifier | BoolTypeSpecifier;
+PrimitiveTypeSpecifier: IntegerTypeSpecifier | BoolTypeSpecifier;
 
 IntegerTypeSpecifier: shorthand=IntegerSizeShorthand | signedness=IntegerSignedness (shorthand=IntegerSizeShorthand | '<' size=PrimaryExpression '>');
-FloatTypeSpecifier: shorthand=FloatSizeShorthand;
 BoolTypeSpecifier: {BoolTypeSpecifier} 'bool';
 VoidTypeSpecifier: {VoidTypeSpecifier} 'void';
 
@@ -172,8 +167,8 @@ AssignmentExpression returns Expression:
 ConditionalExpression returns Expression:
 	ConcatenationExpression
 	({ConditionalExpression.condition=current}
-		'?' thenExpression=AssignmentExpression
-		':' elseExpression=ConditionalExpression
+		t_question='?' thenExpression=AssignmentExpression
+		t_colon=':' elseExpression=ConditionalExpression
 	)?;
 
 ConcatenationExpression returns Expression:
@@ -207,9 +202,8 @@ PrefixExpression returns Expression:
 PostfixExpression returns Expression:
 	PrimaryExpression
 	( {FunctionCallExpression.target=current} '(' (arguments+=Expression (',' arguments+=Expression)*)? ')'
-	| {ArrayAccessExpression.target=current} LEFT_BR index=Expression (':' endIndex=Expression)? RIGHT_BR
+	| {IndexAccessExpression.target=current} LEFT_BR index=Expression (t_colon=':' endIndex=Expression)? RIGHT_BR
 	| {MemberAccessExpression.target=current} operator='.' declarator=[Declarator]
-	| {MemberAccessExpression.target=current} operator='->' declarator=[Declarator]
 	| {PostfixExpression.operand=current} operator='++'
 	| {PostfixExpression.operand=current} operator='--'
 	)*;
@@ -226,19 +220,11 @@ IntrinsicExpression:
     
 //////////////////////////////// Constants ////////////////////////////////
 
-Constant:
-	IntegerConstant
-	| FloatConstant
-	| CharacterConstant
-	| BoolConstant
-	| StringConstant;
+Constant: IntegerConstant | BoolConstant | StringConstant;
 
 IntegerConstant hidden(WS): value=INTEGER;
-FloatConstant hidden(WS): value=FLOAT;
-CharacterConstant: value=CHARCONST;
 BoolConstant: value=BOOLEAN;
-StringConstant: literals+=StringLiteral+;
-StringLiteral: value=ENCSTRINGCONST | value=STRING ;
+StringConstant: value=STRING;
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// Enumerations ////////////////////////////////
@@ -246,7 +232,6 @@ StringLiteral: value=ENCSTRINGCONST | value=STRING ;
 
 enum IntegerSignedness : SIGNED='signed' | UNSIGNED='unsigned';
 enum IntegerSizeShorthand : INT='int' | CHAR='char' | SHORT='short' | LONG='long';
-enum FloatSizeShorthand : FLOAT='float' | DOUBLE='double';
 
 enum TypeQualifier: CONST='const' | VOLATILE='volatile';
 enum StorageClassSpecifier: EXTERN='extern' | REGISTER='register';
@@ -261,33 +246,25 @@ DoubleLeftBracket hidden(WS, ML_COMMENT, SL_COMMENT): LEFT_BR LEFT_BR;
 DoubleRightBracket hidden(WS, ML_COMMENT, SL_COMMENT): RIGHT_BR RIGHT_BR;
 
 terminal LEFT_BR: '[';
-
 terminal RIGHT_BR: ']';
 
-terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false' ;
+terminal BOOLEAN returns ecore::EBoolean: 'true' | 'false';
 
-terminal FLOAT returns ecore::EBigDecimal:  (('0'..'9')+ '.' ('0'..'9')*) (('e' | 'E') ('+' | '-')? ('0'..'9')+)? ('f'|'F'|'l'|'L')?;
+terminal INTEGER returns ecore::EBigInteger: (BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT | VLOGINT);
 
-terminal INTEGER returns ecore::EBigInteger:  (BINARYINT | HEXADECIMALINT | OCTALINT | DECIMALINT | VLOGINT) ('u'|'U')? (('l'|'L') ('l'|'L')?)?;
+terminal fragment BINARYINT: ('0b' | '0B') BIN_DIGIT+ ('_' BIN_DIGIT+)*;
+terminal fragment OCTALINT: '0' ('_')? OCT_DIGIT+ ('_' OCT_DIGIT+)*;
+terminal fragment DECIMALINT: '0' | ('1'..'9') DEC_DIGIT* ('_' DEC_DIGIT+)*;
+terminal fragment HEXADECIMALINT: ('0x'|'0X') HEX_DIGIT+ ('_' HEX_DIGIT+)*;
+terminal fragment VLOGINT: DEC_DIGIT+ "'" 's'? ('b' BIN_DIGIT+ | 'o' OCT_DIGIT+ | 'd' DEC_DIGIT+ | 'h' HEX_DIGIT+); 
 
-terminal fragment BINARYINT:	('0b' | '0B') '0'..'1' (('_')? '0'..'1')*;
-
-terminal fragment OCTALINT:   '0' ('_')? '0'..'7' (('_')? '0'..'7')*;
-
-terminal fragment DECIMALINT:   '0' | '1'..'9' (('_')? '0'..'9')*;
-
-terminal fragment HEXADECIMALINT:   ('0x'|'0X') ('0'..'9'|'a'..'f'|'A'..'F')  (('_')? ('0'..'9'|'a'..'f'|'A'..'F'))*;
-
-terminal fragment VLOGINT: ('0'..'9')+ "'" ('b' ('0'..'1')+ | 'o' ('0'..'7')+ | 'd' ('0'..'9')+ | 'h' ('0'..'9'|'a'..'f'|'A'..'F')+); 
-
-terminal CHARCONST:	('u'|'U'|'L')? "'" ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|"'") )* "'";
+terminal fragment BIN_DIGIT: '0'..'1';
+terminal fragment OCT_DIGIT: '0'..'7';
+terminal fragment DEC_DIGIT: '0'..'9';
+terminal fragment HEX_DIGIT: DEC_DIGIT | 'a'..'f' | 'A'..'F';
 
 @Override 
 terminal INT returns ecore::EInt: '~this one has been deactivated';
     
 @Override 
-terminal ID : '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
-
-// do we need to override the built-in STRING rule?
-
-terminal ENCSTRINGCONST	:	('u8'|'u'|'U'|'L') '"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';
+terminal ID : ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
