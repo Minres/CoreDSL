@@ -411,12 +411,6 @@ class CoreDslAnalyzer {
 	 * 3. All loop expressions must be statement expressions. <i>(InvalidStatementExpression)</i>
 	 */
 	def static dispatch void analyzeStatement(AnalysisContext ctx, ForLoop statement) {
-		val conditionType = analyzeExpression(ctx, statement.condition);
-
-		if(!conditionType.isScalarType) {
-			ctx.acceptError("The condition must be a scalar type", statement,
-				CoreDslPackage.Literals.LOOP_STATEMENT__CONDITION, -1, IssueCodes.NonScalarCondition);
-		}
 
 		if(statement.startDeclaration !== null) {
 			analyzeDeclaration(ctx, statement.startDeclaration, false);
@@ -428,6 +422,12 @@ class CoreDslAnalyzer {
 				ctx.acceptError("Invalid expression in expression statement", statement,
 					CoreDslPackage.Literals.FOR_LOOP__START_EXPRESSION, -1, IssueCodes.InvalidStatementExpression);
 			}
+		}
+		
+		val conditionType = analyzeExpression(ctx, statement.condition);
+		if(!conditionType.isScalarType) {
+			ctx.acceptError("The condition must be a scalar type", statement,
+				CoreDslPackage.Literals.LOOP_STATEMENT__CONDITION, -1, IssueCodes.NonScalarCondition);
 		}
 
 		for (var i = 0; i < statement.loopExpressions.size; i++) {
