@@ -254,13 +254,13 @@ class CoreDslAnalyzer {
 			FunctionCallExpression:
 				return true
 			PrefixExpression: {
-				switch ((expression as PrefixExpression).operand) {
+				switch (expression.operator) {
 					case '++': return true
 					case '--': return true
 				}
 			}
 			PostfixExpression: {
-				switch ((expression as PostfixExpression).operand) {
+				switch (expression.operator) {
 					case '++': return true
 					case '--': return true
 				}
