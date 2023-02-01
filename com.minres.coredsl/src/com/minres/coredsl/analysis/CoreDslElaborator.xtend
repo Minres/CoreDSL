@@ -154,8 +154,8 @@ class CoreDslElaborator {
 			if(declarator.initializer instanceof ExpressionInitializer && !declarator.isAlias) {
 				val expr = (declarator.initializer as ExpressionInitializer).value;
 				info.assignments.add(expr);
-
-				enqueueAssignmentEvaluationJob(ctx, declarator, expr);
+				
+				enqueueAssignmentEvaluationJob(ctx, info, expr);
 			}
 
 			if(!declarator.dimensions.empty) {
@@ -198,7 +198,7 @@ class CoreDslElaborator {
 			val info = ctx.declInfo.get(declarator.name)
 			if(info !== null) {
 				info.assignments.add(assignment.value);
-				enqueueAssignmentEvaluationJob(ctx, declarator, assignment.value);
+				enqueueAssignmentEvaluationJob(ctx, info, assignment.value);
 			}
 		}
 	}
@@ -342,15 +342,18 @@ class CoreDslElaborator {
 		]);
 	}
 
-	def private static void enqueueAssignmentEvaluationJob(ElaborationContext ctx, Declarator declarator,
+	def private static void enqueueAssignmentEvaluationJob(ElaborationContext ctx, ElaborationContext.ElaborationDeclarationInfo info,
 		Expression expression) {
 		val analysisContext = ctx.analysisContext;
 		ctx.calculationQueue.add([
 			val value = CoreDslConstantExpressionEvaluator.evaluate(analysisContext, expression);
 			if(value.isIndeterminate) return false;
 
-			if(ctx.declInfo.get(declarator.name).isEffectiveAssignment(expression))
-				analysisContext.setConstantValue(declarator, value);
+			if(info.isEffectiveAssignment(expression)) {
+				for(declarator : info.declarators) {
+					analysisContext.setConstantValue(declarator, value);
+				}
+			}
 
 			return true;
 		]);
@@ -536,14 +539,12 @@ class CoreDslElaborator {
 				if(analysisContext.getStorageClass(info.declarators.get(0)) === StorageClass.param) {
 					unassignedParameters.add(info.name);
 				}
-			} else {
-				if(analysisContext.isConstantValueSet(effectiveDeclarator)) {
-					val value = analysisContext.getConstantValue(effectiveDeclarator);
-					if(value.isInvalid) invalidValues.add(info.name);
-				}
-				else {
-					indeterminableValues.add(info.name);
-				}
+			} else if(analysisContext.isConstantValueSet(effectiveDeclarator)) {
+				val value = analysisContext.getConstantValue(effectiveDeclarator);
+				if(value.isInvalid) invalidValues.add(info.name);
+			}
+			else {
+				indeterminableValues.add(info.name);
 			}
 
 			if(analysisContext.isDeclaredTypeSet(effectiveDeclarator)) {
