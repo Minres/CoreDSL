@@ -193,6 +193,8 @@ class CoreDslAnalyzer {
 			statement.elseBody.isReturnTerminated
 	}
 
+	def static dispatch boolean isReturnTerminated(ReturnStatement statement) { return true; }
+
 	def static dispatch boolean isReturnTerminated(Statement statement) { return false; }
 
 	def static analyzeInstruction(AnalysisContext ctx, Instruction instruction) {
