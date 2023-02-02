@@ -392,8 +392,6 @@ class CoreDslSyntaxTest {
 			unsigned long i;
 			
 			bool i;
-			float i;
-			double i;
 			
 		'''.parseAsStatements();
 
@@ -670,4 +668,51 @@ class CoreDslSyntaxTest {
 			
 		'''.parseAsStatement(), CoreDslPackage.Literals.COMPOUND_STATEMENT, IssueCodes.SyntaxError);
 	}
+	
+    @Test
+    def void parseIdentifiersValid() {
+		val statements = '''
+			int a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z;
+			int A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
+			
+			int _;
+			_ = a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p+q+r+s+t+u+v+w+x+y+z;
+			_ = A+B+C+D+E+F+G+H+I+J+K+L+M+N+O+P+Q+R+S+T+U+V+W+X+Y+Z;
+			
+			int x0, x1, x2, x3, x4, x5, x6, x7, x8, x9;
+			_ = x0+x1+x2+x3+x4+x5+x6+x7+x8+x9;
+		'''.parseAsStatements();
+
+		for (statement : statements) {
+			validator.assertNoErrors(statement, IssueCodes.SyntaxError);
+		}
+    }
+
+    @Test
+    def void parseLiteralsValid() {
+		val statements = '''
+			int _;
+			
+			// C syntax
+			_ = 42;
+			_ = 0x2A;
+			_ = 052;
+			_ = 0b101010;
+			
+			// Verilog syntax
+			_ = 6'd42;
+			_ = 6'h2a;
+			_ = 6'o52;
+			_ = 6'b101010;
+			_ = 6'sd42;
+			
+			// bool literals
+			_ = false;
+			_ = true;
+		'''.parseAsStatements();
+
+		for (statement : statements) {
+			validator.assertNoErrors(statement, IssueCodes.SyntaxError);
+		}
+    }
 }

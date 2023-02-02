@@ -394,11 +394,43 @@ class CoreDslElaborationTest {
 		testErrors('''
 			InstructionSet A {
 				architectural_state {
-					int x[16] = 1;
+					int x[16];
 				}
 			}
-			Core X provides A {}
 		''', error(IssueCodes.InvalidIsaParameterDeclaration));
+	}
+
+	@Test
+	def void validParameters() {
+		// warning: duplicate, but compatible parameter declarations
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					int x;
+				}
+			}
+			InstructionSet B {
+				architectural_state {
+					int x = 1;
+				}
+			}
+			Core C provides A, B {}
+		''', warning(IssueCodes.DuplicateIsaStateElement));
+		
+		// warning: duplicate, but compatible parameter declarations
+		testErrors('''
+			InstructionSet A {
+				architectural_state {
+					int x = 1;
+				}
+			}
+			InstructionSet B {
+				architectural_state {
+					int x;
+				}
+			}
+			Core C provides A, B {}
+		''', warning(IssueCodes.DuplicateIsaStateElement));
 	}
 
 	@Test
@@ -452,16 +484,15 @@ class CoreDslElaborationTest {
 					extern void x;
 				}
 			}
-			Core X provides A {}
 		''', error(IssueCodes.VoidDeclaration));
 		// error: non-integral parameter type
 		testErrors('''
 			InstructionSet A {
 				architectural_state {
-					float x = 1;
+					struct T { int f; }
+					struct T x;
 				}
 			}
-			Core X provides A {}
 		''', error(IssueCodes.InvalidIsaParameterType));
 		// error: cyclic type-value dependency
 		testErrors('''

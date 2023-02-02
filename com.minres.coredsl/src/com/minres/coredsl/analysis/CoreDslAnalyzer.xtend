@@ -72,6 +72,7 @@ import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
 
 class CoreDslAnalyzer {
+	public static var boolean emitDebugInfo = false;
 
 	def static AnalysisResults analyze(DescriptionContent desc, ValidationMessageAcceptor acceptor) {
 		val results = new AnalysisResults(desc);
@@ -192,6 +193,8 @@ class CoreDslAnalyzer {
 			statement.elseBody.isReturnTerminated
 	}
 
+	def static dispatch boolean isReturnTerminated(ReturnStatement statement) { return true; }
+
 	def static dispatch boolean isReturnTerminated(Statement statement) { return false; }
 
 	def static analyzeInstruction(AnalysisContext ctx, Instruction instruction) {
@@ -253,13 +256,13 @@ class CoreDslAnalyzer {
 			FunctionCallExpression:
 				return true
 			PrefixExpression: {
-				switch ((expression as PrefixExpression).operand) {
+				switch (expression.operator) {
 					case '++': return true
 					case '--': return true
 				}
 			}
 			PostfixExpression: {
-				switch ((expression as PostfixExpression).operand) {
+				switch (expression.operator) {
 					case '++': return true
 					case '--': return true
 				}
@@ -410,12 +413,6 @@ class CoreDslAnalyzer {
 	 * 3. All loop expressions must be statement expressions. <i>(InvalidStatementExpression)</i>
 	 */
 	def static dispatch void analyzeStatement(AnalysisContext ctx, ForLoop statement) {
-		val conditionType = analyzeExpression(ctx, statement.condition);
-
-		if(!conditionType.isScalarType) {
-			ctx.acceptError("The condition must be a scalar type", statement,
-				CoreDslPackage.Literals.LOOP_STATEMENT__CONDITION, -1, IssueCodes.NonScalarCondition);
-		}
 
 		if(statement.startDeclaration !== null) {
 			analyzeDeclaration(ctx, statement.startDeclaration, false);
@@ -427,6 +424,12 @@ class CoreDslAnalyzer {
 				ctx.acceptError("Invalid expression in expression statement", statement,
 					CoreDslPackage.Literals.FOR_LOOP__START_EXPRESSION, -1, IssueCodes.InvalidStatementExpression);
 			}
+		}
+		
+		val conditionType = analyzeExpression(ctx, statement.condition);
+		if(!conditionType.isScalarType) {
+			ctx.acceptError("The condition must be a scalar type", statement,
+				CoreDslPackage.Literals.LOOP_STATEMENT__CONDITION, -1, IssueCodes.NonScalarCondition);
 		}
 
 		for (var i = 0; i < statement.loopExpressions.size; i++) {

@@ -37,8 +37,10 @@ class AnalysisContext extends ProxyMessageAcceptor {
 	def isDeclaredTypeSet(NamedEntity entity) { _isTypeSet(entity) }
 	def getDeclaredType(NamedEntity entity) { _getType(entity) }
 	def setDeclaredType(NamedEntity entity, CoreDslType type) {
-		 acceptInfo("Type: " + (type.isValid ? type.toString() : "invalid"), entity, CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.DebugInfo);
-		 _setType(entity, type)
+		if(CoreDslAnalyzer.emitDebugInfo) {
+			acceptInfo("Type: " + (type.isValid ? type.toString() : "invalid"), entity, CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.DebugInfo);
+		}
+		_setType(entity, type)
 	}
 		
 	def isSpecifiedTypeSet(TypeSpecifier typeSpecifier) { _isTypeSet(typeSpecifier) }
@@ -60,7 +62,9 @@ class AnalysisContext extends ProxyMessageAcceptor {
 	def isConstantValueSet(NamedEntity entity) { _isValueSet(entity) }
 	def getConstantValue(NamedEntity entity) { _getValue(entity) }
 	def setConstantValue(NamedEntity entity, ConstantValue value) {
-		acceptInfo("Value: " + (value.isValid ? value.value.toString() : "invalid"), entity, CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.DebugInfo);
+		if(CoreDslAnalyzer.emitDebugInfo) {
+			acceptInfo("Value: " + (value.isValid ? value.value.toString() : "invalid"), entity, CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.DebugInfo);
+		}
 		_setValue(entity, value)
 	}
 		
