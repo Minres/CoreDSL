@@ -21,6 +21,7 @@ import org.eclipse.xtext.validation.Issue.IssueImpl
 import org.junit.jupiter.api.^extension.ExtendWith
 
 import static org.junit.jupiter.api.Assertions.*
+import java.util.regex.Pattern
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -99,14 +100,18 @@ class CoreDslTestHelper {
 	private static class IssueDescription {
 		val Severity severity;
 		val String code;
+		val int lineNumber;
 
-		new(Severity severity, String issueCode) {
+		new(Severity severity, String issueCode, int lineNumber) {
 			this.severity = severity;
 			this.code = issueCode;
+			this.lineNumber = lineNumber;
 		}
 	}
 
 	static class TestCase {
+		final static Pattern newLinePattern = Pattern.compile("\r?\n");
+		
 		final CharSequence program;
 		final DescriptionContent tree;
 		final List<IssueDescription> expectedIssues = new ArrayList();
@@ -124,17 +129,35 @@ class CoreDslTestHelper {
 			return this;
 		}
 
-		def expectIssue(Severity severity, String code) {
-			expectedIssues.add(new IssueDescription(severity, code));
+		def expectIssue(Severity severity, String code, int line) {
+			expectedIssues.add(new IssueDescription(severity, code, line));
 			return this;
 		}
 
+		def expectError(String code, int line) {
+			return expectIssue(Severity.ERROR, code, line);
+		}
+
+		def expectWarning(String code, int line) {
+			return expectIssue(Severity.WARNING, code, line);
+		}
+
 		def expectError(String code) {
-			return expectIssue(Severity.ERROR, code);
+			return expectError(code, -1);
 		}
 
 		def expectWarning(String code) {
-			return expectIssue(Severity.WARNING, code);
+			return expectWarning(code, -1);
+		}
+		
+		private def printProgram() {
+			val lines = newLinePattern.split(program);
+			val digits = String.valueOf(lines.length).length;
+			val format = '''%«digits»d| %s''';
+			
+			for(var i = 0; i < lines.length; i++) {
+				println(String.format(format, i + 1, lines.get(i)));
+			}
 		}
 
 		def run() {
@@ -142,7 +165,8 @@ class CoreDslTestHelper {
 			hasRun = true;
 
 			println("====================================");
-			println(program);
+			printProgram();
+			println();
 
 			val diagnosticsErrors = tree.eResource.errors.map[convertDiagnostic(it, Severity.ERROR)];
 			val diagnosticsWarnings = tree.eResource.warnings.map[convertDiagnostic(it, Severity.WARNING)];
@@ -157,28 +181,38 @@ class CoreDslTestHelper {
 				issues.addAll(sink.issues);
 			}
 
-			val actualIssues = issues.sortBy[it.severity].sortBy[it.code];
-			val expectedIssues = expectedIssues.sortBy[it.severity].sortBy[it.code];
+			val actualIssues = issues.sortBy[it.lineNumber].sortBy[it.severity].sortBy[it.code];
+			val expectedIssues = expectedIssues.sortBy[it.lineNumber].sortBy[it.severity].sortBy[it.code];
 
 			println("Issues:");
 			for (issue : actualIssues) {
-				println('''  «issue.severity»: «issue.code» («issue.message»)''');
+				println('''  «issue.severity»: «issue.code» [line «issue.lineNumber»] («issue.message»)''');
 			}
 			println("Expected:");
 			for (issue : expectedIssues) {
-				println('''  «issue.severity»: «issue.code»''');
+				if(issue.lineNumber >= 0) {
+					println('''  «issue.severity»: «issue.code» [line «issue.lineNumber»]''');
+				}
+				else {
+					println('''  «issue.severity»: «issue.code»''');
+				}
 			}
 			println();
 
 			assertEquals(expectedIssues.size, actualIssues.size);
 			for (var i = 0; i < Math.min(expectedIssues.size, actualIssues.size); i++) {
-				assertEquals(expectedIssues.get(i).severity, actualIssues.get(i).severity);
-				assertEquals(expectedIssues.get(i).code, actualIssues.get(i).code);
+				val expected = expectedIssues.get(i);
+				val actual = actualIssues.get(i);
+				
+				assertEquals(expected.severity, actual.severity);
+				assertEquals(expected.code, actual.code);
+				if(expected.lineNumber >= 0)
+					assertEquals(expected.lineNumber, actual.lineNumber);
 			}
 		}
 
 		// adapted from DiagnosticConverterImpl.convertResourceDiagnostic
-		private def convertDiagnostic(Diagnostic diagnostic, Severity severity) {
+		def private static convertDiagnostic(Diagnostic diagnostic, Severity severity) {
 			val issue = new IssueImpl();
 
 			issue.syntaxError = diagnostic instanceof XtextSyntaxDiagnostic;
