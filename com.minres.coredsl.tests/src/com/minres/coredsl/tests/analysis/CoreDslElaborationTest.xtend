@@ -1,6 +1,8 @@
-package com.minres.coredsl.tests
+package com.minres.coredsl.tests.analysis
 
 import com.google.inject.Inject
+import com.minres.coredsl.tests.CoreDslInjectorProvider
+import com.minres.coredsl.tests.CoreDslTestHelper
 import com.minres.coredsl.validation.IssueCodes
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
