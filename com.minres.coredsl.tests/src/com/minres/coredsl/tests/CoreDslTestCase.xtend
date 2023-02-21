@@ -95,8 +95,8 @@ class CoreDslTestCase {
 			issues.addAll(sink.issues);
 		}
 
-		val actualIssues = issues.sortBy[it.lineNumber].sortBy[it.severity].sortBy[it.code];
-		val expectedIssues = expectedIssues.sortBy[it.lineNumber].sortBy[it.severity].sortBy[it.code];
+		val actualIssues = issues.sortBy[it.severity].sortBy[it.code].sortBy[it.lineNumber];
+		val expectedIssues = expectedIssues.sortBy[it.severity].sortBy[it.code].sortBy[it.lineNumber];
 
 		println("Issues:");
 		for (issue : actualIssues) {
