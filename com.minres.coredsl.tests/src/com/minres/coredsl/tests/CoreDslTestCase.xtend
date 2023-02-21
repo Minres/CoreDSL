@@ -1,35 +1,55 @@
 package com.minres.coredsl.tests
 
+import com.minres.coredsl.analysis.AnalysisResults
 import com.minres.coredsl.analysis.CoreDslAnalyzer
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.validation.ValidationMessageSink
 import java.util.ArrayList
 import java.util.List
 import java.util.regex.Pattern
+import org.eclipse.emf.common.util.EList
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.diagnostics.AbstractDiagnostic
 import org.eclipse.xtext.diagnostics.Diagnostic
 import org.eclipse.xtext.diagnostics.Severity
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.resource.XtextSyntaxDiagnostic
 import org.eclipse.xtext.validation.Issue.IssueImpl
 
 import static org.junit.jupiter.api.Assertions.*
 
-class CoreDslTestCase {
+class CoreDslTestCase<T> {
 	final static Pattern newLinePattern = Pattern.compile("\r?\n");
 
 	final String name;
 	final CharSequence program;
-	final DescriptionContent tree;
+	final DescriptionContent model;
+	final T root;
+	final int prologLines;
 	final List<IssueDescription> expectedIssues = new ArrayList();
 
 	boolean checkDiagnosticsOnly;
 	boolean hasRun;
 
-	new(String name, CharSequence program, DescriptionContent tree) {
+	new(String name, CharSequence program, DescriptionContent tree, T root) {
 		this.name = name;
 		this.program = program;
-		this.tree = tree;
+		this.model = tree;
+		this.root = root;
+		
+		var prologLines = 0;
+		switch(root) {
+			EList<?>: {
+				val node = NodeModelUtils.getNode(root.get(0) as EObject);
+				prologLines = NodeModelUtils.getLineAndColumn(node, node.offset).line - 1;
+			}
+			EObject: {
+				val node = NodeModelUtils.getNode(root);
+				prologLines = NodeModelUtils.getLineAndColumn(node, node.offset).line - 1;
+			}
+		}
+		this.prologLines = prologLines;
 	}
 
 	def diagnosticsOnly() {
@@ -38,7 +58,7 @@ class CoreDslTestCase {
 	}
 
 	def expectIssue(Severity severity, String code, int line) {
-		expectedIssues.add(new IssueDescription(severity, code, line));
+		expectedIssues.add(new IssueDescription(severity, code, line + prologLines));
 		return this;
 	}
 
@@ -82,16 +102,18 @@ class CoreDslTestCase {
 
 		printHeader();
 
-		val diagnosticsErrors = tree.eResource.errors.map[convertDiagnostic(it, Severity.ERROR)];
-		val diagnosticsWarnings = tree.eResource.warnings.map[convertDiagnostic(it, Severity.WARNING)];
+		val diagnosticsErrors = model.eResource.errors.map[convertDiagnostic(it, Severity.ERROR)];
+		val diagnosticsWarnings = model.eResource.warnings.map[convertDiagnostic(it, Severity.WARNING)];
 
 		var issues = new ArrayList();
 		issues.addAll(diagnosticsErrors);
 		issues.addAll(diagnosticsWarnings);
 
+		var AnalysisResults results = null;
+
 		if(!checkDiagnosticsOnly) {
 			val sink = new ValidationMessageSink();
-			CoreDslAnalyzer.analyze(tree, sink);
+			results = CoreDslAnalyzer.analyze(model, sink);
 			issues.addAll(sink.issues);
 		}
 
@@ -149,7 +171,7 @@ class CoreDslTestCase {
 
 		return issue;
 	}
-	
+
 	private static class IssueDescription {
 		val Severity severity;
 		val String code;
