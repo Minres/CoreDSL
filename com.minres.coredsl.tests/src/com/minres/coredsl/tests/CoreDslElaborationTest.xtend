@@ -63,8 +63,8 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectError(IssueCodes.DuplicateIsaStateElement)
-		.expectWarning(IssueCodes.DuplicateIsaStateElement)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 4)
+		.expectWarning(IssueCodes.DuplicateIsaStateElement, 1)
 		.run();
 		// error, warning: duplicate parameter in derived instruction set
 		'''
@@ -79,8 +79,8 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectError(IssueCodes.DuplicateIsaStateElement)
-		.expectWarning(IssueCodes.DuplicateIsaStateElement)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 8)
+		.expectWarning(IssueCodes.DuplicateIsaStateElement, 6)
 		.run();
 		// error, warning: duplicate parameter in core definition
 		'''
@@ -95,8 +95,8 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectError(IssueCodes.DuplicateIsaStateElement)
-		.expectWarning(IssueCodes.DuplicateIsaStateElement)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 8)
+		.expectWarning(IssueCodes.DuplicateIsaStateElement, 6)
 		.run();
 
 		// error, error: duplicate register within the same instruction set
@@ -108,8 +108,8 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectError(IssueCodes.DuplicateIsaStateElement)
-		.expectError(IssueCodes.DuplicateIsaStateElement)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 4)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 1)
 		.run();
 		// error, error: duplicate register in derived instruction set
 		'''
@@ -124,8 +124,8 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectError(IssueCodes.DuplicateIsaStateElement)
-		.expectError(IssueCodes.DuplicateIsaStateElement)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 8)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 6)
 		.run();
 		// error, error: duplicate register in core definition
 		'''
@@ -140,8 +140,8 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectError(IssueCodes.DuplicateIsaStateElement)
-		.expectError(IssueCodes.DuplicateIsaStateElement)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 8)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 6)
 		.run();
 
 		// error, error: duplicate extern within the same instruction set
@@ -153,8 +153,8 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectError(IssueCodes.DuplicateIsaStateElement)
-		.expectError(IssueCodes.DuplicateIsaStateElement)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 4)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 1)
 		.run();
 		// error, error: duplicate extern in derived instruction set
 		'''
@@ -169,8 +169,8 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectError(IssueCodes.DuplicateIsaStateElement)
-		.expectError(IssueCodes.DuplicateIsaStateElement)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 8)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 6)
 		.run();
 		// error, error: duplicate extern in core definition
 		'''
@@ -185,8 +185,8 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectError(IssueCodes.DuplicateIsaStateElement)
-		.expectError(IssueCodes.DuplicateIsaStateElement)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 8)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 6)
 		.run();
 	}
 
@@ -210,7 +210,7 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectWarning(IssueCodes.DuplicateIsaStateElement)
+		.expectWarning(IssueCodes.DuplicateIsaStateElement, 11)
 		.run();
 		// error: conflicting registers visible from the same core
 		'''
@@ -226,7 +226,7 @@ class CoreDslElaborationTest {
 			}
 			Core X provides A, B {}
 		'''.testProgram()
-		.expectError(IssueCodes.DuplicateIsaStateElement)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 11)
 		.run();
 		// error: conflicting externs visible from the same core
 		'''
@@ -242,7 +242,7 @@ class CoreDslElaborationTest {
 			}
 			Core X provides A, B {}
 		'''.testProgram()
-		.expectError(IssueCodes.DuplicateIsaStateElement)
+		.expectError(IssueCodes.DuplicateIsaStateElement, 11)
 		.run();
 	}
 
@@ -262,7 +262,7 @@ class CoreDslElaborationTest {
 			}
 			Core X provides A, B {}
 		'''.testProgram()
-		.expectError(IssueCodes.MismatchingIsaStateElementSignatures)
+		.expectError(IssueCodes.MismatchingIsaStateElementSignatures, 11)
 		.run();
 		// error: conflicting storage class (param, extern)
 		'''
@@ -278,7 +278,7 @@ class CoreDslElaborationTest {
 			}
 			Core X provides A, B {}
 		'''.testProgram()
-		.expectError(IssueCodes.MismatchingIsaStateElementSignatures)
+		.expectError(IssueCodes.MismatchingIsaStateElementSignatures, 11)
 		.run();
 		// error: conflicting storage class (register, extern)
 		'''
@@ -294,7 +294,7 @@ class CoreDslElaborationTest {
 			}
 			Core X provides A, B {}
 		'''.testProgram()
-		.expectError(IssueCodes.MismatchingIsaStateElementSignatures)
+		.expectError(IssueCodes.MismatchingIsaStateElementSignatures, 11)
 		.run();
 
 		// error: conflicting const qualifier
@@ -311,7 +311,7 @@ class CoreDslElaborationTest {
 			}
 			Core X provides A, B {}
 		'''.testProgram()
-		.expectError(IssueCodes.MismatchingIsaStateElementSignatures)
+		.expectError(IssueCodes.MismatchingIsaStateElementSignatures, 11)
 		.run();
 		// error: conflicting volatile qualifier
 		'''
@@ -327,7 +327,7 @@ class CoreDslElaborationTest {
 			}
 			Core X provides A, B {}
 		'''.testProgram()
-		.expectError(IssueCodes.MismatchingIsaStateElementSignatures)
+		.expectError(IssueCodes.MismatchingIsaStateElementSignatures, 11)
 		.run();
 
 		// error: conflicting types
@@ -344,7 +344,7 @@ class CoreDslElaborationTest {
 			}
 			Core X provides A, B {}
 		'''.testProgram()
-		.expectError(IssueCodes.MismatchingIsaStateElementSignatures)
+		.expectError(IssueCodes.MismatchingIsaStateElementSignatures, 11)
 		.run();
 		// error: conflicting types
 		'''
@@ -360,7 +360,7 @@ class CoreDslElaborationTest {
 			}
 			Core X provides A, B {}
 		'''.testProgram()
-		.expectError(IssueCodes.MismatchingIsaStateElementSignatures)
+		.expectError(IssueCodes.MismatchingIsaStateElementSignatures, 11)
 		.run();
 	}
 
@@ -374,7 +374,7 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectError(IssueCodes.InvalidIsaParameterDeclaration)
+		.expectError(IssueCodes.InvalidIsaParameterDeclaration, 3)
 		.run();
 	}
 
@@ -394,7 +394,7 @@ class CoreDslElaborationTest {
 			}
 			Core C provides A, B {}
 		'''.testProgram()
-		.expectWarning(IssueCodes.DuplicateIsaStateElement)
+		.expectWarning(IssueCodes.DuplicateIsaStateElement, 11)
 		.run();
 		
 		// warning: duplicate, but compatible parameter declarations
@@ -411,7 +411,7 @@ class CoreDslElaborationTest {
 			}
 			Core C provides A, B {}
 		'''.testProgram()
-		.expectWarning(IssueCodes.DuplicateIsaStateElement)
+		.expectWarning(IssueCodes.DuplicateIsaStateElement, 11)
 		.run();
 	}
 
@@ -426,7 +426,7 @@ class CoreDslElaborationTest {
 			}
 			Core X provides A {}
 		'''.testProgram()
-		.expectError(IssueCodes.UnassignedIsaParameter)
+		.expectError(IssueCodes.UnassignedIsaParameter, 6)
 		.run();
 		// error: dependency on unassigned value
 		'''
@@ -442,8 +442,8 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectError(IssueCodes.UnassignedIsaParameter)
-		.expectError(IssueCodes.IndeterminableIsaStateElementValue)
+		.expectError(IssueCodes.UnassignedIsaParameter, 7)
+		.expectError(IssueCodes.IndeterminableIsaStateElementValue, 7)
 		.run();
 		// error: cyclic value dependency
 		'''
@@ -460,7 +460,7 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectError(IssueCodes.IndeterminableIsaStateElementValue)
+		.expectError(IssueCodes.IndeterminableIsaStateElementValue, 7)
 		.run();
 	}
 
@@ -474,7 +474,7 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectError(IssueCodes.VoidDeclaration)
+		.expectError(IssueCodes.VoidDeclaration, 3)
 		.run();
 		// error: non-integral parameter type
 		'''
@@ -485,7 +485,7 @@ class CoreDslElaborationTest {
 				}
 			}
 		'''.testProgram()
-		.expectError(IssueCodes.InvalidIsaParameterType)
+		.expectError(IssueCodes.InvalidIsaParameterType, 4)
 		.run();
 		// error: cyclic type-value dependency
 		'''
@@ -498,8 +498,8 @@ class CoreDslElaborationTest {
 			}
 			Core X provides A {}
 		'''.testProgram()
-		.expectError(IssueCodes.IndeterminableIsaStateElementType)
-		.expectError(IssueCodes.IndeterminableIsaStateElementValue)
+		.expectError(IssueCodes.IndeterminableIsaStateElementType, 8)
+		.expectError(IssueCodes.IndeterminableIsaStateElementValue, 8)
 		.run();
 	}
 }
