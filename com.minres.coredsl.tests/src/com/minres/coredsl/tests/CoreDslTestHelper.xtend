@@ -2,10 +2,6 @@ package com.minres.coredsl.tests;
 
 import com.google.inject.Inject
 import com.minres.coredsl.coreDsl.DescriptionContent
-import com.minres.coredsl.coreDsl.FunctionDefinition
-import com.minres.coredsl.coreDsl.Instruction
-import com.minres.coredsl.coreDsl.Statement
-import org.eclipse.emf.common.util.EList
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -19,7 +15,7 @@ class CoreDslTestHelper {
 	var int testCount;
 
 	// decorators
-	def static CharSequence buildProgramFromFunction(CharSequence code) {
+	def static buildProgramFromFunction(CharSequence code) {
 		return '''
 			InstructionSet TestISA {
 				functions {
@@ -29,7 +25,7 @@ class CoreDslTestHelper {
 		''';
 	}
 
-	def static CharSequence buildProgramFromStatements(CharSequence code) {
+	def static buildProgramFromStatements(CharSequence code) {
 		return '''
 			InstructionSet TestISA {
 				functions {
@@ -41,7 +37,7 @@ class CoreDslTestHelper {
 		''';
 	}
 
-	def static CharSequence buildProgramFromInstruction(CharSequence code) {
+	def static buildProgramFromInstruction(CharSequence code) {
 		return '''
 			InstructionSet TestISA {
 				instructions {
@@ -52,36 +48,36 @@ class CoreDslTestHelper {
 	}
 
 	// selectors
-	def static FunctionDefinition selectFunctionFromProgram(DescriptionContent desc) {
+	def static selectFunctionFromProgram(DescriptionContent desc) {
 		return desc.definitions.get(0).functions.get(0);
 	}
 
-	def static EList<Statement> selectStatementsFromProgram(DescriptionContent desc) {
+	def static selectStatementsFromProgram(DescriptionContent desc) {
 		return desc.definitions.get(0).functions.get(0).body.statements;
 	}
 
-	def static Instruction selectInstructionFromProgram(DescriptionContent desc) {
+	def static selectInstructionFromProgram(DescriptionContent desc) {
 		return desc.definitions.get(0).instructions.get(0);
 	}
 
 	// parse helpers
-	def FunctionDefinition parseAsFunction(CharSequence code) {
+	def parseAsFunction(CharSequence code) {
 		return parse(code, [buildProgramFromFunction], [selectFunctionFromProgram]);
 	}
 
-	def EList<Statement> parseAsStatements(CharSequence code) {
+	def parseAsStatements(CharSequence code) {
 		return parse(code, [buildProgramFromStatements], [selectStatementsFromProgram]);
 	}
 
-	def Instruction parseAsInstruction(CharSequence code) {
+	def parseAsInstruction(CharSequence code) {
 		return parse(code, [buildProgramFromInstruction], [selectInstructionFromProgram]);
 	}
 
-	def Statement parseAsStatement(CharSequence code) {
+	def parseAsStatement(CharSequence code) {
 		return code.parseAsStatements().get(0);
 	}
 
-	def private <T> T parse(CharSequence code, (CharSequence)=>CharSequence decorator,
+	def private <T> parse(CharSequence code, (CharSequence)=>CharSequence decorator,
 		(DescriptionContent)=>T rootSelector) {
 		val program = decorator.apply(code);
 		val model = parseHelper.parse(program);
