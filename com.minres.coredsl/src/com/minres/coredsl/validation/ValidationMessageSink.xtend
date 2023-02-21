@@ -40,7 +40,7 @@ class ValidationMessageSink implements ValidationMessageAcceptor {
 				startOffset = featureNodes.get(0).offset;
 				endOffset = featureNodes.last.endOffset;
 			}
-			if(index < featureNodes.size) {
+			else if(index < featureNodes.size) {
 				val childNode = featureNodes.get(index);
 				startOffset = childNode.offset;
 				endOffset = childNode.endOffset;
