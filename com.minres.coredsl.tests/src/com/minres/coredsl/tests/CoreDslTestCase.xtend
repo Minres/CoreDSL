@@ -64,7 +64,7 @@ class CoreDslTestCase {
 		val format = '''%«digits»d| %s''';
 
 		for (var i = 0; i < lines.length; i++) {
-			println(String.format(format, i + 1, lines.get(i)));
+			println(String.format(format, i + 1, lines.get(i).replace("\t", "  ")));
 		}
 	}
 
