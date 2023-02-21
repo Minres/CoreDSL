@@ -28,6 +28,7 @@ import java.util.regex.Pattern
 class CoreDslTestHelper {
 
 	@Inject extension ParseHelper<DescriptionContent> parseHelper;
+	var int testCount;
 
 	def String buildProgramFromFunction(CharSequence str) {
 		return '''
@@ -76,25 +77,47 @@ class CoreDslTestHelper {
 	def Statement parseAsStatement(CharSequence str) {
 		return str.parseAsStatements().get(0);
 	}
-
+	
+	def private generateTestName() {
+		val method = new Throwable().stackTrace.get(2).methodName;
+		testCount++;
+		return '''«method» «testCount»''';
+	}
+	
 	def testProgram(CharSequence program) {
-		return createTestCase(program);
+		return testProgram(program, generateTestName());
+	}
+	
+	def testFunction(CharSequence program) {
+		return testFunction(program, generateTestName());
+	}
+	
+	def testStatements(CharSequence program) {
+		return testStatements(program, generateTestName());
+	}
+	
+	def testInstruction(CharSequence program) {
+		return testInstruction(program, generateTestName());
 	}
 
-	def testFunction(CharSequence function) {
-		return createTestCase(function.buildProgramFromFunction());
+	def testProgram(CharSequence program, String name) {
+		return createTestCase(name, program);
 	}
 
-	def testStatements(CharSequence statements) {
-		return createTestCase(statements.buildProgramFromStatements());
+	def testFunction(CharSequence function, String name) {
+		return createTestCase(name, function.buildProgramFromFunction());
 	}
 
-	def testInstruction(CharSequence instruction) {
-		return createTestCase(instruction.buildProgramFromInstruction());
+	def testStatements(CharSequence statements, String name) {
+		return createTestCase(name, statements.buildProgramFromStatements());
 	}
 
-	def private createTestCase(CharSequence program) {
-		return new TestCase(program, program.parse());
+	def testInstruction(CharSequence instruction, String name) {
+		return createTestCase(name, instruction.buildProgramFromInstruction());
+	}
+
+	def private createTestCase(String name, CharSequence program) {
+		return new TestCase(name, program, program.parse());
 	}
 
 	private static class IssueDescription {
@@ -112,6 +135,7 @@ class CoreDslTestHelper {
 	static class TestCase {
 		final static Pattern newLinePattern = Pattern.compile("\r?\n");
 		
+		final String name;
 		final CharSequence program;
 		final DescriptionContent tree;
 		final List<IssueDescription> expectedIssues = new ArrayList();
@@ -119,7 +143,8 @@ class CoreDslTestHelper {
 		boolean checkDiagnosticsOnly;
 		boolean hasRun;
 
-		new(CharSequence program, DescriptionContent treer) {
+		new(String name, CharSequence program, DescriptionContent tree) {
+			this.name = name;
 			this.program = program;
 			this.tree = tree;
 		}
@@ -159,14 +184,20 @@ class CoreDslTestHelper {
 				println(String.format(format, i + 1, lines.get(i)));
 			}
 		}
+		
+		private def printHeader() {
+			println("========================================");
+			println(String.format('''%«20+name.length/2»s''', name));
+			println("========================================");
+			printProgram();
+			println();
+		}
 
 		def run() {
 			if(hasRun) return;
 			hasRun = true;
 
-			println("====================================");
-			printProgram();
-			println();
+			printHeader();
 
 			val diagnosticsErrors = tree.eResource.errors.map[convertDiagnostic(it, Severity.ERROR)];
 			val diagnosticsWarnings = tree.eResource.warnings.map[convertDiagnostic(it, Severity.WARNING)];
