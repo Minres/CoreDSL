@@ -37,6 +37,10 @@ class XtCoreDslLabelProvider extends CoreDslLabelProvider {
         'ISA ' + isa.name
     }
 
+//    def text(DeclarationStatement declStmt) {
+//        decl.declarators.map[it.name].join(', ')
+//    }
+
     def text(Declaration decl) {
         decl.declarators.map[it.name].join(', ')
     }
