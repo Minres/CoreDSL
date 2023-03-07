@@ -625,6 +625,25 @@ class CoreDslAnalyzer {
 					ctx.acceptError("Cannot implicitly convert " + valueType + " to " + type, declarator,
 						CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
 				}
+			} else if(type.isArrayType) {
+				val listInitializer = initializer as ListInitializer;
+				val arrayType = type as ArrayType;
+				if (arrayType.count != listInitializer.initializers.size)
+					ctx.acceptError("List initializer size does not match array size", declarator,
+						CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
+				for (subInitializer : listInitializer.initializers) {
+					if(subInitializer instanceof ExpressionInitializer) {
+						val expressionInitializer = subInitializer as ExpressionInitializer;
+						val valueType = analyzeExpression(ctx, expressionInitializer.value);
+						if(!CoreDslTypeProvider.canImplicitlyConvert(valueType, arrayType.elementType)) {
+							ctx.acceptError("Cannot implicitly convert " + valueType + " to " + arrayType.elementType, declarator,
+							CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
+						}
+					} else {
+						ctx.acceptError("Nested listed initializers are currently unsupported", declarator,
+							CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.UnsupportedLanguageFeature);
+					}
+				}
 			} else if(type.isStructType) {
 				// TODO list initializers
 				ctx.acceptError("List initializers are currently unsupported ", declarator,
