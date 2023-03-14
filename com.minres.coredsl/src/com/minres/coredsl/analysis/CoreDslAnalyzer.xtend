@@ -248,7 +248,7 @@ class CoreDslAnalyzer {
 				ctx.acceptWarning("Unreachable code", nested, null, -1, IssueCodes.UnreachableCode)
 			}
 
-			if(nested instanceof ReturnStatement) {
+			if(isReturnTerminated(nested)) {
 				unreachable = true;
 			}
 		}
@@ -397,7 +397,7 @@ class CoreDslAnalyzer {
 		} else if(!returnType.isVoid && statement.value === null) {
 			ctx.acceptError("Non-void functions must return a value", statement,
 				CoreDslPackage.Literals.RETURN_STATEMENT__TRETURN, -1, IssueCodes.ReturnWithoutValueInNonVoidFunction);
-		} else if(!CoreDslTypeProvider.canImplicitlyConvert(valueType, returnType)) {
+		} else if(valueType !== null && !CoreDslTypeProvider.canImplicitlyConvert(valueType, returnType)) {
 			ctx.acceptError("Cannot convert from " + valueType + " to " + returnType, statement,
 				CoreDslPackage.Literals.RETURN_STATEMENT__TRETURN, -1, IssueCodes.ReturnTypeNotConvertible);
 		}
@@ -490,6 +490,9 @@ class CoreDslAnalyzer {
 	}
 
 	def static dispatch CoreDslType analyzeTypeDeclaration(AnalysisContext ctx, CompositeTypeDeclaration declaration) {
+		if(ctx.isUserTypeInstanceSet(declaration))
+			return ctx.getUserTypeInstance(declaration);
+		
 		val fields = new ArrayList<Declarator>();
 		var int bitSize = 0;
 
@@ -662,7 +665,7 @@ class CoreDslAnalyzer {
 				// TODO list initializers
 				ctx.acceptError("List initializers are currently unsupported ", declarator,
 					CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.UnsupportedLanguageFeature);
-			} else {
+			} else if(!type.isError) {
 				ctx.acceptError("Cannot use list initializer to initialize value of type " + type, declarator,
 					CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidListInitializer);
 			}
@@ -750,6 +753,8 @@ class CoreDslAnalyzer {
 				analyzeAliasSource(ctx, declarator, expression.target);
 				val targetType = ctx.getExpressionType(expression.target);
 				val indexValue = ctx.getExpressionValue(expression.index);
+				
+				if(!targetType.isValid) return;
 
 				if(indexValue.isValid) {
 					if(targetType instanceof ArrayType) {

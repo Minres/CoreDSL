@@ -5,25 +5,28 @@ import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.ISA
+import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.NamedEntity
 import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.coreDsl.UserTypeDeclaration
 import com.minres.coredsl.type.CoreDslType
 import com.minres.coredsl.type.FunctionType
 import com.minres.coredsl.util.CompilerAssertion
+import com.minres.coredsl.validation.IssueCodes
 import java.util.HashMap
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.validation.ValidationMessageAcceptor
-import com.minres.coredsl.validation.IssueCodes
 
 class AnalysisContext extends ProxyMessageAcceptor {
 	
 	public val ISA root;
+	public val boolean isPartialAnalysis;
 
 	new(ISA root, ValidationMessageAcceptor acceptor) {
 		super(acceptor, root, root, CoreDslPackage.Literals.ISA__NAME, -1);
 		this.root = root;
+		this.isPartialAnalysis = root instanceof InstructionSet;
 	}
 	
 	// /////////////////////////////////////////////////////////////////////////
@@ -38,7 +41,7 @@ class AnalysisContext extends ProxyMessageAcceptor {
 	def getDeclaredType(NamedEntity entity) { _getType(entity) }
 	def setDeclaredType(NamedEntity entity, CoreDslType type) {
 		if(CoreDslAnalyzer.emitDebugInfo) {
-			acceptInfo("Type: " + (type.isValid ? type.toString() : "invalid"), entity, CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.DebugInfo);
+			acceptInfo("Type: " + type, entity, CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.DebugInfo);
 		}
 		_setType(entity, type)
 	}
