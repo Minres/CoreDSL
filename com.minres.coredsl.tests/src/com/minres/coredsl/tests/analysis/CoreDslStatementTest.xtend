@@ -55,4 +55,53 @@ class CoreDslStatementTest {
 		.expectWarning(IssueCodes.UnreachableCode, 5)
 		.run();
 	}
+
+	@Test
+	def void expressionStatement() {
+		'''
+			int arr[1];
+			int x = 0;
+			
+			0;
+			x;
+			sizeof(x);
+			(0);
+			(int)0;
+			0::0;
+			0?0:0;
+			0+0;
+			arr[0];
+			-0;
+			+0;
+			~0;
+			!0;
+		'''.testStatements()
+		.expectError(IssueCodes.InvalidStatementExpression, 4)
+		.expectError(IssueCodes.InvalidStatementExpression, 5)
+		.expectError(IssueCodes.InvalidStatementExpression, 6)
+		.expectError(IssueCodes.InvalidStatementExpression, 7)
+		.expectError(IssueCodes.InvalidStatementExpression, 8)
+		.expectError(IssueCodes.InvalidStatementExpression, 9)
+		.expectError(IssueCodes.InvalidStatementExpression, 10)
+		.expectError(IssueCodes.InvalidStatementExpression, 11)
+		.expectError(IssueCodes.InvalidStatementExpression, 12)
+		.expectError(IssueCodes.InvalidStatementExpression, 13)
+		.expectError(IssueCodes.InvalidStatementExpression, 14)
+		.expectError(IssueCodes.InvalidStatementExpression, 15)
+		.expectError(IssueCodes.InvalidStatementExpression, 16)
+		.run();
+		
+		'''
+			int arr[1];
+			int x;
+			
+			x = 0;
+			++x;
+			--x;
+			x++;
+			x--;
+			testFunc();
+		'''.testStatements()
+		.run();
+	}
 }
