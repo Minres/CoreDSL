@@ -559,7 +559,9 @@ class CoreDslAnalyzer {
 	/**
 	 * 1. Const declarators must be initialized. <i>(UninitializedConstant)</i><br>
 	 * 2. Alias declarators must fulfill additional requirements.<br>
-	 * 3. If the declarator uses an expression initializer, the expression's type must be implicitly convertible to the declarator's type. <i>(InvalidAssignmentType)</i><br>
+	 * 3a. If the declarator uses an expression initializer, the expression's type must be implicitly convertible to the declarator's type. <i>(InvalidAssignmentType)</i><br>
+	 * 3b. If an array declarator uses a list initializer, the number of elements in the array type must match the number of elements in the initializer,
+	 *     and all elements must be implicitly convertible to array's element type. <i>(InvalidAssignmentType)</i><br>
 	 * 4. ISA parameters must not be declared as arrays. <i>(InvalidIsaParameterDeclaration)</i><br>
 	 * 5. Array dimension specifiers must be non-negative constant values. <i>(InvalidArraySize)</i><br>
 	 * 6. [Warning] Array dimension specifiers should not be zero. <i>(InvalidArraySize)</i>
@@ -624,6 +626,27 @@ class CoreDslAnalyzer {
 				if(!CoreDslTypeProvider.canImplicitlyConvert(valueType, type)) {
 					ctx.acceptError("Cannot implicitly convert " + valueType + " to " + type, declarator,
 						CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
+				}
+			} else if(type.isArrayType) {
+				val listInitializer = initializer as ListInitializer;
+				val arrayType = type as ArrayType;
+				if (arrayType.count != listInitializer.initializers.size)
+					ctx.acceptError("List initializer size does not match array size", declarator,
+						CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
+				for (subInitializer : listInitializer.initializers) {
+					if(subInitializer instanceof ExpressionInitializer) {
+						val valueType = analyzeExpression(ctx, subInitializer.value);
+						if(!CoreDslTypeProvider.canImplicitlyConvert(valueType, arrayType.elementType)) {
+							ctx.acceptError("Cannot implicitly convert " + valueType + " to " + arrayType.elementType, declarator,
+							CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
+						}
+						if(isIsaStateElement) {
+							CoreDslConstantExpressionEvaluator.evaluate(ctx, subInitializer.value);
+						}
+					} else {
+						ctx.acceptError("Nested list initializers are unsupported", declarator,
+							CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.UnsupportedLanguageFeature);
+					}
 				}
 			} else if(type.isStructType) {
 				// TODO list initializers
