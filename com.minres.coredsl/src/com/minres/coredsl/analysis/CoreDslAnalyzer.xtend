@@ -1,5 +1,6 @@
 package com.minres.coredsl.analysis
 
+import com.minres.coredsl.coreDsl.AlwaysBlock
 import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BoolConstant
@@ -128,6 +129,11 @@ class CoreDslAnalyzer {
 		for (instruction : isa.instructions) {
 			analyzeInstruction(ctx, instruction);
 		}
+
+		// always blocks
+		for (alwaysBlock : isa.alwaysBlocks) {
+			analyzeAlwaysBlock(ctx, alwaysBlock);
+		}
 	}
 
 	/**
@@ -224,6 +230,10 @@ class CoreDslAnalyzer {
 				ctx.setDeclaredType(field, type);
 			}
 		}
+	}
+
+	def static analyzeAlwaysBlock(AnalysisContext ctx, AlwaysBlock alwaysBlock) {
+		analyzeStatement(ctx, alwaysBlock.behavior);
 	}
 
 	// //////////////////////////////////////////////////////////////////////////

@@ -17,7 +17,8 @@ CoreDef: 'Core' name=ID ( 'provides' providedInstructionSets+=[InstructionSet] (
 fragment ISA:
 	('architectural_state' '{' (archStateBody+=DeclarationStatement | archStateBody+=ExpressionStatement | typeDeclarations+=UserTypeDeclaration)+ '}')? &
 	('functions' '{' functions+=FunctionDefinition+ '}')? &
-	('instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}')?;
+	('instructions' commonInstructionAttributes+=Attribute* '{' instructions+=Instruction+ '}')? &
+	('always' commonAlwaysBlockAttributes+=Attribute* '{' alwaysBlocks+=AlwaysBlock+ '}')?;
 
 FunctionDefinition:
     extern?='extern'
@@ -35,6 +36,9 @@ Instruction:
 		('assembly' ':' assembly=STRING ';')?
 		('behavior' ':' behavior=Statement)
 	'}';
+
+AlwaysBlock:
+	name=ID attributes+=Attribute* '{' behavior=Statement '}';
 
 Encoding: fields+=EncodingField ('::' fields+=EncodingField)*;
 EncodingField: BitValue | BitField;
