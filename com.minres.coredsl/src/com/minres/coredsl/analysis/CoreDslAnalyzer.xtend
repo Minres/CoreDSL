@@ -560,7 +560,7 @@ class CoreDslAnalyzer {
 	 * 1. Const declarators must be initialized. <i>(UninitializedConstant)</i><br>
 	 * 2. Alias declarators must fulfill additional requirements.<br>
 	 * 3a. If the declarator uses an expression initializer, the expression's type must be implicitly convertible to the declarator's type. <i>(InvalidAssignmentType)</i><br>
-	 * 3b. If an array declarator uses an list initializer, the number of elements in the array type must match the number of elements in the initializer,
+	 * 3b. If an array declarator uses a list initializer, the number of elements in the array type must match the number of elements in the initializer,
 	 *     and all elements must be implicitly convertible to array's element type. <i>(InvalidAssignmentType)</i><br>
 	 * 4. ISA parameters must not be declared as arrays. <i>(InvalidIsaParameterDeclaration)</i><br>
 	 * 5. Array dimension specifiers must be non-negative constant values. <i>(InvalidArraySize)</i><br>
@@ -635,8 +635,7 @@ class CoreDslAnalyzer {
 						CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
 				for (subInitializer : listInitializer.initializers) {
 					if(subInitializer instanceof ExpressionInitializer) {
-						val expressionInitializer = subInitializer as ExpressionInitializer;
-						val valueType = analyzeExpression(ctx, expressionInitializer.value);
+						val valueType = analyzeExpression(ctx, subInitializer.value);
 						if(!CoreDslTypeProvider.canImplicitlyConvert(valueType, arrayType.elementType)) {
 							ctx.acceptError("Cannot implicitly convert " + valueType + " to " + arrayType.elementType, declarator,
 							CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
@@ -645,7 +644,7 @@ class CoreDslAnalyzer {
 							CoreDslConstantExpressionEvaluator.evaluate(ctx, subInitializer.value);
 						}
 					} else {
-						ctx.acceptError("Nested listed initializers are currently unsupported", declarator,
+						ctx.acceptError("Nested list initializers are unsupported", declarator,
 							CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.UnsupportedLanguageFeature);
 					}
 				}
