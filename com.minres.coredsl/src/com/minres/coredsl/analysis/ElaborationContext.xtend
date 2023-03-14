@@ -36,7 +36,7 @@ class ElaborationContext extends ProxyMessageAcceptor {
 	
 	static interface CalculationJob {
 		/** @returns true, if the job was successful and can be removed from the queue */
-		def boolean tryCalculate();
+		def boolean tryCalculate(boolean failed);
 	}
 
 	public val ISA root;

@@ -18,7 +18,9 @@ import com.minres.coredsl.coreDsl.StructTypeDeclaration
 import com.minres.coredsl.coreDsl.UnionTypeDeclaration
 import com.minres.coredsl.type.ArrayType
 import com.minres.coredsl.type.CompositeType
+import com.minres.coredsl.type.CoreDslType
 import com.minres.coredsl.type.EnumType
+import com.minres.coredsl.type.ErrorType
 import com.minres.coredsl.type.IntegerType
 import com.minres.coredsl.util.CompilerAssertion
 import com.minres.coredsl.validation.IssueCodes
@@ -47,8 +49,9 @@ class CoreDslElaborator {
 		val ctx = new ElaborationContext(isa, acceptor);
 
 		buildElaborationOrder(ctx, isa);
-		CoreDslElaborator.gatherCalculationJobs(ctx);
-		CoreDslElaborator.processCalculationQueue(ctx);
+		gatherCalculationJobs(ctx);
+		processCalculationQueue(ctx);
+		handleFailedJobs(ctx);
 		validateResults(ctx);
 		checkDuplicateDeclarations(ctx);
 
@@ -154,7 +157,7 @@ class CoreDslElaborator {
 			if(declarator.initializer instanceof ExpressionInitializer && !declarator.isAlias) {
 				val expr = (declarator.initializer as ExpressionInitializer).value;
 				info.assignments.add(expr);
-				
+
 				enqueueAssignmentEvaluationJob(ctx, info, expr);
 			}
 
@@ -166,7 +169,7 @@ class CoreDslElaborator {
 
 	def private static void processIsaLevelAssignment(ElaborationContext ctx, ExpressionStatement statement) {
 		val analysisContext = ctx.analysisContext;
-		
+
 		val assignment = statement.expression.castOrNull(AssignmentExpression);
 		val reference = assignment?.target.castOrNull(EntityReference);
 		val declarator = reference?.target.castOrNull(Declarator);
@@ -303,9 +306,9 @@ class CoreDslElaborator {
 
 	def private static void enqueueDeclarationTypeJob(ElaborationContext ctx, Declaration declaration) {
 		val analysisContext = ctx.analysisContext;
-		ctx.calculationQueue.add([
+		ctx.calculationQueue.add([ failed |
 			val type = CoreDslTypeProvider.getSpecifiedType(analysisContext, declaration.type);
-			if(type.isIndeterminate) return false;
+			if(type.isIndeterminate && !failed) return false;
 
 			for (declarator : declaration.declarators) {
 				// array declarators have their own job, so we don't set their type here
@@ -320,37 +323,50 @@ class CoreDslElaborator {
 
 	def private static void enqueueArrayDeclaratorJob(ElaborationContext ctx, Declarator declarator) {
 		val analysisContext = ctx.analysisContext;
-		ctx.calculationQueue.add([
-			if(!analysisContext.isSpecifiedTypeSet(declarator.type))
+		ctx.calculationQueue.add([ failed |
+			var CoreDslType type;
+			if(analysisContext.isSpecifiedTypeSet(declarator.type)) {
+				type = analysisContext.getSpecifiedType(declarator.type);
+			} else if(failed) {
+				type = ErrorType.indeterminate;
+			} else {
 				return false;
-			
-			var type = analysisContext.getSpecifiedType(declarator.type);
-			
+			}
+
 			// process size specifiers from right (innermost) to left (outermost)
-			for(var i = declarator.dimensions.size - 1; i >= 0; i--) {
+			for (var i = declarator.dimensions.size - 1; i >= 0; i--) {
 				val expression = declarator.dimensions.get(i);
 				val value = CoreDslConstantExpressionEvaluator.evaluate(analysisContext, expression);
-				
-				if(value.isError) return false;
-				
-				type = new ArrayType(type, value.value.intValueExact());
+
+				if(value.isValid) {
+					val intValue = value.value.intValueExact();
+					if(intValue < 0) {
+						type = ArrayType.ofUnknownSize(type);
+					} else {
+						type = new ArrayType(type, intValue);
+					}
+				} else if(failed) {
+					type = ArrayType.ofUnknownSize(type);
+				} else {
+					return false;
+				}
 			}
-			
+
 			analysisContext.setDeclaredType(declarator, type);
-			
+
 			return true;
 		]);
 	}
 
-	def private static void enqueueAssignmentEvaluationJob(ElaborationContext ctx, ElaborationContext.ElaborationDeclarationInfo info,
-		Expression expression) {
+	def private static void enqueueAssignmentEvaluationJob(ElaborationContext ctx,
+		ElaborationContext.ElaborationDeclarationInfo info, Expression expression) {
 		val analysisContext = ctx.analysisContext;
-		ctx.calculationQueue.add([
+		ctx.calculationQueue.add([ failed |
 			val value = CoreDslConstantExpressionEvaluator.evaluate(analysisContext, expression);
-			if(value.isIndeterminate) return false;
+			if(value.isIndeterminate && !failed) return false;
 
 			if(info.isEffectiveAssignment(expression)) {
-				for(declarator : info.declarators) {
+				for (declarator : info.declarators) {
 					analysisContext.setConstantValue(declarator, value);
 				}
 			}
@@ -366,9 +382,9 @@ class CoreDslElaborator {
 			val initializer = member.initializer as ExpressionInitializer;
 
 			// calculate member value based on initializer
-			ctx.calculationQueue.add([
+			ctx.calculationQueue.add([ failed |
 				val value = CoreDslConstantExpressionEvaluator.evaluate(analysisContext, initializer.value);
-				if(value.isIndeterminate) return false;
+				if(value.isIndeterminate && !failed) return false;
 
 				analysisContext.setConstantValue(member, value);
 
@@ -384,25 +400,31 @@ class CoreDslElaborator {
 
 					// calculate value based on predecessor and offset
 					val offset = BigInteger.valueOf(memberIndex - i);
-					ctx.calculationQueue.add([
-						if(!analysisContext.isConstantValueSet(predecessor))
-							return false;
+					ctx.calculationQueue.add([ failed |
+						if(!analysisContext.isConstantValueSet(predecessor)) {
+							if(failed) {
+								analysisContext.setConstantValue(member, ConstantValue.indeterminate);
+								return true;
+							} else {
+								return false;
+							}
+						}
 
 						val predecessorValue = analysisContext.getConstantValue(predecessor);
-						if(predecessorValue.isInvalid) {
-							analysisContext.setConstantValue(member, ConstantValue.invalid);
+						if(predecessorValue.isInvalid || failed && predecessorValue.isIndeterminate) {
+							analysisContext.setConstantValue(member, predecessorValue);
 							return true;
 						}
 
 						CompilerAssertion.assertThat(predecessorValue.isValid,
-							"Value should never be set as indeterminate");
+							"Value should never be set as indeterminate unless the failed flag is set");
 
 						val value = new ConstantValue(predecessorValue.value + offset);
 						analysisContext.setConstantValue(member, value);
 
 						return true;
 					]);
-					
+
 					return;
 				}
 			}
@@ -414,17 +436,19 @@ class CoreDslElaborator {
 
 	def private static dispatch void enqueueTypeDeclarationJob(ElaborationContext ctx, EnumTypeDeclaration typeDecl) {
 		val analysisContext = ctx.analysisContext;
-		ctx.calculationQueue.add([
-			if(typeDecl.members.any[!analysisContext.isConstantValueSet(it)])
-				return false;
+		ctx.calculationQueue.add([ failed |
 
 			// find the smallest integer type able to hold all enum values
 			var intType = IntegerType.unsigned(1);
 			for (member : typeDecl.members) {
-				val value = analysisContext.getConstantValue(member);
-				if(value.isValid) {
-					intType = CoreDslTypeProvider.getSmallestCommonType(intType,
-						CoreDslTypeProvider.getSmallestTypeForValue(value.value));
+				if(analysisContext.isConstantValueSet(member)) {
+					val value = analysisContext.getConstantValue(member);
+					if(value.isValid) {
+						intType = CoreDslTypeProvider.getSmallestCommonType(intType,
+							CoreDslTypeProvider.getSmallestTypeForValue(value.value));
+					}
+				} else if(!failed) {
+					return false;
 				}
 			}
 
@@ -441,22 +465,23 @@ class CoreDslElaborator {
 
 	def private static dispatch void enqueueTypeDeclarationJob(ElaborationContext ctx, StructTypeDeclaration typeDecl) {
 		val analysisContext = ctx.analysisContext;
-		ctx.calculationQueue.add([
+		ctx.calculationQueue.add([ failed |
 			val members = typeDecl.members.flatMap[it.declarators].toList();
 			val fieldOffsets = new ArrayList(members.size);
 
 			// TODO consider field alignment
 			var totalSize = BigInteger.ZERO;
 			for (member : members) {
-				if(!analysisContext.isDeclaredTypeSet(member))
+				if(analysisContext.isDeclaredTypeSet(member)) {
+					val type = analysisContext.getDeclaredType(member);
+					fieldOffsets.add(totalSize);
+
+					// ignore invalid members
+					if(type.isValid) {
+						totalSize += BigInteger.valueOf(type.bitSize);
+					}
+				} else if(!failed) {
 					return false;
-
-				val type = analysisContext.getDeclaredType(member);
-				fieldOffsets.add(totalSize);
-
-				// ignore invalid members
-				if(type.isValid) {
-					totalSize += BigInteger.valueOf(type.bitSize);
 				}
 			}
 
@@ -473,19 +498,20 @@ class CoreDslElaborator {
 
 	def private static dispatch void enqueueTypeDeclarationJob(ElaborationContext ctx, UnionTypeDeclaration typeDecl) {
 		val analysisContext = ctx.analysisContext;
-		ctx.calculationQueue.add([
+		ctx.calculationQueue.add([ failed |
 			val members = typeDecl.members.flatMap[it.declarators].toList();
 
 			var maxSize = BigInteger.ZERO;
 			for (member : members) {
-				if(!analysisContext.isDeclaredTypeSet(member))
+				if(analysisContext.isDeclaredTypeSet(member)) {
+					val type = analysisContext.getDeclaredType(member);
+
+					// ignore invalid members
+					if(type.isValid) {
+						maxSize = maxSize.max(BigInteger.valueOf(type.bitSize));
+					}
+				} else if(!failed) {
 					return false;
-
-				val type = analysisContext.getDeclaredType(member);
-
-				// ignore invalid members
-				if(type.isValid) {
-					maxSize = maxSize.max(BigInteger.valueOf(type.bitSize));
 				}
 			}
 
@@ -506,7 +532,7 @@ class CoreDslElaborator {
 
 		while(true) {
 			for (job : ctx.calculationQueue) {
-				if(job.tryCalculate())
+				if(job.tryCalculate(false))
 					completed.add(job);
 			}
 
@@ -517,6 +543,14 @@ class CoreDslElaborator {
 			} else {
 				ctx.calculationQueue.removeAll(completed);
 				completed.clear();
+			}
+		}
+	}
+
+	def static handleFailedJobs(ElaborationContext ctx) {
+		for (failedJob : ctx.calculationQueue) {
+			if(!failedJob.tryCalculate(true)) {
+				CompilerAssertion.fail("failed to clean up failed job");
 			}
 		}
 	}
@@ -534,7 +568,7 @@ class CoreDslElaborator {
 
 		for (info : ctx.declInfo.values) {
 			val effectiveDeclarator = info.declarators.last;
-				
+
 			if(info.assignments.empty) {
 				if(analysisContext.getStorageClass(info.declarators.get(0)) === StorageClass.param) {
 					unassignedParameters.add(info.name);
@@ -542,16 +576,14 @@ class CoreDslElaborator {
 			} else if(analysisContext.isConstantValueSet(effectiveDeclarator)) {
 				val value = analysisContext.getConstantValue(effectiveDeclarator);
 				if(value.isInvalid) invalidValues.add(info.name);
-			}
-			else {
+			} else {
 				indeterminableValues.add(info.name);
 			}
 
 			if(analysisContext.isDeclaredTypeSet(effectiveDeclarator)) {
 				val type = analysisContext.getDeclaredType(effectiveDeclarator);
 				if(type.isInvalid) invalidTypes.add(info.name);
-			}
-			else {
+			} else {
 				indeterminableTypes.add(info.name);
 			}
 		}
