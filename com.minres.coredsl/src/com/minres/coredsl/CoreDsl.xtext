@@ -8,7 +8,7 @@ generate coreDsl "http://www.minres.com/coredsl/CoreDsl/2.0"
 //////////////////////////////// Top Level Definitions ////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 
-DescriptionContent: (imports+=Import)* definitions+=(InstructionSet | CoreDef)+;
+DescriptionContent: (imports+=Import)* definitions+=(InstructionSet | CoreDef)*;
 Import: 'import' importURI=STRING;
 
 InstructionSet: 'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' ISA '}';
