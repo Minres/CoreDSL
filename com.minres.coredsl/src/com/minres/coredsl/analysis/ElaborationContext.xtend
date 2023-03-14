@@ -57,12 +57,6 @@ class ElaborationContext extends ProxyMessageAcceptor {
 		analysisContext = new AnalysisContext(root, acceptor);
 	}
 
-	override getErrorDescription(EObject object) {
-		val isa = object.ancestorOfTypeOrSelf(ISA);
-		if(isa === null) return "Error";
-		return "Error in instruction set " + isa.name;
-	}
-
 	def isInElaborationScope(EObject obj) {
 		return obj.ancestorOfType(ISA) == root;
 	}
