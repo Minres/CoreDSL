@@ -18,6 +18,7 @@ import org.eclipse.xtext.resource.XtextSyntaxDiagnostic
 import org.eclipse.xtext.validation.Issue.IssueImpl
 
 import static org.junit.jupiter.api.Assertions.*
+import com.minres.coredsl.validation.IssueCodes
 
 class CoreDslTestCase<T> {
 	final static Pattern newLinePattern = Pattern.compile("\r?\n");
@@ -30,6 +31,7 @@ class CoreDslTestCase<T> {
 	final List<IssueDescription> expectedIssues = new ArrayList();
 
 	boolean checkDiagnosticsOnly;
+	boolean isGenericSyntaxTest;
 	boolean hasRun;
 
 	new(String name, CharSequence program, DescriptionContent tree, T root) {
@@ -37,9 +39,9 @@ class CoreDslTestCase<T> {
 		this.program = program;
 		this.model = tree;
 		this.root = root;
-		
+
 		var prologLines = 0;
-		switch(root) {
+		switch (root) {
 			EList<?>: {
 				val node = NodeModelUtils.getNode(root.get(0) as EObject);
 				prologLines = NodeModelUtils.getLineAndColumn(node, node.offset).line - 1;
@@ -76,6 +78,11 @@ class CoreDslTestCase<T> {
 
 	def expectWarning(String code) {
 		return expectWarning(code, -1);
+	}
+
+	def expectSyntaxErrors() {
+		isGenericSyntaxTest = true;
+		return this;
 	}
 
 	private def printProgram() {
@@ -124,6 +131,7 @@ class CoreDslTestCase<T> {
 		for (issue : actualIssues) {
 			println('''  «issue.severity»: «issue.code» [line «issue.lineNumber»] («issue.message»)''');
 		}
+
 		println("Expected:");
 		for (issue : expectedIssues) {
 			if(issue.lineNumber >= 0) {
@@ -132,7 +140,20 @@ class CoreDslTestCase<T> {
 				println('''  «issue.severity»: «issue.code»''');
 			}
 		}
+		if(isGenericSyntaxTest) {
+			println('''  Any syntax errors''')
+		}
 		println();
+		
+		if(isGenericSyntaxTest) {
+			if(!expectedIssues.empty)
+				throw new Exception("Invalid test case definition: cannot test for arbitrary syntax errors and specific errors simultaneously");	
+			assertNotEquals(0, actualIssues.size);
+			for (issue : actualIssues) {
+				assertEquals(IssueCodes.SyntaxError, issue.code);
+			}
+			return;
+		}
 
 		assertEquals(expectedIssues.size, actualIssues.size);
 		for (var i = 0; i < Math.min(expectedIssues.size, actualIssues.size); i++) {

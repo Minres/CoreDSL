@@ -1,11 +1,14 @@
 package com.minres.coredsl.tests;
 
 import com.google.inject.Inject
+import com.minres.coredsl.analysis.CoreDslAnalyzer
 import com.minres.coredsl.coreDsl.DescriptionContent
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.junit.jupiter.api.^extension.ExtendWith
+
+import static com.minres.coredsl.analysis.CoreDslAnalyzer.*
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -61,6 +64,10 @@ class CoreDslTestHelper {
 	}
 
 	// parse helpers
+	def parse(CharSequence code) {
+		return parse(code, [it], [it]);
+	}
+
 	def parseAsFunction(CharSequence code) {
 		return parse(code, [buildProgramFromFunction], [selectFunctionFromProgram]);
 	}
@@ -118,6 +125,8 @@ class CoreDslTestHelper {
 
 	def private <T> test(CharSequence code, String name, (CharSequence)=>CharSequence decorator,
 		(DescriptionContent)=>T rootSelector) {
+
+		CoreDslAnalyzer.emitDebugInfo = false;
 		val program = decorator.apply(code);
 		val model = parseHelper.parse(program);
 		val root = rootSelector.apply(model);
