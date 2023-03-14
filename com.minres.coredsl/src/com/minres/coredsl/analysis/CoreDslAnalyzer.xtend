@@ -641,6 +641,9 @@ class CoreDslAnalyzer {
 							ctx.acceptError("Cannot implicitly convert " + valueType + " to " + arrayType.elementType, declarator,
 							CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
 						}
+						if(isIsaStateElement) {
+							CoreDslConstantExpressionEvaluator.evaluate(ctx, subInitializer.value);
+						}
 					} else {
 						ctx.acceptError("Nested listed initializers are currently unsupported", declarator,
 							CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.UnsupportedLanguageFeature);
