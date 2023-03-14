@@ -602,7 +602,7 @@ class CoreDslAnalyzer {
 				val size = CoreDslConstantExpressionEvaluator.evaluate(ctx, declarator.dimensions.get(i));
 				if(size.isValid) {
 					if(size.value.intValueExact < 0) {
-						type = new ArrayType(type, 0);
+						type = ArrayType.ofUnknownSize(type);
 						ctx.acceptError("Negative array size is invalid", declarator,
 							CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
 					} else {
@@ -613,9 +613,11 @@ class CoreDslAnalyzer {
 						type = new ArrayType(type, size.value.intValueExact);
 					}
 				} else {
-					type = new ArrayType(type, 0);
-					ctx.acceptError("Unable to determine array size", declarator,
-						CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
+					type = ArrayType.ofUnknownSize(type);
+					if(!ctx.isPartialAnalysis) {
+						ctx.acceptError("Unable to determine array size", declarator,
+							CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
+					}
 				}
 			}
 		}
@@ -643,7 +645,7 @@ class CoreDslAnalyzer {
 			} else if(type.isArrayType) {
 				val listInitializer = initializer as ListInitializer;
 				val arrayType = type as ArrayType;
-				if (arrayType.count != listInitializer.initializers.size)
+				if (!arrayType.isUnknownSize && arrayType.count != listInitializer.initializers.size)
 					ctx.acceptError("List initializer size does not match array size", declarator,
 						CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
 				for (subInitializer : listInitializer.initializers) {
@@ -758,8 +760,10 @@ class CoreDslAnalyzer {
 
 				if(indexValue.isValid) {
 					if(targetType instanceof ArrayType) {
-						checkIndexAccessBounds(ctx, indexValue.value, targetType.count, expression,
-							CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
+						if(!targetType.isUnknownSize) {
+							checkIndexAccessBounds(ctx, indexValue.value, targetType.count, expression,
+								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
+						}
 					} else if(targetType instanceof IntegerType) {
 						checkIndexAccessBounds(ctx, indexValue.value, targetType.bitSize, expression,
 							CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
