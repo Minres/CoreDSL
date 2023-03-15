@@ -36,7 +36,7 @@ class ElaborationContext extends ProxyMessageAcceptor {
 	
 	static interface CalculationJob {
 		/** @returns true, if the job was successful and can be removed from the queue */
-		def boolean tryCalculate();
+		def boolean tryCalculate(boolean failed);
 	}
 
 	public val ISA root;
@@ -55,12 +55,6 @@ class ElaborationContext extends ProxyMessageAcceptor {
 		this.root = root;
 		isPartialElaboration = root instanceof InstructionSet;
 		analysisContext = new AnalysisContext(root, acceptor);
-	}
-
-	override getErrorDescription(EObject object) {
-		val isa = object.ancestorOfTypeOrSelf(ISA);
-		if(isa === null) return "Error";
-		return "Error in instruction set " + isa.name;
 	}
 
 	def isInElaborationScope(EObject obj) {

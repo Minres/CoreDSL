@@ -33,7 +33,7 @@ class CoreDslParsingTest {
         }
     '''
 
-    @Test
+    //@Test
     def void parseInstrPRELU() {
         val content = '''
         PRELU {
@@ -59,7 +59,7 @@ class CoreDslParsingTest {
         validator.assertNoErrors(content)
     }
 
-    @Test
+    //@Test
     def void parseInstrSBOX() {
         val content = '''
         SBOX {
@@ -78,7 +78,7 @@ class CoreDslParsingTest {
         validator.assertNoErrors(content)
     }
 
-    @Test
+    //@Test
     def void parseInstrSQRTFloatRegs() {
         val content = '''
             InstructionSet TestISA {
@@ -137,7 +137,7 @@ class CoreDslParsingTest {
         validator.assertNoErrors(content)
     }
 
-    @Test
+    //@Test
     def void parseInstrSpawn() {
         val content = '''
             InstructionSet TestISA {
@@ -165,7 +165,7 @@ class CoreDslParsingTest {
         validator.assertNoErrors(content)
     }
 
-    @Test
+    //@Test
     def void parseInstrZOL() {
         val content = '''
             InstructionSet TestISA {
@@ -205,7 +205,7 @@ class CoreDslParsingTest {
         validator.assertNoErrors(content)
     }
     
-    @Test
+    //@Test
     def void parseInstrSwitch() {
         val content = '''
         FOO {

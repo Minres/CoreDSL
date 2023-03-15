@@ -91,4 +91,5 @@ class IssueCodes {
 	public static val UnknownIntrinsicFunction = _prefix + 'UnknownIntrinsicFunction';
 	public static val SizeOfNotExact = _prefix + 'SizeOfNotExact';
 	public static val IndexOutOfRange = _prefix + 'IndexOutOfRange';
+	public static val IncompleteType = _prefix + 'IncompleteType';
 }

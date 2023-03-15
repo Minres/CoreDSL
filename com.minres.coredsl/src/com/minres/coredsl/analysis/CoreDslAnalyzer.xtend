@@ -71,6 +71,7 @@ import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.coreDsl.SpawnStatement
 
 class CoreDslAnalyzer {
 	public static var boolean emitDebugInfo = false;
@@ -248,7 +249,7 @@ class CoreDslAnalyzer {
 				ctx.acceptWarning("Unreachable code", nested, null, -1, IssueCodes.UnreachableCode)
 			}
 
-			if(nested instanceof ReturnStatement) {
+			if(isReturnTerminated(nested)) {
 				unreachable = true;
 			}
 		}
@@ -397,7 +398,7 @@ class CoreDslAnalyzer {
 		} else if(!returnType.isVoid && statement.value === null) {
 			ctx.acceptError("Non-void functions must return a value", statement,
 				CoreDslPackage.Literals.RETURN_STATEMENT__TRETURN, -1, IssueCodes.ReturnWithoutValueInNonVoidFunction);
-		} else if(!CoreDslTypeProvider.canImplicitlyConvert(valueType, returnType)) {
+		} else if(valueType !== null && !CoreDslTypeProvider.canImplicitlyConvert(valueType, returnType)) {
 			ctx.acceptError("Cannot convert from " + valueType + " to " + returnType, statement,
 				CoreDslPackage.Literals.RETURN_STATEMENT__TRETURN, -1, IssueCodes.ReturnTypeNotConvertible);
 		}
@@ -468,8 +469,11 @@ class CoreDslAnalyzer {
 		analyzeStatement(ctx, statement.body);
 	}
 
+	def static dispatch void analyzeStatement(AnalysisContext ctx, SpawnStatement statement) {
+		analyzeStatement(ctx, statement.body);
+	}
+
 	def static dispatch void analyzeStatement(AnalysisContext ctx, Statement statement) {
-		// TODO spawn statement
 		ctx.acceptInfo("Analysis for this node is not supported yet", statement, null, -1,
 			IssueCodes.UnsupportedLanguageFeature);
 	}
@@ -490,6 +494,9 @@ class CoreDslAnalyzer {
 	}
 
 	def static dispatch CoreDslType analyzeTypeDeclaration(AnalysisContext ctx, CompositeTypeDeclaration declaration) {
+		if(ctx.isUserTypeInstanceSet(declaration))
+			return ctx.getUserTypeInstance(declaration);
+		
 		val fields = new ArrayList<Declarator>();
 		var int bitSize = 0;
 
@@ -599,7 +606,7 @@ class CoreDslAnalyzer {
 				val size = CoreDslConstantExpressionEvaluator.evaluate(ctx, declarator.dimensions.get(i));
 				if(size.isValid) {
 					if(size.value.intValueExact < 0) {
-						type = new ArrayType(type, 0);
+						type = ArrayType.ofUnknownSize(type);
 						ctx.acceptError("Negative array size is invalid", declarator,
 							CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
 					} else {
@@ -610,9 +617,11 @@ class CoreDslAnalyzer {
 						type = new ArrayType(type, size.value.intValueExact);
 					}
 				} else {
-					type = new ArrayType(type, 0);
-					ctx.acceptError("Unable to determine array size", declarator,
-						CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
+					type = ArrayType.ofUnknownSize(type);
+					if(!ctx.isPartialAnalysis) {
+						ctx.acceptError("Unable to determine array size", declarator,
+							CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
+					}
 				}
 			}
 		}
@@ -640,7 +649,7 @@ class CoreDslAnalyzer {
 			} else if(type.isArrayType) {
 				val listInitializer = initializer as ListInitializer;
 				val arrayType = type as ArrayType;
-				if (arrayType.count != listInitializer.initializers.size)
+				if (!arrayType.isUnknownSize && arrayType.count != listInitializer.initializers.size)
 					ctx.acceptError("List initializer size does not match array size", declarator,
 						CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
 				for (subInitializer : listInitializer.initializers) {
@@ -662,7 +671,7 @@ class CoreDslAnalyzer {
 				// TODO list initializers
 				ctx.acceptError("List initializers are currently unsupported ", declarator,
 					CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.UnsupportedLanguageFeature);
-			} else {
+			} else if(!type.isError) {
 				ctx.acceptError("Cannot use list initializer to initialize value of type " + type, declarator,
 					CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidListInitializer);
 			}
@@ -750,11 +759,15 @@ class CoreDslAnalyzer {
 				analyzeAliasSource(ctx, declarator, expression.target);
 				val targetType = ctx.getExpressionType(expression.target);
 				val indexValue = ctx.getExpressionValue(expression.index);
+				
+				if(!targetType.isValid) return;
 
 				if(indexValue.isValid) {
 					if(targetType instanceof ArrayType) {
-						checkIndexAccessBounds(ctx, indexValue.value, targetType.count, expression,
-							CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
+						if(!targetType.isUnknownSize) {
+							checkIndexAccessBounds(ctx, indexValue.value, targetType.count, expression,
+								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
+						}
 					} else if(targetType instanceof IntegerType) {
 						checkIndexAccessBounds(ctx, indexValue.value, targetType.bitSize, expression,
 							CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
@@ -1336,22 +1349,19 @@ class CoreDslAnalyzer {
 		switch (expression.function) {
 			case 'bitsizeof',
 			case 'sizeof': {
-				val inBytes = expression.function == 'sizeof';
 				if(argumentCount !== 1) {
 					ctx.acceptError(expression.function + ' expects exactly one argument', expression,
 						CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION, -1, IssueCodes.InvalidArgumentCount);
 					return ctx.setExpressionType(expression, ErrorType.invalid);
 				} else {
-					val type = argumentTypes.get(0);
-					if(inBytes && type.isValid && type.bitSize % 8 !== 0) {
-						ctx.acceptWarning('the size is not an exact multiple of 8', expression,
-							CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION, -1, IssueCodes.SizeOfNotExact);
-					}
+					val value = CoreDslConstantExpressionEvaluator.evaluate(ctx, expression);
+					if(value.isError) return ErrorType.indeterminate;
+					val type = CoreDslTypeProvider.getSmallestTypeForValue(value.value);
 					return ctx.setExpressionType(expression, type);
 				}
 			}
 			default: {
-				ctx.acceptError('unknown intrinsic function ' + expression.function, expression,
+				ctx.acceptError('Unknown intrinsic function ' + expression.function, expression,
 					CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION, -1, IssueCodes.UnknownIntrinsicFunction);
 				return ctx.setExpressionType(expression, ErrorType.invalid);
 			}

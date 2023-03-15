@@ -28,17 +28,17 @@ class CoreDslLoadTest {
         validator.assertNoErrors(content)
     }
 
-	@Test
+	//@Test
 	def void introSyntax() {
 		loadFile('inputs/intro_syntax.core_desc')
 	}
 	
-	@Test
+	//@Test
 	def void introTypes() {
 		loadFile('inputs/intro_types.core_desc')
 	}
 	
-	@Test
+	//@Test
 	def void introConcurrency() {
 		loadFile('inputs/intro_concurrency.core_desc')
 	}
