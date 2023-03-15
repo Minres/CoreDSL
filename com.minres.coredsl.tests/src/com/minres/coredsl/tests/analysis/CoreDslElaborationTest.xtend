@@ -504,4 +504,40 @@ class CoreDslElaborationTest {
 		.expectError(IssueCodes.IndeterminableIsaStateElementValue, 8)
 		.run();
 	}
+
+	@Test
+	def void aliasAssignmentWithIndeterminateType() {
+		// Regression test for https://github.com/Minres/CoreDSL/issues/79
+		// The alias initialization used to be flagged as invalid because the type
+		// of X was indeterminate during partial elaboration of the instruction set
+		'''
+			InstructionSet A {
+			    architectural_state {
+			        unsigned int XLEN;
+			        register unsigned<XLEN> X[32];
+			        unsigned<XLEN>& ZERO = X[0];
+			    }
+			}
+			Core X provides A {
+				architectural_state {
+					XLEN = 32;
+				}
+			}
+		'''.testProgram()
+		.run();
+		// When a core doesn't define XLEN, the follow-up errors should be reported as well
+		'''
+			InstructionSet A {
+			    architectural_state {
+			        unsigned int XLEN;
+			        register unsigned<XLEN> X[32];
+			        unsigned<XLEN>& ZERO = X[0];
+			    }
+			}
+			Core X provides A {}
+		'''.testProgram()
+		.expectError(IssueCodes.UnassignedIsaParameter, 8)
+		.expectError(IssueCodes.IndeterminableIsaStateElementType, 8)
+		.run();
+	}
 }
