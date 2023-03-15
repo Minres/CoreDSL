@@ -87,10 +87,9 @@ class Visualizer {
 	private def void decorate() {
 		for(VisualNode visual : visualNodes) {
 			if(visual instanceof ReferenceLiteral) {
-				var ReferenceLiteral reference = visual as ReferenceLiteral;
 				// only resolve references in decorate() to avoid errors if executed before context analysis
-				var EObject targetNode = reference.resolver.get();
-				reference.declaration = declarationLiterals.get(targetNode);
+				var EObject targetNode = visual.resolver.get();
+				visual.declaration = declarationLiterals.get(targetNode);
 			}
 		}
 	}

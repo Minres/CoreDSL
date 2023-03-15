@@ -1110,8 +1110,8 @@ class CoreDslAnalyzer {
 	def static Integer getRangeSize(AnalysisContext ctx, Expression start, Expression end) {
 		if(start instanceof EntityReference && end instanceof InfixExpression ||
 			start instanceof InfixExpression && end instanceof EntityReference) {
-			val reference = start instanceof EntityReference ? start as EntityReference : end as EntityReference;
-			val infix = start instanceof InfixExpression ? start as InfixExpression : end as InfixExpression;
+			val reference = start instanceof EntityReference ? start : end as EntityReference;
+			val infix = start instanceof InfixExpression ? start : end as InfixExpression;
 
 			val entity = reference.target;
 			val left = infix.left;
