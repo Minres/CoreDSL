@@ -21,6 +21,7 @@ class ArrayType extends AggregateType {
 	}
 	
 	override isArrayType() { return true; }
+	override isIncomplete() { return isUnknownSize || elementType.isIncomplete; }
 	
 	override toString() { return isUnknownSize ? '''«elementType»[?]''' : '''«elementType»[«count»]'''; }
 	

@@ -581,7 +581,7 @@ class CoreDslElaborator {
 
 			val type = analysisContext.getDeclaredType(effectiveDeclarator);
 			if(type.isInvalid) invalidTypes.add(info.name);
-			if(type.isIndeterminate) indeterminableTypes.add(info.name);
+			if(type.isIncomplete) indeterminableTypes.add(info.name);
 		}
 
 		if(!unassignedParameters.empty) {

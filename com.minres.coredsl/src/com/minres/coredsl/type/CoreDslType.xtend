@@ -21,4 +21,5 @@ abstract class CoreDslType {
 	def isError() { return bitSize < 0; }
 	def isInvalid() { return this == ErrorType.invalid; }
 	def isIndeterminate() { return this == ErrorType.indeterminate; }
+	def isIncomplete() { return this.isIndeterminate; }
 }

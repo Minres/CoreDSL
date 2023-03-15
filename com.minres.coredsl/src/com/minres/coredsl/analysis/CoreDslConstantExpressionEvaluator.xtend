@@ -8,13 +8,15 @@ import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.IntegerConstant
 import com.minres.coredsl.coreDsl.IntrinsicExpression
 import com.minres.coredsl.coreDsl.ParenthesisExpression
+import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.TypeSpecifier
+import com.minres.coredsl.type.CoreDslType
+import com.minres.coredsl.util.IssueReportTarget
 import com.minres.coredsl.validation.IssueCodes
 import java.math.BigInteger
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
-import com.minres.coredsl.coreDsl.PrefixExpression
 
 class CoreDslConstantExpressionEvaluator {
 
@@ -106,11 +108,20 @@ class CoreDslConstantExpressionEvaluator {
 		return ConstantValue.invalid;
 	}
 
-	def private static ConstantValue getTypeSize(AnalysisContext ctx, TypeSpecifier specifier, boolean inBytes) {
-		val type = CoreDslTypeProvider.getSpecifiedType(ctx, specifier);
+	def private static ConstantValue getTypeSize(AnalysisContext ctx, CoreDslType type, boolean inBytes,
+		IssueReportTarget target) {
 		if(type.isInvalid) return ConstantValue.invalid;
-		if(type.isIndeterminate) return ConstantValue.indeterminate;
-		return new ConstantValue(inBytes ? (type.bitSize + 7) / 8 : type.bitSize);
+		if(type.isIncomplete) return ConstantValue.indeterminate;
+		if(inBytes) {
+			if(type.bitSize % 8 !== 0) {
+				ctx.acceptWarning('The size is not an exact multiple of 8', target.object, target.feature, target.index,
+					IssueCodes.SizeOfNotExact);
+			}
+			return new ConstantValue((type.bitSize + 7) / 8);
+		} else {
+			return new ConstantValue(type.bitSize);
+		}
+
 	}
 
 	def private static dispatch ConstantValue evaluateImpl(AnalysisContext ctx, IntrinsicExpression expression,
@@ -119,27 +130,31 @@ class CoreDslConstantExpressionEvaluator {
 			case 'bitsizeof',
 			case 'sizeof': {
 				val inBytes = expression.function == 'sizeof';
+				val target = new IssueReportTarget(expression, CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION);
 				if(expression.arguments.size() === 1) {
 					val arg = expression.arguments.get(0);
 					switch (arg) {
 						TypeSpecifier: {
-							return getTypeSize(ctx, arg, inBytes);
+							val type = CoreDslTypeProvider.getSpecifiedType(ctx, arg);
+							return getTypeSize(ctx, type, inBytes, target);
 						}
 						EntityReference: {
 							val declarator = arg.target.castOrNull(Declarator);
 							if(declarator !== null) {
-								return getTypeSize(ctx, declarator.type, inBytes);
+								val type = CoreDslTypeProvider.getSpecifiedType(ctx, declarator.type);
+								return getTypeSize(ctx, type, inBytes, target);
 							}
 						}
 						Expression: {
-							// TODO
+							val type = ctx.getExpressionType(expression);
+							return getTypeSize(ctx, type, inBytes, target);
 						}
 					}
 				}
 			}
 			default: {
 				if(!suppressErrors) {
-					ctx.acceptError('intrinsic function ' + expression.function +
+					ctx.acceptError('Intrinsic function ' + expression.function +
 						' is not allowed in constant expression', expression.eContainer, expression.eContainingFeature,
 						-1, IssueCodes.InvalidConstantExpressionNode);
 				}

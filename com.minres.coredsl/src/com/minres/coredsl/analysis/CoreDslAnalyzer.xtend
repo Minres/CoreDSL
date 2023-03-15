@@ -1345,22 +1345,19 @@ class CoreDslAnalyzer {
 		switch (expression.function) {
 			case 'bitsizeof',
 			case 'sizeof': {
-				val inBytes = expression.function == 'sizeof';
 				if(argumentCount !== 1) {
 					ctx.acceptError(expression.function + ' expects exactly one argument', expression,
 						CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION, -1, IssueCodes.InvalidArgumentCount);
 					return ctx.setExpressionType(expression, ErrorType.invalid);
 				} else {
-					val type = argumentTypes.get(0);
-					if(inBytes && type.isValid && type.bitSize % 8 !== 0) {
-						ctx.acceptWarning('the size is not an exact multiple of 8', expression,
-							CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION, -1, IssueCodes.SizeOfNotExact);
-					}
+					val value = CoreDslConstantExpressionEvaluator.evaluate(ctx, expression);
+					if(value.isError) return ErrorType.indeterminate;
+					val type = CoreDslTypeProvider.getSmallestTypeForValue(value.value);
 					return ctx.setExpressionType(expression, type);
 				}
 			}
 			default: {
-				ctx.acceptError('unknown intrinsic function ' + expression.function, expression,
+				ctx.acceptError('Unknown intrinsic function ' + expression.function, expression,
 					CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION, -1, IssueCodes.UnknownIntrinsicFunction);
 				return ctx.setExpressionType(expression, ErrorType.invalid);
 			}
