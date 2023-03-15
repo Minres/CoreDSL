@@ -71,6 +71,7 @@ import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.coreDsl.SpawnStatement
 
 class CoreDslAnalyzer {
 	public static var boolean emitDebugInfo = false;
@@ -468,8 +469,11 @@ class CoreDslAnalyzer {
 		analyzeStatement(ctx, statement.body);
 	}
 
+	def static dispatch void analyzeStatement(AnalysisContext ctx, SpawnStatement statement) {
+		analyzeStatement(ctx, statement.body);
+	}
+
 	def static dispatch void analyzeStatement(AnalysisContext ctx, Statement statement) {
-		// TODO spawn statement
 		ctx.acceptInfo("Analysis for this node is not supported yet", statement, null, -1,
 			IssueCodes.UnsupportedLanguageFeature);
 	}
