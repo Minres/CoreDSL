@@ -573,19 +573,15 @@ class CoreDslElaborator {
 				if(analysisContext.getStorageClass(info.declarators.get(0)) === StorageClass.param) {
 					unassignedParameters.add(info.name);
 				}
-			} else if(analysisContext.isConstantValueSet(effectiveDeclarator)) {
+			} else {
 				val value = analysisContext.getConstantValue(effectiveDeclarator);
 				if(value.isInvalid) invalidValues.add(info.name);
-			} else {
-				indeterminableValues.add(info.name);
+				if(value.isIndeterminate) indeterminableValues.add(info.name);
 			}
 
-			if(analysisContext.isDeclaredTypeSet(effectiveDeclarator)) {
-				val type = analysisContext.getDeclaredType(effectiveDeclarator);
-				if(type.isInvalid) invalidTypes.add(info.name);
-			} else {
-				indeterminableTypes.add(info.name);
-			}
+			val type = analysisContext.getDeclaredType(effectiveDeclarator);
+			if(type.isInvalid) invalidTypes.add(info.name);
+			if(type.isIndeterminate) indeterminableTypes.add(info.name);
 		}
 
 		if(!unassignedParameters.empty) {
