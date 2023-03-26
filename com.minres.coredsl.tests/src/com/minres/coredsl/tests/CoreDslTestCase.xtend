@@ -215,15 +215,15 @@ class CoreDslTestCase<TRoot> {
 
 		println("Issues:");
 		for (issue : actualIssues) {
-			println('''  «issue.severity»: «issue.code» [line «issue.lineNumber»] («issue.message»)''');
+			println('''  «issue.severity»: «issue.code.truncate()» [line «issue.lineNumber»] («issue.message»)''');
 		}
 
 		println("Expected:");
 		for (issue : expectedIssues) {
 			if(issue.lineNumber >= 0) {
-				println('''  «issue.severity»: «issue.code» [line «issue.lineNumber»]''');
+				println('''  «issue.severity»: «issue.code.truncate()» [line «issue.lineNumber»]''');
 			} else {
-				println('''  «issue.severity»: «issue.code»''');
+				println('''  «issue.severity»: «issue.code.truncate()»''');
 			}
 		}
 		if(isGenericSyntaxTest) {
@@ -271,6 +271,14 @@ class CoreDslTestCase<TRoot> {
 				println();
 			}
 		}
+	}
+	
+	def truncate(String issueCode) {
+		if(issueCode.startsWith(IssueCodes._prefix)) {
+			return issueCode.subSequence(IssueCodes._prefix.length, issueCode.length);
+		}
+		
+		return issueCode;
 	}
 
 	// adapted from DiagnosticConverterImpl.convertResourceDiagnostic
@@ -329,7 +337,7 @@ class CoreDslTestCase<TRoot> {
 		override check(AnalysisResults results) {
 			try {
 				if(expectation.apply(root, results)) {
-					println('''  «description»''');
+					println('''  [OK] «description»''');
 					return true;
 				}
 				else {
@@ -374,7 +382,7 @@ class CoreDslTestCase<TRoot> {
 					return false;
 				}
 
-				println('''  «description»: Got the expected type «actualType»''');
+				println('''  [OK] «description»: Got the expected type «actualType»''');
 				return true;
 			} catch(Exception e) {
 				println("  " + e.class.simpleName + ": " + e.message);
@@ -414,7 +422,7 @@ class CoreDslTestCase<TRoot> {
 					return false;
 				}
 
-				println('''  «description»: Got the expected value «actualValue»''');
+				println('''  [OK] «description»: Got the expected value «actualValue»''');
 				return true;
 			} catch(Exception e) {
 				println("  " + e.class.simpleName + ": " + e.message);
