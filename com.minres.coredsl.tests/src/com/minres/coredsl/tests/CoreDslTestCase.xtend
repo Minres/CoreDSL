@@ -34,7 +34,7 @@ class CoreDslTestCase<TRoot> {
 	final TRoot root;
 	final int prologLines;
 	final List<IssueDescription> expectedIssues = new ArrayList();
-	final List<Expectation<?>> semanticExpectations = new ArrayList();
+	final List<Expectation> semanticExpectations = new ArrayList();
 
 	boolean checkDiagnosticsOnly;
 	boolean isGenericSyntaxTest;
@@ -90,85 +90,102 @@ class CoreDslTestCase<TRoot> {
 		isGenericSyntaxTest = true;
 		return this;
 	}
-	
+
 	def private findIsa(String name) {
 		if(model.definitions.length < 1)
 			throw new Exception("Model contains no ISAs");
-				
+
 		if(name === null) {
 			if(model.definitions.length > 1)
 				throw new Exception("Model contains multiple ISAs. Please specify which should be used");
 
 			return model.definitions.get(0);
 		}
-		
+
 		val isa = model.definitions.findFirst[it.name == name];
 		if(isa === null) throw new Exception("No ISA found with name " + name);
 		return isa;
 	}
-	
+
 	def private findDeclarator(String name) {
-		return model.descendantsOfType(Declarator).findFirst[it.name == name];
+		val decl = model.descendantsOfType(Declarator).findFirst[it.name == name];
+		if(decl === null) throw new Exception("No declarator with name " + name + " found");
+		return decl;
 	}
-	
+
 	def private findEObject(Class<? extends EObject> type, int line) {
+		val candidates = model.descendantsOfType(type);
 		if(line < 0) {
-			return model.descendantsOfType(type).head;
+			val head = candidates.head;
+			if(head === null) throw new Exception("No node of type " + type.simpleName + " found");
+			return head;
 		}
-		else {
-			return model.descendantsOfType(type).findFirst[it.syntaxNode.startLine === line + prologLines];
-		}
+
+		val match = candidates.findFirst[it.syntaxNode.startLine === line + prologLines];
+		if(match === null) throw new Exception("No node of type " + type.simpleName + " found in line " + line);
+		return match;
 	}
-	
+
 	def expect((TRoot, AnalysisResults)=>boolean expectation, String description) {
 		semanticExpectations.add(new UserExpectation<TRoot>(root, expectation, description));
 		return this;
 	}
-	
+
 	def expect((TRoot)=>boolean expectation, String description) {
-		return expect([root, results | expectation.apply(root)], description);
+		return expect([root, results|expectation.apply(root)], description);
 	}
-	
-	def <T extends EObject> expect(Class<T> type, int line, (T, AnalysisResults)=>boolean expectation, String description) {
+
+	def <T extends EObject> expect(Class<T> type, int line, (T, AnalysisResults)=>boolean expectation,
+		String description) {
 		val obj = findEObject(type, line);
 		semanticExpectations.add(new UserExpectation<T>(obj as T, expectation, description));
 		return this;
 	}
-	
+
 	def <T extends EObject> expect(Class<T> type, int line, (T)=>boolean expectation, String description) {
-		return expect(type, line, [root, results | expectation.apply(root)], description);
+		return expect(type, line, [root, results|expectation.apply(root)], description);
 	}
-	
+
 	def expect(String isaName, (TRoot, AnalysisContext)=>boolean expectation, String description) {
 		val isa = findIsa(isaName);
-		semanticExpectations.add(new UserExpectation<TRoot>(root, [root, results | expectation.apply(root, results.results.get(isa))], description));
+		semanticExpectations.add(new UserExpectation<TRoot>(root, [ root, results |
+			expectation.apply(root, results.results.get(isa))
+		], description));
+		return this;
+	}
+
+	def expectType(String isaName, EObject object, Object expectedType) {
+		semanticExpectations.add(new TypeExpectation(findIsa(isaName), object, String.valueOf(expectedType)));
 		return this;
 	}
 
 	def expectType(String isaName, (TRoot)=>EObject objectLocator, Object expectedType) {
-		semanticExpectations.add(new TypeExpectation<TRoot>(findIsa(isaName), root, objectLocator, String.valueOf(expectedType)));
-		return this;
+		return expectType(isaName, objectLocator.apply(root), expectedType);
 	}
 
 	def expectType(String isaName, String declaratorName, Object expectedType) {
-		return expectType(isaName, [findDeclarator(declaratorName)], expectedType);
+		return expectType(isaName, findDeclarator(declaratorName), expectedType);
 	}
 
 	def expectType(String isaName, Class<? extends EObject> type, int line, Object expectedType) {
-		return expectType(isaName, [findEObject(type, line)], expectedType);
+		return expectType(isaName, findEObject(type, line), expectedType);
 	}
 
-	def expectValue(String isaName, (TRoot)=>EObject objectLocator, Object expectedValue) {
-		semanticExpectations.add(new ValueExpectation<TRoot>(findIsa(isaName), root, objectLocator, String.valueOf(expectedValue)));
+	def expectValue(String isaName, EObject object, Object expectedValue) {
+		semanticExpectations.add(new ValueExpectation(findIsa(isaName), object, String.valueOf(expectedValue)));
 		return this;
 	}
 
+	def expectValue(String isaName, (TRoot)=>EObject objectLocator, Object expectedValue) {
+		return expectValue(isaName, objectLocator.apply(root), expectedValue);
+	}
+
 	def expectValue(String isaName, String declaratorName, Object expectedValue) {
-		return expectValue(isaName, [findDeclarator(declaratorName)], expectedValue);
+		return expectValue(isaName, findDeclarator(declaratorName), expectedValue);
 	}
 
 	def expectValue(String isaName, Class<? extends EObject> type, int line, Object expectedValue) {
-		return expectValue(isaName, [findEObject(type, line)], expectedValue);
+		return expectValue(isaName, findEObject(type, line), expectedValue);
 	}
 
 	def private printProgram() {
@@ -266,18 +283,17 @@ class CoreDslTestCase<TRoot> {
 				println("Not all semantic expectations were fulfilled");
 				println();
 				fail();
-			}
-			else {
+			} else {
 				println();
 			}
 		}
 	}
-	
+
 	def truncate(String issueCode) {
 		if(issueCode.startsWith(IssueCodes._prefix)) {
 			return issueCode.subSequence(IssueCodes._prefix.length, issueCode.length);
 		}
-		
+
 		return issueCode;
 	}
 
@@ -319,11 +335,11 @@ class CoreDslTestCase<TRoot> {
 		}
 	}
 
-	private static abstract class Expectation<TRoot> {
+	private static abstract class Expectation {
 		def abstract boolean check(AnalysisResults results)
 	}
-	
-	private static final class UserExpectation<TRoot> extends Expectation<TRoot> {
+
+	private static final class UserExpectation<TRoot> extends Expectation {
 		val TRoot root;
 		val (TRoot, AnalysisResults)=>boolean expectation;
 		val String description;
@@ -333,14 +349,13 @@ class CoreDslTestCase<TRoot> {
 			this.expectation = expectation;
 			this.description = description;
 		}
-		
+
 		override check(AnalysisResults results) {
 			try {
 				if(expectation.apply(root, results)) {
 					println('''  [OK] «description»''');
 					return true;
-				}
-				else {
+				} else {
 					println('''  Expectation failed: «description»''');
 					return true;
 				}
@@ -351,23 +366,20 @@ class CoreDslTestCase<TRoot> {
 		}
 	}
 
-	private static final class TypeExpectation<TRoot> extends Expectation<TRoot> {
+	private static final class TypeExpectation extends Expectation {
 		val ISA isa;
-		val TRoot root;
-		val (TRoot)=>EObject objectLocator;
+		val EObject object;
 		val String expectedType;
 
-		new(ISA isa, TRoot root, (TRoot)=>EObject objectLocator, String expectedType) {
+		new(ISA isa, EObject object, String expectedType) {
 			this.isa = isa;
-			this.root = root;
-			this.objectLocator = objectLocator;
+			this.object = object;
 			this.expectedType = expectedType;
 		}
 
 		override check(AnalysisResults results) {
 			val ctx = results.results.get(isa);
 			try {
-				val object = objectLocator.apply(root);
 				val description = object.shortDescription;
 
 				if(!ctx._isTypeSet(object)) {
@@ -391,23 +403,20 @@ class CoreDslTestCase<TRoot> {
 		}
 	}
 
-	private static final class ValueExpectation<TRoot> extends Expectation<TRoot> {
+	private static final class ValueExpectation extends Expectation {
 		val ISA isa;
-		val TRoot root;
-		val (TRoot)=>EObject objectLocator;
+		val EObject object;
 		val String expectedValue;
 
-		new(ISA isa, TRoot root, (TRoot)=>EObject objectLocator, String expectedValue) {
+		new(ISA isa, EObject object, String expectedValue) {
 			this.isa = isa;
-			this.root = root;
-			this.objectLocator = objectLocator;
+			this.object = object;
 			this.expectedValue = expectedValue;
 		}
 
 		override check(AnalysisResults results) {
 			val ctx = results.results.get(isa);
 			try {
-				val object = objectLocator.apply(root);
 				val description = object.shortDescription;
 
 				if(!ctx._isValueSet(object)) {
