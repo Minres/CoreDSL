@@ -34,9 +34,9 @@ public class TypedBigInteger extends BigInteger {
 	public boolean isSigned() {
 		return signed;
 	}
-
-	// TODO these implementations don't make much sense to me
 	
+	// TODO these implementations don't make much sense to me
+	/*
 	@Override
     public String toString() {
         return toString(radix);
@@ -91,4 +91,5 @@ public class TypedBigInteger extends BigInteger {
             return String.format("0b%1$" + size + "s", super.toString(2)).replace(' ', '0');
         }
     }
+    */
 }
