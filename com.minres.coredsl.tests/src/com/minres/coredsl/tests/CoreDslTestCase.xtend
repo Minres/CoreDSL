@@ -92,6 +92,16 @@ class CoreDslTestCase<TRoot> {
 	}
 	
 	def private findIsa(String name) {
+		if(model.definitions.length < 1)
+			throw new Exception("Model contains no ISAs");
+				
+		if(name === null) {
+			if(model.definitions.length > 1)
+				throw new Exception("Model contains multiple ISAs. Please specify which should be used");
+
+			return model.definitions.get(0);
+		}
+		
 		val isa = model.definitions.findFirst[it.name == name];
 		if(isa === null) throw new Exception("No ISA found with name " + name);
 		return isa;
