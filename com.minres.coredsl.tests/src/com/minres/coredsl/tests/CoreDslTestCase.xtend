@@ -112,7 +112,12 @@ class CoreDslTestCase<TRoot> {
 	}
 	
 	def private findEObject(Class<? extends EObject> type, int line) {
-		return model.descendantsOfType(type).findFirst[it.syntaxNode.startLine === line + prologLines];
+		if(line < 0) {
+			return model.descendantsOfType(type).head;
+		}
+		else {
+			return model.descendantsOfType(type).findFirst[it.syntaxNode.startLine === line + prologLines];
+		}
 	}
 	
 	def expect((TRoot, AnalysisResults)=>boolean expectation, String description) {
