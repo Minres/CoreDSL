@@ -33,7 +33,11 @@ abstract class ModelExtensions {
 	static def getShortDescription(EObject obj) {
 		val node = NodeModelUtils.getNode(obj);
 		val location = NodeModelUtils.getLineAndColumn(node, node.offset);
-		val className = obj.class.simpleName;
+		var className = obj.class.simpleName;
+		
+		if(className.endsWith("Impl")) {
+			className = className.substring(0, className.length - 4);
+		}
 
 		if(obj instanceof NamedEntity) {
 			return '''«className» «obj.name» in line «location.line»''';
