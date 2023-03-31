@@ -1,8 +1,11 @@
 package com.minres.coredsl.tests.analysis
 
 import com.google.inject.Inject
+import com.minres.coredsl.coreDsl.IndexAccessExpression
 import com.minres.coredsl.tests.CoreDslInjectorProvider
 import com.minres.coredsl.tests.CoreDslTestHelper
+import com.minres.coredsl.type.ErrorType
+import com.minres.coredsl.type.IntegerType
 import com.minres.coredsl.validation.IssueCodes
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
@@ -538,6 +541,26 @@ class CoreDslElaborationTest {
 		'''.testProgram()
 		.expectError(IssueCodes.UnassignedIsaParameter, 8)
 		.expectError(IssueCodes.IndeterminableIsaStateElementType, 8)
+		.run();
+	}
+
+	@Test
+	def void addressableTypes() {
+		// This test checks the current limitation that address space range accesses
+		// cannot have a combined total size greater than Integer.MAX_VALUE.
+		'''
+			Core X {
+				architectural_state {
+					extern unsigned char MEMORY[0x10000000000000000];
+					unsigned char& HIGH_MEMORY[0x100000000] = MEMORY[0xffffffff00000000:0xffffffffffffffff];
+					unsigned char& FIRST_BYTE = MEMORY[0];
+				}
+			}
+		'''.testProgram()
+		.expectType("X", "MEMORY", "address space unsigned<8>[18446744073709551616]")
+		.expectType("X", IndexAccessExpression, 4, ErrorType.invalid)
+		.expectType("X", IndexAccessExpression, 5, IntegerType.octet)
+		.expectError(IssueCodes.InvalidIntegerTypeSize, 4)
 		.run();
 	}
 }
