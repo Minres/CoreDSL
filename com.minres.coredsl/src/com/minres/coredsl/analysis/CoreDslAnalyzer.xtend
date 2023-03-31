@@ -73,6 +73,7 @@ import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.type.AddressSpaceType
 
 class CoreDslAnalyzer {
 	public static var boolean emitDebugInfo = false;
@@ -604,24 +605,31 @@ class CoreDslAnalyzer {
 				ctx.acceptError("An ISA parameter may not be declared as an array", declarator,
 					CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, 1, IssueCodes.InvalidIsaParameterDeclaration);
 			}
+			
+			val isAddressSpace = isIsaStateElement;
 
 			// rightmost size specifier is the innermost one, so process them in reverse order
 			for (var i = declarator.dimensions.size() - 1; i >= 0; i--) {
 				val size = CoreDslConstantExpressionEvaluator.evaluate(ctx, declarator.dimensions.get(i));
 				if(size.isValid) {
-					if(size.value.intValueExact < 0) {
-						type = ArrayType.ofUnknownSize(type);
+					if(size.value < BigInteger.ZERO) {
+						type = isAddressSpace ? AddressSpaceType.ofUnknownSize(type) : ArrayType.ofUnknownSize(type);
 						ctx.acceptError("Negative array size is invalid", declarator,
 							CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
 					} else {
-						if(size.value.intValueExact == 0) {
+						if(size.value == BigInteger.ZERO) {
 							ctx.acceptWarning("Array size is zero", declarator,
 								CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.ArraySizeIsZero);
 						}
-						type = new ArrayType(type, size.value.intValueExact);
+						else if(!isAddressSpace && !size.value.isInIntegerRange) {
+							ctx.acceptWarning("Array size is greater than Integer.MAX_VALUE", declarator,
+								CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
+							type = ArrayType.ofUnknownSize(type);
+						}
+						type = isAddressSpace ? new AddressSpaceType(type, size.value) : new ArrayType(type, size.value.intValueExact);
 					}
 				} else {
-					type = ArrayType.ofUnknownSize(type);
+					type = isAddressSpace ? AddressSpaceType.ofUnknownSize(type) : ArrayType.ofUnknownSize(type);
 					if(!ctx.isPartialAnalysis) {
 						ctx.acceptError("Unable to determine array size", declarator,
 							CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
@@ -707,7 +715,7 @@ class CoreDslAnalyzer {
 
 				// being implicitly convertible is not good enough for alias assignments,
 				// because the alias and its source must have exactly matching bit patterns
-				if(valueType != type) {
+				if(valueType.isValid && valueType != type) {
 					ctx.acceptError("Alias must be initialized with exactly the same type it is declared as",
 						declarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
 				}
@@ -769,11 +777,16 @@ class CoreDslAnalyzer {
 				if(indexValue.isValid) {
 					if(targetType instanceof ArrayType) {
 						if(!targetType.isUnknownSize) {
+							checkIndexAccessBounds(ctx, indexValue.value, BigInteger.valueOf(targetType.count), expression,
+								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
+						}
+					}else if(targetType instanceof AddressSpaceType) {
+						if(!targetType.isUnknownSize) {
 							checkIndexAccessBounds(ctx, indexValue.value, targetType.count, expression,
 								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
 						}
 					} else if(targetType instanceof IntegerType) {
-						checkIndexAccessBounds(ctx, indexValue.value, targetType.bitSize, expression,
+						checkIndexAccessBounds(ctx, indexValue.value, BigInteger.valueOf(targetType.bitSize), expression,
 							CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
 					} else {
 						// error should already have been reported by analyzeExpression
@@ -785,29 +798,14 @@ class CoreDslAnalyzer {
 
 					if(endIndexValue.isValid) {
 						if(targetType instanceof ArrayType) {
+							checkIndexAccessBounds(ctx, endIndexValue.value, BigInteger.valueOf(targetType.count), expression,
+								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__END_INDEX);
+						} else if(targetType instanceof AddressSpaceType) {
 							checkIndexAccessBounds(ctx, endIndexValue.value, targetType.count, expression,
 								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__END_INDEX);
-
-						/*
-						 * // for arrays, the end index must be >= the start index 
-						 * if(indexValue.isValid && endIndexValue.value < indexValue.value) {
-						 * 	   ctx.acceptError("Range alias must use natural element order", expression,
-						 * 	   CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1,
-						 * 	   IssueCodes.InvalidRangeAliasElementOrder);
-						 * }
-						 */
 						} else if(targetType instanceof IntegerType) {
-							checkIndexAccessBounds(ctx, endIndexValue.value, targetType.bitSize, expression,
+							checkIndexAccessBounds(ctx, endIndexValue.value, BigInteger.valueOf(targetType.bitSize), expression,
 								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__END_INDEX);
-
-						/*
-						 * // for integers, the end index must be <= the start index
-						 * if(indexValue.isValid && endIndexValue.value > indexValue.value) {
-						 *     ctx.acceptError("Range alias must use natural element order", expression,
-						 * 	   CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1,
-						 *     IssueCodes.InvalidRangeAliasElementOrder);
-						 * }
-						 */
 						} else {
 							// error should already have been reported by analyzeExpression
 						}
@@ -824,21 +822,14 @@ class CoreDslAnalyzer {
 	/**
 	 * 1. The index value must not be negative. <i>(IndexOutOfRange)</i><br>
 	 * 2. The index value must not be greater than or equal to the element count. <i>(IndexOutOfRange)</i><br>
-	 * 3. [Implementation Restriction] The index value must fit into a 32 bit integer. <i>(IndexOutOfRange)</i>
 	 */
-	def private static void checkIndexAccessBounds(AnalysisContext ctx, BigInteger value, int elementCount,
+	def private static void checkIndexAccessBounds(AnalysisContext ctx, BigInteger value, BigInteger elementCount,
 		IndexAccessExpression expression, EStructuralFeature feature) {
-		try {
-			val intValue = value.intValueExact;
-			if(intValue < 0) {
-				ctx.acceptError("Index out of range (" + intValue + " < 0)", expression, feature, -1,
-					IssueCodes.IndexOutOfRange);
-			} else if(intValue >= elementCount) {
-				ctx.acceptError("Index out of range (" + intValue + " >= " + elementCount + ")", expression,
-					feature, -1, IssueCodes.IndexOutOfRange);
-			}
-		} catch(ArithmeticException e) {
-			ctx.acceptError("Index value must fit into a 32 bit integer (implementation restriction)", expression,
+		if(value < BigInteger.ZERO) {
+			ctx.acceptError("Index out of range (" + value + " < 0)", expression, feature, -1,
+				IssueCodes.IndexOutOfRange);
+		} else if(value >= elementCount) {
+			ctx.acceptError("Index out of range (" + value + " >= " + elementCount + ")", expression,
 				feature, -1, IssueCodes.IndexOutOfRange);
 		}
 	}
@@ -1073,6 +1064,8 @@ class CoreDslAnalyzer {
 		var CoreDslType elementType;
 		if(targetType instanceof ArrayType) {
 			elementType = targetType.elementType;
+		} else if(targetType instanceof AddressSpaceType) {
+			elementType = targetType.elementType;
 		} else if(targetType instanceof IntegerType) {
 			elementType = IntegerType.bool;
 		} else {
@@ -1100,8 +1093,16 @@ class CoreDslAnalyzer {
 					CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1, IssueCodes.InvalidRangePattern);
 				return ctx.setExpressionType(expression, ErrorType.invalid);
 			}
-
-			val intType = elementType.isValid ? new IntegerType(elementType.bitSize * elementCount, false) : ErrorType.invalid;
+			
+			val totalSize = BigInteger.valueOf(elementType.bitSize) * elementCount;
+			
+			if(!totalSize.isInIntegerRange) {
+				ctx.acceptError('The combined size of the selected elements must not exceed Integer.MAX_VALUE', expression,
+					CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1, IssueCodes.InvalidIntegerTypeSize);
+					return ctx.setExpressionType(expression, ErrorType.invalid);
+			}
+			
+			val intType = elementType.isValid ? new IntegerType(totalSize.intValueExact, false) : ErrorType.invalid;
 			return ctx.setExpressionType(expression, intType);
 		} else {
 			return ctx.setExpressionType(expression, elementType);
@@ -1111,7 +1112,7 @@ class CoreDslAnalyzer {
 	/**
 	 * Implements the patterns described <a href="https://github.com/Minres/CoreDSL/wiki/Expressions#range-operator">here</a>.
 	 */
-	def static Integer getRangeSize(AnalysisContext ctx, Expression start, Expression end) {
+	def static BigInteger getRangeSize(AnalysisContext ctx, Expression start, Expression end) {
 		if(start instanceof EntityReference && end instanceof InfixExpression ||
 			start instanceof InfixExpression && end instanceof EntityReference) {
 			val reference = start instanceof EntityReference ? start : end as EntityReference;
@@ -1126,8 +1127,7 @@ class CoreDslAnalyzer {
 				val difference = CoreDslConstantExpressionEvaluator.tryEvaluate(ctx, right);
 
 				if(difference.isValid) {
-					val value = difference.value.intValueExact;
-					return Math.abs(value) + 1;
+					return difference.value.abs() + BigInteger.ONE;
 				}
 			}
 		} else {
@@ -1135,7 +1135,7 @@ class CoreDslAnalyzer {
 			val endValue = CoreDslConstantExpressionEvaluator.tryEvaluate(ctx, end);
 
 			if(startValue.isValid && endValue.isValid) {
-				return Math.abs((endValue.value - startValue.value).intValueExact) + 1;
+				return (endValue.value - startValue.value).abs() + BigInteger.ONE;
 			}
 		}
 
