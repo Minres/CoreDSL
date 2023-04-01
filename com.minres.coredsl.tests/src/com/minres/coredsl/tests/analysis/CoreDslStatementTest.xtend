@@ -316,4 +316,49 @@ class CoreDslStatementTest {
 		.testStatements()
 		.run();
 	}
+	
+	@Test
+	def void forLoop() {
+		'''
+			InstructionSet TestISA {
+				architectural_state {
+					struct T {
+						int f;
+					}
+				}
+				functions {
+					void testFunc() {
+						struct T t;
+						int a[1];
+						
+						for(;t;);
+						for(;a;);
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.NonScalarCondition, 12)
+		.expectError(IssueCodes.NonScalarCondition, 13)
+		.run();
+		
+		'''
+			for(;true;);
+			for(;false;);
+			for(;0;);
+			for(;1;);
+		'''
+		.testStatements()
+		.run();
+		
+		'''
+			for(0;;);
+			for(;;0, 0);
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidStatementExpression, 1)
+		.expectError(IssueCodes.InvalidStatementExpression, 2)
+		.expectError(IssueCodes.InvalidStatementExpression, 2)
+		.run();
+	}
 }
