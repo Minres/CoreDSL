@@ -246,4 +246,39 @@ class CoreDslStatementTest {
 		.expectError(IssueCodes.SwitchCaseConditionOutOfRange, 5)
 		.run();
 	}
+
+	@Test
+	def void whileLoop() {
+		'''
+			InstructionSet TestISA {
+				architectural_state {
+					struct T {
+						int f;
+					}
+				}
+				functions {
+					void testFunc() {
+						struct T t;
+						int a[1];
+						
+						while(t);
+						while(a);
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.NonScalarCondition, 12)
+		.expectError(IssueCodes.NonScalarCondition, 13)
+		.run();
+		
+		'''
+			while(true);
+			while(false);
+			while(0);
+			while(1);
+		'''
+		.testStatements()
+		.run();
+	}
 }
