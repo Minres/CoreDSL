@@ -259,17 +259,6 @@ class CoreDslTestCase<TRoot> {
 			return;
 		}
 
-		assertEquals(expectedIssues.size, actualIssues.size);
-		for (var i = 0; i < Math.min(expectedIssues.size, actualIssues.size); i++) {
-			val expected = expectedIssues.get(i);
-			val actual = actualIssues.get(i);
-
-			assertEquals(expected.severity, actual.severity);
-			assertEquals(expected.code, actual.code);
-			if(expected.lineNumber >= 0)
-				assertEquals(expected.lineNumber, actual.lineNumber);
-		}
-
 		if(!semanticExpectations.empty) {
 			println("Semantic expectations:");
 
@@ -286,6 +275,17 @@ class CoreDslTestCase<TRoot> {
 			} else {
 				println();
 			}
+		}
+		
+		assertEquals(expectedIssues.size, actualIssues.size);
+		for (var i = 0; i < Math.min(expectedIssues.size, actualIssues.size); i++) {
+			val expected = expectedIssues.get(i);
+			val actual = actualIssues.get(i);
+
+			assertEquals(expected.severity, actual.severity);
+			assertEquals(expected.code, actual.code);
+			if(expected.lineNumber >= 0)
+				assertEquals(expected.lineNumber, actual.lineNumber);
 		}
 	}
 
