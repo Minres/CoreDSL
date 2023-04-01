@@ -753,7 +753,7 @@ class CoreDslAnalyzer {
 	 */
 	def static void analyzeAliasSource(AnalysisContext ctx, Declarator declarator, Expression expression) {
 		// this assumes that the entire expression subtree has already been analyzed,
-		// so that ctx.getExpressionValue and ctx.getExpressionType don't throw.
+		// so that ctx.getExpressionType doesn't throw.
 		switch expression {
 			EntityReference: {
 				val target = expression.target;
@@ -781,7 +781,7 @@ class CoreDslAnalyzer {
 			IndexAccessExpression: {
 				analyzeAliasSource(ctx, declarator, expression.target);
 				val targetType = ctx.getExpressionType(expression.target);
-				val indexValue = ctx.getExpressionValue(expression.index);
+				val indexValue = CoreDslConstantExpressionEvaluator.evaluate(ctx, expression.index);
 				
 				if(!targetType.isValid) return;
 
@@ -800,7 +800,7 @@ class CoreDslAnalyzer {
 				}
 
 				if(expression.endIndex !== null) {
-					val endIndexValue = ctx.getExpressionValue(expression.endIndex);
+					val endIndexValue = CoreDslConstantExpressionEvaluator.evaluate(ctx, expression.endIndex);
 
 					if(endIndexValue.isValid) {
 						if(targetType instanceof AddressSpaceType) {
