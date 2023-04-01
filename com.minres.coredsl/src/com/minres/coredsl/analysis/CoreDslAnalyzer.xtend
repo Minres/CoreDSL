@@ -391,7 +391,7 @@ class CoreDslAnalyzer {
 	 */
 	def static dispatch void analyzeStatement(AnalysisContext ctx, ReturnStatement statement) {
 		val function = statement.ancestorOfType(FunctionDefinition);
-		val returnType = analyzeTypeSpecifier(ctx, function?.returnType);
+		val returnType = function !== null ? analyzeTypeSpecifier(ctx, function.returnType) : null;
 		val valueType = statement.value !== null ? analyzeExpression(ctx, statement.value) : null;
 
 		if(function === null) {
