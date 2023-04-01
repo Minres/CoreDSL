@@ -746,7 +746,7 @@ class CoreDslAnalyzer {
 
 	/**
 	 * 1. The alias source must be an identifier followed by any number of index or range accesses. <i>(InvalidAliasSource)</i><br>
-	 * 2. The identifier must refer to a declarator with storage class 'extern' or 'register'. <i>(InvalidAliasSource)</i><br>
+	 * 2. The identifier must refer to a declarator with storage class 'alias', 'extern' or 'register'. <i>(InvalidAliasSource)</i><br>
 	 * 3. Index and range accesses must be in range [0, elementCount). <i>(IndexOutOfRange)</i><br>
 	 * 4. A non-const alias cannot have a const identifier as its source. <i>(InvalidAliasConstness)</i>
 	 * 
@@ -761,7 +761,7 @@ class CoreDslAnalyzer {
 				if(target instanceof Declarator) {
 					val storage = ctx.getStorageClass(target);
 					switch storage {
-						// case alias, // TODO allow this (and update doc comment)
+						case alias,
 						case extern,
 						case register: {
 							// valid
