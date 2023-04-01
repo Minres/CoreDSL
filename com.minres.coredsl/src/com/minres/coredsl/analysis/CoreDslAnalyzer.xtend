@@ -442,10 +442,12 @@ class CoreDslAnalyzer {
 			}
 		}
 		
-		val conditionType = analyzeExpression(ctx, statement.condition);
-		if(!conditionType.isScalarType) {
-			ctx.acceptError("The condition must be a scalar type", statement,
-				CoreDslPackage.Literals.LOOP_STATEMENT__CONDITION, -1, IssueCodes.NonScalarCondition);
+		if(statement.condition !== null) {
+			val conditionType = analyzeExpression(ctx, statement.condition);
+			if(!conditionType.isScalarType) {
+				ctx.acceptError("The condition must be a scalar type", statement,
+					CoreDslPackage.Literals.LOOP_STATEMENT__CONDITION, -1, IssueCodes.NonScalarCondition);
+			}
 		}
 
 		for (var i = 0; i < statement.loopExpressions.size; i++) {
