@@ -281,4 +281,39 @@ class CoreDslStatementTest {
 		.testStatements()
 		.run();
 	}
+	
+	@Test
+	def void doLoop() {
+		'''
+			InstructionSet TestISA {
+				architectural_state {
+					struct T {
+						int f;
+					}
+				}
+				functions {
+					void testFunc() {
+						struct T t;
+						int a[1];
+						
+						do ; while(t);
+						do ; while(a);
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.NonScalarCondition, 12)
+		.expectError(IssueCodes.NonScalarCondition, 13)
+		.run();
+		
+		'''
+			do ; while(true);
+			do ; while(false);
+			do ; while(0);
+			do ; while(1);
+		'''
+		.testStatements()
+		.run();
+	}
 }
