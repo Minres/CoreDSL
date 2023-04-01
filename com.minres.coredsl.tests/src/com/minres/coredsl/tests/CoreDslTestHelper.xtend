@@ -110,7 +110,7 @@ class CoreDslTestHelper {
 	}
 
 	def private generateTestName() {
-		val method = new Throwable().stackTrace.get(2).methodName;
+		val method = new Throwable().stackTrace.takeWhile[it.methodName != "invoke0"].last.methodName;
 		testCount++;
 		return '''«method» «testCount»''';
 	}
