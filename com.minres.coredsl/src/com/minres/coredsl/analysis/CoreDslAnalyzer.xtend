@@ -55,6 +55,7 @@ import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.coreDsl.UserTypeDeclaration
 import com.minres.coredsl.coreDsl.VoidTypeSpecifier
 import com.minres.coredsl.coreDsl.WhileLoop
+import com.minres.coredsl.type.AddressSpaceType
 import com.minres.coredsl.type.ArrayType
 import com.minres.coredsl.type.CompositeType
 import com.minres.coredsl.type.CoreDslType
@@ -73,7 +74,6 @@ import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
-import com.minres.coredsl.type.AddressSpaceType
 
 class CoreDslAnalyzer {
 	public static var boolean emitDebugInfo = false;
@@ -581,7 +581,7 @@ class CoreDslAnalyzer {
 	}
 
 	/**
-	 * 1. Const declarators must be initialized. <i>(UninitializedConstant)</i><br>
+	 * 1. Const declarators must be initialized, unless they have storage class 'extern' or 'register'. <i>(UninitializedConstant)</i><br>
 	 * 2. Alias declarators must fulfill additional requirements.<br>
 	 * 3a. If the declarator uses an expression initializer, the expression's type must be implicitly convertible to the declarator's type. <i>(InvalidAssignmentType)</i><br>
 	 * 3b. If an array declarator uses a list initializer, the number of elements in the array type must match the number of elements in the initializer,
@@ -651,9 +651,12 @@ class CoreDslAnalyzer {
 			ctx.setDeclaredType(declarator, type);
 		}
 
-		if(declarator.isConst && declarator.initializer === null) {
-			ctx.acceptError("An identifier declared as const must be initialized", declarator,
-				CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.UninitializedConstant);
+		if(declarator.initializer === null) {
+			val storage = ctx.getStorageClass(declarator);
+			if(declarator.isConst && !storage.isOneOf(StorageClass.extern, StorageClass.register)) {
+				ctx.acceptError("An identifier declared as const must be initialized", declarator,
+					CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.UninitializedConstant);
+			}
 		}
 
 		if(declarator.isAlias) {
@@ -724,7 +727,7 @@ class CoreDslAnalyzer {
 				// being implicitly convertible is not good enough for alias assignments,
 				// because the alias and its source must have exactly matching bit patterns
 				if(valueType.isValid && valueType != type) {
-					ctx.acceptError("Alias must be initialized with exactly the same type it is declared as",
+					ctx.acceptError("Alias must be initialized with exactly the same type it is declared as (" + type + "), but got " + valueType,
 						declarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
 				}
 
