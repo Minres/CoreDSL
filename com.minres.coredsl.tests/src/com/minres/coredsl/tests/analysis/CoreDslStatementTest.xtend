@@ -424,4 +424,55 @@ class CoreDslStatementTest {
 		.testStatements()
 		.run();
 	}
+
+	@Test
+	def void returnStatement() {
+		'''
+			TEST {
+				encoding: 0;
+				behavior: {
+					return;
+				}
+			}
+		'''
+		.testInstruction()
+		.expectError(IssueCodes.ReturnStatementOutsideFunction, 4)
+		.run();
+		
+		'''
+			Core X {
+				always {
+					TEST {
+						return;
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.ReturnStatementOutsideFunction, 4)
+		.run();
+		
+		'''
+			void test() {
+				return;
+			}
+			
+			int test() {
+				return;
+			}
+			
+			void test() {
+				return 0;
+			}
+			
+			char test() {
+				return 128;
+			}
+		'''
+		.testFunction()
+		.expectError(IssueCodes.ReturnWithoutValueInNonVoidFunction, 6)
+		.expectError(IssueCodes.ReturnWithValueInVoidFunction, 10)
+		.expectError(IssueCodes.ReturnTypeNotConvertible, 14)
+		.run();
+	}
 }
