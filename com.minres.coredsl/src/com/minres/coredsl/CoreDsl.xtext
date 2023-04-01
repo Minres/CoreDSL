@@ -38,7 +38,7 @@ Instruction:
 	'}';
 
 AlwaysBlock:
-	name=ID attributes+=Attribute* '{' behavior=Statement '}';
+	name=ID attributes+=Attribute* behavior=CompoundStatement;
 
 Encoding: fields+=EncodingField ('::' fields+=EncodingField)*;
 EncodingField: BitValue | BitField;
