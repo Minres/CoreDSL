@@ -59,6 +59,7 @@ class IssueCodes {
 	public static val ReferenceParameterDeclaration = _prefix + 'ReferenceParameterDeclaration';
 	public static val InvalidListInitializer = _prefix + 'InvalidListInitializer';
 	public static val InvalidAliasSource = _prefix + 'InvalidAliasSource';
+	public static val InvalidAliasConstness = _prefix + 'InvalidAliasConstness';
 	
 	// statement issues
 	public static val UnreachableCode = _prefix + 'UnreachableCode';

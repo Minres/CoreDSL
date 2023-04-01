@@ -747,11 +747,12 @@ class CoreDslAnalyzer {
 	/**
 	 * 1. The alias source must be an identifier followed by any number of index or range accesses. <i>(InvalidAliasSource)</i><br>
 	 * 2. The identifier must refer to a declarator with storage class 'extern' or 'register'. <i>(InvalidAliasSource)</i><br>
-	 * 3. Index and range accesses must be in range [0, elementCount). <i>(IndexOutOfRange)</i>
+	 * 3. Index and range accesses must be in range [0, elementCount). <i>(IndexOutOfRange)</i><br>
+	 * 4. A non-const alias cannot have a const identifier as its source. <i>(InvalidAliasConstness)</i>
 	 * 
 	 * @see CoreDslAnalyzer#checkIndexAccessBounds(AnalysisContext, BigInteger, int, IndexAccessExpression, EStructuralFeature)
 	 */
-	def static void analyzeAliasSource(AnalysisContext ctx, Declarator declarator, Expression expression) {
+	def static void analyzeAliasSource(AnalysisContext ctx, Declarator aliasDeclarator, Expression expression) {
 		// this assumes that the entire expression subtree has already been analyzed,
 		// so that ctx.getExpressionType doesn't throw.
 		switch expression {
@@ -768,18 +769,24 @@ class CoreDslAnalyzer {
 						default: {
 							ctx.acceptError(
 								"Cannot define an alias to " + target.name + " because it has storage class " + storage,
-								declarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1,
+								aliasDeclarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1,
 								IssueCodes.InvalidAliasSource);
 						}
 					}
+					if(target.isConst && !aliasDeclarator.isConst) {
+						ctx.acceptError(
+							"Cannot define a non-const alias to const item " + target.name,
+							aliasDeclarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1,
+							IssueCodes.InvalidAliasConstness);
+					}
 				} else {
 					ctx.acceptError("Cannot define an alias to " + target.name +
-						" because it does not refer to a declarator", declarator,
+						" because it does not refer to a declarator", aliasDeclarator,
 						CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAliasSource);
 				}
 			}
 			IndexAccessExpression: {
-				analyzeAliasSource(ctx, declarator, expression.target);
+				analyzeAliasSource(ctx, aliasDeclarator, expression.target);
 				val targetType = ctx.getExpressionType(expression.target);
 				val indexValue = CoreDslConstantExpressionEvaluator.evaluate(ctx, expression.index);
 				
