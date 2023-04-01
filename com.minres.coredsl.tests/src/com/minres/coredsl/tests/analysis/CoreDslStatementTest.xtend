@@ -16,7 +16,7 @@ import org.junit.jupiter.api.^extension.ExtendWith
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
 class CoreDslStatementTest {
-	
+
 	@Inject extension CoreDslTestHelper testHelper;
 
 	@Test
@@ -115,7 +115,7 @@ class CoreDslStatementTest {
 		.testStatements()
 		.run();
 	}
-	
+
 	@Test
 	def void ifStatement() {
 		'''
@@ -160,7 +160,7 @@ class CoreDslStatementTest {
 		.testStatements()
 		.run();
 	}
-	
+
 	@Test
 	def void switchStatement() {
 		'''
@@ -281,7 +281,7 @@ class CoreDslStatementTest {
 		.testStatements()
 		.run();
 	}
-	
+
 	@Test
 	def void doLoop() {
 		'''
@@ -316,7 +316,7 @@ class CoreDslStatementTest {
 		.testStatements()
 		.run();
 	}
-	
+
 	@Test
 	def void forLoop() {
 		'''
@@ -359,6 +359,69 @@ class CoreDslStatementTest {
 		.expectError(IssueCodes.InvalidStatementExpression, 1)
 		.expectError(IssueCodes.InvalidStatementExpression, 2)
 		.expectError(IssueCodes.InvalidStatementExpression, 2)
+		.run();
+	}
+
+	@Test
+	def void breakContinueStatement() {
+		'''
+			void test() {
+				break;
+				continue;
+			}
+		'''
+		.testFunction()
+		.expectError(IssueCodes.StrayControlFlowStatement, 2)
+		.expectError(IssueCodes.StrayControlFlowStatement, 3)
+		.run();
+		
+		'''
+			TEST {
+				encoding: 0;
+				behavior: {
+					break;
+					continue;
+				}
+			}
+		'''
+		.testInstruction()
+		.expectError(IssueCodes.StrayControlFlowStatement, 4)
+		.expectError(IssueCodes.StrayControlFlowStatement, 5)
+		.run();
+		
+		'''
+			Core X {
+				always {
+					TEST {
+						break;
+						continue;
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.StrayControlFlowStatement, 4)
+		.expectError(IssueCodes.StrayControlFlowStatement, 5)
+		.run();
+		
+		'''
+			switch(0) {
+				default:
+					break;
+					continue;
+			}
+		'''
+		.testStatements()
+		.expectError(IssueCodes.StrayControlFlowStatement, 4)
+		.run();
+		
+		'''
+			while(0) {
+				break;
+				continue;
+			}
+		'''
+		.testStatements()
 		.run();
 	}
 }
