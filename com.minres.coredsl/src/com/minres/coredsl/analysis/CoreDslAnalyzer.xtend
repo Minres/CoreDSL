@@ -781,12 +781,7 @@ class CoreDslAnalyzer {
 				if(!targetType.isValid) return;
 
 				if(indexValue.isValid) {
-					if(targetType instanceof ArrayType) {
-						if(!targetType.isUnknownSize) {
-							checkIndexAccessBounds(ctx, indexValue.value, BigInteger.valueOf(targetType.count), expression,
-								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
-						}
-					}else if(targetType instanceof AddressSpaceType) {
+					if(targetType instanceof AddressSpaceType) {
 						if(!targetType.isUnknownSize) {
 							checkIndexAccessBounds(ctx, indexValue.value, targetType.count, expression,
 								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
@@ -803,10 +798,7 @@ class CoreDslAnalyzer {
 					val endIndexValue = ctx.getExpressionValue(expression.endIndex);
 
 					if(endIndexValue.isValid) {
-						if(targetType instanceof ArrayType) {
-							checkIndexAccessBounds(ctx, endIndexValue.value, BigInteger.valueOf(targetType.count), expression,
-								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__END_INDEX);
-						} else if(targetType instanceof AddressSpaceType) {
+						if(targetType instanceof AddressSpaceType) {
 							checkIndexAccessBounds(ctx, endIndexValue.value, targetType.count, expression,
 								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__END_INDEX);
 						} else if(targetType instanceof IntegerType) {
