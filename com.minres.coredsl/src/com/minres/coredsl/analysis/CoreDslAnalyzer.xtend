@@ -585,8 +585,9 @@ class CoreDslAnalyzer {
 	 * 3b. If an array declarator uses a list initializer, the number of elements in the array type must match the number of elements in the initializer,
 	 *     and all elements must be implicitly convertible to array's element type. <i>(InvalidAssignmentType)</i><br>
 	 * 4. ISA parameters must not be declared as arrays. <i>(InvalidIsaParameterDeclaration)</i><br>
-	 * 5. Array dimension specifiers must be non-negative constant values. <i>(InvalidArraySize)</i><br>
-	 * 6. [Warning] Array dimension specifiers should not be zero. <i>(InvalidArraySize)</i>
+	 * 5. ISA level declarations (address spaces) must not be multidimensional. <i>(MultidimensionalAddressSpace)</i><br>
+	 * 6. Array dimension specifiers must be non-negative constant values. <i>(InvalidArraySize)</i><br>
+	 * 7. [Warning] Array dimension specifiers should not be zero. <i>(InvalidArraySize)</i>
 	 * 
 	 * @see CoreDslAnalyzer#analyzeAliasDeclarator(AnalysisContext, Declarator, CoreDslType, boolean)
 	 */
@@ -607,6 +608,11 @@ class CoreDslAnalyzer {
 			}
 			
 			val isAddressSpace = isIsaStateElement;
+			
+			if(isAddressSpace && declarator.dimensions.size > 1) {
+				ctx.acceptError("Multidimensional address spaces are not allowed", declarator,
+					CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, declarator.dimensions.size - 2, IssueCodes.MultidimensionalAddressSpace);
+			}
 
 			// rightmost size specifier is the innermost one, so process them in reverse order
 			for (var i = declarator.dimensions.size() - 1; i >= 0; i--) {
