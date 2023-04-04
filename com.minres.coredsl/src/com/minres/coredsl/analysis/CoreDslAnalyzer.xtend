@@ -709,7 +709,7 @@ class CoreDslAnalyzer {
 	 * 
 	 * @see CoreDslAnalyzer#analyzeAliasSource(AnalysisContext, Declarator, Expression)
 	 */
-	def static analyzeAliasDeclarator(AnalysisContext ctx, Declarator declarator, CoreDslType type,
+	def static analyzeAliasDeclarator(AnalysisContext ctx, Declarator declarator, CoreDslType aliasType,
 		boolean isIsaStateElement) {
 		CompilerAssertion.assertThat(declarator.isAlias, "analyzeAliasDeclarator called with non-alias declarator");
 
@@ -726,9 +726,16 @@ class CoreDslAnalyzer {
 
 				// being implicitly convertible is not good enough for alias assignments,
 				// because the alias and its source must have exactly matching bit patterns
-				if(valueType.isValid && valueType != type) {
-					ctx.acceptError("Alias must be initialized with exactly the same type it is declared as (" + type + "), but got " + valueType,
-						declarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
+				if(valueType.isValid && valueType != aliasType) {
+					
+					// the exception to above rule is the result of the questionable design decision to have the range
+					// access operator return a concatenated unsigned<N*bitsizeof(T)> instead of an array.
+					// it means we need to explicitly allow alias initializations where the source is a range access
+					// with the correct size and element type
+					if(!isValidRangeAlias(ctx, declarator, aliasType, initializer.value)) {
+						ctx.acceptError("Alias must be initialized with exactly the same type it is declared as (" + aliasType + "), but got " + valueType,
+							declarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
+					}
 				}
 
 				analyzeAliasSource(ctx, declarator, (declarator.initializer as ExpressionInitializer).value);
@@ -742,6 +749,25 @@ class CoreDslAnalyzer {
 					CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.UninitializedAlias);
 			}
 		}
+	}
+	
+	def private static isValidRangeAlias(AnalysisContext ctx, Declarator aliasDeclarator, CoreDslType aliasType, Expression initExpression) {
+		val aliasSpace = aliasType as AddressSpaceType;
+		if(aliasSpace === null) return false;
+		
+		val rangeAccess = initExpression as IndexAccessExpression;
+		if(rangeAccess === null) return false;
+		if(rangeAccess.endIndex === null) return false;
+		
+		val initSpace = ctx.getExpressionType(rangeAccess.target) as AddressSpaceType;
+		if(initSpace === null) return false;
+		if(initSpace.elementType != aliasSpace.elementType) return false;
+		
+		val aliasSize = aliasSpace.count * BigInteger.valueOf(aliasSpace.elementType.bitSize);
+		val rangeSize = BigInteger.valueOf(ctx.getExpressionType(rangeAccess).bitSize);
+		if(aliasSize != rangeSize) return false;
+		
+		return true;
 	}
 
 	/**
