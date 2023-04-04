@@ -25,7 +25,7 @@ class AddressSpaceType extends CoreDslType {
 	override isAddressSpaceType() { return true; }
 	override isIncomplete() { return isUnknownSize || elementType.isIncomplete; }
 	
-	override toString() { return isUnknownSize ? '''address space «elementType»[?]''' : '''address space «elementType»[«count»]'''; }
+	override toString() { return isUnknownSize ? '''«elementType»[address space ?]''' : '''«elementType»[address space «count»]'''; }
 	
 	def static ofUnknownSize(CoreDslType elementType) {
 		return new AddressSpaceType(elementType);
