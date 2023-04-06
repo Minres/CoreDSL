@@ -33,7 +33,7 @@ FunctionDefinition:
 Instruction:
 	name=ID attributes+=Attribute* '{' 
 		('encoding' ':' encoding=Encoding ';')
-		('assembly' ':' assembly=STRING ';')?
+		('assembly' ':' (assembly=STRING | '{' mnemonic=STRING ',' assembly=STRING '}') ';')?
 		('behavior' ':' behavior=Statement)
 	'}';
 
