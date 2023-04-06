@@ -2,6 +2,7 @@ package com.minres.coredsl.analysis
 
 import com.minres.coredsl.coreDsl.CoreDslPackage
 import com.minres.coredsl.coreDsl.Declarator
+import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.ISA
@@ -19,7 +20,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
 import static extension com.minres.coredsl.util.ModelExtensions.*
-import com.minres.coredsl.coreDsl.Encoding
 
 class AnalysisContext extends ProxyMessageAcceptor {
 	

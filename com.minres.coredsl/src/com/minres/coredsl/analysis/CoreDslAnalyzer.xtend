@@ -1445,12 +1445,31 @@ class CoreDslAnalyzer {
 					ctx.acceptError(expression.function + ' expects exactly one argument', expression,
 						CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION, -1, IssueCodes.InvalidArgumentCount);
 					return ctx.setExpressionType(expression, ErrorType.invalid);
-				} else {
-					val value = CoreDslConstantExpressionEvaluator.evaluate(ctx, expression);
-					if(value.isError) return ErrorType.indeterminate;
-					val type = CoreDslTypeProvider.getSmallestTypeForValue(value.value);
-					return ctx.setExpressionType(expression, type);
 				}
+
+				val value = CoreDslConstantExpressionEvaluator.evaluate(ctx, expression);
+				val type = CoreDslTypeProvider.getSmallestTypeForValue(value);
+				return ctx.setExpressionType(expression, type);
+			}
+			// TODO offsetof, bitoffsetof
+			case '__encoding_size': {
+				if(argumentCount !== 0) {
+					ctx.acceptError(expression.function + ' expects no arguments', expression,
+						CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION, -1, IssueCodes.InvalidArgumentCount);
+					return ctx.setExpressionType(expression, ErrorType.invalid);
+				}
+
+				val instruction = expression.ancestorOfType(Instruction);
+				if(instruction === null || !expression.isDescendantOf(instruction.behavior)) {
+					ctx.acceptError(expression.function + ' can only be used within an instruction behavior',
+						expression, CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION, -1,
+						IssueCodes.InvalidIntrinsicFunction);
+					return ctx.setExpressionType(expression, ErrorType.invalid);
+				}
+
+				val value = CoreDslConstantExpressionEvaluator.evaluate(ctx, expression);
+				val type = CoreDslTypeProvider.getSmallestTypeForValue(value.value);
+				return ctx.setExpressionType(expression, type);
 			}
 			default: {
 				ctx.acceptError('Unknown intrinsic function ' + expression.function, expression,
