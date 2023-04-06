@@ -25,6 +25,12 @@ final class ConstantValue {
 		this.status = error;
 		this.value = null;
 	}
+	
+	override toString() {
+		if(isInvalid) return "<invalid>";
+		if(isIndeterminate) return "<indeterminate>";
+		return value.toString();
+	}
 
 	def isValid() { return status === StatusCode.success; }
 	def isError() { return status !== StatusCode.success; }
