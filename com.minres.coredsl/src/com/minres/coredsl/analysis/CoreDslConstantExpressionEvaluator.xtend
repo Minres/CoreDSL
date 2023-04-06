@@ -1,6 +1,5 @@
 package com.minres.coredsl.analysis
 
-import com.minres.coredsl.coreDsl.BoolConstant
 import com.minres.coredsl.coreDsl.CoreDslPackage
 import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.EntityReference
@@ -63,11 +62,6 @@ class CoreDslConstantExpressionEvaluator {
 			return ctx.getConstantValue(declarator);
 
 		return ConstantValue.indeterminate;
-	}
-
-	def private static dispatch ConstantValue evaluateImpl(AnalysisContext ctx, BoolConstant expression,
-		boolean suppressErrors) {
-		return new ConstantValue(expression.value ? 1 : 0);
 	}
 
 	def private static dispatch ConstantValue evaluateImpl(AnalysisContext ctx, IntegerConstant expression,
