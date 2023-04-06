@@ -3,6 +3,7 @@ package com.minres.coredsl.analysis
 import com.minres.coredsl.coreDsl.AlwaysBlock
 import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.BitField
+import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.BoolConstant
 import com.minres.coredsl.coreDsl.BoolTypeSpecifier
 import com.minres.coredsl.coreDsl.BreakStatement
@@ -211,28 +212,68 @@ class CoreDslAnalyzer {
 		analyzeStatement(ctx, instruction.behavior);
 	}
 
+	/**
+	 * 1. No index must be smaller than zero or larger than Integer.MAX_VALUE. <i>(IndexOutOfRange)</i>
+	 */
 	def static analyzeInstructionEncoding(AnalysisContext ctx, Encoding encoding) {
 		val highestAccessedBits = new HashMap<String, Integer>();
+		var totalSize = BigInteger.ZERO;
 
-		for (field : encoding.fields.filter(BitField)) {
-			var int highestAccessedBit = highestAccessedBits.getOrDefault(field.name, 0);
+		for (field : encoding.fields) {
+			switch (field) {
+				BitField: {
+					var highestAccessedBit = highestAccessedBits.getOrDefault(field.name, 0);
 
-			val startIndexValue = CoreDslConstantExpressionEvaluator.evaluate(ctx, field.startIndex);
-			val endIndexValue = CoreDslConstantExpressionEvaluator.evaluate(ctx, field.endIndex);
+					val startIndexValue = CoreDslConstantExpressionEvaluator.evaluate(ctx, field.startIndex);
+					val endIndexValue = CoreDslConstantExpressionEvaluator.evaluate(ctx, field.endIndex);
 
-			highestAccessedBit = Math.max(highestAccessedBit, startIndexValue.value.intValue);
-			highestAccessedBit = Math.max(highestAccessedBit, endIndexValue.value.intValue);
+					if(startIndexValue.isValid && endIndexValue.isValid) {
+						var int startIndex;
+						var int endIndex;
 
-			highestAccessedBits.put(field.name, highestAccessedBit);
+						if(startIndexValue.value.isInIntegerRange && startIndexValue.value.signum >= 0) {
+							startIndex = startIndexValue.value.intValue;
+							highestAccessedBit = Math.max(highestAccessedBit, startIndex);
+						} else {
+							ctx.acceptError("Index out of range", field,
+								CoreDslPackage.Literals.BIT_FIELD__START_INDEX, -1, IssueCodes.IndexOutOfRange);
+							totalSize = null;
+						}
+						
+						if(endIndexValue.value.isInIntegerRange && endIndexValue.value.signum >= 0) {
+							endIndex = endIndexValue.value.intValue;
+							highestAccessedBit = Math.max(highestAccessedBit, endIndex);
+						} else {
+							ctx.acceptError("Index out of range", field,
+								CoreDslPackage.Literals.BIT_FIELD__END_INDEX, -1, IssueCodes.IndexOutOfRange);
+							totalSize = null;
+						}
+
+						highestAccessedBits.put(field.name, highestAccessedBit);
+
+						if(totalSize !== null) {
+							totalSize += BigInteger.valueOf(Math.abs(endIndex - startIndex) + 1);
+						}
+					} else {
+						totalSize = null;
+					}
+				}
+				BitValue: {
+					val value = field.value as TypedBigInteger;
+					totalSize += BigInteger.valueOf(value.size);
+				}
+			}
 		}
 
 		for (field : encoding.fields.filter(BitField)) {
-			val type = IntegerType.unsigned(highestAccessedBits.get(field.name) + 1);
+			val type = IntegerType.unsigned(highestAccessedBits.getOrDefault(field.name, 0) + 1);
 
 			if(!ctx.isDeclaredTypeSet(field)) {
 				ctx.setDeclaredType(field, type);
 			}
 		}
+
+		ctx.setEncodingSize(encoding, totalSize !== null ? new ConstantValue(totalSize) : ConstantValue.invalid);
 	}
 
 	def static analyzeAlwaysBlock(AnalysisContext ctx, AlwaysBlock alwaysBlock) {
