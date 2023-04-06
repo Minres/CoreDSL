@@ -2,6 +2,7 @@ package com.minres.coredsl.tests.analysis
 
 import com.google.inject.Inject
 import com.minres.coredsl.coreDsl.IndexAccessExpression
+import com.minres.coredsl.coreDsl.IntrinsicExpression
 import com.minres.coredsl.tests.CoreDslInjectorProvider
 import com.minres.coredsl.tests.CoreDslTestHelper
 import com.minres.coredsl.type.AddressSpaceType
@@ -640,31 +641,40 @@ class CoreDslElaborationTest {
 		'''
 			TEST {
 				encoding: 0;
-				behavior: {}
+				behavior: {
+					int x = __encoding_size();
+				}
 			}
 		'''
 		.testInstruction()
 		.expectValue(null, [it.encoding], 1)
+		.expectValue(null, IntrinsicExpression, -1, 1)
 		.run();
 		
 		'''
 			TEST {
 				encoding: 0b100000;
-				behavior: {}
+				behavior: {
+					int x = __encoding_size;
+				}
 			}
 		'''
 		.testInstruction()
 		.expectValue(null, [it.encoding], 6)
+		.expectValue(null, IntrinsicExpression, -1, 6)
 		.run();
 		
 		'''
 			TEST {
 				encoding: 6'd2 :: field[15:0] :: field[31:16];
-				behavior: {}
+				behavior: {
+					int x = __encoding_size;
+				}
 			}
 		'''
 		.testInstruction()
 		.expectValue(null, [it.encoding], 38)
+		.expectValue(null, IntrinsicExpression, -1, 38)
 		.run();
 	}
 }
