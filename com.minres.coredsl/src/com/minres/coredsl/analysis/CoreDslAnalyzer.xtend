@@ -584,8 +584,8 @@ class CoreDslAnalyzer {
 	 * 1. Const declarators must be initialized, unless they have storage class 'extern' or 'register'. <i>(UninitializedConstant)</i><br>
 	 * 2. Alias declarators must fulfill additional requirements.<br>
 	 * 3a. If the declarator uses an expression initializer, the expression's type must be implicitly convertible to the declarator's type. <i>(InvalidAssignmentType)</i><br>
-	 * 3b. If an array declarator uses a list initializer, the number of elements in the array type must match the number of elements in the initializer,
-	 *     and all elements must be implicitly convertible to array's element type. <i>(InvalidAssignmentType)</i><br>
+	 * 3b. If an array (or address space) declarator uses a list initializer, the number of elements in the array (address space) type must match the number of elements in the initializer,
+	 *     and all elements must be implicitly convertible to array's (address space's) element type. <i>(InvalidAssignmentType)</i><br>
 	 * 4. ISA parameters must not be declared as arrays. <i>(InvalidIsaParameterDeclaration)</i><br>
 	 * 5. ISA level declarations (address spaces) must not be multidimensional. <i>(MultidimensionalAddressSpace)</i><br>
 	 * 6. Array dimension specifiers must be non-negative constant values. <i>(InvalidArraySize)</i><br>
@@ -669,17 +669,28 @@ class CoreDslAnalyzer {
 					ctx.acceptError("Cannot implicitly convert " + valueType + " to " + type, declarator,
 						CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
 				}
-			} else if(type.isArrayType) {
+			} else if(type.isArrayType || type.isAddressSpaceType) {
 				val listInitializer = initializer as ListInitializer;
-				val arrayType = type as ArrayType;
-				if (!arrayType.isUnknownSize && arrayType.count != listInitializer.initializers.size)
-					ctx.acceptError("List initializer size does not match array size", declarator,
+				var CoreDslType elementType = null;
+				var BigInteger count = null;
+				var isUnknownSize = false;
+				if(type instanceof ArrayType) {
+					elementType = type.elementType;
+					count = BigInteger.valueOf(type.count);
+					isUnknownSize = type.isUnknownSize;
+				} else if(type instanceof AddressSpaceType) {
+					elementType = type.elementType
+					count = type.count
+					isUnknownSize = type.isUnknownSize
+				}
+				if (!isUnknownSize && count.compareTo(BigInteger.valueOf(listInitializer.initializers.size)) != 0)
+					ctx.acceptError("List initializer size does not match LHS size", declarator,
 						CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
 				for (subInitializer : listInitializer.initializers) {
 					if(subInitializer instanceof ExpressionInitializer) {
 						val valueType = analyzeExpression(ctx, subInitializer.value);
-						if(!CoreDslTypeProvider.canImplicitlyConvert(valueType, arrayType.elementType)) {
-							ctx.acceptError("Cannot implicitly convert " + valueType + " to " + arrayType.elementType, declarator,
+						if(!CoreDslTypeProvider.canImplicitlyConvert(valueType, elementType)) {
+							ctx.acceptError("Cannot implicitly convert " + valueType + " to " + elementType, declarator,
 							CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
 						}
 						if(isIsaStateElement) {
