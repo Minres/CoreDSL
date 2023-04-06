@@ -20,7 +20,6 @@ import com.minres.coredsl.coreDsl.DeclarationStatement
 import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.DoLoop
-import com.minres.coredsl.coreDsl.EmptyStatement
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.EntityReference
 import com.minres.coredsl.coreDsl.EnumTypeDeclaration
@@ -47,7 +46,6 @@ import com.minres.coredsl.coreDsl.ParenthesisExpression
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.ReturnStatement
-import com.minres.coredsl.coreDsl.SpawnStatement
 import com.minres.coredsl.coreDsl.Statement
 import com.minres.coredsl.coreDsl.SwitchStatement
 import com.minres.coredsl.coreDsl.TypeQualifier
@@ -73,6 +71,7 @@ import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.coreDsl.SpawnStatement
 
 class CoreDslAnalyzer {
 	public static var boolean emitDebugInfo = false;
@@ -241,9 +240,6 @@ class CoreDslAnalyzer {
 	// //////////////////////////////////////////////////////////////////////////
 	// ////////////////////////////// Statements ////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////
-	def static dispatch void analyzeStatement(AnalysisContext ctx, EmptyStatement statement) {
-	}
-	
 	def static dispatch void analyzeStatement(AnalysisContext ctx, CompoundStatement statement) {
 		var unreachable = false;
 		for (nested : statement.statements) {
@@ -1114,8 +1110,8 @@ class CoreDslAnalyzer {
 	def static Integer getRangeSize(AnalysisContext ctx, Expression start, Expression end) {
 		if(start instanceof EntityReference && end instanceof InfixExpression ||
 			start instanceof InfixExpression && end instanceof EntityReference) {
-			val reference = start instanceof EntityReference ? start : end as EntityReference;
-			val infix = start instanceof InfixExpression ? start : end as InfixExpression;
+			val reference = start instanceof EntityReference ? start as EntityReference : end as EntityReference;
+			val infix = start instanceof InfixExpression ? start as InfixExpression : end as InfixExpression;
 
 			val entity = reference.target;
 			val left = infix.left;

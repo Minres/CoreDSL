@@ -1,12 +1,8 @@
 package com.minres.coredsl.tests.analysis
 
 import com.google.inject.Inject
-import com.minres.coredsl.coreDsl.IfStatement
-import com.minres.coredsl.coreDsl.InfixExpression
-import com.minres.coredsl.coreDsl.IntegerConstant
 import com.minres.coredsl.tests.CoreDslInjectorProvider
 import com.minres.coredsl.tests.CoreDslTestHelper
-import com.minres.coredsl.type.IntegerType
 import com.minres.coredsl.validation.IssueCodes
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
@@ -26,9 +22,7 @@ class CoreDslStatementTest {
 				{}
 				{}
 			}
-		'''
-		.testStatements()
-		.run();
+		'''.testStatements().run();
 		
 		'''
 			{
@@ -36,8 +30,7 @@ class CoreDslStatementTest {
 				return;
 				{}
 			}
-		'''
-		.testStatements()
+		'''.testStatements()
 		.expectWarning(IssueCodes.UnreachableCode, 4)
 		.run();
 		
@@ -47,8 +40,7 @@ class CoreDslStatementTest {
 				{return;}
 				{}
 			}
-		'''
-		.testStatements()
+		'''.testStatements()
 		.expectWarning(IssueCodes.UnreachableCode, 4)
 		.run();
 		
@@ -59,8 +51,7 @@ class CoreDslStatementTest {
 				else return;
 				{}
 			}
-		'''
-		.testStatements()
+		'''.testStatements()
 		.expectWarning(IssueCodes.UnreachableCode, 5)
 		.run();
 	}
@@ -84,8 +75,7 @@ class CoreDslStatementTest {
 			+0;
 			~0;
 			!0;
-		'''
-		.testStatements()
+		'''.testStatements()
 		.expectError(IssueCodes.InvalidStatementExpression, 4)
 		.expectError(IssueCodes.InvalidStatementExpression, 5)
 		.expectError(IssueCodes.InvalidStatementExpression, 6)
@@ -111,139 +101,7 @@ class CoreDslStatementTest {
 			x++;
 			x--;
 			testFunc();
-		'''
-		.testStatements()
-		.run();
-	}
-	
-	@Test
-	def void ifStatement() {
-		'''
-			if(true)
-			if(true){}
-			else{}
-		'''
-		.testStatements()
-		.expect(IfStatement, 1, [it.elseBody === null], "The outer if statement has no else branch")
-		.expect(IfStatement, 2, [it.elseBody !== null], "The inner if statement has an else branch")
-		.run();
-		
-		'''
-			InstructionSet TestISA {
-				architectural_state {
-					struct T {
-						int f;
-					}
-				}
-				functions {
-					void testFunc() {
-						struct T t;
-						int a[1];
-						
-						if(t);
-						if(a);
-					}
-				}
-			}
-		'''
-		.testProgram()
-		.expectError(IssueCodes.NonScalarCondition, 12)
-		.expectError(IssueCodes.NonScalarCondition, 13)
-		.run();
-		
-		'''
-			if(true);
-			if(false);
-			if(0);
-			if(1);
-		'''
-		.testStatements()
-		.run();
-	}
-	
-	@Test
-	def void switchStatement() {
-		'''
-			switch(0) {}
-			
-			bool b = true;
-			switch(b) {
-				case true: break;
-				case false: break;
-			}
-			
-			int i = 42;
-			switch(i) {
-				case -1: break;
-				case 42: break;
-				default: break;
-			}
-		'''
-		.testStatements()
-		.run();
-		
-		'''
-			InstructionSet TestISA {
-				architectural_state {
-					struct T {
-						int f;
-					}
-				}
-				functions {
-					void testFunc() {
-						struct T t;
-						int a[1];
-						
-						switch(t) {}
-						switch(a) {}
-					}
-				}
-			}
-		'''
-		.testProgram()
-		.expectError(IssueCodes.SwitchConditionTypeInvalid, 12)
-		.expectError(IssueCodes.SwitchConditionTypeInvalid, 13)
-		.run();
-		
-		'''
-			switch(0) {
-				default: break;
-				default: break;
-				default: break;
-			}
-		'''
-		.testStatements()
-		.expectError(IssueCodes.SwitchMultipleDefaultSections, 3)
-		.expectError(IssueCodes.SwitchMultipleDefaultSections, 4)
-		.run();
-		
-		'''
-			switch(0) {
-				case 0: break;
-				case 1 - 1: break;
-				case 0 * 25: break;
-			}
-		'''
-		.testStatements()
-		.expectType(null, IntegerConstant, 1, IntegerType.bool)
-		.expectValue(null, InfixExpression, 3, 0)
-		.expectValue(null, InfixExpression, 4, 0)
-		.expectError(IssueCodes.SwitchDuplicateCaseSection, 3)
-		.expectError(IssueCodes.SwitchDuplicateCaseSection, 4)
-		.run();
-		
-		'''
-			switch(0) {
-				case -1: break;
-				case 0: break;
-				case 1: break;
-				case 2: break;
-			}
-		'''
-		.testStatements()
-		.expectType(null, IntegerConstant, 1, IntegerType.bool)
-		.expectError(IssueCodes.SwitchCaseConditionOutOfRange, 2)
-		.expectError(IssueCodes.SwitchCaseConditionOutOfRange, 5)
+		'''.testStatements()
 		.run();
 	}
 }

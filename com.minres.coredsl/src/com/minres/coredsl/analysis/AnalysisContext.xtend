@@ -87,40 +87,40 @@ class AnalysisContext extends ProxyMessageAcceptor {
 	val Map<EObject, CoreDslType> typeMap = new HashMap();
 	val Map<EObject, ConstantValue> valueMap = new HashMap();
 
-	def _isStorageSet(EObject node) { 
+	def private _isStorageSet(EObject node) { 
 		return storageMap.containsKey(node);
 	}
-	def _getStorage(EObject node) {
+	def private _getStorage(EObject node) {
 		CompilerAssertion.assertThat(_isStorageSet(node), "Storage class has not been set for node " + node); 
 		return storageMap.get(node);
 	}
-	def _setStorage(EObject node, StorageClass storage) {
+	def private _setStorage(EObject node, StorageClass storage) {
 		CompilerAssertion.assertThat(!_isStorageSet(node), "Storage class has already been set for node " + node);
 		storageMap.put(node, storage);
 		return storage;
 	}
 
-	def _isTypeSet(EObject node) {
+	def private _isTypeSet(EObject node) {
 		return typeMap.containsKey(node);
 	}
-	def _getType(EObject node) {
+	def private _getType(EObject node) {
 		CompilerAssertion.assertThat(_isTypeSet(node), "Type has not been set for node " + node); 
 		return typeMap.get(node); 
 	}
-	def _setType(EObject node, CoreDslType type) {
+	def private _setType(EObject node, CoreDslType type) {
 		CompilerAssertion.assertThat(!_isTypeSet(node), "Type has already been set for node " + node);
 		typeMap.put(node, type);
 		return type;
 	}
 
-	def _isValueSet(EObject node) {
+	def private _isValueSet(EObject node) {
 		return valueMap.containsKey(node);
 	}
-	def _getValue(EObject node) {
+	def private _getValue(EObject node) {
 		CompilerAssertion.assertThat(_isValueSet(node), "Value has not been set for node " + node); 
 		return valueMap.get(node);
 	}
-	def _setValue(EObject node, ConstantValue value) {
+	def private _setValue(EObject node, ConstantValue value) {
 		CompilerAssertion.assertThat(!_isValueSet(node), "Value has already been set for node " + node);
 		valueMap.put(node, value);
 		return value;
