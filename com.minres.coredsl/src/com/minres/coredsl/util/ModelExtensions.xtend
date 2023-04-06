@@ -64,7 +64,7 @@ abstract class ModelExtensions {
 	}
 
 	static def boolean isDescendantOf(EObject obj, EObject potentialAncestor) {
-		return isDescendantOf(obj.eContainer, potentialAncestor);
+		return isDescendantOfOrSelf(obj.eContainer, potentialAncestor);
 	}
 
 	static def boolean isDescendantOfOrSelf(EObject obj, EObject potentialAncestor) {
