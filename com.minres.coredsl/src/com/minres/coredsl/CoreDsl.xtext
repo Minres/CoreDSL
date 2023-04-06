@@ -221,8 +221,8 @@ FunctionCallExpression:
 	target=EntityReference '(' (arguments+=Expression (',' arguments+=Expression)*)? ')';
     
 IntrinsicExpression:
-	function=('sizeof' | 'bitsizeof' | 'alignof' | 'bitalignof' | 'offsetof' | 'bitoffsetof')
-	'(' (arguments+=(Expression|TypeSpecifier) (',' arguments+=(Expression|TypeSpecifier))*)? ')';
+	function=('sizeof' | 'bitsizeof' | 'offsetof' | 'bitoffsetof' | '__encoding_size')
+	('(' (arguments+=(Expression|TypeSpecifier) (',' arguments+=(Expression|TypeSpecifier))*)? ')')?;
 
 //////////////////////////////// Constants ////////////////////////////////
 
