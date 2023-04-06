@@ -634,4 +634,37 @@ class CoreDslElaborationTest {
 		.expectError(IssueCodes.InvalidIntegerTypeSize, 4)
 		.run();
 	}
+	
+	@Test
+	def void encoding() {
+		'''
+			TEST {
+				encoding: 0;
+				behavior: {}
+			}
+		'''
+		.testInstruction()
+		.expectValue(null, [it.encoding], 1)
+		.run();
+		
+		'''
+			TEST {
+				encoding: 0b100000;
+				behavior: {}
+			}
+		'''
+		.testInstruction()
+		.expectValue(null, [it.encoding], 6)
+		.run();
+		
+		'''
+			TEST {
+				encoding: 6'd2 :: field[15:0] :: field[31:16];
+				behavior: {}
+			}
+		'''
+		.testInstruction()
+		.expectValue(null, [it.encoding], 38)
+		.run();
+	}
 }
