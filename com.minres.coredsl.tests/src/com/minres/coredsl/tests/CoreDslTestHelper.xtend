@@ -93,32 +93,24 @@ class CoreDslTestHelper {
 	}
 
 	// test helpers
-	def testProgram(CharSequence code) { testProgram(code, generateTestName()) }
-
-	def testFunction(CharSequence code) { testFunction(code, generateTestName()) }
-
-	def testStatements(CharSequence code) { testStatements(code, generateTestName()) }
-
-	def testInstruction(CharSequence code) { testInstruction(code, generateTestName()) }
-
-	def testProgram(CharSequence program, String name) {
-		return test(program, name, [it], [it]);
+	def testProgram(CharSequence program) {
+		return test(program, generateTestName(), [it], [it]);
 	}
 
-	def testFunction(CharSequence code, String name) {
-		return test(code, name, [buildProgramFromFunction], [selectFunctionFromProgram]);
+	def testFunction(CharSequence code) {
+		return test(code, generateTestName(), [buildProgramFromFunction], [selectFunctionFromProgram]);
 	}
 
-	def testStatements(CharSequence code, String name) {
-		return test(code, name, [buildProgramFromStatements], [selectStatementsFromProgram]);
+	def testStatements(CharSequence code) {
+		return test(code, generateTestName(), [buildProgramFromStatements], [selectStatementsFromProgram]);
 	}
 
-	def testInstruction(CharSequence code, String name) {
-		return test(code, name, [buildProgramFromInstruction], [selectInstructionFromProgram]);
+	def testInstruction(CharSequence code) {
+		return test(code, generateTestName(), [buildProgramFromInstruction], [selectInstructionFromProgram]);
 	}
 
 	def private generateTestName() {
-		val method = new Throwable().stackTrace.get(2).methodName;
+		val method = new Throwable().stackTrace.takeWhile[it.methodName != "invoke0"].last.methodName;
 		testCount++;
 		return '''«method» «testCount»''';
 	}

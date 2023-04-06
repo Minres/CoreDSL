@@ -1,9 +1,14 @@
 package com.minres.coredsl.tests.analysis
 
 import com.google.inject.Inject
+import com.minres.coredsl.coreDsl.IndexAccessExpression
 import com.minres.coredsl.tests.CoreDslInjectorProvider
 import com.minres.coredsl.tests.CoreDslTestHelper
+import com.minres.coredsl.type.AddressSpaceType
+import com.minres.coredsl.type.ErrorType
+import com.minres.coredsl.type.IntegerType
 import com.minres.coredsl.validation.IssueCodes
+import java.math.BigInteger
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.junit.jupiter.api.Test
@@ -28,7 +33,11 @@ class CoreDslElaborationTest {
 					x = 1;
 				}
 			}
-		'''.testProgram().run();
+		'''
+		.testProgram()
+		.expectType("X", "x", "signed<32>")
+		.expectValue("X", "x", "1")
+		.run();
 		'''
 			InstructionSet Base {
 				architectural_state {
@@ -42,7 +51,11 @@ class CoreDslElaborationTest {
 					x = 1;
 				}
 			}
-		'''.testProgram().run();
+		'''
+		.testProgram()
+		.expectType("X", "x", "signed<32>")
+		.expectValue("X", "x", "1")
+		.run();
 		'''
 			InstructionSet A {
 				architectural_state {
@@ -51,7 +64,11 @@ class CoreDslElaborationTest {
 				}
 			}
 			Core X provides A {}
-		'''.testProgram().run();
+		'''
+		.testProgram()
+		.expectType("X", "x", "signed<32>")
+		.expectType("X", "y", "signed<32>")
+		.run();
 	}
 
 	@Test
@@ -64,7 +81,8 @@ class CoreDslElaborationTest {
 					int x;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.DuplicateIsaStateElement, 4)
 		.expectWarning(IssueCodes.DuplicateIsaStateElement, 1)
 		.run();
@@ -80,7 +98,8 @@ class CoreDslElaborationTest {
 					int x;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.DuplicateIsaStateElement, 8)
 		.expectWarning(IssueCodes.DuplicateIsaStateElement, 6)
 		.run();
@@ -96,7 +115,8 @@ class CoreDslElaborationTest {
 					int x = 32;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.DuplicateIsaStateElement, 8)
 		.expectWarning(IssueCodes.DuplicateIsaStateElement, 6)
 		.run();
@@ -109,7 +129,8 @@ class CoreDslElaborationTest {
 					register int x;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.DuplicateIsaStateElement, 4)
 		.expectError(IssueCodes.DuplicateIsaStateElement, 1)
 		.run();
@@ -125,7 +146,8 @@ class CoreDslElaborationTest {
 					register int x;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.DuplicateIsaStateElement, 8)
 		.expectError(IssueCodes.DuplicateIsaStateElement, 6)
 		.run();
@@ -141,7 +163,8 @@ class CoreDslElaborationTest {
 					register int x;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.DuplicateIsaStateElement, 8)
 		.expectError(IssueCodes.DuplicateIsaStateElement, 6)
 		.run();
@@ -154,7 +177,8 @@ class CoreDslElaborationTest {
 					extern int x;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.DuplicateIsaStateElement, 4)
 		.expectError(IssueCodes.DuplicateIsaStateElement, 1)
 		.run();
@@ -170,7 +194,8 @@ class CoreDslElaborationTest {
 					extern int x;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.DuplicateIsaStateElement, 8)
 		.expectError(IssueCodes.DuplicateIsaStateElement, 6)
 		.run();
@@ -186,7 +211,8 @@ class CoreDslElaborationTest {
 					extern int x;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.DuplicateIsaStateElement, 8)
 		.expectError(IssueCodes.DuplicateIsaStateElement, 6)
 		.run();
@@ -211,7 +237,8 @@ class CoreDslElaborationTest {
 					x = 1;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectWarning(IssueCodes.DuplicateIsaStateElement, 11)
 		.run();
 		// error: conflicting registers visible from the same core
@@ -227,7 +254,8 @@ class CoreDslElaborationTest {
 				}
 			}
 			Core X provides A, B {}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.DuplicateIsaStateElement, 11)
 		.run();
 		// error: conflicting externs visible from the same core
@@ -243,7 +271,8 @@ class CoreDslElaborationTest {
 				}
 			}
 			Core X provides A, B {}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.DuplicateIsaStateElement, 11)
 		.run();
 	}
@@ -263,7 +292,8 @@ class CoreDslElaborationTest {
 				}
 			}
 			Core X provides A, B {}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.MismatchingIsaStateElementSignatures, 11)
 		.run();
 		// error: conflicting storage class (param, extern)
@@ -279,7 +309,8 @@ class CoreDslElaborationTest {
 				}
 			}
 			Core X provides A, B {}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.MismatchingIsaStateElementSignatures, 11)
 		.run();
 		// error: conflicting storage class (register, extern)
@@ -295,7 +326,8 @@ class CoreDslElaborationTest {
 				}
 			}
 			Core X provides A, B {}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.MismatchingIsaStateElementSignatures, 11)
 		.run();
 
@@ -312,7 +344,8 @@ class CoreDslElaborationTest {
 				}
 			}
 			Core X provides A, B {}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.MismatchingIsaStateElementSignatures, 11)
 		.run();
 		// error: conflicting volatile qualifier
@@ -328,7 +361,8 @@ class CoreDslElaborationTest {
 				}
 			}
 			Core X provides A, B {}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.MismatchingIsaStateElementSignatures, 11)
 		.run();
 
@@ -345,7 +379,8 @@ class CoreDslElaborationTest {
 				}
 			}
 			Core X provides A, B {}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.MismatchingIsaStateElementSignatures, 11)
 		.run();
 		// error: conflicting types
@@ -361,7 +396,8 @@ class CoreDslElaborationTest {
 				}
 			}
 			Core X provides A, B {}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.MismatchingIsaStateElementSignatures, 11)
 		.run();
 	}
@@ -375,7 +411,8 @@ class CoreDslElaborationTest {
 					int x[16];
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.InvalidIsaParameterDeclaration, 3)
 		.run();
 	}
@@ -395,7 +432,8 @@ class CoreDslElaborationTest {
 				}
 			}
 			Core C provides A, B {}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectWarning(IssueCodes.DuplicateIsaStateElement, 11)
 		.run();
 		
@@ -412,7 +450,8 @@ class CoreDslElaborationTest {
 				}
 			}
 			Core C provides A, B {}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectWarning(IssueCodes.DuplicateIsaStateElement, 11)
 		.run();
 	}
@@ -427,7 +466,8 @@ class CoreDslElaborationTest {
 				}
 			}
 			Core X provides A {}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.UnassignedIsaParameter, 6)
 		.run();
 		// error: dependency on unassigned value
@@ -443,7 +483,8 @@ class CoreDslElaborationTest {
 					y = x;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.UnassignedIsaParameter, 7)
 		.expectError(IssueCodes.IndeterminableIsaStateElementValue, 7)
 		.run();
@@ -461,7 +502,8 @@ class CoreDslElaborationTest {
 					y = x;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.IndeterminableIsaStateElementValue, 7)
 		.run();
 	}
@@ -475,7 +517,8 @@ class CoreDslElaborationTest {
 					extern void x;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.VoidDeclaration, 3)
 		.run();
 		// error: non-integral parameter type
@@ -486,7 +529,8 @@ class CoreDslElaborationTest {
 					struct T x;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.InvalidIsaParameterType, 4)
 		.run();
 		// error: cyclic type-value dependency
@@ -499,7 +543,8 @@ class CoreDslElaborationTest {
 				}
 			}
 			Core X provides A {}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.IndeterminableIsaStateElementType, 8)
 		.expectError(IssueCodes.IndeterminableIsaStateElementValue, 8)
 		.run();
@@ -512,32 +557,81 @@ class CoreDslElaborationTest {
 		// of X was indeterminate during partial elaboration of the instruction set
 		'''
 			InstructionSet A {
-			    architectural_state {
-			        unsigned int XLEN;
-			        register unsigned<XLEN> X[32];
-			        unsigned<XLEN>& ZERO = X[0];
-			    }
+				architectural_state {
+					unsigned int XLEN;
+					register unsigned<XLEN> X[32];
+					unsigned<XLEN>& ZERO = X[0];
+				}
 			}
 			Core X provides A {
 				architectural_state {
 					XLEN = 32;
 				}
 			}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.run();
 		// When a core doesn't define XLEN, the follow-up errors should be reported as well
 		'''
 			InstructionSet A {
-			    architectural_state {
-			        unsigned int XLEN;
-			        register unsigned<XLEN> X[32];
-			        unsigned<XLEN>& ZERO = X[0];
-			    }
+				architectural_state {
+					unsigned int XLEN;
+					register unsigned<XLEN> X[32];
+					unsigned<XLEN>& ZERO = X[0];
+				}
 			}
 			Core X provides A {}
-		'''.testProgram()
+		'''
+		.testProgram()
 		.expectError(IssueCodes.UnassignedIsaParameter, 8)
 		.expectError(IssueCodes.IndeterminableIsaStateElementType, 8)
+		.run();
+	}
+
+	@Test
+	def void addressSpaces() {
+		'''
+			Core X {
+				architectural_state {
+					register unsigned int X[32];
+					extern unsigned char M[256];
+				}
+			}
+		'''
+		.testProgram()
+		.expectType("X", "X", "unsigned<32>[address space 32]")
+		.expectType("X", "M", "unsigned<8>[address space 256]")
+		.run();
+		
+		'''
+			Core X {
+				architectural_state {
+					register unsigned int X[32][32];
+					extern unsigned char M[2][256];
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.MultidimensionalAddressSpace, 3)
+		.expectError(IssueCodes.MultidimensionalAddressSpace, 4)
+		.run();
+		
+		// This test checks the current limitation that address space range accesses
+		// cannot have a combined total size greater than Integer.MAX_VALUE bits.
+		'''
+			Core X {
+				architectural_state {
+					extern unsigned char MEMORY[0x10000000000000000];
+					unsigned char& HIGH_MEMORY[0x100000000] = MEMORY[0xffffffff00000000:0xffffffffffffffff];
+					unsigned char& FIRST_BYTE = MEMORY[0];
+				}
+			}
+		'''
+		.testProgram()
+		.expectType("X", "MEMORY", new AddressSpaceType(IntegerType.octet, BigInteger.ONE.shiftLeft(64)))
+		.expectType("X", IndexAccessExpression, 4, ErrorType.invalid)
+		.expectType("X", IndexAccessExpression, 5, IntegerType.octet)
+		.expectError(IssueCodes.InvalidIntegerTypeSize, 4)
 		.run();
 	}
 }

@@ -16,7 +16,6 @@ import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.StructTypeDeclaration
 import com.minres.coredsl.coreDsl.UnionTypeDeclaration
-import com.minres.coredsl.type.ArrayType
 import com.minres.coredsl.type.CompositeType
 import com.minres.coredsl.type.CoreDslType
 import com.minres.coredsl.type.EnumType
@@ -32,6 +31,7 @@ import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.type.AddressSpaceType
 
 class CoreDslElaborator {
 
@@ -339,14 +339,13 @@ class CoreDslElaborator {
 				val value = CoreDslConstantExpressionEvaluator.evaluate(analysisContext, expression);
 
 				if(value.isValid) {
-					val intValue = value.value.intValueExact();
-					if(intValue < 0) {
-						type = ArrayType.ofUnknownSize(type);
+					if(value.value < BigInteger.ZERO) {
+						type = AddressSpaceType.ofUnknownSize(type);
 					} else {
-						type = new ArrayType(type, intValue);
+						type = new AddressSpaceType(type, value.value);
 					}
 				} else if(failed) {
-					type = ArrayType.ofUnknownSize(type);
+					type = AddressSpaceType.ofUnknownSize(type);
 				} else {
 					return false;
 				}

@@ -20,6 +20,7 @@ import com.minres.coredsl.coreDsl.DeclarationStatement
 import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.DoLoop
+import com.minres.coredsl.coreDsl.EmptyStatement
 import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.EntityReference
 import com.minres.coredsl.coreDsl.EnumTypeDeclaration
@@ -46,6 +47,7 @@ import com.minres.coredsl.coreDsl.ParenthesisExpression
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
 import com.minres.coredsl.coreDsl.ReturnStatement
+import com.minres.coredsl.coreDsl.SpawnStatement
 import com.minres.coredsl.coreDsl.Statement
 import com.minres.coredsl.coreDsl.SwitchStatement
 import com.minres.coredsl.coreDsl.TypeQualifier
@@ -53,6 +55,7 @@ import com.minres.coredsl.coreDsl.TypeSpecifier
 import com.minres.coredsl.coreDsl.UserTypeDeclaration
 import com.minres.coredsl.coreDsl.VoidTypeSpecifier
 import com.minres.coredsl.coreDsl.WhileLoop
+import com.minres.coredsl.type.AddressSpaceType
 import com.minres.coredsl.type.ArrayType
 import com.minres.coredsl.type.CompositeType
 import com.minres.coredsl.type.CoreDslType
@@ -71,7 +74,6 @@ import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
-import com.minres.coredsl.coreDsl.SpawnStatement
 
 class CoreDslAnalyzer {
 	public static var boolean emitDebugInfo = false;
@@ -240,6 +242,9 @@ class CoreDslAnalyzer {
 	// //////////////////////////////////////////////////////////////////////////
 	// ////////////////////////////// Statements ////////////////////////////////
 	// //////////////////////////////////////////////////////////////////////////
+	def static dispatch void analyzeStatement(AnalysisContext ctx, EmptyStatement statement) {
+	}
+	
 	def static dispatch void analyzeStatement(AnalysisContext ctx, CompoundStatement statement) {
 		var unreachable = false;
 		for (nested : statement.statements) {
@@ -386,7 +391,7 @@ class CoreDslAnalyzer {
 	 */
 	def static dispatch void analyzeStatement(AnalysisContext ctx, ReturnStatement statement) {
 		val function = statement.ancestorOfType(FunctionDefinition);
-		val returnType = analyzeTypeSpecifier(ctx, function?.returnType);
+		val returnType = function !== null ? analyzeTypeSpecifier(ctx, function.returnType) : null;
 		val valueType = statement.value !== null ? analyzeExpression(ctx, statement.value) : null;
 
 		if(function === null) {
@@ -437,10 +442,12 @@ class CoreDslAnalyzer {
 			}
 		}
 		
-		val conditionType = analyzeExpression(ctx, statement.condition);
-		if(!conditionType.isScalarType) {
-			ctx.acceptError("The condition must be a scalar type", statement,
-				CoreDslPackage.Literals.LOOP_STATEMENT__CONDITION, -1, IssueCodes.NonScalarCondition);
+		if(statement.condition !== null) {
+			val conditionType = analyzeExpression(ctx, statement.condition);
+			if(!conditionType.isScalarType) {
+				ctx.acceptError("The condition must be a scalar type", statement,
+					CoreDslPackage.Literals.LOOP_STATEMENT__CONDITION, -1, IssueCodes.NonScalarCondition);
+			}
 		}
 
 		for (var i = 0; i < statement.loopExpressions.size; i++) {
@@ -574,14 +581,15 @@ class CoreDslAnalyzer {
 	}
 
 	/**
-	 * 1. Const declarators must be initialized. <i>(UninitializedConstant)</i><br>
+	 * 1. Const declarators must be initialized, unless they have storage class 'extern' or 'register'. <i>(UninitializedConstant)</i><br>
 	 * 2. Alias declarators must fulfill additional requirements.<br>
 	 * 3a. If the declarator uses an expression initializer, the expression's type must be implicitly convertible to the declarator's type. <i>(InvalidAssignmentType)</i><br>
 	 * 3b. If an array declarator uses a list initializer, the number of elements in the array type must match the number of elements in the initializer,
 	 *     and all elements must be implicitly convertible to array's element type. <i>(InvalidAssignmentType)</i><br>
 	 * 4. ISA parameters must not be declared as arrays. <i>(InvalidIsaParameterDeclaration)</i><br>
-	 * 5. Array dimension specifiers must be non-negative constant values. <i>(InvalidArraySize)</i><br>
-	 * 6. [Warning] Array dimension specifiers should not be zero. <i>(InvalidArraySize)</i>
+	 * 5. ISA level declarations (address spaces) must not be multidimensional. <i>(MultidimensionalAddressSpace)</i><br>
+	 * 6. Array dimension specifiers must be non-negative constant values. <i>(InvalidArraySize)</i><br>
+	 * 7. [Warning] Array dimension specifiers should not be zero. <i>(InvalidArraySize)</i>
 	 * 
 	 * @see CoreDslAnalyzer#analyzeAliasDeclarator(AnalysisContext, Declarator, CoreDslType, boolean)
 	 */
@@ -600,24 +608,36 @@ class CoreDslAnalyzer {
 				ctx.acceptError("An ISA parameter may not be declared as an array", declarator,
 					CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, 1, IssueCodes.InvalidIsaParameterDeclaration);
 			}
+			
+			val isAddressSpace = isIsaStateElement;
+			
+			if(isAddressSpace && declarator.dimensions.size > 1) {
+				ctx.acceptError("Multidimensional address spaces are not allowed", declarator,
+					CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, declarator.dimensions.size - 2, IssueCodes.MultidimensionalAddressSpace);
+			}
 
 			// rightmost size specifier is the innermost one, so process them in reverse order
 			for (var i = declarator.dimensions.size() - 1; i >= 0; i--) {
 				val size = CoreDslConstantExpressionEvaluator.evaluate(ctx, declarator.dimensions.get(i));
 				if(size.isValid) {
-					if(size.value.intValueExact < 0) {
-						type = ArrayType.ofUnknownSize(type);
+					if(size.value < BigInteger.ZERO) {
+						type = isAddressSpace ? AddressSpaceType.ofUnknownSize(type) : ArrayType.ofUnknownSize(type);
 						ctx.acceptError("Negative array size is invalid", declarator,
 							CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
 					} else {
-						if(size.value.intValueExact == 0) {
+						if(size.value == BigInteger.ZERO) {
 							ctx.acceptWarning("Array size is zero", declarator,
 								CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.ArraySizeIsZero);
 						}
-						type = new ArrayType(type, size.value.intValueExact);
+						else if(!isAddressSpace && !size.value.isInIntegerRange) {
+							ctx.acceptWarning("Array size is greater than Integer.MAX_VALUE", declarator,
+								CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
+							type = ArrayType.ofUnknownSize(type);
+						}
+						type = isAddressSpace ? new AddressSpaceType(type, size.value) : new ArrayType(type, size.value.intValueExact);
 					}
 				} else {
-					type = ArrayType.ofUnknownSize(type);
+					type = isAddressSpace ? AddressSpaceType.ofUnknownSize(type) : ArrayType.ofUnknownSize(type);
 					if(!ctx.isPartialAnalysis) {
 						ctx.acceptError("Unable to determine array size", declarator,
 							CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
@@ -631,9 +651,12 @@ class CoreDslAnalyzer {
 			ctx.setDeclaredType(declarator, type);
 		}
 
-		if(declarator.isConst && declarator.initializer === null) {
-			ctx.acceptError("An identifier declared as const must be initialized", declarator,
-				CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.UninitializedConstant);
+		if(declarator.initializer === null) {
+			val storage = ctx.getStorageClass(declarator);
+			if(declarator.isConst && !storage.isOneOf(StorageClass.extern, StorageClass.register)) {
+				ctx.acceptError("An identifier declared as const must be initialized", declarator,
+					CoreDslPackage.Literals.NAMED_ENTITY__NAME, -1, IssueCodes.UninitializedConstant);
+			}
 		}
 
 		if(declarator.isAlias) {
@@ -686,7 +709,7 @@ class CoreDslAnalyzer {
 	 * 
 	 * @see CoreDslAnalyzer#analyzeAliasSource(AnalysisContext, Declarator, Expression)
 	 */
-	def static analyzeAliasDeclarator(AnalysisContext ctx, Declarator declarator, CoreDslType type,
+	def static analyzeAliasDeclarator(AnalysisContext ctx, Declarator declarator, CoreDslType aliasType,
 		boolean isIsaStateElement) {
 		CompilerAssertion.assertThat(declarator.isAlias, "analyzeAliasDeclarator called with non-alias declarator");
 
@@ -703,9 +726,16 @@ class CoreDslAnalyzer {
 
 				// being implicitly convertible is not good enough for alias assignments,
 				// because the alias and its source must have exactly matching bit patterns
-				if(valueType != type) {
-					ctx.acceptError("Alias must be initialized with exactly the same type it is declared as",
-						declarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
+				if(valueType.isValid && valueType != aliasType) {
+					
+					// the exception to above rule is the result of the questionable design decision to have the range
+					// access operator return a concatenated unsigned<N*bitsizeof(T)> instead of an array.
+					// it means we need to explicitly allow alias initializations where the source is a range access
+					// with the correct size and element type
+					if(!isValidRangeAlias(ctx, declarator, aliasType, initializer.value)) {
+						ctx.acceptError("Alias must be initialized with exactly the same type it is declared as (" + aliasType + "), but got " + valueType,
+							declarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
+					}
 				}
 
 				analyzeAliasSource(ctx, declarator, (declarator.initializer as ExpressionInitializer).value);
@@ -720,24 +750,44 @@ class CoreDslAnalyzer {
 			}
 		}
 	}
+	
+	def private static isValidRangeAlias(AnalysisContext ctx, Declarator aliasDeclarator, CoreDslType aliasType, Expression initExpression) {
+		val aliasSpace = aliasType as AddressSpaceType;
+		if(aliasSpace === null) return false;
+		
+		val rangeAccess = initExpression as IndexAccessExpression;
+		if(rangeAccess === null) return false;
+		if(rangeAccess.endIndex === null) return false;
+		
+		val initSpace = ctx.getExpressionType(rangeAccess.target) as AddressSpaceType;
+		if(initSpace === null) return false;
+		if(initSpace.elementType != aliasSpace.elementType) return false;
+		
+		val aliasSize = aliasSpace.count * BigInteger.valueOf(aliasSpace.elementType.bitSize);
+		val rangeSize = BigInteger.valueOf(ctx.getExpressionType(rangeAccess).bitSize);
+		if(aliasSize != rangeSize) return false;
+		
+		return true;
+	}
 
 	/**
 	 * 1. The alias source must be an identifier followed by any number of index or range accesses. <i>(InvalidAliasSource)</i><br>
-	 * 2. The identifier must refer to a declarator with storage class 'extern' or 'register'. <i>(InvalidAliasSource)</i><br>
-	 * 3. Index and range accesses must be in range [0, elementCount). <i>(IndexOutOfRange)</i>
+	 * 2. The identifier must refer to a declarator with storage class 'alias', 'extern' or 'register'. <i>(InvalidAliasSource)</i><br>
+	 * 3. Index and range accesses must be in range [0, elementCount). <i>(IndexOutOfRange)</i><br>
+	 * 4. A non-const alias cannot have a const identifier as its source. <i>(InvalidAliasConstness)</i>
 	 * 
 	 * @see CoreDslAnalyzer#checkIndexAccessBounds(AnalysisContext, BigInteger, int, IndexAccessExpression, EStructuralFeature)
 	 */
-	def static void analyzeAliasSource(AnalysisContext ctx, Declarator declarator, Expression expression) {
+	def static void analyzeAliasSource(AnalysisContext ctx, Declarator aliasDeclarator, Expression expression) {
 		// this assumes that the entire expression subtree has already been analyzed,
-		// so that ctx.getExpressionValue and ctx.getExpressionType don't throw.
+		// so that ctx.getExpressionType doesn't throw.
 		switch expression {
 			EntityReference: {
 				val target = expression.target;
 				if(target instanceof Declarator) {
 					val storage = ctx.getStorageClass(target);
 					switch storage {
-						// case alias, // TODO allow this (and update doc comment)
+						case alias,
 						case extern,
 						case register: {
 							// valid
@@ -745,31 +795,37 @@ class CoreDslAnalyzer {
 						default: {
 							ctx.acceptError(
 								"Cannot define an alias to " + target.name + " because it has storage class " + storage,
-								declarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1,
+								aliasDeclarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1,
 								IssueCodes.InvalidAliasSource);
 						}
 					}
+					if(target.isConst && !aliasDeclarator.isConst) {
+						ctx.acceptError(
+							"Cannot define a non-const alias to const item " + target.name,
+							aliasDeclarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1,
+							IssueCodes.InvalidAliasConstness);
+					}
 				} else {
 					ctx.acceptError("Cannot define an alias to " + target.name +
-						" because it does not refer to a declarator", declarator,
+						" because it does not refer to a declarator", aliasDeclarator,
 						CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAliasSource);
 				}
 			}
 			IndexAccessExpression: {
-				analyzeAliasSource(ctx, declarator, expression.target);
+				analyzeAliasSource(ctx, aliasDeclarator, expression.target);
 				val targetType = ctx.getExpressionType(expression.target);
-				val indexValue = ctx.getExpressionValue(expression.index);
+				val indexValue = CoreDslConstantExpressionEvaluator.evaluate(ctx, expression.index);
 				
 				if(!targetType.isValid) return;
 
 				if(indexValue.isValid) {
-					if(targetType instanceof ArrayType) {
+					if(targetType instanceof AddressSpaceType) {
 						if(!targetType.isUnknownSize) {
 							checkIndexAccessBounds(ctx, indexValue.value, targetType.count, expression,
 								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
 						}
 					} else if(targetType instanceof IntegerType) {
-						checkIndexAccessBounds(ctx, indexValue.value, targetType.bitSize, expression,
+						checkIndexAccessBounds(ctx, indexValue.value, BigInteger.valueOf(targetType.bitSize), expression,
 							CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
 					} else {
 						// error should already have been reported by analyzeExpression
@@ -777,33 +833,15 @@ class CoreDslAnalyzer {
 				}
 
 				if(expression.endIndex !== null) {
-					val endIndexValue = ctx.getExpressionValue(expression.endIndex);
+					val endIndexValue = CoreDslConstantExpressionEvaluator.evaluate(ctx, expression.endIndex);
 
 					if(endIndexValue.isValid) {
-						if(targetType instanceof ArrayType) {
+						if(targetType instanceof AddressSpaceType) {
 							checkIndexAccessBounds(ctx, endIndexValue.value, targetType.count, expression,
 								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__END_INDEX);
-
-						/*
-						 * // for arrays, the end index must be >= the start index 
-						 * if(indexValue.isValid && endIndexValue.value < indexValue.value) {
-						 * 	   ctx.acceptError("Range alias must use natural element order", expression,
-						 * 	   CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1,
-						 * 	   IssueCodes.InvalidRangeAliasElementOrder);
-						 * }
-						 */
 						} else if(targetType instanceof IntegerType) {
-							checkIndexAccessBounds(ctx, endIndexValue.value, targetType.bitSize, expression,
+							checkIndexAccessBounds(ctx, endIndexValue.value, BigInteger.valueOf(targetType.bitSize), expression,
 								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__END_INDEX);
-
-						/*
-						 * // for integers, the end index must be <= the start index
-						 * if(indexValue.isValid && endIndexValue.value > indexValue.value) {
-						 *     ctx.acceptError("Range alias must use natural element order", expression,
-						 * 	   CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1,
-						 *     IssueCodes.InvalidRangeAliasElementOrder);
-						 * }
-						 */
 						} else {
 							// error should already have been reported by analyzeExpression
 						}
@@ -820,21 +858,14 @@ class CoreDslAnalyzer {
 	/**
 	 * 1. The index value must not be negative. <i>(IndexOutOfRange)</i><br>
 	 * 2. The index value must not be greater than or equal to the element count. <i>(IndexOutOfRange)</i><br>
-	 * 3. [Implementation Restriction] The index value must fit into a 32 bit integer. <i>(IndexOutOfRange)</i>
 	 */
-	def private static void checkIndexAccessBounds(AnalysisContext ctx, BigInteger value, int elementCount,
+	def private static void checkIndexAccessBounds(AnalysisContext ctx, BigInteger value, BigInteger elementCount,
 		IndexAccessExpression expression, EStructuralFeature feature) {
-		try {
-			val intValue = value.intValueExact;
-			if(intValue < 0) {
-				ctx.acceptError("Index out of range (" + intValue + " < 0)", expression, feature, -1,
-					IssueCodes.IndexOutOfRange);
-			} else if(intValue >= elementCount) {
-				ctx.acceptError("Index out of range (" + intValue + " >= " + elementCount + ")", expression,
-					feature, -1, IssueCodes.IndexOutOfRange);
-			}
-		} catch(ArithmeticException e) {
-			ctx.acceptError("Index value must fit into a 32 bit integer (implementation restriction)", expression,
+		if(value < BigInteger.ZERO) {
+			ctx.acceptError("Index out of range (" + value + " < 0)", expression, feature, -1,
+				IssueCodes.IndexOutOfRange);
+		} else if(value >= elementCount) {
+			ctx.acceptError("Index out of range (" + value + " >= " + elementCount + ")", expression,
 				feature, -1, IssueCodes.IndexOutOfRange);
 		}
 	}
@@ -1069,6 +1100,8 @@ class CoreDslAnalyzer {
 		var CoreDslType elementType;
 		if(targetType instanceof ArrayType) {
 			elementType = targetType.elementType;
+		} else if(targetType instanceof AddressSpaceType) {
+			elementType = targetType.elementType;
 		} else if(targetType instanceof IntegerType) {
 			elementType = IntegerType.bool;
 		} else {
@@ -1096,8 +1129,16 @@ class CoreDslAnalyzer {
 					CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1, IssueCodes.InvalidRangePattern);
 				return ctx.setExpressionType(expression, ErrorType.invalid);
 			}
-
-			val intType = elementType.isValid ? new IntegerType(elementType.bitSize * elementCount, false) : ErrorType.invalid;
+			
+			val totalSize = BigInteger.valueOf(elementType.bitSize) * elementCount;
+			
+			if(!totalSize.isInIntegerRange) {
+				ctx.acceptError('The combined size of the selected elements must not exceed Integer.MAX_VALUE', expression,
+					CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1, IssueCodes.InvalidIntegerTypeSize);
+					return ctx.setExpressionType(expression, ErrorType.invalid);
+			}
+			
+			val intType = elementType.isValid ? new IntegerType(totalSize.intValueExact, false) : ErrorType.invalid;
 			return ctx.setExpressionType(expression, intType);
 		} else {
 			return ctx.setExpressionType(expression, elementType);
@@ -1107,11 +1148,11 @@ class CoreDslAnalyzer {
 	/**
 	 * Implements the patterns described <a href="https://github.com/Minres/CoreDSL/wiki/Expressions#range-operator">here</a>.
 	 */
-	def static Integer getRangeSize(AnalysisContext ctx, Expression start, Expression end) {
+	def static BigInteger getRangeSize(AnalysisContext ctx, Expression start, Expression end) {
 		if(start instanceof EntityReference && end instanceof InfixExpression ||
 			start instanceof InfixExpression && end instanceof EntityReference) {
-			val reference = start instanceof EntityReference ? start as EntityReference : end as EntityReference;
-			val infix = start instanceof InfixExpression ? start as InfixExpression : end as InfixExpression;
+			val reference = start instanceof EntityReference ? start : end as EntityReference;
+			val infix = start instanceof InfixExpression ? start : end as InfixExpression;
 
 			val entity = reference.target;
 			val left = infix.left;
@@ -1122,8 +1163,7 @@ class CoreDslAnalyzer {
 				val difference = CoreDslConstantExpressionEvaluator.tryEvaluate(ctx, right);
 
 				if(difference.isValid) {
-					val value = difference.value.intValueExact;
-					return Math.abs(value) + 1;
+					return difference.value.abs() + BigInteger.ONE;
 				}
 			}
 		} else {
@@ -1131,7 +1171,7 @@ class CoreDslAnalyzer {
 			val endValue = CoreDslConstantExpressionEvaluator.tryEvaluate(ctx, end);
 
 			if(startValue.isValid && endValue.isValid) {
-				return Math.abs((endValue.value - startValue.value).intValueExact) + 1;
+				return (endValue.value - startValue.value).abs() + BigInteger.ONE;
 			}
 		}
 

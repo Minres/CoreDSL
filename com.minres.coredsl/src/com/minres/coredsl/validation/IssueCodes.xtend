@@ -53,11 +53,13 @@ class IssueCodes {
 	public static val UninitializedConstant = _prefix + 'UninitializedConstant';
 	public static val UninitializedAlias = _prefix + 'UninitializedAlias';
 	public static val VoidDeclaration = _prefix + 'VoidDeclaration';
+	public static val MultidimensionalAddressSpace = _prefix + 'MultidimensionalAddressSpace';
 	public static val InvalidArraySize = _prefix + 'InvalidArraySize';
 	public static val ArraySizeIsZero = _prefix + 'ArraySizeIsZero';
 	public static val ReferenceParameterDeclaration = _prefix + 'ReferenceParameterDeclaration';
 	public static val InvalidListInitializer = _prefix + 'InvalidListInitializer';
 	public static val InvalidAliasSource = _prefix + 'InvalidAliasSource';
+	public static val InvalidAliasConstness = _prefix + 'InvalidAliasConstness';
 	
 	// statement issues
 	public static val UnreachableCode = _prefix + 'UnreachableCode';

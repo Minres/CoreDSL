@@ -1,9 +1,14 @@
 package com.minres.coredsl.util
 
 import org.eclipse.xtext.xbase.lib.Functions.Function1
+import java.math.BigInteger
 
 abstract class DataExtensions {
 	private new() {
+	}
+	
+	static def boolean isInIntegerRange(BigInteger bigInt) {
+		return bigInt.bitLength < 32;
 	}
 
 	static def <T> castOrNull(Object obj, Class<T> type) {

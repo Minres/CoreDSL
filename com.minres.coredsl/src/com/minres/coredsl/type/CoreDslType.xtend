@@ -16,6 +16,7 @@ abstract class CoreDslType {
 	def isArrayType() { return false; }
 	def isEnumType() { return false; }
 	def isVoid() { return false; }
+	def isAddressSpaceType() { return false; }
 	
 	def isValid() { return bitSize >= 0; }
 	def isError() { return bitSize < 0; }

@@ -18,6 +18,8 @@ import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
+import static extension com.minres.coredsl.util.ModelExtensions.*
+
 class AnalysisContext extends ProxyMessageAcceptor {
 	
 	public val ISA root;
@@ -87,41 +89,41 @@ class AnalysisContext extends ProxyMessageAcceptor {
 	val Map<EObject, CoreDslType> typeMap = new HashMap();
 	val Map<EObject, ConstantValue> valueMap = new HashMap();
 
-	def private _isStorageSet(EObject node) { 
+	def _isStorageSet(EObject node) { 
 		return storageMap.containsKey(node);
 	}
-	def private _getStorage(EObject node) {
-		CompilerAssertion.assertThat(_isStorageSet(node), "Storage class has not been set for node " + node); 
+	def _getStorage(EObject node) {
+		CompilerAssertion.assertThat(_isStorageSet(node), "Storage class has not been set for node " + node.shortDescription); 
 		return storageMap.get(node);
 	}
-	def private _setStorage(EObject node, StorageClass storage) {
-		CompilerAssertion.assertThat(!_isStorageSet(node), "Storage class has already been set for node " + node);
+	def _setStorage(EObject node, StorageClass storage) {
+		CompilerAssertion.assertThat(!_isStorageSet(node), "Storage class has already been set for node " + node.shortDescription);
 		storageMap.put(node, storage);
 		return storage;
 	}
 
-	def private _isTypeSet(EObject node) {
+	def _isTypeSet(EObject node) {
 		return typeMap.containsKey(node);
 	}
-	def private _getType(EObject node) {
-		CompilerAssertion.assertThat(_isTypeSet(node), "Type has not been set for node " + node); 
+	def _getType(EObject node) {
+		CompilerAssertion.assertThat(_isTypeSet(node), "Type has not been set for node " + node.shortDescription); 
 		return typeMap.get(node); 
 	}
-	def private _setType(EObject node, CoreDslType type) {
-		CompilerAssertion.assertThat(!_isTypeSet(node), "Type has already been set for node " + node);
+	def _setType(EObject node, CoreDslType type) {
+		CompilerAssertion.assertThat(!_isTypeSet(node), "Type has already been set for node " + node.shortDescription);
 		typeMap.put(node, type);
 		return type;
 	}
 
-	def private _isValueSet(EObject node) {
+	def _isValueSet(EObject node) {
 		return valueMap.containsKey(node);
 	}
-	def private _getValue(EObject node) {
-		CompilerAssertion.assertThat(_isValueSet(node), "Value has not been set for node " + node); 
+	def _getValue(EObject node) {
+		CompilerAssertion.assertThat(_isValueSet(node), "Value has not been set for node " + node.shortDescription); 
 		return valueMap.get(node);
 	}
-	def private _setValue(EObject node, ConstantValue value) {
-		CompilerAssertion.assertThat(!_isValueSet(node), "Value has already been set for node " + node);
+	def _setValue(EObject node, ConstantValue value) {
+		CompilerAssertion.assertThat(!_isValueSet(node), "Value has already been set for node " + node.shortDescription);
 		valueMap.put(node, value);
 		return value;
 	}
