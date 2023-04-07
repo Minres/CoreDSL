@@ -6,6 +6,7 @@ import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.EntityReference
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.InfixExpression
+import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.IntegerConstant
 import com.minres.coredsl.coreDsl.IntrinsicExpression
 import com.minres.coredsl.coreDsl.ParenthesisExpression
@@ -137,26 +138,38 @@ class CoreDslConstantExpressionEvaluator {
 			case 'sizeof': {
 				val inBytes = expression.function == 'sizeof';
 				val target = new IssueReportTarget(expression, CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION);
-				if(expression.arguments.size() === 1) {
-					val arg = expression.arguments.get(0);
-					switch (arg) {
-						TypeSpecifier: {
-							val type = CoreDslTypeProvider.getSpecifiedType(ctx, arg);
-							return getTypeSize(ctx, type, inBytes, target);
-						}
-						EntityReference: {
-							val declarator = arg.target.castOrNull(Declarator);
-							if(declarator !== null) {
-								val type = CoreDslTypeProvider.getSpecifiedType(ctx, declarator.type);
-								return getTypeSize(ctx, type, inBytes, target);
-							}
-						}
-						Expression: {
-							val type = ctx.getExpressionType(expression);
+				
+				if(expression.arguments.size !== 1)
+					return ConstantValue.invalid;
+				
+				val arg = expression.arguments.get(0);
+				switch (arg) {
+					TypeSpecifier: {
+						val type = CoreDslTypeProvider.getSpecifiedType(ctx, arg);
+						return getTypeSize(ctx, type, inBytes, target);
+					}
+					EntityReference: {
+						val declarator = arg.target.castOrNull(Declarator);
+						if(declarator !== null) {
+							val type = CoreDslTypeProvider.getSpecifiedType(ctx, declarator.type);
 							return getTypeSize(ctx, type, inBytes, target);
 						}
 					}
+					Expression: {
+						val type = ctx.getExpressionType(expression);
+						return getTypeSize(ctx, type, inBytes, target);
+					}
 				}
+			}
+			case '__encoding_size': {
+				if(expression.arguments.size !== 0)
+					return ConstantValue.invalid;
+
+				val instruction = expression.ancestorOfType(Instruction);
+				if(instruction === null || !expression.isDescendantOf(instruction.behavior))
+					return ConstantValue.invalid;
+
+				return ctx.getEncodingSize(instruction.encoding);
 			}
 			default: {
 				if(!suppressErrors) {

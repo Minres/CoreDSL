@@ -33,7 +33,7 @@ FunctionDefinition:
 Instruction:
 	name=ID attributes+=Attribute* '{' 
 		('encoding' ':' encoding=Encoding ';')
-		('assembly' ':' assembly=STRING ';')?
+		('assembly' ':' (assembly=STRING | '{' mnemonic=STRING ',' assembly=STRING '}') ';')?
 		('behavior' ':' behavior=Statement)
 	'}';
 
@@ -205,23 +205,25 @@ PrefixExpression returns Expression:
 
 PostfixExpression returns Expression:
 	PrimaryExpression
-	( {FunctionCallExpression.target=current} '(' (arguments+=Expression (',' arguments+=Expression)*)? ')'
-	| {IndexAccessExpression.target=current} LEFT_BR index=Expression (t_colon=':' endIndex=Expression)? RIGHT_BR
+	( {IndexAccessExpression.target=current} LEFT_BR index=Expression (t_colon=':' endIndex=Expression)? RIGHT_BR
 	| {MemberAccessExpression.target=current} operator='.' declarator=[Declarator]
 	| {PostfixExpression.operand=current} operator='++'
 	| {PostfixExpression.operand=current} operator='--'
 	)*;
 
-PrimaryExpression: ParenthesisExpression | EntityReference | IntrinsicExpression | Constant;
+PrimaryExpression: ParenthesisExpression | EntityReference | FunctionCallExpression | IntrinsicExpression | Constant;
 
 ParenthesisExpression: '(' inner=Expression ')';
 
 EntityReference: target=[NamedEntity];
 
-IntrinsicExpression:
-	function=('sizeof' | 'bitsizeof' | 'alignof' | 'bitalignof' | 'offsetof' | 'bitoffsetof')
-	'(' (arguments+=(Expression|TypeSpecifier) (',' arguments+=(Expression|TypeSpecifier))*)? ')';
+FunctionCallExpression:
+	target=EntityReference '(' (arguments+=Expression (',' arguments+=Expression)*)? ')';
     
+IntrinsicExpression:
+	function=('sizeof' | 'bitsizeof' | 'offsetof' | 'bitoffsetof' | '__encoding_size')
+	('(' (arguments+=(Expression|TypeSpecifier) (',' arguments+=(Expression|TypeSpecifier))*)? ')')?;
+
 //////////////////////////////// Constants ////////////////////////////////
 
 Constant: IntegerConstant | BoolConstant | StringConstant;

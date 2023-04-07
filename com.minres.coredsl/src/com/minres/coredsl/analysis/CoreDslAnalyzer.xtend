@@ -3,6 +3,7 @@ package com.minres.coredsl.analysis
 import com.minres.coredsl.coreDsl.AlwaysBlock
 import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.BitField
+import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.BoolConstant
 import com.minres.coredsl.coreDsl.BoolTypeSpecifier
 import com.minres.coredsl.coreDsl.BreakStatement
@@ -211,28 +212,68 @@ class CoreDslAnalyzer {
 		analyzeStatement(ctx, instruction.behavior);
 	}
 
+	/**
+	 * 1. No index must be smaller than zero or larger than Integer.MAX_VALUE. <i>(IndexOutOfRange)</i>
+	 */
 	def static analyzeInstructionEncoding(AnalysisContext ctx, Encoding encoding) {
 		val highestAccessedBits = new HashMap<String, Integer>();
+		var totalSize = BigInteger.ZERO;
 
-		for (field : encoding.fields.filter(BitField)) {
-			var int highestAccessedBit = highestAccessedBits.getOrDefault(field.name, 0);
+		for (field : encoding.fields) {
+			switch (field) {
+				BitField: {
+					var highestAccessedBit = highestAccessedBits.getOrDefault(field.name, 0);
 
-			val startIndexValue = CoreDslConstantExpressionEvaluator.evaluate(ctx, field.startIndex);
-			val endIndexValue = CoreDslConstantExpressionEvaluator.evaluate(ctx, field.endIndex);
+					val startIndexValue = CoreDslConstantExpressionEvaluator.evaluate(ctx, field.startIndex);
+					val endIndexValue = CoreDslConstantExpressionEvaluator.evaluate(ctx, field.endIndex);
 
-			highestAccessedBit = Math.max(highestAccessedBit, startIndexValue.value.intValue);
-			highestAccessedBit = Math.max(highestAccessedBit, endIndexValue.value.intValue);
+					if(startIndexValue.isValid && endIndexValue.isValid) {
+						var int startIndex;
+						var int endIndex;
 
-			highestAccessedBits.put(field.name, highestAccessedBit);
+						if(startIndexValue.value.isInIntegerRange && startIndexValue.value.signum >= 0) {
+							startIndex = startIndexValue.value.intValue;
+							highestAccessedBit = Math.max(highestAccessedBit, startIndex);
+						} else {
+							ctx.acceptError("Index out of range", field,
+								CoreDslPackage.Literals.BIT_FIELD__START_INDEX, -1, IssueCodes.IndexOutOfRange);
+							totalSize = null;
+						}
+
+						if(endIndexValue.value.isInIntegerRange && endIndexValue.value.signum >= 0) {
+							endIndex = endIndexValue.value.intValue;
+							highestAccessedBit = Math.max(highestAccessedBit, endIndex);
+						} else {
+							ctx.acceptError("Index out of range", field,
+								CoreDslPackage.Literals.BIT_FIELD__END_INDEX, -1, IssueCodes.IndexOutOfRange);
+							totalSize = null;
+						}
+
+						highestAccessedBits.put(field.name, highestAccessedBit);
+
+						if(totalSize !== null) {
+							totalSize += BigInteger.valueOf(Math.abs(endIndex - startIndex) + 1);
+						}
+					} else {
+						totalSize = null;
+					}
+				}
+				BitValue: {
+					val value = field.value as TypedBigInteger;
+					totalSize += BigInteger.valueOf(value.size);
+				}
+			}
 		}
 
 		for (field : encoding.fields.filter(BitField)) {
-			val type = IntegerType.unsigned(highestAccessedBits.get(field.name) + 1);
+			val type = IntegerType.unsigned(highestAccessedBits.getOrDefault(field.name, 0) + 1);
 
 			if(!ctx.isDeclaredTypeSet(field)) {
 				ctx.setDeclaredType(field, type);
 			}
 		}
+
+		ctx.setEncodingSize(encoding, totalSize !== null ? new ConstantValue(totalSize) : ConstantValue.invalid);
 	}
 
 	def static analyzeAlwaysBlock(AnalysisContext ctx, AlwaysBlock alwaysBlock) {
@@ -244,7 +285,7 @@ class CoreDslAnalyzer {
 	// //////////////////////////////////////////////////////////////////////////
 	def static dispatch void analyzeStatement(AnalysisContext ctx, EmptyStatement statement) {
 	}
-	
+
 	def static dispatch void analyzeStatement(AnalysisContext ctx, CompoundStatement statement) {
 		var unreachable = false;
 		for (nested : statement.statements) {
@@ -441,7 +482,7 @@ class CoreDslAnalyzer {
 					CoreDslPackage.Literals.FOR_LOOP__START_EXPRESSION, -1, IssueCodes.InvalidStatementExpression);
 			}
 		}
-		
+
 		if(statement.condition !== null) {
 			val conditionType = analyzeExpression(ctx, statement.condition);
 			if(!conditionType.isScalarType) {
@@ -503,7 +544,7 @@ class CoreDslAnalyzer {
 	def static dispatch CoreDslType analyzeTypeDeclaration(AnalysisContext ctx, CompositeTypeDeclaration declaration) {
 		if(ctx.isUserTypeInstanceSet(declaration))
 			return ctx.getUserTypeInstance(declaration);
-		
+
 		val fields = new ArrayList<Declarator>();
 		var int bitSize = 0;
 
@@ -608,12 +649,13 @@ class CoreDslAnalyzer {
 				ctx.acceptError("An ISA parameter may not be declared as an array", declarator,
 					CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, 1, IssueCodes.InvalidIsaParameterDeclaration);
 			}
-			
+
 			val isAddressSpace = isIsaStateElement;
-			
+
 			if(isAddressSpace && declarator.dimensions.size > 1) {
 				ctx.acceptError("Multidimensional address spaces are not allowed", declarator,
-					CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, declarator.dimensions.size - 2, IssueCodes.MultidimensionalAddressSpace);
+					CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, declarator.dimensions.size - 2,
+					IssueCodes.MultidimensionalAddressSpace);
 			}
 
 			// rightmost size specifier is the innermost one, so process them in reverse order
@@ -628,13 +670,13 @@ class CoreDslAnalyzer {
 						if(size.value == BigInteger.ZERO) {
 							ctx.acceptWarning("Array size is zero", declarator,
 								CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.ArraySizeIsZero);
-						}
-						else if(!isAddressSpace && !size.value.isInIntegerRange) {
+						} else if(!isAddressSpace && !size.value.isInIntegerRange) {
 							ctx.acceptWarning("Array size is greater than Integer.MAX_VALUE", declarator,
 								CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
 							type = ArrayType.ofUnknownSize(type);
 						}
-						type = isAddressSpace ? new AddressSpaceType(type, size.value) : new ArrayType(type, size.value.intValueExact);
+						type = isAddressSpace ? new AddressSpaceType(type, size.value) : new ArrayType(type,
+							size.value.intValueExact);
 					}
 				} else {
 					type = isAddressSpace ? AddressSpaceType.ofUnknownSize(type) : ArrayType.ofUnknownSize(type);
@@ -683,7 +725,7 @@ class CoreDslAnalyzer {
 					count = type.count
 					isUnknownSize = type.isUnknownSize
 				}
-				if (!isUnknownSize && count.compareTo(BigInteger.valueOf(listInitializer.initializers.size)) != 0)
+				if(!isUnknownSize && count.compareTo(BigInteger.valueOf(listInitializer.initializers.size)) != 0)
 					ctx.acceptError("List initializer size does not match LHS size", declarator,
 						CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
 				for (subInitializer : listInitializer.initializers) {
@@ -691,7 +733,7 @@ class CoreDslAnalyzer {
 						val valueType = analyzeExpression(ctx, subInitializer.value);
 						if(!CoreDslTypeProvider.canImplicitlyConvert(valueType, elementType)) {
 							ctx.acceptError("Cannot implicitly convert " + valueType + " to " + elementType, declarator,
-							CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
+								CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
 						}
 						if(isIsaStateElement) {
 							CoreDslConstantExpressionEvaluator.evaluate(ctx, subInitializer.value);
@@ -738,14 +780,16 @@ class CoreDslAnalyzer {
 				// being implicitly convertible is not good enough for alias assignments,
 				// because the alias and its source must have exactly matching bit patterns
 				if(valueType.isValid && valueType != aliasType) {
-					
+
 					// the exception to above rule is the result of the questionable design decision to have the range
 					// access operator return a concatenated unsigned<N*bitsizeof(T)> instead of an array.
 					// it means we need to explicitly allow alias initializations where the source is a range access
 					// with the correct size and element type
 					if(!isValidRangeAlias(ctx, declarator, aliasType, initializer.value)) {
-						ctx.acceptError("Alias must be initialized with exactly the same type it is declared as (" + aliasType + "), but got " + valueType,
-							declarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
+						ctx.acceptError(
+							"Alias must be initialized with exactly the same type it is declared as (" + aliasType +
+								"), but got " + valueType, declarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1,
+							IssueCodes.InvalidAssignmentType);
 					}
 				}
 
@@ -761,23 +805,24 @@ class CoreDslAnalyzer {
 			}
 		}
 	}
-	
-	def private static isValidRangeAlias(AnalysisContext ctx, Declarator aliasDeclarator, CoreDslType aliasType, Expression initExpression) {
+
+	def private static isValidRangeAlias(AnalysisContext ctx, Declarator aliasDeclarator, CoreDslType aliasType,
+		Expression initExpression) {
 		val aliasSpace = aliasType as AddressSpaceType;
 		if(aliasSpace === null) return false;
-		
+
 		val rangeAccess = initExpression as IndexAccessExpression;
 		if(rangeAccess === null) return false;
 		if(rangeAccess.endIndex === null) return false;
-		
+
 		val initSpace = ctx.getExpressionType(rangeAccess.target) as AddressSpaceType;
 		if(initSpace === null) return false;
 		if(initSpace.elementType != aliasSpace.elementType) return false;
-		
+
 		val aliasSize = aliasSpace.count * BigInteger.valueOf(aliasSpace.elementType.bitSize);
 		val rangeSize = BigInteger.valueOf(ctx.getExpressionType(rangeAccess).bitSize);
 		if(aliasSize != rangeSize) return false;
-		
+
 		return true;
 	}
 
@@ -811,10 +856,8 @@ class CoreDslAnalyzer {
 						}
 					}
 					if(target.isConst && !aliasDeclarator.isConst) {
-						ctx.acceptError(
-							"Cannot define a non-const alias to const item " + target.name,
-							aliasDeclarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1,
-							IssueCodes.InvalidAliasConstness);
+						ctx.acceptError("Cannot define a non-const alias to const item " + target.name, aliasDeclarator,
+							CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAliasConstness);
 					}
 				} else {
 					ctx.acceptError("Cannot define an alias to " + target.name +
@@ -826,7 +869,7 @@ class CoreDslAnalyzer {
 				analyzeAliasSource(ctx, aliasDeclarator, expression.target);
 				val targetType = ctx.getExpressionType(expression.target);
 				val indexValue = CoreDslConstantExpressionEvaluator.evaluate(ctx, expression.index);
-				
+
 				if(!targetType.isValid) return;
 
 				if(indexValue.isValid) {
@@ -836,8 +879,8 @@ class CoreDslAnalyzer {
 								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
 						}
 					} else if(targetType instanceof IntegerType) {
-						checkIndexAccessBounds(ctx, indexValue.value, BigInteger.valueOf(targetType.bitSize), expression,
-							CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
+						checkIndexAccessBounds(ctx, indexValue.value, BigInteger.valueOf(targetType.bitSize),
+							expression, CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
 					} else {
 						// error should already have been reported by analyzeExpression
 					}
@@ -851,8 +894,8 @@ class CoreDslAnalyzer {
 							checkIndexAccessBounds(ctx, endIndexValue.value, targetType.count, expression,
 								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__END_INDEX);
 						} else if(targetType instanceof IntegerType) {
-							checkIndexAccessBounds(ctx, endIndexValue.value, BigInteger.valueOf(targetType.bitSize), expression,
-								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__END_INDEX);
+							checkIndexAccessBounds(ctx, endIndexValue.value, BigInteger.valueOf(targetType.bitSize),
+								expression, CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__END_INDEX);
 						} else {
 							// error should already have been reported by analyzeExpression
 						}
@@ -876,8 +919,8 @@ class CoreDslAnalyzer {
 			ctx.acceptError("Index out of range (" + value + " < 0)", expression, feature, -1,
 				IssueCodes.IndexOutOfRange);
 		} else if(value >= elementCount) {
-			ctx.acceptError("Index out of range (" + value + " >= " + elementCount + ")", expression,
-				feature, -1, IssueCodes.IndexOutOfRange);
+			ctx.acceptError("Index out of range (" + value + " >= " + elementCount + ")", expression, feature, -1,
+				IssueCodes.IndexOutOfRange);
 		}
 	}
 
@@ -891,10 +934,10 @@ class CoreDslAnalyzer {
 	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, IntegerConstant expression) {
 		val value = expression.value as TypedBigInteger;
 		var type = new IntegerType(value.size, value.signed);
-		
+
 		if(!ctx.isExpressionValueSet(expression))
 			ctx.setExpressionValue(expression, new ConstantValue(value));
-		
+
 		return ctx.setExpressionType(expression, type);
 	}
 
@@ -1140,15 +1183,16 @@ class CoreDslAnalyzer {
 					CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1, IssueCodes.InvalidRangePattern);
 				return ctx.setExpressionType(expression, ErrorType.invalid);
 			}
-			
+
 			val totalSize = BigInteger.valueOf(elementType.bitSize) * elementCount;
-			
+
 			if(!totalSize.isInIntegerRange) {
-				ctx.acceptError('The combined size of the selected elements must not exceed Integer.MAX_VALUE', expression,
-					CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1, IssueCodes.InvalidIntegerTypeSize);
-					return ctx.setExpressionType(expression, ErrorType.invalid);
+				ctx.acceptError('The combined size of the selected elements must not exceed Integer.MAX_VALUE',
+					expression, CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1,
+					IssueCodes.InvalidIntegerTypeSize);
+				return ctx.setExpressionType(expression, ErrorType.invalid);
 			}
-			
+
 			val intType = elementType.isValid ? new IntegerType(totalSize.intValueExact, false) : ErrorType.invalid;
 			return ctx.setExpressionType(expression, intType);
 		} else {
@@ -1404,12 +1448,31 @@ class CoreDslAnalyzer {
 					ctx.acceptError(expression.function + ' expects exactly one argument', expression,
 						CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION, -1, IssueCodes.InvalidArgumentCount);
 					return ctx.setExpressionType(expression, ErrorType.invalid);
-				} else {
-					val value = CoreDslConstantExpressionEvaluator.evaluate(ctx, expression);
-					if(value.isError) return ErrorType.indeterminate;
-					val type = CoreDslTypeProvider.getSmallestTypeForValue(value.value);
-					return ctx.setExpressionType(expression, type);
 				}
+
+				val value = CoreDslConstantExpressionEvaluator.evaluate(ctx, expression);
+				val type = CoreDslTypeProvider.getSmallestTypeForValue(value);
+				return ctx.setExpressionType(expression, type);
+			}
+			// TODO offsetof, bitoffsetof
+			case '__encoding_size': {
+				if(argumentCount !== 0) {
+					ctx.acceptError(expression.function + ' expects no arguments', expression,
+						CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION, -1, IssueCodes.InvalidArgumentCount);
+					return ctx.setExpressionType(expression, ErrorType.invalid);
+				}
+
+				val instruction = expression.ancestorOfType(Instruction);
+				if(instruction === null || !expression.isDescendantOf(instruction.behavior)) {
+					ctx.acceptError(expression.function + ' can only be used within an instruction behavior',
+						expression, CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION, -1,
+						IssueCodes.InvalidIntrinsicFunction);
+					return ctx.setExpressionType(expression, ErrorType.invalid);
+				}
+
+				val value = CoreDslConstantExpressionEvaluator.evaluate(ctx, expression);
+				val type = CoreDslTypeProvider.getSmallestTypeForValue(value.value);
+				return ctx.setExpressionType(expression, type);
 			}
 			default: {
 				ctx.acceptError('Unknown intrinsic function ' + expression.function, expression,

@@ -117,6 +117,10 @@ abstract class CoreDslTypeProvider {
 		return canImplicitlyConvert(getSmallestTypeForValue(value), type);
 	}
 
+	def static CoreDslType getSmallestTypeForValue(ConstantValue value) {
+		return value.isValid ? getSmallestTypeForValue(value.value) : return ErrorType.indeterminate;
+	}
+
 	def static IntegerType getSmallestTypeForValue(BigInteger value) {
 		val valueSigned = value.signum < 0;
 		val valueBits = valueSigned ? value.bitLength + 1 : value.bitLength;

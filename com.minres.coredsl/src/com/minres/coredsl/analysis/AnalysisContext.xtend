@@ -2,6 +2,7 @@ package com.minres.coredsl.analysis
 
 import com.minres.coredsl.coreDsl.CoreDslPackage
 import com.minres.coredsl.coreDsl.Declarator
+import com.minres.coredsl.coreDsl.Encoding
 import com.minres.coredsl.coreDsl.Expression
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.ISA
@@ -24,7 +25,7 @@ class AnalysisContext extends ProxyMessageAcceptor {
 	
 	public val ISA root;
 	public val boolean isPartialAnalysis;
-
+	
 	new(ISA root, ValidationMessageAcceptor acceptor) {
 		super(acceptor, root, root, CoreDslPackage.Literals.ISA__NAME, -1);
 		this.root = root;
@@ -38,7 +39,7 @@ class AnalysisContext extends ProxyMessageAcceptor {
 	def isStorageClassSet(NamedEntity entity) { _isStorageSet(entity) }
 	def getStorageClass(NamedEntity entity) { _getStorage(entity) }
 	def setStorageClass(NamedEntity entity, StorageClass storage) { _setStorage(entity, storage) }
-		
+	
 	def isDeclaredTypeSet(NamedEntity entity) { _isTypeSet(entity) }
 	def getDeclaredType(NamedEntity entity) { _getType(entity) }
 	def setDeclaredType(NamedEntity entity, CoreDslType type) {
@@ -47,23 +48,23 @@ class AnalysisContext extends ProxyMessageAcceptor {
 		}
 		_setType(entity, type)
 	}
-		
+	
 	def isSpecifiedTypeSet(TypeSpecifier typeSpecifier) { _isTypeSet(typeSpecifier) }
 	def getSpecifiedType(TypeSpecifier typeSpecifier) { _getType(typeSpecifier) }
 	def setSpecifiedType(TypeSpecifier typeSpecifier, CoreDslType type) { _setType(typeSpecifier, type) }
-		
+	
 	def isExpressionTypeSet(Expression expression) { _isTypeSet(expression) }
 	def getExpressionType(Expression expression) { _getType(expression) }
 	def setExpressionType(Expression expression, CoreDslType type) { _setType(expression, type) }
-		
+	
 	def isUserTypeInstanceSet(UserTypeDeclaration declaration) { _isTypeSet(declaration) }
 	def getUserTypeInstance(UserTypeDeclaration declaration) { _getType(declaration) }
 	def setUserTypeInstance(UserTypeDeclaration declaration, CoreDslType type) { _setType(declaration, type) }
-		
+	
 	def isFunctionSignatureSet(FunctionDefinition function) { _isTypeSet(function) }
 	def getFunctionSignature(FunctionDefinition function) { _getType(function) as FunctionType }
 	def setFunctionSignature(FunctionDefinition function, FunctionType type) { _setType(function, type) as FunctionType }
-		
+	
 	def isConstantValueSet(NamedEntity entity) { _isValueSet(entity) }
 	def getConstantValue(NamedEntity entity) { _getValue(entity) }
 	def setConstantValue(NamedEntity entity, ConstantValue value) {
@@ -72,14 +73,18 @@ class AnalysisContext extends ProxyMessageAcceptor {
 		}
 		_setValue(entity, value)
 	}
-		
+	
 	def isExpressionValueSet(Expression expression) { _isValueSet(expression) }
 	def getExpressionValue(Expression expression) { _getValue(expression) }
 	def setExpressionValue(Expression expression, ConstantValue value) { _setValue(expression, value) }
-		
+	
 	def isFieldOffsetSet(Declarator field) { _isValueSet(field) }
 	def getFieldOffset(Declarator field) { _getValue(field) }
 	def setFieldOffset(Declarator field, ConstantValue value) { _setValue(field, value) }
+	
+	def isEncodingSizeSet(Encoding encoding) { _isValueSet(encoding) }
+	def getEncodingSize(Encoding encoding) { _getValue(encoding) }
+	def setEncodingSize(Encoding encoding, ConstantValue value) { _setValue(encoding, value) }
 	
 	// /////////////////////////////////////////////////////////////////////////
 	// /////////////////////// Private implementation //////////////////////////
