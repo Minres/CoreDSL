@@ -1462,6 +1462,11 @@ class CoreDslAnalyzer {
 					return ctx.setExpressionType(expression, ErrorType.invalid);
 				}
 
+				val alwaysBlock = expression.ancestorOfType(AlwaysBlock);
+				if(alwaysBlock !== null && expression.isDescendantOf(alwaysBlock.behavior)) {
+					return ctx.setExpressionType(expression, IntegerType.unsigned(16));
+				}
+
 				val instruction = expression.ancestorOfType(Instruction);
 				if(instruction === null || !expression.isDescendantOf(instruction.behavior)) {
 					ctx.acceptError(expression.function + ' can only be used within an instruction behavior',
