@@ -675,8 +675,9 @@ class CoreDslAnalyzer {
 								CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
 							type = ArrayType.ofUnknownSize(type);
 						}
-						type = isAddressSpace ? new AddressSpaceType(type, size.value) : new ArrayType(type,
-							size.value.intValueExact);
+						type = isAddressSpace
+							? new AddressSpaceType(type, size.value)
+							: new ArrayType(type, size.value.intValueExact);
 					}
 				} else {
 					type = isAddressSpace ? AddressSpaceType.ofUnknownSize(type) : ArrayType.ofUnknownSize(type);
