@@ -676,5 +676,18 @@ class CoreDslElaborationTest {
 		.expectValue(null, [it.encoding], 38)
 		.expectValue(null, IntrinsicExpression, -1, 38)
 		.run();
+		
+		'''
+			Core X {
+				always {
+					TEST {
+						int x = __encoding_size;
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectType("X", IntrinsicExpression, 4, IntegerType.unsigned(16))
+		.run();
 	}
 }
