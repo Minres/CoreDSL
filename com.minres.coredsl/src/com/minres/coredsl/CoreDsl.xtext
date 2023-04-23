@@ -127,7 +127,7 @@ ExpressionInitializer: value=Expression;
 ListInitializer: '{' initializers+=Initializer (',' initializers+=Initializer)* ','? '}';
 
 Attribute:
-	DoubleLeftBracket type=ID
+	DoubleLeftBracket attributeName=ID
 	('=' parameters+=Expression | '(' parameters+=Expression (',' parameters+=Expression)* ')')?
 	DoubleRightBracket;
 
