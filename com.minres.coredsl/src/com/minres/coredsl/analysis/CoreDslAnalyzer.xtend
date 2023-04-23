@@ -75,9 +75,32 @@ import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import org.eclipse.emf.common.util.EList
+import com.minres.coredsl.coreDsl.Attribute
+import static com.minres.coredsl.analysis.AttributeRegistry.AttributeUsage.instruction
+import static com.minres.coredsl.analysis.AttributeRegistry.AttributeUsage.declarator
+import static com.minres.coredsl.analysis.AttributeRegistry.AttributeUsage.function
 
 class CoreDslAnalyzer {
 	public static var boolean emitDebugInfo = false;
+
+	public static val AttributeRegistry attributeRegistry = {
+		val registry = new AttributeRegistry();
+		registry.register("enable", 1, instruction);
+		registry.register("hls", 0, instruction);
+		registry.register("no_cont", 0, instruction);
+		registry.register("cond", 0, instruction);
+		registry.register("flush", 0, instruction);
+		registry.register("do_not_synthesize", 0, function);
+		registry.register("is_pc", 0, declarator);
+		registry.register("is_main_reg", 0, declarator);
+		registry.register("is_main_mem", 0, declarator);
+		registry.register("is_interlock_for", 1, declarator);
+		registry.register("clk_budget", 1, function);
+		registry.register("type", 1, instruction);
+		registry.register("expected_encoding_size", 1, attribValidator_expectedEncodingSize, instruction);
+		return registry;
+	}
 
 	def static AnalysisResults analyze(DescriptionContent desc, ValidationMessageAcceptor acceptor) {
 		val results = new AnalysisResults(desc);
