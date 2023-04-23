@@ -675,8 +675,9 @@ class CoreDslAnalyzer {
 								CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
 							type = ArrayType.ofUnknownSize(type);
 						}
-						type = isAddressSpace ? new AddressSpaceType(type, size.value) : new ArrayType(type,
-							size.value.intValueExact);
+						type = isAddressSpace
+							? new AddressSpaceType(type, size.value)
+							: new ArrayType(type, size.value.intValueExact);
 					}
 				} else {
 					type = isAddressSpace ? AddressSpaceType.ofUnknownSize(type) : ArrayType.ofUnknownSize(type);
@@ -1460,6 +1461,11 @@ class CoreDslAnalyzer {
 					ctx.acceptError(expression.function + ' expects no arguments', expression,
 						CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION, -1, IssueCodes.InvalidArgumentCount);
 					return ctx.setExpressionType(expression, ErrorType.invalid);
+				}
+
+				val alwaysBlock = expression.ancestorOfType(AlwaysBlock);
+				if(alwaysBlock !== null && expression.isDescendantOf(alwaysBlock.behavior)) {
+					return ctx.setExpressionType(expression, IntegerType.unsigned(16));
 				}
 
 				val instruction = expression.ancestorOfType(Instruction);
