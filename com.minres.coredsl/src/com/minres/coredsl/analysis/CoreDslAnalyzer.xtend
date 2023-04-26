@@ -2,6 +2,7 @@ package com.minres.coredsl.analysis
 
 import com.minres.coredsl.coreDsl.AlwaysBlock
 import com.minres.coredsl.coreDsl.AssignmentExpression
+import com.minres.coredsl.coreDsl.Attribute
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.BoolConstant
@@ -70,14 +71,37 @@ import java.math.BigInteger
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.HashSet
+import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.validation.ValidationMessageAcceptor
+
+import static com.minres.coredsl.analysis.AttributeRegistry.AttributeUsage.declarator
+import static com.minres.coredsl.analysis.AttributeRegistry.AttributeUsage.function
+import static com.minres.coredsl.analysis.AttributeRegistry.AttributeUsage.instruction
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
 
 class CoreDslAnalyzer {
 	public static var boolean emitDebugInfo = false;
+
+	public static val AttributeRegistry attributeRegistry = {
+		val registry = new AttributeRegistry();
+		registry.register("enable", 1, instruction);
+		registry.register("hls", 0, instruction);
+		registry.register("no_cont", 0, instruction);
+		registry.register("cond", 0, instruction);
+		registry.register("flush", 0, instruction);
+		registry.register("do_not_synthesize", 0, function);
+		registry.register("is_pc", 0, declarator);
+		registry.register("is_main_reg", 0, declarator);
+		registry.register("is_main_mem", 0, declarator);
+		registry.register("is_interlock_for", 1, declarator);
+		registry.register("clk_budget", 1, function);
+		registry.register("type", 1, instruction);
+		registry.register("expected_encoding_size", 1, attribValidator_expectedEncodingSize, instruction);
+		return registry;
+	}
 
 	def static AnalysisResults analyze(DescriptionContent desc, ValidationMessageAcceptor acceptor) {
 		val results = new AnalysisResults(desc);
@@ -133,11 +157,79 @@ class CoreDslAnalyzer {
 		for (instruction : isa.instructions) {
 			analyzeInstruction(ctx, instruction);
 		}
+		analyzeAttributes(ctx, isa.commonInstructionAttributes, AttributeRegistry.AttributeUsage.instruction);
 
 		// always blocks
 		for (alwaysBlock : isa.alwaysBlocks) {
 			analyzeAlwaysBlock(ctx, alwaysBlock);
 		}
+	}
+
+	def private static analyzeAttributes(AnalysisContext ctx, EList<Attribute> attributes,
+		AttributeRegistry.AttributeUsage expectedUsage) {
+		for (Attribute attribute : attributes) {
+			analyzeAttribute(ctx, attribute, expectedUsage);
+		}
+	}
+
+	def static void analyzeAttribute(AnalysisContext ctx, Attribute attribute,
+		AttributeRegistry.AttributeUsage expectedUsage) {
+		for (param : attribute.parameters) {
+			analyzeExpression(ctx, param);
+		}
+
+		val info = attributeRegistry.byName(attribute.attributeName);
+		if(info === null) {
+			ctx.acceptWarning("Unknown attribute '" + attribute.attributeName + "'", attribute, null, -1,
+				IssueCodes.UnknownAttribute);
+		}
+
+		if(!info.allowedUsage.contains(expectedUsage)) {
+			ctx.acceptError("Attribute '" + attribute.attributeName + "' cannot be placed here", attribute, null, -1,
+				IssueCodes.InvalidAttributePlacement);
+		}
+
+		if(attribute.parameters.size !== info.paramCount && info.paramCount != -1) {
+			val countString = info.paramCount == 1 ? "1 parameter" : info.paramCount + " parameters";
+			ctx.acceptError(
+				"Attribute '" + attribute.attributeName + "' requires exactly " + countString + ", but got " +
+					attribute.parameters.size, attribute, null, -1, IssueCodes.InvalidAttributePlacement);
+		}
+
+		if(info.validator !== null) {
+			info.validator.apply(ctx, attribute, expectedUsage);
+		}
+	}
+
+	def static attribValidator_expectedEncodingSize() {
+		return [ AnalysisContext ctx, Attribute attribute, AttributeRegistry.AttributeUsage usage |
+			if(attribute.parameters.size < 1) return;
+			val expectedSize = CoreDslConstantExpressionEvaluator.evaluate(ctx, attribute.parameters.get(0));
+
+			val checkInstruction = [ Instruction instruction |
+				val actualSize = ctx.getEncodingSize(instruction.encoding);
+				if(expectedSize.isValid && actualSize.isValid && actualSize.value != expectedSize.value) {
+					ctx.acceptWarning("Expected an encoding size of " + expectedSize.value + ", but got " +
+						actualSize.value, instruction, CoreDslPackage.Literals.INSTRUCTION__NAME, -1,
+						IssueCodes.UnexpectedInstructionSize);
+				}
+			];
+
+			val isa = attribute.ancestorOfType(ISA);
+			val instruction = attribute.ancestorOfType(Instruction);
+			if(instruction !== null) {
+				// case 1: individual instruction attribute
+				checkInstruction.apply(instruction);
+			} else if(isa.commonInstructionAttributes.contains(attribute)) {
+				// case 2: common instruction attribute
+				for (instr : isa.instructions) {
+					// only check instructions that don't have an overriding attribute
+					if(!instr.attributes.any[it.attributeName == attribute.attributeName]) {
+						checkInstruction.apply(instr);
+					}
+				}
+			}
+		];
 	}
 
 	/**
@@ -150,6 +242,8 @@ class CoreDslAnalyzer {
 		val parameterTypes = definition.parameters.map[analyzeFunctionParameter(ctx, it)];
 
 		ctx.setFunctionSignature(definition, new FunctionType(returnType, parameterTypes));
+
+		analyzeAttributes(ctx, definition.attributes, AttributeRegistry.AttributeUsage.function);
 
 		if(definition.isExtern) {
 			if(definition.body !== null) {
@@ -209,6 +303,7 @@ class CoreDslAnalyzer {
 
 	def static analyzeInstruction(AnalysisContext ctx, Instruction instruction) {
 		analyzeInstructionEncoding(ctx, instruction.encoding);
+		analyzeAttributes(ctx, instruction.attributes, AttributeRegistry.AttributeUsage.instruction);
 		analyzeStatement(ctx, instruction.behavior);
 	}
 
@@ -278,6 +373,7 @@ class CoreDslAnalyzer {
 
 	def static analyzeAlwaysBlock(AnalysisContext ctx, AlwaysBlock alwaysBlock) {
 		analyzeStatement(ctx, alwaysBlock.behavior);
+		analyzeAttributes(ctx, alwaysBlock.attributes, AttributeRegistry.AttributeUsage.alwaysBlock);
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -675,9 +771,8 @@ class CoreDslAnalyzer {
 								CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
 							type = ArrayType.ofUnknownSize(type);
 						}
-						type = isAddressSpace
-							? new AddressSpaceType(type, size.value)
-							: new ArrayType(type, size.value.intValueExact);
+						type = isAddressSpace ? new AddressSpaceType(type, size.value) : new ArrayType(type,
+							size.value.intValueExact);
 					}
 				} else {
 					type = isAddressSpace ? AddressSpaceType.ofUnknownSize(type) : ArrayType.ofUnknownSize(type);
@@ -753,6 +848,8 @@ class CoreDslAnalyzer {
 					CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidListInitializer);
 			}
 		}
+
+		analyzeAttributes(ctx, declarator.attributes, AttributeRegistry.AttributeUsage.declarator);
 	}
 
 	/**

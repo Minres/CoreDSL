@@ -368,7 +368,7 @@ class Visualizer {
 	
 	private def dispatch VisualNode genNode(Attribute node) {
 		return makeNode(node, "Attribute",
-			makeNamedLiteral("Type", node.type.toString),
+			makeNamedLiteral("Name", node.attributeName),
 			makeGroup("Parameters", node.parameters)
 		);
 	}

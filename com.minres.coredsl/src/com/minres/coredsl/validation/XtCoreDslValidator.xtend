@@ -4,15 +4,7 @@
 package com.minres.coredsl.validation
 
 import com.minres.coredsl.analysis.CoreDslAnalyzer
-import com.minres.coredsl.coreDsl.Attribute
-import com.minres.coredsl.coreDsl.CoreDslPackage
-import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.DescriptionContent
-import com.minres.coredsl.coreDsl.FunctionDefinition
-import com.minres.coredsl.coreDsl.ISA
-import com.minres.coredsl.coreDsl.Instruction
-import org.eclipse.emf.common.util.EList
-import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.validation.Check
 
 /**
@@ -30,39 +22,5 @@ class XtCoreDslValidator extends CoreDslValidator {
 		catch(Exception e) {
 			acceptError("An internal error occurred during analysis: " + e, desc, null, -1, IssueCodes.InternalCompilerError);
 		}
-	}
-	
-	// TODO move all of this to the analyzer
-	
-	def checkAttributes(EList<Attribute> attributes, KnownAttributes.AttributeUsage expectedUsage, EStructuralFeature feature) {
-		for(Attribute attribute : attributes) {
-			val info = KnownAttributes.byName(attribute.type);
-			
-			if(info === null || !info.allowedUsage.contains(expectedUsage))
-				error("unexpected attribute '" + attribute.type + "'", feature, IssueCodes.InvalidAttributePlacement);
-			
-			if(attribute.parameters.size() !== info.paramCount)
-				error("attribute '" + info.name + "' requires exactly " + info.paramCount + " parameter(s)", feature, IssueCodes.InvalidAttributeParameters);
-		}
-	}
-
-	@Check
-	def checkAttributeNames(ISA isa) {
-		checkAttributes(isa.commonInstructionAttributes, KnownAttributes.AttributeUsage.instruction, CoreDslPackage.Literals.ISA__COMMON_INSTRUCTION_ATTRIBUTES);
-	}
-
-	@Check
-	def checkAttributeNames(Instruction instr) {
-		checkAttributes(instr.attributes, KnownAttributes.AttributeUsage.instruction, CoreDslPackage.Literals.INSTRUCTION__ATTRIBUTES);
-	}
-
-	@Check
-	def checkAttributeNames(Declarator decl) {
-		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.declaration, CoreDslPackage.Literals.DECLARATOR__ATTRIBUTES);
-	}
-
-	@Check
-	def checkAttributeNames(FunctionDefinition decl) {
-		checkAttributes(decl.attributes, KnownAttributes.AttributeUsage.function, CoreDslPackage.Literals.FUNCTION_DEFINITION__ATTRIBUTES);
 	}
 }

@@ -32,8 +32,12 @@ class IssueCodes {
 	public static val IndeterminableIsaStateElementType = _prefix + 'IndeterminableIsaStateElementType';
 	public static val InvalidIsaStateElementValue = _prefix + 'InvalidIsaStateElementValue';
 	public static val InvalidIsaStateElementType = _prefix + 'InvalidIsaStateElementType';
+	
+	// attribute issues
+	public static val UnknownAttribute = _prefix + 'UnknownAttribute';
 	public static val InvalidAttributePlacement = _prefix + 'InvalidAttributePlacement';
 	public static val InvalidAttributeParameters = _prefix + 'InvalidAttributeParameters';
+	public static val UnexpectedInstructionSize = _prefix + 'UnexpectedInstructionSize';
 	
 	// function issues
 	public static val MissingFunctionBody = _prefix + 'MissingFunctionBody';
