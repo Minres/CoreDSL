@@ -110,10 +110,10 @@ class CoreDslISAScopingTest {
     @Test
     def void globalScope() {
         val content = '''
-            InstructionSet TestISA {
+        InstructionSet TestISA {
             architectural_state {
                 int CCC = 42;
-                unsigned int X[32];
+                register unsigned int X[32];
             }
 
             functions {
@@ -127,7 +127,7 @@ class CoreDslISAScopingTest {
                     encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     assembly: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
-                        X[rd] = X[rs1] + X[rs2] + foo(CCC);
+                        X[rd] = (unsigned int)(X[rs1] + X[rs2] + foo(CCC));
                     }
                 }
             }
@@ -143,7 +143,7 @@ class CoreDslISAScopingTest {
         InstructionSet TestISA {
             architectural_state {
                 int CCC = 42;
-                unsigned int X[32];
+                register unsigned int X[32];
             }
 
             functions {
@@ -159,7 +159,7 @@ class CoreDslISAScopingTest {
                     encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     assembly: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
-                        X[rd] = X[rs1] + X[rs2] + foo(CCC);
+                        X[rd] = (unsigned int)(X[rs1] + X[rs2] + foo(CCC));
                     }
                 }
             }
@@ -172,7 +172,7 @@ class CoreDslISAScopingTest {
     @Test
     def void globalScopeFromFile() {
         val content = '''
-        import "https://raw.githubusercontent.com/Minres/RISCV_ISA_CoreDSL/master/RISCVBase.core_desc"
+        import "inputs/RISCVBase.core_desc"
         
         InstructionSet TestISA2 extends RISCVBase {
             instructions {
@@ -180,7 +180,7 @@ class CoreDslISAScopingTest {
                     encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     assembly: "{name(rd)}, {name(rs1)}, {name(rs2)}";
                     behavior: {
-                        X[rd] = X[rs1] + X[rs2] + XLEN;
+                        X[rd] = (unsigned int)(X[rs1] + X[rs2] + XLEN);
                     }
                 }
             }
@@ -357,8 +357,8 @@ class CoreDslISAScopingTest {
         val content = '''
         InstructionSet TestISA {
             architectural_state {
-                int X[32];
-                int PC;
+                register unsigned int X[32];
+                register unsigned int PC;
             }
             functions {
                 void maybe_corrupt_PC(int i) {
@@ -370,7 +370,7 @@ class CoreDslISAScopingTest {
                 Inst1 {
                     encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b0000000;  
                     behavior: {
-                        int incr = X[rs1] * X[rs2];
+                        int incr = (int)(X[rs1] * X[rs2]);
                         spawn {
                             int i;
                             for (i = 0; i < 42; i += incr) {

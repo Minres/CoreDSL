@@ -37,13 +37,17 @@ class XtCoreDslLabelProvider extends CoreDslLabelProvider {
         'ISA ' + isa.name
     }
 
+//    def text(DeclarationStatement declStmt) {
+//        decl.declarators.map[it.name].join(', ')
+//    }
+
     def text(Declaration decl) {
         decl.declarators.map[it.name].join(', ')
     }
 
     def text(Instruction ele) {
         if (ele.attributes.size > 0)
-            return '''«ele.name» [«FOR attr : ele.attributes SEPARATOR ', '»«attr.type»«ENDFOR»]'''
+            return '''«ele.name» [«FOR attr : ele.attributes SEPARATOR ', '»«attr.attributeName»«ENDFOR»]'''
         else
             ele.name
     }

@@ -7,43 +7,45 @@ import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
 import org.eclipse.xtext.scoping.IGlobalScopeProvider;
 import org.eclipse.xtext.scoping.IScopeProvider;
-import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider;
 import org.eclipse.xtext.service.SingletonBinding;
 
 import com.minres.coredsl.converter.CoreDslTerminalConverters;
+import com.minres.coredsl.scoping.CoreDslGlobalScopeProvider;
 import com.minres.coredsl.scoping.CoreDslResourceDescriptionStrategy;
-import com.minres.coredsl.scoping.XtCoreDslScopeProvider;
+import com.minres.coredsl.scoping.CoreDslScopeProvider;
 import com.minres.coredsl.validation.CoreDslValidator;
 import com.minres.coredsl.validation.XtCoreDslValidator;
 
 /**
- * Use this class to register components to be used at runtime / without the Equinox extension registry.
+ * Use this class to register components to be used at runtime / without the
+ * Equinox extension registry.
  */
 public class CoreDslRuntimeModule extends AbstractCoreDslRuntimeModule {
-	@Override
-	public Class<? extends IValueConverterService> bindIValueConverterService() {
-		return CoreDslTerminalConverters.class;
-	}
+    @Override
+    public Class<? extends IValueConverterService> bindIValueConverterService() {
+        return CoreDslTerminalConverters.class;
+    }
 
-	@Override
-	public Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
-		return ImportUriGlobalScopeProvider.class;
-	}
+    @Override
+    public Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
+        return CoreDslGlobalScopeProvider.class;
+        //return ImportUriGlobalScopeProvider.class;
+    }
 
-	public Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
-		return CoreDslResourceDescriptionStrategy.class;
-		//return XtextResourceDescriptionStrategy.class;
+    public Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
+        return CoreDslResourceDescriptionStrategy.class;
+        // return XtextResourceDescriptionStrategy.class;
+    }
 
-	}
-	
-	@Override
-	public Class<? extends IScopeProvider> bindIScopeProvider() {
-		return XtCoreDslScopeProvider.class;
-	}
+    @Override
+    public Class<? extends IScopeProvider> bindIScopeProvider() {
+        return CoreDslScopeProvider.class;
+    }
 
-	@Override
-	@SingletonBinding(eager=true)
-	public Class<? extends CoreDslValidator> bindCoreDslValidator() {
-		return XtCoreDslValidator.class;
-	}
+    @Override
+    @SingletonBinding(eager = true)
+    public Class<? extends CoreDslValidator> bindCoreDslValidator() {
+        return XtCoreDslValidator.class;
+    }
 }
+

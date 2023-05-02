@@ -1,15 +1,15 @@
 package com.minres.coredsl.scoping
 
 import com.google.inject.Inject
+import com.minres.coredsl.coreDsl.DescriptionContent
 import java.util.HashMap
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.resource.EObjectDescription
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.resource.impl.DefaultResourceDescriptionStrategy
 import org.eclipse.xtext.scoping.impl.ImportUriResolver
 import org.eclipse.xtext.util.IAcceptor
-import org.eclipse.emf.ecore.EObject
-import com.minres.coredsl.coreDsl.DescriptionContent
 
 class CoreDslResourceDescriptionStrategy extends DefaultResourceDescriptionStrategy {
    
@@ -29,10 +29,10 @@ class CoreDslResourceDescriptionStrategy extends DefaultResourceDescriptionStrat
     }
 
     def void createEObjectDescriptionForModel(DescriptionContent model, IAcceptor<IEObjectDescription> acceptor) {
-        val uris = newArrayList()
-        model.imports.forEach[uris.add(uriResolver.apply(it))]
         val userData = new HashMap<String,String>
-        userData.put(INCLUDES, uris.join(","))
-        acceptor.accept(EObjectDescription.create(QualifiedName.create(model.eResource.URI.toString), model, userData))
+        userData.put(INCLUDES, model.imports.map[uriResolver.apply(it)].join(","))
+        
+        val name = QualifiedName.create(model.eResource.URI.toString());
+        acceptor.accept(EObjectDescription.create(name, model, userData));
     }
 }

@@ -14,23 +14,23 @@ import org.eclipse.xtext.web.servlet.XtextServlet;
  */
 @WebServlet(name = "XtextServices", urlPatterns = "/xtext-service/*")
 public class CoreDslServlet extends XtextServlet {
-	
-	private static final long serialVersionUID = 1L;
-	
-	DisposableRegistry disposableRegistry;
-	
-	public void init() throws ServletException {
-		super.init();
-		Injector injector = new CoreDslWebSetup().createInjectorAndDoEMFRegistration();
-		this.disposableRegistry = injector.getInstance(DisposableRegistry.class);
-	}
-	
-	public void destroy() {
-		if (disposableRegistry != null) {
-			disposableRegistry.dispose();
-			disposableRegistry = null;
-		}
-		super.destroy();
-	}
-	
+
+    private static final long serialVersionUID = 1L;
+
+    DisposableRegistry disposableRegistry;
+
+    public void init() throws ServletException {
+        super.init();
+        Injector injector = new CoreDslWebSetup().createInjectorAndDoEMFRegistration();
+        this.disposableRegistry = injector.getInstance(DisposableRegistry.class);
+    }
+
+    public void destroy() {
+        if (disposableRegistry != null) {
+            disposableRegistry.dispose();
+            disposableRegistry = null;
+        }
+        super.destroy();
+    }
+
 }

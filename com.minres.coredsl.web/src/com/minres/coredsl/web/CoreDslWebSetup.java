@@ -8,16 +8,18 @@ import com.google.inject.Injector;
 import com.minres.coredsl.CoreDslRuntimeModule;
 import com.minres.coredsl.CoreDslStandaloneSetup;
 import com.minres.coredsl.ide.CoreDslIdeModule;
+
 import org.eclipse.xtext.util.Modules2;
 
 /**
  * Initialization support for running Xtext languages in web applications.
  */
 public class CoreDslWebSetup extends CoreDslStandaloneSetup {
-	
-	@Override
-	public Injector createInjector() {
-		return Guice.createInjector(Modules2.mixin(new CoreDslRuntimeModule(), new CoreDslIdeModule(), new CoreDslWebModule()));
-	}
-	
+
+    @Override
+    public Injector createInjector() {
+        return Guice.createInjector(
+                Modules2.mixin(new CoreDslRuntimeModule(), new CoreDslIdeModule(), new CoreDslWebModule()));
+    }
+
 }

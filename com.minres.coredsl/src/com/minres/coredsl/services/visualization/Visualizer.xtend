@@ -5,26 +5,51 @@ import com.minres.coredsl.coreDsl.Attribute
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
 import com.minres.coredsl.coreDsl.BoolConstant
+import com.minres.coredsl.coreDsl.BoolTypeSpecifier
+import com.minres.coredsl.coreDsl.BreakStatement
+import com.minres.coredsl.coreDsl.CaseSection
+import com.minres.coredsl.coreDsl.CastExpression
 import com.minres.coredsl.coreDsl.CompoundStatement
+import com.minres.coredsl.coreDsl.ContinueStatement
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.Declaration
-import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.Declarator
+import com.minres.coredsl.coreDsl.DefaultSection
+import com.minres.coredsl.coreDsl.DescriptionContent
+import com.minres.coredsl.coreDsl.DoLoop
 import com.minres.coredsl.coreDsl.Encoding
+import com.minres.coredsl.coreDsl.EntityReference
+import com.minres.coredsl.coreDsl.EnumTypeDeclaration
+import com.minres.coredsl.coreDsl.EnumTypeSpecifier
+import com.minres.coredsl.coreDsl.ExpressionInitializer
 import com.minres.coredsl.coreDsl.ExpressionStatement
-import com.minres.coredsl.coreDsl.FloatConstant
+import com.minres.coredsl.coreDsl.ForLoop
+import com.minres.coredsl.coreDsl.FunctionCallExpression
 import com.minres.coredsl.coreDsl.FunctionDefinition
 import com.minres.coredsl.coreDsl.IfStatement
 import com.minres.coredsl.coreDsl.Import
+import com.minres.coredsl.coreDsl.IndexAccessExpression
 import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
 import com.minres.coredsl.coreDsl.IntegerConstant
+import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
+import com.minres.coredsl.coreDsl.IntrinsicExpression
+import com.minres.coredsl.coreDsl.ListInitializer
+import com.minres.coredsl.coreDsl.MemberAccessExpression
+import com.minres.coredsl.coreDsl.ParenthesisExpression
 import com.minres.coredsl.coreDsl.PostfixExpression
 import com.minres.coredsl.coreDsl.PrefixExpression
+import com.minres.coredsl.coreDsl.ReturnStatement
 import com.minres.coredsl.coreDsl.SpawnStatement
-import com.minres.coredsl.coreDsl.StringLiteral
+import com.minres.coredsl.coreDsl.StringConstant
+import com.minres.coredsl.coreDsl.StructTypeDeclaration
+import com.minres.coredsl.coreDsl.StructTypeSpecifier
 import com.minres.coredsl.coreDsl.SwitchStatement
+import com.minres.coredsl.coreDsl.UnionTypeDeclaration
+import com.minres.coredsl.coreDsl.UnionTypeSpecifier
+import com.minres.coredsl.coreDsl.VoidTypeSpecifier
+import com.minres.coredsl.coreDsl.WhileLoop
 import com.minres.coredsl.services.visualization.VisualElement.DeclarationLiteral
 import com.minres.coredsl.services.visualization.VisualElement.Literal
 import com.minres.coredsl.services.visualization.VisualElement.NodeElement
@@ -39,36 +64,6 @@ import java.util.List
 import java.util.Map
 import java.util.function.Supplier
 import org.eclipse.emf.ecore.EObject
-import com.minres.coredsl.coreDsl.FunctionCallExpression
-import com.minres.coredsl.coreDsl.ArrayAccessExpression
-import com.minres.coredsl.coreDsl.MemberAccessExpression
-import com.minres.coredsl.coreDsl.EnumTypeSpecifier
-import com.minres.coredsl.coreDsl.BoolTypeSpecifier
-import com.minres.coredsl.coreDsl.VoidTypeSpecifier
-import com.minres.coredsl.coreDsl.FloatTypeSpecifier
-import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
-import com.minres.coredsl.coreDsl.CharacterConstant
-import com.minres.coredsl.coreDsl.StringConstant
-import com.minres.coredsl.coreDsl.ParenthesisExpression
-import com.minres.coredsl.coreDsl.ExpressionInitializer
-import com.minres.coredsl.coreDsl.ListInitializer
-import com.minres.coredsl.coreDsl.EntityReference
-import com.minres.coredsl.coreDsl.WhileLoop
-import com.minres.coredsl.coreDsl.ForLoop
-import com.minres.coredsl.coreDsl.DoLoop
-import com.minres.coredsl.coreDsl.CaseSection
-import com.minres.coredsl.coreDsl.DefaultSection
-import com.minres.coredsl.coreDsl.CastExpression
-import com.minres.coredsl.coreDsl.ContinueStatement
-import com.minres.coredsl.coreDsl.BreakStatement
-import com.minres.coredsl.coreDsl.ReturnStatement
-import com.minres.coredsl.coreDsl.IntrinsicExpression
-import com.minres.coredsl.coreDsl.StructTypeSpecifier
-import com.minres.coredsl.coreDsl.UnionTypeSpecifier
-import com.minres.coredsl.coreDsl.EnumTypeDeclaration
-import com.minres.coredsl.coreDsl.StructTypeDeclaration
-import com.minres.coredsl.coreDsl.UnionTypeDeclaration
-import com.minres.coredsl.coreDsl.EnumMemberDeclaration
 
 class Visualizer {
 	
@@ -92,10 +87,9 @@ class Visualizer {
 	private def void decorate() {
 		for(VisualNode visual : visualNodes) {
 			if(visual instanceof ReferenceLiteral) {
-				var ReferenceLiteral reference = visual as ReferenceLiteral;
 				// only resolve references in decorate() to avoid errors if executed before context analysis
-				var EObject targetNode = reference.resolver.get();
-				reference.declaration = declarationLiterals.get(targetNode);
+				var EObject targetNode = visual.resolver.get();
+				visual.declaration = declarationLiterals.get(targetNode);
 			}
 		}
 	}
@@ -220,9 +214,8 @@ class Visualizer {
 		return makeNode(node, "Instruction Set",
 			makeNamedLiteral("Name", node.name),
 			makeNamedLiteral("Super Type", node.superType?.name),
-			makeGroup("Declarations", node.declarations),
-			makeGroup("Assignments", node.assignments),
-			makeGroup("Types", node.types),
+			makeGroup("Architectural State", node.archStateBody),
+			makeGroup("Types", node.typeDeclarations),
 			makeGroup("Functions", node.functions),
 			makeGroup("Instruction Attributes", node.commonInstructionAttributes),
 			makeGroup("Instructions", node.instructions)
@@ -233,9 +226,8 @@ class Visualizer {
 		return makeNode(node, "Instruction Set",
 			makeNamedLiteral("Name", node.name),
 			makeGroup("Provided Instruction Sets", node.providedInstructionSets),
-			makeGroup("Declarations", node.declarations),
-			makeGroup("Assignments", node.assignments),
-			makeGroup("Types", node.types),
+			makeGroup("Architectural State", node.archStateBody),
+			makeGroup("Types", node.typeDeclarations),
 			makeGroup("Functions", node.functions),
 			makeGroup("Instruction Attributes", node.commonInstructionAttributes),
 			makeGroup("Instructions", node.instructions)
@@ -369,7 +361,6 @@ class Visualizer {
 		return makeNode(node, "Declaration",
 			makePortGroup("Storage", node.storage.map[specifier | makeImmediateLiteral(specifier.toString)]),
 			makePortGroup("Qualifiers", node.qualifiers.map[qualifier | makeImmediateLiteral(qualifier.toString)]),
-			makeGroup("Attributes", node.attributes),
 			makeChild("Type", node.type),
 			makeGroup("Declarators", node.declarators)
 		);
@@ -377,7 +368,7 @@ class Visualizer {
 	
 	private def dispatch VisualNode genNode(Attribute node) {
 		return makeNode(node, "Attribute",
-			makeNamedLiteral("Type", node.type.toString),
+			makeNamedLiteral("Name", node.attributeName),
 			makeGroup("Parameters", node.parameters)
 		);
 	}
@@ -388,12 +379,6 @@ class Visualizer {
 	
 	private def dispatch VisualNode genNode(BoolTypeSpecifier node) {
 		return makeNode(node, "Bool Type");
-	}
-	
-	private def dispatch VisualNode genNode(FloatTypeSpecifier node) {
-		return makeNode(node, "Float Type",
-			makeNamedLiteral("Shorthand", node.shorthand?.literal)
-		);
 	}
 	
 	private def dispatch VisualNode genNode(IntegerTypeSpecifier node) {
@@ -443,13 +428,6 @@ class Visualizer {
 		);
 	}
 	
-	private def dispatch VisualNode genNode(EnumMemberDeclaration node) {
-		return makeNode(node, "Enum Member",
-			makeDeclaration("Name", node.name, node),
-			makeChild("Value", node.value)
-		);
-	}
-	
 	private def dispatch VisualNode genNode(Declarator node) {
 		return makeNode(node, node.isAlias ? "Declarator (alias)" : "Declarator",
 			makeDeclaration("Name", node.name, node),
@@ -473,29 +451,11 @@ class Visualizer {
 		return makeImmediateLiteral(node.value.toString);
 	}
 	
-	private def dispatch VisualNode genNode(FloatConstant node) {
-		return makeImmediateLiteral(node.value.toString);
-	}
-	
 	private def dispatch VisualNode genNode(BoolConstant node) {
 		return makeImmediateLiteral(node.value.toString);
 	}
 	
-	private def dispatch VisualNode genNode(CharacterConstant node) {
-		return makeImmediateLiteral(node.value);
-	}
-	
 	private def dispatch VisualNode genNode(StringConstant node) {
-		if(node.literals.size == 1) {
-			return visit(node.literals.get(0));
-		}
-		
-		return makeNode(node, "Compound String Constant",
-			makeGroup("Literals", node.literals)
-		);
-	}
-	
-	private def dispatch VisualNode genNode(StringLiteral node) {
 		return makeImmediateLiteral(node.value);
 	}
 	
@@ -532,10 +492,11 @@ class Visualizer {
 		);
 	}
 	
-	private def dispatch VisualNode genNode(ArrayAccessExpression node) {
-		return makeNode(node, "Array Access",
+	private def dispatch VisualNode genNode(IndexAccessExpression node) {
+		return makeNode(node, node.endIndex === null ? "Index Access" : "Range Access",
 			makeChild("Target", node.target),
-			makeChild("Index", node.index)
+			makeChild("Index", node.index),
+			makeChild("End Index", node.endIndex)
 		);
 	}
 	

@@ -7,6 +7,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.minres.coredsl.CoreDslRuntimeModule;
 import com.minres.coredsl.CoreDslStandaloneSetup;
+
 import org.eclipse.xtext.util.Modules2;
 
 /**
@@ -14,9 +15,9 @@ import org.eclipse.xtext.util.Modules2;
  */
 public class CoreDslIdeSetup extends CoreDslStandaloneSetup {
 
-	@Override
-	public Injector createInjector() {
-		return Guice.createInjector(Modules2.mixin(new CoreDslRuntimeModule(), new CoreDslIdeModule()));
-	}
-	
+    @Override
+    public Injector createInjector() {
+        return Guice.createInjector(Modules2.mixin(new CoreDslRuntimeModule(), new CoreDslIdeModule()));
+    }
+
 }

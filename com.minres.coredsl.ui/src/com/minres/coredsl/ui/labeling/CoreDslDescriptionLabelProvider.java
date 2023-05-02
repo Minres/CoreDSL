@@ -8,11 +8,12 @@ import org.eclipse.xtext.ui.label.DefaultDescriptionLabelProvider;
 /**
  * Provides labels for IEObjectDescriptions and IResourceDescriptions.
  * 
- * See https://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#label-provider
+ * See
+ * https://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#label-provider
  */
 public class CoreDslDescriptionLabelProvider extends DefaultDescriptionLabelProvider {
 
-	// Labels and icons can be computed like this:
+    // Labels and icons can be computed like this:
 //	@Override
 //	public String text(IEObjectDescription ele) {
 //		return ele.getName().toString();
