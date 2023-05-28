@@ -44,6 +44,11 @@ class CoreDslConstantExpressionEvaluator {
 
 	def private static dispatch ConstantValue evaluateImpl(AnalysisContext ctx, EntityReference expression,
 		boolean suppressErrors) {
+		if(expression.target.eIsProxy) {
+			// linking error should already be reported
+			return ConstantValue.invalid;
+		}
+			
 		val declarator = expression.target.castOrNull(Declarator);
 
 		if(declarator !== null && !ctx.isStorageClassSet(declarator))
@@ -151,7 +156,7 @@ class CoreDslConstantExpressionEvaluator {
 					EntityReference: {
 						val declarator = arg.target.castOrNull(Declarator);
 						if(declarator !== null) {
-							val type = CoreDslTypeProvider.getSpecifiedType(ctx, declarator.type);
+							val type = CoreDslTypeProvider.tryGetSpecifiedType(ctx, declarator.type);
 							return getTypeSize(ctx, type, inBytes, target);
 						}
 					}

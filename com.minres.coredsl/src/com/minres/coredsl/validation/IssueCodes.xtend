@@ -5,6 +5,7 @@ class IssueCodes {
 	}
 
 	public static val SyntaxError = 'org.eclipse.xtext.diagnostics.Diagnostic.Syntax';
+	public static val LinkingError = 'org.eclipse.xtext.diagnostics.Diagnostic.Linking';
 
 	public static val _prefix = "com.minres.coredsl."
 

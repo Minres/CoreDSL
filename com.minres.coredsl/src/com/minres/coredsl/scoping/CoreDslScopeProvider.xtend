@@ -179,6 +179,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 	}
 
 	def private static dispatch IScope getNamedEntityScope(Declaration context, EObject child) {
+		if(child == context.type) return getParentNamedEntityScope(context);
 		return Scopes.scopeFor(context.declarators.takeWhile[it !== child], getParentNamedEntityScope(context));
 	}
 
@@ -214,6 +215,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 		.takeWhile[it !== child] //
 		.filter(DeclarationStatement) //
 		.flatMap[it.declaration.declarators];
+		// TODO make sure enum members can't reference themselves
 		val enumMembers = context.typeDeclarations.filter(EnumTypeDeclaration).flatMap[it.members];
 		return Scopes.scopeFor(declarations + enumMembers + context.functions, getInheritedScope(context));
 	}

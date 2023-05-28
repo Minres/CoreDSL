@@ -1085,7 +1085,7 @@ class CoreDslAnalyzer {
 				}
 			}
 			default: {
-				CompilerAssertion.fail("Invalid entity reference");
+				CompilerAssertion.assertThat(expression.target.eIsProxy, "Invalid entity reference");
 			}
 		}
 	}

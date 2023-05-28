@@ -20,6 +20,13 @@ import java.math.BigInteger
 abstract class CoreDslTypeProvider {
 	private new() {
 	}
+	
+	def static CoreDslType tryGetSpecifiedType(AnalysisContext ctx, TypeSpecifier typeSpecifier) {
+		if(ctx.isSpecifiedTypeSet(typeSpecifier))
+			return ctx.getSpecifiedType(typeSpecifier);
+			
+		return ErrorType.indeterminate;
+	}
 
 	def static CoreDslType getSpecifiedType(AnalysisContext ctx, TypeSpecifier typeSpecifier) {
 		if(ctx.isSpecifiedTypeSet(typeSpecifier))
