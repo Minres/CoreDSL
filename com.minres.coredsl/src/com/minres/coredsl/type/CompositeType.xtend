@@ -17,6 +17,7 @@ class CompositeType extends CoreDslType {
 		this.fields = fields;
 	}
 
+	override isCompositeType() { return true; }
 	override isStructType() { return declaration instanceof StructTypeDeclaration; }
 	override isUnionType() { return declaration instanceof UnionTypeDeclaration; }
 	

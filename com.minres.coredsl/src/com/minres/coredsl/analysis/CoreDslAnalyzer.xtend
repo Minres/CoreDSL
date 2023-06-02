@@ -1586,12 +1586,17 @@ class CoreDslAnalyzer {
 	}
 
 	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, MemberAccessExpression expression) {
-		val member = expression.declarator;
+		var baseType = analyzeExpression(ctx, expression.target);
 
-		if(member === null || member.eIsProxy)
+		if(!baseType.isCompositeType) {
+			if(baseType.isValid) {
+				ctx.acceptError('Cannot access fields of non-struct type ' + baseType, expression,
+					CoreDslPackage.Literals.MEMBER_ACCESS_EXPRESSION__TARGET, -1, IssueCodes.InvalidMemberAccessTarget);
+			}
 			return ctx.setExpressionType(expression, ErrorType.invalid);
+		}
 
-		return ctx.setExpressionType(expression, ctx.getDeclaredType(member));
+		return ctx.setExpressionType(expression, ctx.getDeclaredType(expression.declarator));
 	}
 
 	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, ParenthesisExpression expression) {

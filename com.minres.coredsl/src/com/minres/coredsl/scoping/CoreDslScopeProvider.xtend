@@ -36,6 +36,7 @@ import org.eclipse.xtext.scoping.Scopes
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.coreDsl.IndexAccessExpression
 
 class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 // Possible references:
@@ -113,6 +114,9 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 			MemberAccessExpression: {
 				val declarator = expression.declarator;
 				return declarator?.type;
+			}
+			IndexAccessExpression: {
+				return findTypeSpecifier(expression.target);
 			}
 			FunctionCallExpression: {
 				val function = expression.target.castOrNull(FunctionDefinition);
@@ -215,7 +219,6 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 		.takeWhile[it !== child] //
 		.filter(DeclarationStatement) //
 		.flatMap[it.declaration.declarators];
-		// TODO make sure enum members can't reference themselves
 		val enumMembers = context.typeDeclarations.filter(EnumTypeDeclaration).flatMap[it.members];
 		return Scopes.scopeFor(declarations + enumMembers + context.functions, getInheritedScope(context));
 	}
