@@ -186,6 +186,10 @@ class CoreDslElaborator {
 			ctx.acceptError('Only regular assignments (=) are allowed in ISA level expression statements', assignment,
 				CoreDslPackage.Literals.ASSIGNMENT_EXPRESSION__OPERATOR, -1,
 				IssueCodes.InvalidIsaParameterAssignmentOperator);
+		}
+		
+		if(reference?.target.eIsProxy) {
+			// linking error
 			return;
 		}
 

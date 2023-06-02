@@ -2,6 +2,9 @@ package com.minres.coredsl.analysis
 
 import com.minres.coredsl.coreDsl.BoolTypeSpecifier
 import com.minres.coredsl.coreDsl.CoreDslPackage
+import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.Declarator
+import com.minres.coredsl.coreDsl.EnumTypeDeclaration
 import com.minres.coredsl.coreDsl.EnumTypeSpecifier
 import com.minres.coredsl.coreDsl.IntegerSignedness
 import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
@@ -120,6 +123,20 @@ abstract class CoreDslTypeProvider {
 		}
 	}
 
+	def static CoreDslType tryGetDeclaratorType(AnalysisContext ctx, Declarator declarator) {
+		val parent = declarator.eContainer;
+		switch(parent) {
+			Declaration: {
+				return tryGetSpecifiedType(ctx, parent.type);
+			}
+			EnumTypeDeclaration: {
+				return ctx.isUserTypeInstanceSet(parent) ? ctx.getUserTypeInstance(parent) : ErrorType.indeterminate;
+			}
+		}
+		
+		return ErrorType.invalid;
+	}
+	
 	def static boolean canTypeHoldValue(CoreDslType type, BigInteger value) {
 		return canImplicitlyConvert(getSmallestTypeForValue(value), type);
 	}

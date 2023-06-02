@@ -48,7 +48,7 @@ class CoreDslConstantExpressionEvaluator {
 			// linking error should already be reported
 			return ConstantValue.invalid;
 		}
-			
+
 		val declarator = expression.target.castOrNull(Declarator);
 
 		if(declarator !== null && !ctx.isStorageClassSet(declarator))
@@ -143,10 +143,10 @@ class CoreDslConstantExpressionEvaluator {
 			case 'sizeof': {
 				val inBytes = expression.function == 'sizeof';
 				val target = new IssueReportTarget(expression, CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION);
-				
+
 				if(expression.arguments.size !== 1)
 					return ConstantValue.invalid;
-				
+
 				val arg = expression.arguments.get(0);
 				switch (arg) {
 					TypeSpecifier: {
@@ -156,7 +156,7 @@ class CoreDslConstantExpressionEvaluator {
 					EntityReference: {
 						val declarator = arg.target.castOrNull(Declarator);
 						if(declarator !== null) {
-							val type = CoreDslTypeProvider.tryGetSpecifiedType(ctx, declarator.type);
+							val type = CoreDslTypeProvider.tryGetDeclaratorType(ctx, declarator);
 							return getTypeSize(ctx, type, inBytes, target);
 						}
 					}
