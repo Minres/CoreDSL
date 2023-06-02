@@ -1119,7 +1119,7 @@ class CoreDslAnalyzer {
 				ctx.acceptError("Cannot cast from " + valueType + " to " + targetType, expression,
 					CoreDslPackage.Literals.CAST_EXPRESSION__TARGET_TYPE, -1, IssueCodes.InvalidCast);
 			}
-			if(targetType.equals(valueType)) {
+			if(targetType.equals(valueType) && !targetType.isIncomplete) {
 				ctx.acceptWarning("Identity cast does nothing", expression,
 					CoreDslPackage.Literals.CAST_EXPRESSION__TARGET_TYPE, -1, IssueCodes.IdentityCast);
 			}
