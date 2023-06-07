@@ -15,13 +15,13 @@
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
+<!-- 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<configuration>
-					<useUIHarness>true</useUIHarness>
+					<useUIHarness>false</useUIHarness>
 				</configuration>
-			</plugin>
+			</plugin> -->
 		</plugins>
 	</build>
 
