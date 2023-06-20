@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.minres.coredsl</groupId>
-	<version>2.0.5</version>
+	<version>2.0.6</version>
 	<artifactId>com.minres.coredsl.parent</artifactId>
 	<packaging>pom</packaging>
 
@@ -21,15 +21,19 @@
 		<additionalTestArguments></additionalTestArguments>
 		<maven.deploy.skip>true</maven.deploy.skip>
 		<software.download.area>${project.basedir}/../..</software.download.area>
+		<jacoco-version>0.8.10</jacoco-version>
+		<tycho.testArgLine.local></tycho.testArgLine.local>
+		<junit-5.version>5.8.1</junit-5.version>
 	</properties>
 	<modules>
-		<module>com.minres.coredsl.target</module>
 		<module>com.minres.coredsl</module>
-        <module>com.minres.coredsl.tests</module>
 		<module>com.minres.coredsl.ide</module>
 		<module>com.minres.coredsl.ui</module>
+		<module>com.minres.coredsl.web</module>
+		<module>com.minres.coredsl.target</module>
 		<module>com.minres.coredsl.feature</module>
 		<module>com.minres.coredsl.repository</module>
+		<module>com.minres.coredsl.tests</module>
 		<module>com.minres.coredsl.ui.tests</module>
 	</modules>
 	<dependencyManagement>
@@ -158,41 +162,6 @@
 					</dependency-resolution>
 				</configuration>
 			</plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.10</version>
-                <executions>
-                    <!-- Prepares the property pointing to the JaCoCo runtime agent which 
-                        is passed as VM argument when Maven the Surefire plugin is executed. -->
-                    <execution>
-                        <id>pre-unit-test</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Sets the path to the file which contains the execution data. -->
-                            <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
-                            <!-- Sets the name of the property containing the settings for JaCoCo runtime agent. -->
-                            <propertyName>surefireArgLine</propertyName>
-                        </configuration>
-                    </execution>
-                    <!-- Ensures that the code coverage report for unit tests is created after unit tests have been run. -->
-                    <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Sets the path to the file which contains the execution data. -->
-                            <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
-                            <!-- Sets the output directory for the code coverage report. -->
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -353,6 +322,19 @@
 						<failIfNoTests>false</failIfNoTests>
 						<useUIHarness>false</useUIHarness>
 					</configuration>
+				    <!-- JUnit 5 Support -->
+				    <dependencies>
+				        <dependency>
+				            <groupId>org.junit.platform</groupId>
+				            <artifactId>junit-platform-surefire-provider</artifactId>
+				            <version>1.2.0</version>
+				        </dependency>
+				        <dependency>
+				            <groupId>org.junit.jupiter</groupId>
+				            <artifactId>junit-jupiter-engine</artifactId>
+				            <version>${junit-5.version}</version>
+				        </dependency>
+				    </dependencies>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -405,9 +387,58 @@
 				<moduleProperties>--add-modules=ALL-SYSTEM</moduleProperties>
 			</properties>
 		</profile>
+		<profile>
+			<id>jacoco</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<tycho.testArgLine.local>${tycho.testArgLine}</tycho.testArgLine.local>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${jacoco-version}</version>
+						<!--<configuration>
+							<excludes>
+								<exclude>**/coredsl/Main.class</exclude>
+							</excludes>
+						</configuration>-->
+						<executions>
+							<execution>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.eluder.coveralls</groupId>
+							<artifactId>coveralls-maven-plugin</artifactId>
+							<version>4.3.0</version>
+							<configuration>
+								<jacocoReports>
+									<jacocoReport>${project.basedir}/com.minres.coredsl.tests/target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
+								</jacocoReports>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
 	</profiles>
 
 	<dependencies>
+		<dependency>
+    		<groupId>org.junit.jupiter</groupId>
+    		<artifactId>junit-jupiter-api</artifactId>
+    		<scope>test</scope>
+  		</dependency>
 	</dependencies>
 	<name>CoreDSL</name>
 	<url>https://github.com/Minres/CoreDSL</url>
