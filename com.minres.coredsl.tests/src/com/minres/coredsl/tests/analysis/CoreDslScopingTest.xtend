@@ -61,4 +61,95 @@ class CoreDslScopingTest {
 		.expectError(IssueCodes.LinkingError, 4)
 		.run();
 	}
+	
+	@Test
+	def void enums() {
+		// access to enum members
+		'''
+			Core C {
+				architectural_state {
+					unsigned int X = 0;
+					unsigned int Y = x;
+					
+					enum E {
+						x = X
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.run();
+		
+		'''
+			Core C {
+				architectural_state {
+					unsigned int X = 0;
+					
+					enum E {
+						x = X
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.run();
+	}
+	
+	@Test
+	def void compoundStatement() {
+		// use before declaration: initializer
+		'''
+			unsigned int y = y;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.LinkingError, 1)
+		.run();
+		
+		// use before declaration: multiple initializers
+		'''
+			unsigned int y = x, x = 5;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.LinkingError, 1)
+		.run();
+		
+		// use before declaration: use in type
+		'''
+			unsigned<X> X = 32;
+			unsigned<bitsizeof(Y)> Y = 32;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.LinkingError, 1)
+		.expectError(IssueCodes.LinkingError, 2)
+		.run();
+	}
+	
+	@Test
+	def void forLoop() {
+		// invalid access
+		'''
+			for(int x = x;;) {
+				x = x;
+			}
+		'''
+		.testStatements()
+		.expectError(IssueCodes.LinkingError, 1)
+		.run();
+		
+		// valid access
+		'''
+			int y = 0;
+			for(int x = y; x < 10; x++) x = x;
+		'''
+		.testStatements()
+		.run();
+		
+		// access to outer scope
+		'''
+			int x;
+			for(x = 0; x < 10; x++) x = x;
+		'''
+		.testStatements()
+		.run();
+	}
 }
