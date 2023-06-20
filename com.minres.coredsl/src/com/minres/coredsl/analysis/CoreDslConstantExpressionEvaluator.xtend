@@ -108,6 +108,17 @@ class CoreDslConstantExpressionEvaluator {
 				ctx.acceptError("Division by zero", expression, CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR, -1,
 					IssueCodes.DivisionByZero);
 			}
+			case '&':
+				return new ConstantValue(left.value.and(right.value))
+			case '|':
+				return new ConstantValue(left.value.or(right.value))
+			case '^':
+				return new ConstantValue(left.value.xor(right.value))
+			// TODO these ignore all type rules for now, because the evaluator does not track types at all
+			case '<<':
+				return new ConstantValue(left.value.shiftLeft(right.value.intValueExact))
+			case '>>':
+				return new ConstantValue(left.value.shiftRight(right.value.intValueExact))
 			default: {
 				if(!suppressErrors) {
 					ctx.acceptError("Infix expression " + expression.operator +
