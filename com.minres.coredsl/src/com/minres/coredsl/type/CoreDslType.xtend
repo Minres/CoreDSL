@@ -8,6 +8,7 @@ abstract class CoreDslType {
 	
 	def isFunctionType() { return false; }
 	def isPrimitiveType() { return false; }
+	def isCompositeType() { return false; }
 	def isScalarType() { return false; } // primitive and pointer
 	def isIntegerType() { return false; }
 	def isFloatType() { return false; }

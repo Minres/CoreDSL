@@ -44,6 +44,11 @@ class CoreDslConstantExpressionEvaluator {
 
 	def private static dispatch ConstantValue evaluateImpl(AnalysisContext ctx, EntityReference expression,
 		boolean suppressErrors) {
+		if(expression.target.eIsProxy) {
+			// linking error should already be reported
+			return ConstantValue.invalid;
+		}
+
 		val declarator = expression.target.castOrNull(Declarator);
 
 		if(declarator !== null && !ctx.isStorageClassSet(declarator))
@@ -103,6 +108,17 @@ class CoreDslConstantExpressionEvaluator {
 				ctx.acceptError("Division by zero", expression, CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR, -1,
 					IssueCodes.DivisionByZero);
 			}
+			case '&':
+				return new ConstantValue(left.value.and(right.value))
+			case '|':
+				return new ConstantValue(left.value.or(right.value))
+			case '^':
+				return new ConstantValue(left.value.xor(right.value))
+			// TODO these ignore all type rules for now, because the evaluator does not track types at all
+			case '<<':
+				return new ConstantValue(left.value.shiftLeft(right.value.intValueExact))
+			case '>>':
+				return new ConstantValue(left.value.shiftRight(right.value.intValueExact))
 			default: {
 				if(!suppressErrors) {
 					ctx.acceptError("Infix expression " + expression.operator +
@@ -138,10 +154,10 @@ class CoreDslConstantExpressionEvaluator {
 			case 'sizeof': {
 				val inBytes = expression.function == 'sizeof';
 				val target = new IssueReportTarget(expression, CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION);
-				
+
 				if(expression.arguments.size !== 1)
 					return ConstantValue.invalid;
-				
+
 				val arg = expression.arguments.get(0);
 				switch (arg) {
 					TypeSpecifier: {
@@ -151,7 +167,7 @@ class CoreDslConstantExpressionEvaluator {
 					EntityReference: {
 						val declarator = arg.target.castOrNull(Declarator);
 						if(declarator !== null) {
-							val type = CoreDslTypeProvider.getSpecifiedType(ctx, declarator.type);
+							val type = CoreDslTypeProvider.tryGetDeclaratorType(ctx, declarator);
 							return getTypeSize(ctx, type, inBytes, target);
 						}
 					}
