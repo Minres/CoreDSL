@@ -36,6 +36,7 @@ import org.eclipse.xtext.scoping.Scopes
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.coreDsl.IndexAccessExpression
 
 class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 // Possible references:
@@ -114,6 +115,9 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 				val declarator = expression.declarator;
 				return declarator?.type;
 			}
+			IndexAccessExpression: {
+				return findTypeSpecifier(expression.target);
+			}
 			FunctionCallExpression: {
 				val function = expression.target.castOrNull(FunctionDefinition);
 				return function?.returnType;
@@ -179,6 +183,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 	}
 
 	def private static dispatch IScope getNamedEntityScope(Declaration context, EObject child) {
+		if(child == context.type) return getParentNamedEntityScope(context);
 		return Scopes.scopeFor(context.declarators.takeWhile[it !== child], getParentNamedEntityScope(context));
 	}
 

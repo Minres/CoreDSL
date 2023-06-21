@@ -212,12 +212,7 @@ class CoreDslTestCase<TRoot> {
 
 		printHeader();
 
-		val diagnosticsErrors = model.eResource.errors.map[convertDiagnostic(it, Severity.ERROR)];
-		val diagnosticsWarnings = model.eResource.warnings.map[convertDiagnostic(it, Severity.WARNING)];
-
 		var issues = new ArrayList();
-		issues.addAll(diagnosticsErrors);
-		issues.addAll(diagnosticsWarnings);
 
 		var AnalysisResults results = null;
 
@@ -226,6 +221,11 @@ class CoreDslTestCase<TRoot> {
 			results = CoreDslAnalyzer.analyze(model, sink);
 			issues.addAll(sink.issues);
 		}
+
+		val diagnosticsErrors = model.eResource.errors.map[convertDiagnostic(it, Severity.ERROR)];
+		val diagnosticsWarnings = model.eResource.warnings.map[convertDiagnostic(it, Severity.WARNING)];
+		issues.addAll(diagnosticsErrors);
+		issues.addAll(diagnosticsWarnings);
 
 		val actualIssues = issues.sortBy[it.severity].sortBy[it.code].sortBy[it.lineNumber];
 		val expectedIssues = expectedIssues.sortBy[it.severity].sortBy[it.code].sortBy[it.lineNumber];
