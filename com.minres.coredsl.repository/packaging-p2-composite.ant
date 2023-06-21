@@ -1,30 +1,12 @@
 <?xml version="1.0"?>
 <project name="project">
 
-    <target name="getMajorMinorVersion">
-        <script language="javascript">
-            <![CDATA[
-
-                  // getting the value
-                  buildnumber = project.getProperty("unqualifiedVersion");
-                  index = buildnumber.lastIndexOf(".");
-                  counter = buildnumber.substring(0, index);
-            project.setProperty("majorMinorVersion",counter);
-
-              ]]>
-        </script>
-    </target>
-
-    <target name="test_getMajorMinor" depends="getMajorMinorVersion">
-        <echo message="majorMinorVersion: ${majorMinorVersion}"/>
-    </target>
-
     <!--
     site.label      The name/title/label of the created composite site
     unqualifiedVersion  The version without any qualifier replacement
     buildQualifier    The build qualifier
   -->
-    <target name="compute.child.repository.data" depends="getMajorMinorVersion">
+    <target name="compute.child.repository.data">
         <property name="full.version" value="${unqualifiedVersion}" />
 
         <property name="software.download.area" location="${user.home}/p2.repositories" />
