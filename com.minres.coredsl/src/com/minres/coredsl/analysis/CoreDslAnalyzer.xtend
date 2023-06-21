@@ -65,6 +65,7 @@ import com.minres.coredsl.type.ErrorType
 import com.minres.coredsl.type.FunctionType
 import com.minres.coredsl.type.IntegerType
 import com.minres.coredsl.util.CompilerAssertion
+import com.minres.coredsl.util.IssueReportTarget
 import com.minres.coredsl.util.TypedBigInteger
 import com.minres.coredsl.validation.IssueCodes
 import java.math.BigInteger
@@ -444,8 +445,8 @@ class CoreDslAnalyzer {
 	def static dispatch void analyzeStatement(AnalysisContext ctx, IfStatement statement) {
 		val conditionType = analyzeExpression(ctx, statement.condition);
 
-		if(!conditionType.isScalarType) {
-			ctx.acceptError("The condition must be a scalar type", statement,
+		if(!conditionType.isScalarType && !conditionType.isError) {
+			ctx.acceptError("The condition must be a scalar type, but was " + conditionType, statement,
 				CoreDslPackage.Literals.IF_STATEMENT__CONDITION, -1, IssueCodes.NonScalarCondition);
 		}
 
@@ -552,8 +553,8 @@ class CoreDslAnalyzer {
 	def static dispatch void analyzeStatement(AnalysisContext ctx, WhileLoop statement) {
 		val conditionType = analyzeExpression(ctx, statement.condition);
 
-		if(!conditionType.isScalarType) {
-			ctx.acceptError("The condition must be a scalar type", statement,
+		if(!conditionType.isScalarType && !conditionType.isError) {
+			ctx.acceptError("The condition must be a scalar type, but was " + conditionType, statement,
 				CoreDslPackage.Literals.LOOP_STATEMENT__CONDITION, -1, IssueCodes.NonScalarCondition);
 		}
 
@@ -581,8 +582,8 @@ class CoreDslAnalyzer {
 
 		if(statement.condition !== null) {
 			val conditionType = analyzeExpression(ctx, statement.condition);
-			if(!conditionType.isScalarType) {
-				ctx.acceptError("The condition must be a scalar type", statement,
+			if(!conditionType.isScalarType && !conditionType.isError) {
+				ctx.acceptError("The condition must be a scalar type, but was " + conditionType, statement,
 					CoreDslPackage.Literals.LOOP_STATEMENT__CONDITION, -1, IssueCodes.NonScalarCondition);
 			}
 		}
@@ -605,8 +606,8 @@ class CoreDslAnalyzer {
 	def static dispatch void analyzeStatement(AnalysisContext ctx, DoLoop statement) {
 		val conditionType = analyzeExpression(ctx, statement.condition);
 
-		if(!conditionType.isScalarType) {
-			ctx.acceptError("The condition must be a scalar type", statement,
+		if(!conditionType.isScalarType && !conditionType.isError) {
+			ctx.acceptError("The condition must be a scalar type, but was " + conditionType, statement,
 				CoreDslPackage.Literals.LOOP_STATEMENT__CONDITION, -1, IssueCodes.NonScalarCondition);
 		}
 
@@ -771,8 +772,9 @@ class CoreDslAnalyzer {
 								CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, i, IssueCodes.InvalidArraySize);
 							type = ArrayType.ofUnknownSize(type);
 						}
-						type = isAddressSpace ? new AddressSpaceType(type, size.value) : new ArrayType(type,
-							size.value.intValueExact);
+						type = isAddressSpace
+							? new AddressSpaceType(type, size.value)
+							: new ArrayType(type, size.value.intValueExact);
 					}
 				} else {
 					type = isAddressSpace ? AddressSpaceType.ofUnknownSize(type) : ArrayType.ofUnknownSize(type);
@@ -803,10 +805,8 @@ class CoreDslAnalyzer {
 			var initializer = declarator.initializer;
 			if(initializer instanceof ExpressionInitializer) {
 				val valueType = analyzeExpression(ctx, initializer.value);
-				if(!CoreDslTypeProvider.canImplicitlyConvert(valueType, type)) {
-					ctx.acceptError("Cannot implicitly convert " + valueType + " to " + type, declarator,
-						CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
-				}
+				val reportTarget = new IssueReportTarget(declarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS);
+				checkAssignmentTypes(ctx, valueType, type, initializer.value, reportTarget)
 			} else if(type.isArrayType || type.isAddressSpaceType) {
 				val listInitializer = initializer as ListInitializer;
 				var CoreDslType elementType = null;
@@ -850,6 +850,25 @@ class CoreDslAnalyzer {
 		}
 
 		analyzeAttributes(ctx, declarator.attributes, AttributeRegistry.AttributeUsage.declarator);
+	}
+
+	def static checkAssignmentTypes(AnalysisContext ctx, CoreDslType valueType, CoreDslType targetType,
+		Expression expression, IssueReportTarget reportTarget) {
+		if(!CoreDslTypeProvider.canImplicitlyConvert(valueType, targetType)) {
+			val value = CoreDslConstantExpressionEvaluator.tryEvaluate(ctx, expression);
+
+			val isValidConstantCast = targetType.isIntegerType && value.isValid &&
+				CoreDslTypeProvider.canTypeHoldValue(targetType, value.value);
+
+			if(isValidConstantCast || value.isIndeterminate && ctx.isPartialAnalysis) {
+				ctx.acceptInfo(
+					"Assignment is allowed despite type incompatibility, because the right hand side is a constant",
+					reportTarget.object, reportTarget.feature, reportTarget.index, IssueCodes.ValidConstantAssignment);
+			} else {
+				ctx.acceptError("Cannot implicitly convert " + valueType + " to " + targetType, reportTarget.object,
+					reportTarget.feature, reportTarget.index, IssueCodes.InvalidAssignmentType);
+			}
+		}
 	}
 
 	/**
@@ -1046,17 +1065,15 @@ class CoreDslAnalyzer {
 	 * @see CoreDslAnalyzer#analyzeAssignmentTarget(AnalysisContext, Expression)
 	 */
 	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, AssignmentExpression expression) {
-		var targetType = analyzeExpression(ctx, expression.target);
-		var valueType = analyzeExpression(ctx, expression.value);
+		val targetType = analyzeExpression(ctx, expression.target);
+		val valueType = analyzeExpression(ctx, expression.value);
 
 		analyzeAssignmentTarget(ctx, expression.target);
 
-		if(!CoreDslTypeProvider.canImplicitlyConvert(valueType, targetType)) {
-			ctx.acceptError("Cannot implicitly convert " + valueType + " to " + targetType, expression,
-				CoreDslPackage.Literals.ASSIGNMENT_EXPRESSION__OPERATOR, -1, IssueCodes.InvalidAssignmentType);
-		}
+		val reportTarget = new IssueReportTarget(expression, CoreDslPackage.Literals.ASSIGNMENT_EXPRESSION__OPERATOR);
+		checkAssignmentTypes(ctx, valueType, targetType, expression.value, reportTarget);
 
-		if(expression.operator != '=' && (!targetType.isIntegerType || ! valueType.isIntegerType)) {
+		if(expression.operator != '=' && (!targetType.isIntegerType || !valueType.isIntegerType)) {
 			ctx.acceptError(
 				"Cannot combine " + valueType + " and " + targetType + " with the " +
 					expression.operator.substring(0, 1) + " operator", expression,
@@ -1113,31 +1130,40 @@ class CoreDslAnalyzer {
 	 */
 	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, CastExpression expression) {
 		val valueType = analyzeExpression(ctx, expression.operand);
+
 		if(expression.targetType !== null) {
 			val targetType = analyzeTypeSpecifier(ctx, expression.targetType);
+
 			if(!CoreDslTypeProvider.canExplicitlyConvert(valueType, targetType)) {
 				ctx.acceptError("Cannot cast from " + valueType + " to " + targetType, expression,
 					CoreDslPackage.Literals.CAST_EXPRESSION__TARGET_TYPE, -1, IssueCodes.InvalidCast);
 			}
+
 			if(targetType.equals(valueType) && !targetType.isIncomplete) {
 				ctx.acceptWarning("Identity cast does nothing", expression,
 					CoreDslPackage.Literals.CAST_EXPRESSION__TARGET_TYPE, -1, IssueCodes.IdentityCast);
 			}
+
 			return ctx.setExpressionType(expression, targetType);
 		} else {
+			if(valueType.isError) {
+				return ctx.setExpressionType(expression, valueType);
+			}
+
 			if(!valueType.isIntegerType) {
 				ctx.acceptError("Cannot apply signedness cast to non-integer value", expression,
 					CoreDslPackage.Literals.CAST_EXPRESSION__SIGNEDNESS, -1, IssueCodes.InvalidCast);
 				return ctx.setExpressionType(expression, ErrorType.invalid);
-			} else {
-				val intType = valueType as IntegerType;
-				val toSigned = expression.signedness == IntegerSignedness.SIGNED;
-				if(toSigned == intType.signed) {
-					ctx.acceptWarning("Identity cast does nothing", expression,
-						CoreDslPackage.Literals.CAST_EXPRESSION__SIGNEDNESS, -1, IssueCodes.IdentityCast);
-				}
-				return ctx.setExpressionType(expression, new IntegerType(intType.bitSize, toSigned));
 			}
+
+			val intType = valueType as IntegerType;
+			val toSigned = expression.signedness == IntegerSignedness.SIGNED;
+			if(toSigned == intType.signed) {
+				ctx.acceptWarning("Identity cast does nothing", expression,
+					CoreDslPackage.Literals.CAST_EXPRESSION__SIGNEDNESS, -1, IssueCodes.IdentityCast);
+			}
+
+			return ctx.setExpressionType(expression, new IntegerType(intType.bitSize, toSigned));
 		}
 	}
 
@@ -1162,8 +1188,8 @@ class CoreDslAnalyzer {
 		val thenType = analyzeExpression(ctx, expression.thenExpression);
 		val elseType = analyzeExpression(ctx, expression.elseExpression);
 
-		if(!conditionType.isScalarType) {
-			ctx.acceptError("The condition must be a scalar type", expression,
+		if(!conditionType.isScalarType && !conditionType.isError) {
+			ctx.acceptError("The condition must be a scalar type, but was " + conditionType, expression,
 				CoreDslPackage.Literals.CONDITIONAL_EXPRESSION__CONDITION, -1, IssueCodes.NonScalarCondition);
 		}
 

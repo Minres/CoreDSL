@@ -81,6 +81,7 @@ class IssueCodes {
 	public static val StrayControlFlowStatement = _prefix + 'StrayControlFlowStatement';
 	
 	// expression issues
+	public static val ValidConstantAssignment = _prefix + 'ValidConstantAssignment';
 	public static val InvalidAssignmentTarget = _prefix + 'InvalidAssignmentTarget';
 	public static val InvalidAssignmentType = _prefix + 'InvalidAssignmentType';
 	public static val InvalidOperationType = _prefix + 'InvalidOperationType';
