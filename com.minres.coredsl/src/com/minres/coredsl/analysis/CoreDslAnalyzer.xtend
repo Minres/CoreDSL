@@ -125,6 +125,7 @@ class CoreDslAnalyzer {
 	// ////////////////////////////// Top level ////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////
 	def static dispatch void analyzeIsa(AnalysisContext ctx, CoreDef core) {
+		if(!ctx.analyzedIsas.add(core)) return;
 		for (iset : core.providedInstructionSets) {
 			analyzeIsa(ctx, iset);
 		}
@@ -132,6 +133,7 @@ class CoreDslAnalyzer {
 	}
 
 	def static dispatch void analyzeIsa(AnalysisContext ctx, InstructionSet iset) {
+		if(!ctx.analyzedIsas.add(iset)) return;
 		if(iset.superType !== null) {
 			analyzeIsa(ctx, iset.superType);
 		}
