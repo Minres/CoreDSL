@@ -111,7 +111,7 @@ MultiDeclaration returns Declaration: Declaration<true, false>;
 
 Declaration<allowMultiple, allowInit>:
 	(storage+=StorageClassSpecifier | qualifiers+=TypeQualifier)*
-	type=TypeSpecifier (declarators+=Declarator<allowInit> (<allowMultiple> ',' declarators+=Declarator<allowInit>)*)?;
+	type=TypeSpecifier declarators+=Declarator<allowInit> (<allowMultiple> ',' declarators+=Declarator<allowInit>)*;
 
 Declarator<allowInit>:
 	alias?='&'?
