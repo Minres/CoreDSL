@@ -125,6 +125,7 @@ class CoreDslAnalyzer {
 	// ////////////////////////////// Top level ////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////
 	def static dispatch void analyzeIsa(AnalysisContext ctx, CoreDef core) {
+		if(!ctx.analyzedIsas.add(core)) return;
 		for (iset : core.providedInstructionSets) {
 			analyzeIsa(ctx, iset);
 		}
@@ -132,6 +133,7 @@ class CoreDslAnalyzer {
 	}
 
 	def static dispatch void analyzeIsa(AnalysisContext ctx, InstructionSet iset) {
+		if(!ctx.analyzedIsas.add(iset)) return;
 		if(iset.superType !== null) {
 			analyzeIsa(ctx, iset.superType);
 		}
@@ -806,7 +808,8 @@ class CoreDslAnalyzer {
 			if(initializer instanceof ExpressionInitializer) {
 				val valueType = analyzeExpression(ctx, initializer.value);
 				val reportTarget = new IssueReportTarget(declarator, CoreDslPackage.Literals.DECLARATOR__TEQUALS);
-				checkAssignmentTypes(ctx, valueType, type, initializer.value, reportTarget)
+				com.minres.coredsl.analysis.CoreDslAnalyzer.checkImplicitConversion(ctx, valueType, type,
+					initializer.value, reportTarget, IssueCodes.InvalidAssignmentType)
 			} else if(type.isArrayType || type.isAddressSpaceType) {
 				val listInitializer = initializer as ListInitializer;
 				var CoreDslType elementType = null;
@@ -827,10 +830,9 @@ class CoreDslAnalyzer {
 				for (subInitializer : listInitializer.initializers) {
 					if(subInitializer instanceof ExpressionInitializer) {
 						val valueType = analyzeExpression(ctx, subInitializer.value);
-						if(!CoreDslTypeProvider.canImplicitlyConvert(valueType, elementType)) {
-							ctx.acceptError("Cannot implicitly convert " + valueType + " to " + elementType, declarator,
-								CoreDslPackage.Literals.DECLARATOR__TEQUALS, -1, IssueCodes.InvalidAssignmentType);
-						}
+						val reportTarget = new IssueReportTarget(subInitializer.value, null);
+						com.minres.coredsl.analysis.CoreDslAnalyzer.checkImplicitConversion(ctx, valueType, elementType,
+							subInitializer.value, reportTarget, IssueCodes.InvalidAssignmentType);
 						if(isIsaStateElement) {
 							CoreDslConstantExpressionEvaluator.evaluate(ctx, subInitializer.value);
 						}
@@ -852,8 +854,8 @@ class CoreDslAnalyzer {
 		analyzeAttributes(ctx, declarator.attributes, AttributeRegistry.AttributeUsage.declarator);
 	}
 
-	def static checkAssignmentTypes(AnalysisContext ctx, CoreDslType valueType, CoreDslType targetType,
-		Expression expression, IssueReportTarget reportTarget) {
+	def static checkImplicitConversion(AnalysisContext ctx, CoreDslType valueType, CoreDslType targetType,
+		Expression expression, IssueReportTarget reportTarget, String issueCode) {
 		if(!CoreDslTypeProvider.canImplicitlyConvert(valueType, targetType)) {
 			val value = CoreDslConstantExpressionEvaluator.tryEvaluate(ctx, expression);
 
@@ -866,7 +868,7 @@ class CoreDslAnalyzer {
 					reportTarget.object, reportTarget.feature, reportTarget.index, IssueCodes.ValidConstantAssignment);
 			} else {
 				ctx.acceptError("Cannot implicitly convert " + valueType + " to " + targetType, reportTarget.object,
-					reportTarget.feature, reportTarget.index, IssueCodes.InvalidAssignmentType);
+				reportTarget.feature, reportTarget.index, issueCode);
 			}
 		}
 	}
@@ -1071,7 +1073,8 @@ class CoreDslAnalyzer {
 		analyzeAssignmentTarget(ctx, expression.target);
 
 		val reportTarget = new IssueReportTarget(expression, CoreDslPackage.Literals.ASSIGNMENT_EXPRESSION__OPERATOR);
-		checkAssignmentTypes(ctx, valueType, targetType, expression.value, reportTarget);
+		com.minres.coredsl.analysis.CoreDslAnalyzer.checkImplicitConversion(ctx, valueType, targetType,
+			expression.value, reportTarget, IssueCodes.InvalidAssignmentType);
 
 		if(expression.operator != '=' && (!targetType.isIntegerType || !valueType.isIntegerType)) {
 			ctx.acceptError(
@@ -1235,7 +1238,7 @@ class CoreDslAnalyzer {
 	 */
 	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, FunctionCallExpression expression) {
 		var function = expression.target.castOrNull(EntityReference)?.target.castOrNull(FunctionDefinition);
-		var arguments = expression.arguments.map[analyzeExpression(ctx, it)];
+		var argumentTypes = expression.arguments.map[analyzeExpression(ctx, it)];
 
 		if(function === null) {
 			ctx.acceptError("Expected a function name", expression,
@@ -1245,20 +1248,20 @@ class CoreDslAnalyzer {
 
 		var functionType = ctx.getFunctionSignature(function);
 
-		if(functionType.paramTypes.size !== arguments.size) {
+		if(functionType.paramTypes.size !== argumentTypes.size) {
 			ctx.acceptError("Incorrect argument count. Expected " + functionType.paramTypes.size + ", got " +
-				arguments.size, expression, CoreDslPackage.Literals.FUNCTION_CALL_EXPRESSION__TARGET, -1,
+				argumentTypes.size, expression, CoreDslPackage.Literals.FUNCTION_CALL_EXPRESSION__TARGET, -1,
 				IssueCodes.InvalidArgumentCount);
 			return ctx.setExpressionType(expression, functionType.returnType);
 		}
 
-		for (var i = 0; i < arguments.size; i++) {
+		for (var i = 0; i < argumentTypes.size; i++) {
 			val paramType = functionType.paramTypes.get(i);
-			val argType = arguments.get(i);
-			if(!CoreDslTypeProvider.canImplicitlyConvert(argType, paramType)) {
-				ctx.acceptError("Cannot convert " + argType + " to " + paramType, expression,
-					CoreDslPackage.Literals.FUNCTION_CALL_EXPRESSION__ARGUMENTS, i, IssueCodes.InvalidArgumentType);
-			}
+			val argType = argumentTypes.get(i);
+			val reportTarget = new IssueReportTarget(expression,
+				CoreDslPackage.Literals.FUNCTION_CALL_EXPRESSION__ARGUMENTS, i);
+			checkImplicitConversion(ctx, argType, paramType, expression.arguments.get(i), reportTarget,
+				IssueCodes.InvalidArgumentType);
 		}
 
 		return ctx.setExpressionType(expression, functionType.returnType);
@@ -1288,7 +1291,7 @@ class CoreDslAnalyzer {
 			elementType = ErrorType.invalid;
 		}
 
-		if(!indexType.isIntegerType) {
+		if(!indexType.isIntegerType && !indexType.isError) {
 			ctx.acceptError("Index must have an integer type", expression,
 				CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX, -1, IssueCodes.InvalidIndexType);
 		}

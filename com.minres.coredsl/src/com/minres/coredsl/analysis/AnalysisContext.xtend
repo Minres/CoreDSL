@@ -15,7 +15,9 @@ import com.minres.coredsl.type.FunctionType
 import com.minres.coredsl.util.CompilerAssertion
 import com.minres.coredsl.validation.IssueCodes
 import java.util.HashMap
+import java.util.HashSet
 import java.util.Map
+import java.util.Set
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.validation.ValidationMessageAcceptor
 
@@ -25,6 +27,7 @@ class AnalysisContext extends ProxyMessageAcceptor {
 	
 	public val ISA root;
 	public val boolean isPartialAnalysis;
+	public val Set<ISA> analyzedIsas = new HashSet();
 	
 	new(ISA root, ValidationMessageAcceptor acceptor) {
 		super(acceptor, root, root, CoreDslPackage.Literals.ISA__NAME, -1);
