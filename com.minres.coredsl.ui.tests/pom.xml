@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.minres.coredsl</groupId>
 		<artifactId>com.minres.coredsl.parent</artifactId>
-		<version>2.0.9</version>
+		<version>2.0.10</version>
 	</parent>
 	<artifactId>com.minres.coredsl.ui.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
