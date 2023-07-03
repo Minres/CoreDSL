@@ -16,7 +16,7 @@ import com.minres.coredsl.services.visualization.dot.DotBuilder
 
 class VisualizerMain {
     def static main(String[] args) {
-        val injector = new CoreDslStandaloneSetup().createInjectorAndDoEMFRegistration()
+        val injector = new CoreDslStandaloneSetup().createInjectorAndDoEMFRegistration
         val main = injector.getInstance(VisualizerMain)
         main.run(args)
     }
