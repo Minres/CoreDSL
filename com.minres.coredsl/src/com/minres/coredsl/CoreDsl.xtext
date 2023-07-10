@@ -41,11 +41,7 @@ AlwaysBlock:
 	name=ID attributes+=Attribute* behavior=CompoundStatement;
 
 Encoding: fields+=EncodingField ('::' fields+=EncodingField)*;
-EncodingField:
-	BitValue | BitField |
-	LogicalOrExpression	({ConditionalEncodingExpression.condition=current} '?'
-		'(' thenExpression=Encoding ')' ':' '(' elseExpression=Encoding ')'
-	);
+EncodingField: BitValue | BitField;
 BitValue: value=INTEGER;
 BitField: name=ID LEFT_BR startIndex=IntegerConstant ':' endIndex=IntegerConstant RIGHT_BR;
 

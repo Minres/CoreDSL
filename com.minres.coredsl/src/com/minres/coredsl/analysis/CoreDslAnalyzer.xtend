@@ -1035,10 +1035,10 @@ class CoreDslAnalyzer {
 	def private static void checkIndexAccessBounds(AnalysisContext ctx, BigInteger value, BigInteger elementCount,
 		IndexAccessExpression expression, EStructuralFeature feature) {
 		if(value < BigInteger.ZERO) {
-			ctx.acceptError("Index out of range (" + value + " < 0)", expression, feature, -1,
+			ctx.acceptWarning("Index out of range (" + value + " < 0)", expression, feature, -1,
 				IssueCodes.IndexOutOfRange);
 		} else if(value >= elementCount) {
-			ctx.acceptError("Index out of range (" + value + " >= " + elementCount + ")", expression, feature, -1,
+			ctx.acceptWarning("Index out of range (" + value + " >= " + elementCount + ")", expression, feature, -1,
 				IssueCodes.IndexOutOfRange);
 		}
 	}
