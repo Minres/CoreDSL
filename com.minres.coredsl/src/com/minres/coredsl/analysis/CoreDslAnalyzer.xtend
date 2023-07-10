@@ -1285,6 +1285,8 @@ class CoreDslAnalyzer {
 			elementType = targetType.elementType;
 		} else if(targetType instanceof IntegerType) {
 			elementType = IntegerType.bool;
+		} else if(targetType.isIndeterminate && ctx.isPartialAnalysis) {
+			elementType = ErrorType.indeterminate;
 		} else {
 			ctx.acceptError("Cannot index into " + targetType, expression,
 				CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TARGET, -1, IssueCodes.NonIndexableExpression);

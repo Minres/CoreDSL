@@ -41,8 +41,8 @@ class CoreDslAliasTest {
 			}
 		'''
 		.testProgram()
-		.expectError(IssueCodes.IndexOutOfRange, 4)
-		.expectError(IssueCodes.IndexOutOfRange, 5)
+		.expectWarning(IssueCodes.IndexOutOfRange, 4)
+		.expectWarning(IssueCodes.IndexOutOfRange, 5)
 		.run();
 		
 		// valid: first and last byte of memory
@@ -69,8 +69,8 @@ class CoreDslAliasTest {
 			}
 		'''
 		.testProgram()
-		.expectError(IssueCodes.IndexOutOfRange, 4)
-		.expectError(IssueCodes.IndexOutOfRange, 5)
+		.expectWarning(IssueCodes.IndexOutOfRange, 4)
+		.expectWarning(IssueCodes.IndexOutOfRange, 5)
 		.run();
 	}
 	
@@ -100,8 +100,8 @@ class CoreDslAliasTest {
 			}
 		'''
 		.testProgram()
-		.expectError(IssueCodes.IndexOutOfRange, 4)
-		.expectError(IssueCodes.IndexOutOfRange, 5)
+		.expectWarning(IssueCodes.IndexOutOfRange, 4)
+		.expectWarning(IssueCodes.IndexOutOfRange, 5)
 		.run();
 		
 		// valid: first and last bytes of memory
@@ -128,8 +128,8 @@ class CoreDslAliasTest {
 			}
 		'''
 		.testProgram()
-		.expectError(IssueCodes.IndexOutOfRange, 4)
-		.expectError(IssueCodes.IndexOutOfRange, 5)
+		.expectWarning(IssueCodes.IndexOutOfRange, 4)
+		.expectWarning(IssueCodes.IndexOutOfRange, 5)
 		.run();
 	}
 	
