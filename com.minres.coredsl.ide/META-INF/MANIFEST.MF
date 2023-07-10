@@ -3,7 +3,7 @@ Automatic-Module-Name: com.minres.coredsl.ide
 Bundle-ManifestVersion: 2
 Bundle-Name: com.minres.coredsl.ide
 Bundle-Vendor: MINRES Technologies GmbH
-Bundle-Version: 2.0.10
+Bundle-Version: 2.0.11
 Bundle-SymbolicName: com.minres.coredsl.ide; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: com.minres.coredsl,
