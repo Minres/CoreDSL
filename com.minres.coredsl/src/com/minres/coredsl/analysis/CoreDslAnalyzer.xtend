@@ -1301,13 +1301,13 @@ class CoreDslAnalyzer {
 		if(expression.endIndex !== null) {
 			val endIndexType = analyzeExpression(ctx, expression.endIndex);
 
-			if(!endIndexType.isIntegerType) {
+			if(!endIndexType.isIntegerType && !indexType.isError) {
 				ctx.acceptError("Index must have an integer type", expression,
 					CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__END_INDEX, -1, IssueCodes.InvalidIndexType);
 			}
 
 			val elementCount = getRangeSize(ctx, expression.index, expression.endIndex);
-			if(elementCount === null) {
+			if(elementCount === null && !ctx.isPartialAnalysis) {
 				ctx.acceptError("Invalid range pattern", expression,
 					CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1, IssueCodes.InvalidRangePattern);
 				return ctx.setExpressionType(expression, ErrorType.invalid);
@@ -1322,7 +1322,7 @@ class CoreDslAnalyzer {
 				return ctx.setExpressionType(expression, ErrorType.invalid);
 			}
 
-			val intType = elementType.isValid ? new IntegerType(totalSize.intValueExact, false) : ErrorType.invalid;
+			val intType = elementType.isValid ? new IntegerType(totalSize.intValueExact, false) : elementType;
 			return ctx.setExpressionType(expression, intType);
 		} else {
 			return ctx.setExpressionType(expression, elementType);
