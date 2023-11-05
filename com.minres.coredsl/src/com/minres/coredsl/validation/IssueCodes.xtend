@@ -79,6 +79,7 @@ class IssueCodes {
 	public static val SwitchDuplicateCaseSection = _prefix + 'SwitchDuplicateCaseSection';
 	public static val SwitchCaseConditionOutOfRange = _prefix + 'SwitchCaseConditionOutOfRange';
 	public static val StrayControlFlowStatement = _prefix + 'StrayControlFlowStatement';
+	public static val InvalidSpawnStatementPlacement = _prefix + 'InvalidSpawnStatementPlacement';
 	
 	// expression issues
 	public static val ValidConstantAssignment = _prefix + 'ValidConstantAssignment';
