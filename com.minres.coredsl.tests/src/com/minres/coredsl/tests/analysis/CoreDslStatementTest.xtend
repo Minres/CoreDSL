@@ -493,4 +493,119 @@ class CoreDslStatementTest {
 		.expectError(IssueCodes.ReturnTypeNotConvertible, 14)
 		.run();
 	}
+
+	@Test
+	def void spawnStatement() {
+		'''
+			TEST {
+				encoding: 0;
+				behavior: spawn;
+			}
+		'''
+		.testInstruction()
+		.run();
+		
+		'''
+			TEST {
+				encoding: 0;
+				behavior: {
+					spawn {}
+				}
+			}
+		'''
+		.testInstruction()
+		.run();
+		
+		'''
+			TEST {
+				encoding: 0;
+				behavior: {
+					{};
+					spawn;
+				}
+			}
+		'''
+		.testInstruction()
+		.run();
+		
+		'''
+			TEST {
+				encoding: 0;
+				behavior: spawn {
+					unsigned<1> x = 2;
+				}
+			}
+		'''
+		.testInstruction()
+		.expectError(IssueCodes.InvalidAssignmentType, 4)
+		.run();
+		
+		'''
+			TEST {
+				encoding: 0;
+				behavior: {
+					spawn;
+					spawn;
+				}
+			}
+		'''
+		.testInstruction()
+		.expectError(IssueCodes.InvalidSpawnStatementPlacement, 4)
+		.run();
+		
+		'''
+			TEST {
+				encoding: 0;
+				behavior: {
+					{
+						spawn;
+					}
+				}
+			}
+		'''
+		.testInstruction()
+		.expectError(IssueCodes.InvalidSpawnStatementPlacement, 5)
+		.run();
+		
+		'''
+			TEST {
+				encoding: 0;
+				behavior: spawn spawn;
+			}
+		'''
+		.testInstruction()
+		.expectError(IssueCodes.InvalidSpawnStatementPlacement, 3)
+		.run();
+		
+		'''
+			Core X {
+				always {
+					TEST {
+						spawn;
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.InvalidSpawnStatementPlacement, 4)
+		.run();
+		
+		'''
+			void test() {
+				spawn;
+			}
+		'''
+		.testFunction()
+		.expectError(IssueCodes.InvalidSpawnStatementPlacement, 2)
+		.run();
+		
+		'''
+			void test() {
+				spawn;
+			}
+		'''
+		.testFunction()
+		.expectError(IssueCodes.InvalidSpawnStatementPlacement, 2)
+		.run();
+	}
 }
