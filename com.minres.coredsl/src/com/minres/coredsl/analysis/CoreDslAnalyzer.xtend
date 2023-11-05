@@ -616,7 +616,28 @@ class CoreDslAnalyzer {
 		analyzeStatement(ctx, statement.body);
 	}
 
+	/**
+	 * 1. The statement must be the last child of an instruction's behavior block. <i>(InvalidSpawnStatementPlacement)</i>
+	 */
 	def static dispatch void analyzeStatement(AnalysisContext ctx, SpawnStatement statement) {
+		var isDirectInstrChild = statement.eContainingFeature == CoreDslPackage.Literals.INSTRUCTION__BEHAVIOR;
+		var isInstrBlockChild = statement.eContainer instanceof CompoundStatement &&
+			statement.eContainer.eContainingFeature == CoreDslPackage.Literals.INSTRUCTION__BEHAVIOR;
+
+		// There are two valid placements for a spawn statement:
+		// 1. As the direct child of an instruction
+		// 2. As the last child of a compound statement, which in turn is the direct child of an instruction
+		if(isInstrBlockChild) {
+			var block = statement.eContainer as CompoundStatement;
+			if(block.statements.indexOf(statement) != block.statements.size - 1) {
+				ctx.acceptError("A spawn statement must be the last statement of an instruction's behavior block", statement,
+					CoreDslPackage.Literals.SPAWN_STATEMENT__TSPAWN, -1, IssueCodes.InvalidSpawnStatementPlacement)
+			}
+		} else if(!isDirectInstrChild) {
+			ctx.acceptError("A spawn statement must be the last statement of an instruction's behavior block", statement,
+				CoreDslPackage.Literals.SPAWN_STATEMENT__TSPAWN, -1, IssueCodes.InvalidSpawnStatementPlacement)
+		}
+
 		analyzeStatement(ctx, statement.body);
 	}
 
@@ -868,7 +889,7 @@ class CoreDslAnalyzer {
 					reportTarget.object, reportTarget.feature, reportTarget.index, IssueCodes.ValidConstantAssignment);
 			} else {
 				ctx.acceptError("Cannot implicitly convert " + valueType + " to " + targetType, reportTarget.object,
-				reportTarget.feature, reportTarget.index, issueCode);
+					reportTarget.feature, reportTarget.index, issueCode);
 			}
 		}
 	}
