@@ -423,6 +423,24 @@ class CoreDslStatementTest {
 		'''
 		.testStatements()
 		.run();
+		
+		'''
+			do {
+				break;
+				continue;
+			} while(0);
+		'''
+		.testStatements()
+		.run();
+		
+		'''
+			for(;;) {
+				break;
+				continue;
+			}
+		'''
+		.testStatements()
+		.run();
 	}
 
 	@Test
@@ -453,19 +471,19 @@ class CoreDslStatementTest {
 		.run();
 		
 		'''
-			void test() {
+			void test1() {
 				return;
 			}
 			
-			int test() {
+			int test2() {
 				return;
 			}
 			
-			void test() {
+			void test3() {
 				return 0;
 			}
 			
-			char test() {
+			char test4() {
 				return 128;
 			}
 		'''
