@@ -103,4 +103,5 @@ class IssueCodes {
 	public static val SizeOfNotExact = _prefix + 'SizeOfNotExact';
 	public static val IndexOutOfRange = _prefix + 'IndexOutOfRange';
 	public static val IncompleteType = _prefix + 'IncompleteType';
+	public static val LikelyAccidentalAssignment = _prefix + 'LikelyAccidentalAssignment';
 }
