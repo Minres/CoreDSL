@@ -1092,11 +1092,20 @@ class CoreDslAnalyzer {
 	// ////////////////////////////// Expressions ////////////////////////////////
 	// ///////////////////////////////////////////////////////////////////////////
 	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, BoolConstant expression) {
+		ctx.setExpressionValue(expression, new ConstantValue(expression.value ? 1 : 0));
 		return ctx.setExpressionType(expression, IntegerType.bool);
 	}
 
 	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, IntegerConstant expression) {
 		val value = expression.value as TypedBigInteger;
+
+		if(value === null) {
+			if(!ctx.isExpressionValueSet(expression))
+				ctx.setExpressionValue(expression, ConstantValue.invalid);
+
+			return ctx.setExpressionType(expression, ErrorType.invalid);
+		}
+
 		var type = new IntegerType(value.size, value.signed);
 
 		if(!ctx.isExpressionValueSet(expression))
