@@ -608,4 +608,31 @@ class CoreDslStatementTest {
 		.expectError(IssueCodes.InvalidSpawnStatementPlacement, 2)
 		.run();
 	}
+	
+	@Test
+	def accidentalAssignmentWarning() {
+		'''
+			int x = 1;
+			while(x=0) {}
+		'''
+		.testStatements()
+		.expectWarning(IssueCodes.LikelyAccidentalAssignment, 2)
+		.run();
+		
+		'''
+			int x = 1;
+			for(;x=0;) {}
+		'''
+		.testStatements()
+		.expectWarning(IssueCodes.LikelyAccidentalAssignment, 2)
+		.run();
+		
+		'''
+			int x = 1;
+			do {} while(x=0);
+		'''
+		.testStatements()
+		.expectWarning(IssueCodes.LikelyAccidentalAssignment, 2)
+		.run();
+	}
 }

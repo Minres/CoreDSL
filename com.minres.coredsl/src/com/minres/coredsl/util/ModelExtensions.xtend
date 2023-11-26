@@ -59,8 +59,8 @@ abstract class ModelExtensions {
 		return null;
 	}
 
-	static def <T extends EObject> Iterator<T> descendantsOfType(EObject obj, Class<T> type) {
-		return obj.eAllContents.filter(type);
+	static def <T extends EObject> List<T> descendantsOfType(EObject obj, Class<T> type) {
+		return obj.eAllContents.filter(type).toList;
 	}
 
 	static def boolean isDescendantOf(EObject obj, EObject potentialAncestor) {
