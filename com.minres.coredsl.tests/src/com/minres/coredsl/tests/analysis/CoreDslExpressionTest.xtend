@@ -7,6 +7,7 @@ import com.minres.coredsl.coreDsl.Statement
 import com.minres.coredsl.tests.CoreDslInjectorProvider
 import com.minres.coredsl.tests.CoreDslTestHelper
 import com.minres.coredsl.type.IntegerType
+import com.minres.coredsl.validation.IssueCodes
 import java.math.BigInteger
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
@@ -337,6 +338,75 @@ class CoreDslExpressionTest {
 		'''
 		.testStatements()
 		.expectSyntaxErrors()
+		.run();
+	}
+	
+	@Test
+	def intrinsicSizeOfValid() {
+		'''
+			int a = bitsizeof(1'b0);
+			int b = bitsizeof(8'b101010);
+			int c = bitsizeof(24'd0);
+			
+			signed<14> d = bitsizeof(c);
+			int e = bitsizeof(d);
+			
+			int f = bitsizeof(int);
+			int g = bitsizeof(unsigned<1337>);
+		'''
+		.testStatements()
+		.expectTypeAndValue(null, initializerOf('a'), IntegerType.unsigned(1), 1)
+		.expectTypeAndValue(null, initializerOf('b'), IntegerType.unsigned(4), 8)
+		.expectTypeAndValue(null, initializerOf('c'), IntegerType.unsigned(5), 24)
+		.expectTypeAndValue(null, initializerOf('d'), IntegerType.unsigned(6), 32)
+		.expectTypeAndValue(null, initializerOf('e'), IntegerType.unsigned(4), 14)
+		.expectTypeAndValue(null, initializerOf('f'), IntegerType.unsigned(6), 32)
+		.expectTypeAndValue(null, initializerOf('g'), IntegerType.unsigned(11), 1337)
+		.run();
+		
+		'''
+			int a = sizeof(1'b0);
+			int b = sizeof(8'b101010);
+			int c = sizeof(24'b101010);
+			
+			signed<14> d = sizeof(c);
+			int e = sizeof(d);
+			
+			int f = sizeof(int);
+			int g = sizeof(unsigned<1337>);
+		'''
+		.testStatements()
+		.expectWarning(IssueCodes.SizeOfNotExact, 1)
+		.expectWarning(IssueCodes.SizeOfNotExact, 6)
+		.expectWarning(IssueCodes.SizeOfNotExact, 9)
+		.expectTypeAndValue(null, initializerOf('a'), IntegerType.unsigned(1), 1)
+		.expectTypeAndValue(null, initializerOf('b'), IntegerType.unsigned(1), 1)
+		.expectTypeAndValue(null, initializerOf('c'), IntegerType.unsigned(2), 3)
+		.expectTypeAndValue(null, initializerOf('d'), IntegerType.unsigned(3), 4)
+		.expectTypeAndValue(null, initializerOf('e'), IntegerType.unsigned(2), 2)
+		.expectTypeAndValue(null, initializerOf('f'), IntegerType.unsigned(3), 4)
+		.expectTypeAndValue(null, initializerOf('g'), IntegerType.unsigned(8), 168)
+		.run();
+	}
+	
+	@Test
+	def intrinsicSizeOfInvalid() {
+		'''
+			int a = bitsizeof();
+			int b = bitsizeof(1, 2);
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidArgumentCount, 1)
+		.expectError(IssueCodes.InvalidArgumentCount, 2)
+		.run();
+		
+		'''
+			int a = sizeof();
+			int b = sizeof(1, 2);
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidArgumentCount, 1)
+		.expectError(IssueCodes.InvalidArgumentCount, 2)
 		.run();
 	}
 }
