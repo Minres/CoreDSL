@@ -55,6 +55,8 @@ class CoreDslElaborator {
 		validateResults(ctx);
 		checkDuplicateDeclarations(ctx);
 
+		ctx.analysisContext.isElaborationDone = true;
+
 		return ctx;
 	}
 
@@ -187,7 +189,7 @@ class CoreDslElaborator {
 				CoreDslPackage.Literals.ASSIGNMENT_EXPRESSION__OPERATOR, -1,
 				IssueCodes.InvalidIsaParameterAssignmentOperator);
 		}
-		
+
 		if(reference?.target.eIsProxy) {
 			// linking error
 			return;
