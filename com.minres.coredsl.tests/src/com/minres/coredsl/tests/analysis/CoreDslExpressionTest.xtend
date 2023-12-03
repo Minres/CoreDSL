@@ -408,6 +408,20 @@ class CoreDslExpressionTest {
 		.expectError(IssueCodes.InvalidArgumentCount, 1)
 		.expectError(IssueCodes.InvalidArgumentCount, 2)
 		.run();
+		
+		'''
+			Core X {
+				architectural_state {
+					int x = bitsizeof(255 + 1);
+					int y = sizeof(255 + 1);
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.InvalidIsaStateElementValue, 1)
+		.expectError(IssueCodes.UnsupportedSizeOfDuringElaboration, 3)
+		.expectError(IssueCodes.UnsupportedSizeOfDuringElaboration, 4)
+		.run();
 	}
 }
 
