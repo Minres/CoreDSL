@@ -33,7 +33,6 @@ class IntegerValueConverter extends AbstractLexerBasedConverter<TypedBigInteger>
 				value = new TypedBigInteger(value - BigInteger.ONE.shiftLeft(value.bitLength), radix, size, signed);
 			}
 
-			// TODO test this with negative numbers
 			if(size == 0 || size > 0 && value.bitLength > size) {
 				throw new ValueConverterException('''Value «value» does not fit into «size» bits''', node, null);
 			}

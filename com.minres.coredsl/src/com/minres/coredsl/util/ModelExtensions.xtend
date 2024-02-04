@@ -7,19 +7,18 @@ import com.minres.coredsl.coreDsl.Declarator
 import com.minres.coredsl.coreDsl.EnumTypeDeclaration
 import com.minres.coredsl.coreDsl.ISA
 import com.minres.coredsl.coreDsl.InstructionSet
+import com.minres.coredsl.coreDsl.NamedEntity
 import com.minres.coredsl.coreDsl.StructTypeDeclaration
 import com.minres.coredsl.coreDsl.TypeQualifier
 import com.minres.coredsl.coreDsl.UnionTypeDeclaration
 import com.minres.coredsl.coreDsl.UserTypeDeclaration
 import java.util.ArrayList
 import java.util.HashSet
-import java.util.Iterator
 import java.util.List
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 
 import static extension com.minres.coredsl.util.DataExtensions.*
-import org.eclipse.xtext.nodemodel.util.NodeModelUtils
-import com.minres.coredsl.coreDsl.NamedEntity
 
 abstract class ModelExtensions {
 	private new() {
