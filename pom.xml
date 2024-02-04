@@ -161,7 +161,7 @@
 					<configuration>
 						<outputDirectory>${basedir}/xtend-gen</outputDirectory>
 						<testOutputDirectory>${basedir}/xtend-gen</testOutputDirectory>
-                    			</configuration>
+                    </configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
