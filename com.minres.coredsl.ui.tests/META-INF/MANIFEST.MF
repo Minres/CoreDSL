@@ -3,7 +3,7 @@ Automatic-Module-Name: com.minres.coredsl.ui.tests
 Bundle-ManifestVersion: 2
 Bundle-Name: com.minres.coredsl.ui.tests
 Bundle-Vendor: MINRES Technologies GmbH
-Bundle-Version: 2.0.11
+Bundle-Version: 2.0.12
 Bundle-SymbolicName: com.minres.coredsl.ui.tests; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: com.minres.coredsl.ui,
@@ -16,5 +16,5 @@ Require-Bundle: com.minres.coredsl.ui,
  org.eclipse.xtext.xbase.junit
 Import-Package: org.junit.jupiter.api;version="[5.1.0,6.0.0)",
  org.junit.jupiter.api.extension;version="[5.1.0,6.0.0)"
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: com.minres.coredsl.ui.tests;x-internal=true

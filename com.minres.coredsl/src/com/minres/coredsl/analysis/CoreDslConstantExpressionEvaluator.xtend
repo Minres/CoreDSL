@@ -137,8 +137,8 @@ class CoreDslConstantExpressionEvaluator {
 		if(type.isIncomplete) return ConstantValue.indeterminate;
 		if(inBytes) {
 			if(type.bitSize % 8 !== 0) {
-				ctx.acceptWarning('The size is not an exact multiple of 8', target.object, target.feature, target.index,
-					IssueCodes.SizeOfNotExact);
+				ctx.acceptWarning('The size (' + type.bitSize + ' bits) is not an exact multiple of 8', target.object,
+					target.feature, target.index, IssueCodes.SizeOfNotExact);
 			}
 			return new ConstantValue((type.bitSize + 7) / 8);
 		} else {
@@ -172,7 +172,13 @@ class CoreDslConstantExpressionEvaluator {
 						}
 					}
 					Expression: {
-						val type = ctx.getExpressionType(expression);
+						if(!ctx.isElaborationDone) {
+							ctx.acceptError('Size of expression can not be determined during elaboration', expression,
+								CoreDslPackage.Literals.INTRINSIC_EXPRESSION__FUNCTION, -1,
+								IssueCodes.UnsupportedSizeOfDuringElaboration);
+							return ConstantValue.invalid;
+						}
+						val type = ctx.getExpressionType(arg);
 						return getTypeSize(ctx, type, inBytes, target);
 					}
 				}

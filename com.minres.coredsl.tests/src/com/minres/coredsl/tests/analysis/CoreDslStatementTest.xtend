@@ -423,6 +423,24 @@ class CoreDslStatementTest {
 		'''
 		.testStatements()
 		.run();
+		
+		'''
+			do {
+				break;
+				continue;
+			} while(0);
+		'''
+		.testStatements()
+		.run();
+		
+		'''
+			for(;;) {
+				break;
+				continue;
+			}
+		'''
+		.testStatements()
+		.run();
 	}
 
 	@Test
@@ -453,19 +471,19 @@ class CoreDslStatementTest {
 		.run();
 		
 		'''
-			void test() {
+			void test1() {
 				return;
 			}
 			
-			int test() {
+			int test2() {
 				return;
 			}
 			
-			void test() {
+			void test3() {
 				return 0;
 			}
 			
-			char test() {
+			char test4() {
 				return 128;
 			}
 		'''
@@ -473,6 +491,148 @@ class CoreDslStatementTest {
 		.expectError(IssueCodes.ReturnWithoutValueInNonVoidFunction, 6)
 		.expectError(IssueCodes.ReturnWithValueInVoidFunction, 10)
 		.expectError(IssueCodes.ReturnTypeNotConvertible, 14)
+		.run();
+	}
+
+	@Test
+	def void spawnStatement() {
+		'''
+			TEST {
+				encoding: 0;
+				behavior: spawn;
+			}
+		'''
+		.testInstruction()
+		.run();
+		
+		'''
+			TEST {
+				encoding: 0;
+				behavior: {
+					spawn {}
+				}
+			}
+		'''
+		.testInstruction()
+		.run();
+		
+		'''
+			TEST {
+				encoding: 0;
+				behavior: {
+					{};
+					spawn;
+				}
+			}
+		'''
+		.testInstruction()
+		.run();
+		
+		'''
+			TEST {
+				encoding: 0;
+				behavior: spawn {
+					unsigned<1> x = 2;
+				}
+			}
+		'''
+		.testInstruction()
+		.expectError(IssueCodes.InvalidAssignmentType, 4)
+		.run();
+		
+		'''
+			TEST {
+				encoding: 0;
+				behavior: {
+					spawn;
+					spawn;
+				}
+			}
+		'''
+		.testInstruction()
+		.expectError(IssueCodes.InvalidSpawnStatementPlacement, 4)
+		.run();
+		
+		'''
+			TEST {
+				encoding: 0;
+				behavior: {
+					{
+						spawn;
+					}
+				}
+			}
+		'''
+		.testInstruction()
+		.expectError(IssueCodes.InvalidSpawnStatementPlacement, 5)
+		.run();
+		
+		'''
+			TEST {
+				encoding: 0;
+				behavior: spawn spawn;
+			}
+		'''
+		.testInstruction()
+		.expectError(IssueCodes.InvalidSpawnStatementPlacement, 3)
+		.run();
+		
+		'''
+			Core X {
+				always {
+					TEST {
+						spawn;
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.InvalidSpawnStatementPlacement, 4)
+		.run();
+		
+		'''
+			void test() {
+				spawn;
+			}
+		'''
+		.testFunction()
+		.expectError(IssueCodes.InvalidSpawnStatementPlacement, 2)
+		.run();
+		
+		'''
+			void test() {
+				spawn;
+			}
+		'''
+		.testFunction()
+		.expectError(IssueCodes.InvalidSpawnStatementPlacement, 2)
+		.run();
+	}
+	
+	@Test
+	def accidentalAssignmentWarning() {
+		'''
+			int x = 1;
+			while(x=0) {}
+		'''
+		.testStatements()
+		.expectWarning(IssueCodes.LikelyAccidentalAssignment, 2)
+		.run();
+		
+		'''
+			int x = 1;
+			for(;x=0;) {}
+		'''
+		.testStatements()
+		.expectWarning(IssueCodes.LikelyAccidentalAssignment, 2)
+		.run();
+		
+		'''
+			int x = 1;
+			do {} while(x=0);
+		'''
+		.testStatements()
+		.expectWarning(IssueCodes.LikelyAccidentalAssignment, 2)
 		.run();
 	}
 }

@@ -442,10 +442,13 @@ class CoreDslAnalyzer {
 	}
 
 	/**
-	 * 1. The condition must be an expression with a scalar type. <i>(NonScalarCondition)</i>
+	 * 1. The condition must be an expression with a scalar type. <i>(NonScalarCondition)</i><br/>
+	 * 2. [Warning] The condition should not be an assignment. <i>(LikelyAccidentalAssignment)</i>
 	 */
 	def static dispatch void analyzeStatement(AnalysisContext ctx, IfStatement statement) {
 		val conditionType = analyzeExpression(ctx, statement.condition);
+
+		checkAccidentalAssignment(ctx, statement.condition);
 
 		if(!conditionType.isScalarType && !conditionType.isError) {
 			ctx.acceptError("The condition must be a scalar type, but was " + conditionType, statement,
@@ -550,10 +553,13 @@ class CoreDslAnalyzer {
 	}
 
 	/**
-	 * 1. The condition must be an expression with a scalar type. <i>(NonScalarCondition)</i>
+	 * 1. The condition must be an expression with a scalar type. <i>(NonScalarCondition)</i><br/>
+	 * 2. [Warning] The condition should not be an assignment. <i>(LikelyAccidentalAssignment)</i>
 	 */
 	def static dispatch void analyzeStatement(AnalysisContext ctx, WhileLoop statement) {
 		val conditionType = analyzeExpression(ctx, statement.condition);
+
+		checkAccidentalAssignment(ctx, statement.condition);
 
 		if(!conditionType.isScalarType && !conditionType.isError) {
 			ctx.acceptError("The condition must be a scalar type, but was " + conditionType, statement,
@@ -566,7 +572,8 @@ class CoreDslAnalyzer {
 	/**
 	 * 1. The condition must be an expression with a scalar type. <i>(NonScalarCondition)</i><br>
 	 * 2. If present, the start expression must be a statement expression. <i>(InvalidStatementExpression)</i><br>
-	 * 3. All loop expressions must be statement expressions. <i>(InvalidStatementExpression)</i>
+	 * 3. All loop expressions must be statement expressions. <i>(InvalidStatementExpression)</i><br/>
+	 * 4. [Warning] The condition should not be an assignment. <i>(LikelyAccidentalAssignment)</i>
 	 */
 	def static dispatch void analyzeStatement(AnalysisContext ctx, ForLoop statement) {
 
@@ -584,6 +591,9 @@ class CoreDslAnalyzer {
 
 		if(statement.condition !== null) {
 			val conditionType = analyzeExpression(ctx, statement.condition);
+
+			checkAccidentalAssignment(ctx, statement.condition);
+
 			if(!conditionType.isScalarType && !conditionType.isError) {
 				ctx.acceptError("The condition must be a scalar type, but was " + conditionType, statement,
 					CoreDslPackage.Literals.LOOP_STATEMENT__CONDITION, -1, IssueCodes.NonScalarCondition);
@@ -603,10 +613,13 @@ class CoreDslAnalyzer {
 	}
 
 	/**
-	 * 1. The condition must be an expression with a scalar type. <i>(NonScalarCondition)</i>
+	 * 1. The condition must be an expression with a scalar type. <i>(NonScalarCondition)</i><br/>
+	 * 2. [Warning] The condition should not be an assignment. <i>(LikelyAccidentalAssignment)</i>
 	 */
 	def static dispatch void analyzeStatement(AnalysisContext ctx, DoLoop statement) {
 		val conditionType = analyzeExpression(ctx, statement.condition);
+
+		checkAccidentalAssignment(ctx, statement.condition);
 
 		if(!conditionType.isScalarType && !conditionType.isError) {
 			ctx.acceptError("The condition must be a scalar type, but was " + conditionType, statement,
@@ -616,7 +629,30 @@ class CoreDslAnalyzer {
 		analyzeStatement(ctx, statement.body);
 	}
 
+	/**
+	 * 1. The statement must be the last child of an instruction's behavior block. <i>(InvalidSpawnStatementPlacement)</i>
+	 */
 	def static dispatch void analyzeStatement(AnalysisContext ctx, SpawnStatement statement) {
+		var isDirectInstrChild = statement.eContainingFeature == CoreDslPackage.Literals.INSTRUCTION__BEHAVIOR;
+		var isInstrBlockChild = statement.eContainer instanceof CompoundStatement &&
+			statement.eContainer.eContainingFeature == CoreDslPackage.Literals.INSTRUCTION__BEHAVIOR;
+
+		// There are two valid placements for a spawn statement:
+		// 1. As the direct child of an instruction
+		// 2. As the last child of a compound statement, which in turn is the direct child of an instruction
+		if(isInstrBlockChild) {
+			var block = statement.eContainer as CompoundStatement;
+			if(block.statements.indexOf(statement) != block.statements.size - 1) {
+				ctx.acceptError("A spawn statement must be the last statement of an instruction's behavior block",
+					statement, CoreDslPackage.Literals.SPAWN_STATEMENT__TSPAWN, -1,
+					IssueCodes.InvalidSpawnStatementPlacement)
+			}
+		} else if(!isDirectInstrChild) {
+			ctx.acceptError("A spawn statement must be the last statement of an instruction's behavior block",
+				statement, CoreDslPackage.Literals.SPAWN_STATEMENT__TSPAWN, -1,
+				IssueCodes.InvalidSpawnStatementPlacement)
+		}
+
 		analyzeStatement(ctx, statement.body);
 	}
 
@@ -868,7 +904,16 @@ class CoreDslAnalyzer {
 					reportTarget.object, reportTarget.feature, reportTarget.index, IssueCodes.ValidConstantAssignment);
 			} else {
 				ctx.acceptError("Cannot implicitly convert " + valueType + " to " + targetType, reportTarget.object,
-				reportTarget.feature, reportTarget.index, issueCode);
+					reportTarget.feature, reportTarget.index, issueCode);
+			}
+		}
+	}
+
+	def static checkAccidentalAssignment(AnalysisContext ctx, Expression booleanExpression) {
+		if(booleanExpression instanceof AssignmentExpression) {
+			if(booleanExpression.operator == "=") {
+				ctx.acceptWarning("Likely accidental assignment", booleanExpression,
+					CoreDslPackage.Literals.ASSIGNMENT_EXPRESSION__OPERATOR, -1, IssueCodes.LikelyAccidentalAssignment);
 			}
 		}
 	}
@@ -1047,11 +1092,20 @@ class CoreDslAnalyzer {
 	// ////////////////////////////// Expressions ////////////////////////////////
 	// ///////////////////////////////////////////////////////////////////////////
 	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, BoolConstant expression) {
+		ctx.setExpressionValue(expression, new ConstantValue(expression.value ? 1 : 0));
 		return ctx.setExpressionType(expression, IntegerType.bool);
 	}
 
 	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, IntegerConstant expression) {
 		val value = expression.value as TypedBigInteger;
+
+		if(value === null) {
+			if(!ctx.isExpressionValueSet(expression))
+				ctx.setExpressionValue(expression, ConstantValue.invalid);
+
+			return ctx.setExpressionType(expression, ErrorType.invalid);
+		}
+
 		var type = new IntegerType(value.size, value.signed);
 
 		if(!ctx.isExpressionValueSet(expression))
@@ -1301,13 +1355,13 @@ class CoreDslAnalyzer {
 		if(expression.endIndex !== null) {
 			val endIndexType = analyzeExpression(ctx, expression.endIndex);
 
-			if(!endIndexType.isIntegerType) {
+			if(!endIndexType.isIntegerType && !indexType.isError) {
 				ctx.acceptError("Index must have an integer type", expression,
 					CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__END_INDEX, -1, IssueCodes.InvalidIndexType);
 			}
 
 			val elementCount = getRangeSize(ctx, expression.index, expression.endIndex);
-			if(elementCount === null) {
+			if(elementCount === null && !ctx.isPartialAnalysis) {
 				ctx.acceptError("Invalid range pattern", expression,
 					CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1, IssueCodes.InvalidRangePattern);
 				return ctx.setExpressionType(expression, ErrorType.invalid);
@@ -1322,7 +1376,7 @@ class CoreDslAnalyzer {
 				return ctx.setExpressionType(expression, ErrorType.invalid);
 			}
 
-			val intType = elementType.isValid ? new IntegerType(totalSize.intValueExact, false) : ErrorType.invalid;
+			val intType = elementType.isValid ? new IntegerType(totalSize.intValueExact, false) : elementType;
 			return ctx.setExpressionType(expression, intType);
 		} else {
 			return ctx.setExpressionType(expression, elementType);

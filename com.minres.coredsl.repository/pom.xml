@@ -4,10 +4,11 @@
 	<parent>
 		<groupId>com.minres.coredsl</groupId>
 		<artifactId>com.minres.coredsl.parent</artifactId>
-		<version>2.0.11</version>
+		<version>2.0.12</version>
 	</parent>
 	<artifactId>com.minres.coredsl.repository</artifactId>
 	<packaging>eclipse-repository</packaging>
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -44,109 +45,7 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<profiles>
-		<profile>
-			<!-- Activate this profile to perform the release to Bintray -->
-			<id>release-composite</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>3.2.0</version>
-						<executions>
-							<execution>
-								<id>parse-version</id>
-								<goals>
-									<goal>parse-version</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<version>3.0.0</version>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>exec</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<executable>bash</executable>
-							<!-- optional -->
-							<workingDirectory>${software.download.area}</workingDirectory>
-							<arguments>
-								<argument>-c</argument>
-								<argument>if [ -d CoreDSL-gh ]; then cd CoreDSL-gh; git pull; else git clone --branch gh-pages https://github.com/Minres/CoreDSL.git CoreDSL-gh; fi</argument>
-							</arguments>
-							<environmentVariables>
-								<LANG>en_US</LANG>
-							</environmentVariables>
-						</configuration>
-					</plugin>
- 					<plugin>
-						<groupId>org.eclipse.tycho.extras</groupId>
-						<artifactId>tycho-eclipserun-plugin</artifactId>
-						<version>${tycho-version}</version>
-						<configuration>
-							<!-- IMPORTANT: DO NOT split the arg line -->
-							<appArgLine>-application org.eclipse.ant.core.antRunner -buildfile packaging-p2-composite.ant p2.composite.add -Dsite.label="CoreDSL Software Repository" -Dproject.build.directory=${project.build.directory} -DmajorMinorVersion=${parsedVersion.majorVersion}.${parsedVersion.minorVersion} -DunqualifiedVersion=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion} -Dsoftware.download.area="${software.download.area}/CoreDSL-gh/repository"</appArgLine>
-							<repositories>
-								<repository>
-									<id>2020-03</id>
-									<layout>p2</layout>
-									<url>http://download.eclipse.org/releases/2020-03/</url>
-								</repository>
-							</repositories>
-							<dependencies>
-								<dependency>
-									<artifactId>org.eclipse.ant.core</artifactId>
-									<type>eclipse-plugin</type>
-								</dependency>
-								<dependency>
-									<artifactId>org.apache.ant</artifactId>
-									<type>eclipse-plugin</type>
-								</dependency>
-								<dependency>
-									<artifactId>org.eclipse.equinox.p2.repository.tools</artifactId>
-									<type>eclipse-plugin</type>
-								</dependency>
-								<dependency>
-									<artifactId>org.eclipse.equinox.p2.core.feature</artifactId>
-									<type>eclipse-feature</type>
-								</dependency>
-								<dependency>
-									<artifactId>org.eclipse.equinox.p2.extras.feature</artifactId>
-									<type>eclipse-feature</type>
-								</dependency>
-								<dependency>
-									<artifactId>org.eclipse.equinox.ds</artifactId>
-									<type>eclipse-plugin</type>
-								</dependency>
-							</dependencies>
-						</configuration>
-						<executions>
-							<execution>
-								<id>add-p2-composite-repository</id>
-								<phase>package</phase>
-								<goals>
-									<goal>eclipse-run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
-	<dependencies />
-
+	<dependencies>
+	</dependencies>
 </project>

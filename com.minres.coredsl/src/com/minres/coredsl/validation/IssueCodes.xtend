@@ -79,6 +79,7 @@ class IssueCodes {
 	public static val SwitchDuplicateCaseSection = _prefix + 'SwitchDuplicateCaseSection';
 	public static val SwitchCaseConditionOutOfRange = _prefix + 'SwitchCaseConditionOutOfRange';
 	public static val StrayControlFlowStatement = _prefix + 'StrayControlFlowStatement';
+	public static val InvalidSpawnStatementPlacement = _prefix + 'InvalidSpawnStatementPlacement';
 	
 	// expression issues
 	public static val ValidConstantAssignment = _prefix + 'ValidConstantAssignment';
@@ -102,4 +103,6 @@ class IssueCodes {
 	public static val SizeOfNotExact = _prefix + 'SizeOfNotExact';
 	public static val IndexOutOfRange = _prefix + 'IndexOutOfRange';
 	public static val IncompleteType = _prefix + 'IncompleteType';
+	public static val LikelyAccidentalAssignment = _prefix + 'LikelyAccidentalAssignment';
+	public static val UnsupportedSizeOfDuringElaboration = _prefix + 'UnsupportedSizeOfDuringElaboration';
 }

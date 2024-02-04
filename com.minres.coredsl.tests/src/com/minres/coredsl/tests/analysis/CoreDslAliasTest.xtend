@@ -159,8 +159,8 @@ class CoreDslAliasTest {
 			}
 		'''
 		.testProgram()
-		.expectError(IssueCodes.IndexOutOfRange, 4)
-		.expectError(IssueCodes.IndexOutOfRange, 5)
+		.expectWarning(IssueCodes.IndexOutOfRange, 4)
+		.expectWarning(IssueCodes.IndexOutOfRange, 5)
 		.run();
 		
 		// valid: first and last bit
@@ -187,8 +187,8 @@ class CoreDslAliasTest {
 			}
 		'''
 		.testProgram()
-		.expectError(IssueCodes.IndexOutOfRange, 4)
-		.expectError(IssueCodes.IndexOutOfRange, 5)
+		.expectWarning(IssueCodes.IndexOutOfRange, 4)
+		.expectWarning(IssueCodes.IndexOutOfRange, 5)
 		.run();
 	}
 	

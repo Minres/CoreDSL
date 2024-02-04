@@ -3,7 +3,7 @@ Automatic-Module-Name: com.minres.coredsl
 Bundle-ManifestVersion: 2
 Bundle-Name: com.minres.coredsl
 Bundle-Vendor: MINRES Technologies GmbH
-Bundle-Version: 2.0.11
+Bundle-Version: 2.0.12
 Bundle-SymbolicName: com.minres.coredsl; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext,
@@ -17,7 +17,7 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.xtend.lib;bundle-version="2.14.0",
  com.google.guava,
  org.eclipse.xtend.lib.macro
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: com.minres.coredsl,
  com.minres.coredsl.analysis,
  com.minres.coredsl.coreDsl,

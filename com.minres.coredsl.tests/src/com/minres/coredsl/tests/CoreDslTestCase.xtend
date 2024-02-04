@@ -188,6 +188,24 @@ class CoreDslTestCase<TRoot> {
 		return expectValue(isaName, findEObject(type, line), expectedValue);
 	}
 
+	def expectTypeAndValue(String isaName, EObject object, Object expectedType, Object expectedValue) {
+		semanticExpectations.add(new TypeExpectation(findIsa(isaName), object, String.valueOf(expectedType)));
+		semanticExpectations.add(new ValueExpectation(findIsa(isaName), object, String.valueOf(expectedValue)));
+		return this;
+	}
+	
+	def expectTypeAndValue(String isaName, (TRoot)=>EObject objectLocator, Object expectedType, Object expectedValue) {
+		return expectTypeAndValue(isaName, objectLocator.apply(root), expectedType, expectedValue);
+	}
+
+	def expectTypeAndValue(String isaName, String declaratorName, Object expectedType, Object expectedValue) {
+		return expectTypeAndValue(isaName, findDeclarator(declaratorName), expectedType, expectedValue);
+	}
+
+	def expectTypeAndValue(String isaName, Class<? extends EObject> type, int line, Object expectedType, Object expectedValue) {
+		return expectTypeAndValue(isaName, findEObject(type, line), expectedType, expectedValue);
+	}
+
 	def private printProgram() {
 		val lines = newLinePattern.split(program);
 		val digits = String.valueOf(lines.length).length;
@@ -356,7 +374,7 @@ class CoreDslTestCase<TRoot> {
 					println('''  [OK] «description»''');
 					return true;
 				} else {
-					println('''  Expectation failed: «description»''');
+					println('''  [FAILED] «description»''');
 					return true;
 				}
 			} catch(Exception e) {
@@ -383,14 +401,14 @@ class CoreDslTestCase<TRoot> {
 				val description = object.shortDescription;
 
 				if(!ctx._isTypeSet(object)) {
-					println('''  «description»: Expected type «expectedType», but no type was set''');
+					println('''  [FAILED] «description»: Expected type «expectedType», but no type was set''');
 					return false;
 				}
 
 				val actualType = ctx._getType(object).toString();
 
 				if(actualType != expectedType) {
-					println('''  «description»: Expected type «expectedType», but got «actualType»''');
+					println('''  [FAILED] «description»: Expected type «expectedType», but got «actualType»''');
 					return false;
 				}
 
@@ -420,14 +438,14 @@ class CoreDslTestCase<TRoot> {
 				val description = object.shortDescription;
 
 				if(!ctx._isValueSet(object)) {
-					println('''  «description»: Expected value «expectedValue», but no value was set''');
+					println('''  [FAILED] «description»: Expected value «expectedValue», but no value was set''');
 					return false;
 				}
 
 				val actualValue = ctx._getValue(object).toString();
 
 				if(actualValue != expectedValue) {
-					println('''  «description»: Expected value «expectedValue», but got «actualValue»''');
+					println('''  [FAILED] «description»: Expected value «expectedValue», but got «actualValue»''');
 					return false;
 				}
 
