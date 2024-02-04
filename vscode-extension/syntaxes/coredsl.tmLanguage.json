@@ -1,0 +1,44 @@
+{
+	"name": "CoreDsl",
+    "scopeName": "text.coredsl",
+    "fileTypes": [
+        "coredsl"
+    ],
+    "repository": {
+        "general": {
+            "patterns": [
+                {
+                    "include": "#linecomment"
+                },
+                {
+                    "include": "#blockcomment"
+                },
+                {
+                    "include": "#keyword"
+                }
+            ]
+        },
+        "linecomment": {
+            "name": "comment.line.double-dash.coredsl",
+            "begin": "(^[ \\t]+)?(?=//)",
+			"end": "(?=$)"
+        },
+        "blockcomment": {
+            "name": "comment.block.coredsl",
+            "begin": "/\\*(\\*)?(?!/)",
+			"end": "\\*/"
+        },
+        
+        "keyword": {
+            "name": "keyword.control.coredsl",
+            "match": "\\b(InstructionSet|__encoding_size|always|architectural_state|assembly|behavior|bitoffsetof|bitsizeof|bool|break|case|char|const|continue|default|do|else|encoding|enum|extends|extern|for|functions|if|import|instructions|int|long|offsetof|provides|register|return|short|signed|sizeof|spawn|struct|switch|union|unsigned|void|volatile|while)\\b|!"
+
+        }
+    },
+    "patterns": [
+        {
+            "include": "#general"
+        }
+    ],
+    "uuid": "8383e49a-fa0d-4bb5-827b-10e8abb294ca"
+}
