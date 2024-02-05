@@ -18,6 +18,8 @@ import org.junit.jupiter.api.^extension.ExtendWith
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.coreDsl.DescriptionContent
+import com.minres.coredsl.coreDsl.FunctionCallExpression
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -28,6 +30,15 @@ class CoreDslExpressionTest {
 	def (EList<Statement>) => EObject initializerOf(String name) {
 		return [
 			it.flatMap[it.descendantsOfType(Declarator)]
+			  .findFirst[it.name == name]
+			  ?.initializer.castOrNull(ExpressionInitializer)
+			  ?.value
+		]
+	}
+	
+	def (DescriptionContent) => EObject progInitializerOf(String name) {
+		return [
+			it.descendantsOfType(Declarator)
 			  .findFirst[it.name == name]
 			  ?.initializer.castOrNull(ExpressionInitializer)
 			  ?.value
@@ -595,6 +606,45 @@ class CoreDslExpressionTest {
 		'''
 		.testStatements()
 		.expectError(IssueCodes.ReferenceToFunction, 1)
+		.run();
+	}
+	
+	@Test
+	def functionCallExpression() {
+		'''
+			InstructionSet TestISA {
+				functions {
+					signed<42> double(signed<41> value) {
+						return value + value;
+					}
+						
+					void testFunc() {
+						double();
+						double(5);
+						double((long)0);
+						double(1, 2);
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectType(null, FunctionCallExpression, 8, IntegerType.signed(42))
+		.expectType(null, FunctionCallExpression, 9, IntegerType.signed(42))
+		.expectType(null, FunctionCallExpression, 10, IntegerType.signed(42))
+		.expectType(null, FunctionCallExpression, 11, IntegerType.signed(42))
+		.expectError(IssueCodes.InvalidArgumentCount, 8)
+		.expectError(IssueCodes.InvalidArgumentType, 10)
+		.expectError(IssueCodes.InvalidArgumentCount, 11)
+		.run();
+		
+		'''
+			int a;
+			a();
+			a(17);
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidFunction, 2)
+		.expectError(IssueCodes.InvalidFunction, 3)
 		.run();
 	}
 }
