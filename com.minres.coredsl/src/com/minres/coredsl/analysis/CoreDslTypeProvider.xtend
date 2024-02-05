@@ -168,6 +168,7 @@ abstract class CoreDslTypeProvider {
 	def static boolean canImplicitlyConvert(CoreDslType from, CoreDslType to) {
 		// allow all conversions involving error types to avoid follow-up errors
 		if(from.isError || to.isError) return true;
+		if(from == to) return true;
 
 		if(from.isIntegerType && to.isIntegerType) {
 			return canImplicitlyConvert(from as IntegerType, to as IntegerType);
