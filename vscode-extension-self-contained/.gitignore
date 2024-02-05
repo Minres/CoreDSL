@@ -1,0 +1,7 @@
+*.jar
+*.vsix
+.vscode
+/.gradle/
+/node_modules/
+/out/
+/build/

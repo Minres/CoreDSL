@@ -29,26 +29,14 @@ export function activate(context: ExtensionContext) {
             fileEvents: workspace.createFileSystemWatcher('**/*.*')
         }
     };
-    
     // Create the language client and start the client.
     lc = new LanguageClient('Xtext Server', serverOptions, clientOptions);
-
-    var disposable2 =commands.registerCommand("coredsl.a.proxy", async () => {
-        let activeEditor = window.activeTextEditor;
-        if (!activeEditor || !activeEditor.document || activeEditor.document.languageId !== 'coredsl') {
-            return;
-        }
-
-        if (activeEditor.document.uri instanceof Uri) {
-            commands.executeCommand("coredsl.a", activeEditor.document.uri.toString());
-        }
-    })
-
-    context.subscriptions.push(disposable2);
-
     // enable tracing (.Off, .Messages, Verbose)
     lc.setTrace(Trace.Verbose);
-    lc.start();
+    let disposable = lc.start();
+    // Push the disposable to the context's subscriptions so that the 
+    // client can be deactivated on extension deactivation
+    context.subscriptions.push(disposable);
 }
 export function deactivate() {
     return lc.stop();

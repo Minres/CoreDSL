@@ -1,3 +1,8 @@
 /.launch/
 /.gradle/
 /com.minres.coredsl.mwe/
+/*.core_desc
+/package-lock.json
+/package.json
+/build/
+/node_modules/
