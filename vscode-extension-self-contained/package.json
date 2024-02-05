@@ -3,8 +3,8 @@
     "displayName": "CoreDSL",
     "description": "A CoreDSL plugin for VS Code",
     "version": "0.0.1",
-    "publisher": "minres",
-    "icon": "images/xtext.png",
+    "publisher": "MINRES",
+    "icon": "images/Minres_logo_square.png",
     "license": "EPL-1.0",
     "repository": {
         "type": "git",

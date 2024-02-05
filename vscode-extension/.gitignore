@@ -1,3 +1,6 @@
 *.jar
 *.vsix
 .vscode
+/node_modules/
+/.gradle/
+/build/

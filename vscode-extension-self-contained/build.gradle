@@ -1,3 +1,5 @@
+project.version="2.0.12"
+
 task copyApplication(type: Sync) {
     def installDistTask = project(':com.minres.coredsl.ide').tasks.installDist
     dependsOn installDistTask
@@ -33,7 +35,7 @@ task startCode(type:Exec, dependsOn: installExtension) {
 
 task publish(dependsOn: vscodeExtension, type: NodeTask) {
     script = file("$rootProject.projectDir/node_modules/vsce/out/vsce")
-    args = [ 'publish', '-p', System.getenv('ACCESS_TOKEN'), "--packagePath", "${project.buildDir}/vscode/vscode-extension-self-contained-${project.version}.vsix"]
+    args = [ 'publish', '-p', System.getenv('ACCESS_TOKEN'), "--packagePath", "${project.buildDir}/coredsl-vscode-${project.version}.vsix"]
     execOverrides {
         workingDir = projectDir
     }
