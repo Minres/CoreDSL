@@ -1361,9 +1361,11 @@ class CoreDslAnalyzer {
 			}
 
 			val elementCount = getRangeSize(ctx, expression.index, expression.endIndex);
-			if(elementCount === null && !ctx.isPartialAnalysis) {
-				ctx.acceptError("Invalid range pattern", expression,
-					CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1, IssueCodes.InvalidRangePattern);
+			if(elementCount === null) {
+				if(!ctx.isPartialAnalysis) {
+					ctx.acceptError("Invalid range pattern", expression,
+						CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1, IssueCodes.InvalidRangePattern);
+				}
 				return ctx.setExpressionType(expression, ErrorType.invalid);
 			}
 
@@ -1387,7 +1389,12 @@ class CoreDslAnalyzer {
 	 * Implements the patterns described <a href="https://github.com/Minres/CoreDSL/wiki/Expressions#range-operator">here</a>.
 	 */
 	def static BigInteger getRangeSize(AnalysisContext ctx, Expression start, Expression end) {
-		if(start instanceof EntityReference && end instanceof InfixExpression ||
+		if(start instanceof EntityReference && end instanceof EntityReference) {
+			if((start as EntityReference).target == (end as EntityReference).target) {
+				return BigInteger.ONE;
+			}
+		}
+		else if(start instanceof EntityReference && end instanceof InfixExpression ||
 			start instanceof InfixExpression && end instanceof EntityReference) {
 			val reference = start instanceof EntityReference ? start : end as EntityReference;
 			val infix = start instanceof InfixExpression ? start : end as InfixExpression;
