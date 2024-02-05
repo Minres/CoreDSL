@@ -423,6 +423,63 @@ class CoreDslExpressionTest {
 		.expectError(IssueCodes.UnsupportedSizeOfDuringElaboration, 4)
 		.run();
 	}
+
+	@Test
+	def castExpression() {
+		'''
+			long a = (int)0;
+			long b = (int)0x100000000;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('a'), IntegerType.signed(32))
+		.expectType(null, initializerOf('b'), IntegerType.signed(32))
+		.run();
+		
+		'''
+			long a = (unsigned int)0;
+			long b = (unsigned int)0x100000000;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('a'), IntegerType.unsigned(32))
+		.expectType(null, initializerOf('b'), IntegerType.unsigned(32))
+		.run();
+		
+		'''
+			long a = (signed<14>)0;
+			long b = (unsigned<14>)0;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('a'), IntegerType.signed(14))
+		.expectType(null, initializerOf('b'), IntegerType.unsigned(14))
+		.run();
+		
+		'''
+			long a = (signed)(unsigned int)0;
+			long b = (unsigned)(signed int)0;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('a'), IntegerType.signed(32))
+		.expectType(null, initializerOf('b'), IntegerType.unsigned(32))
+		.run();
+		
+		
+		'''
+			long a = (signed)(signed int)0;
+			long b = (unsigned)(unsigned int)0;
+			long c = (signed int)(signed int)0;
+			long d = (unsigned int)(unsigned int)0;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('a'), IntegerType.signed(32))
+		.expectType(null, initializerOf('b'), IntegerType.unsigned(32))
+		.expectType(null, initializerOf('c'), IntegerType.signed(32))
+		.expectType(null, initializerOf('d'), IntegerType.unsigned(32))
+		.expectWarning(IssueCodes.IdentityCast, 1)
+		.expectWarning(IssueCodes.IdentityCast, 2)
+		.expectWarning(IssueCodes.IdentityCast, 3)
+		.expectWarning(IssueCodes.IdentityCast, 4)
+		.run();
+	}
 }
 
 
