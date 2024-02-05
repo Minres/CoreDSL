@@ -480,6 +480,25 @@ class CoreDslExpressionTest {
 		.expectWarning(IssueCodes.IdentityCast, 4)
 		.run();
 	}
+
+	@Test
+	def concatenationExpression() {
+		'''
+			unsigned<1> u1;
+			unsigned<2> u2;
+			unsigned<4> u4;
+			signed<1> s1;
+			signed<2> s2;
+			signed<4> s4;
+			
+			long a = u1 :: u2 :: u4;
+			long b = s1 :: s2 :: s4;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('a'), IntegerType.unsigned(7))
+		.expectType(null, initializerOf('b'), IntegerType.unsigned(7))
+		.run();
+	}
 }
 
 
