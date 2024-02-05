@@ -499,6 +499,94 @@ class CoreDslExpressionTest {
 		.expectType(null, initializerOf('b'), IntegerType.unsigned(7))
 		.run();
 	}
+
+	@Test
+	def conditionalExpression() {
+		'''
+			InstructionSet TestISA {
+				architectural_state {
+					struct T {
+						int f;
+					}
+				}
+				functions {
+					void testFunc() {
+						struct T t;
+						int a[1];
+						
+						bool b1 = t ? 1 : 0;
+						bool b2 = a ? 1 : 0;
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.NonScalarCondition, 12)
+		.expectError(IssueCodes.NonScalarCondition, 13)
+		.run();
+		
+		'''
+			unsigned<16> u16;
+			unsigned<32> u32;
+			signed<16> s16;
+			signed<32> s32;
+			
+			long a = true ? u32 : u32;
+			long b = true ? s32 : s32;
+			long c = true ? u16 : u32;
+			long d = true ? u32 : u16;
+			long e = true ? s16 : s32;
+			long f = true ? s32 : s16;
+			
+			long g = true ? s32 : u16;
+			long h = true ? u16 : s32;
+			
+			long i = true ? s16 : u32;
+			long j = true ? u32 : s16;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('a'), IntegerType.unsigned(32))
+		.expectType(null, initializerOf('b'), IntegerType.signed(32))
+		.expectType(null, initializerOf('c'), IntegerType.unsigned(32))
+		.expectType(null, initializerOf('d'), IntegerType.unsigned(32))
+		.expectType(null, initializerOf('e'), IntegerType.signed(32))
+		.expectType(null, initializerOf('f'), IntegerType.signed(32))
+		.expectType(null, initializerOf('g'), IntegerType.signed(32))
+		.expectType(null, initializerOf('h'), IntegerType.signed(32))
+		.expectType(null, initializerOf('i'), IntegerType.signed(33))
+		.expectType(null, initializerOf('j'), IntegerType.signed(33))
+		.run();
+		
+		'''
+			InstructionSet TestISA {
+				architectural_state {
+					struct T {
+						int f;
+					}
+				}
+				functions {
+					void testFunc() {
+						struct T t;
+						int a[1];
+						
+						struct T t1 = true ? t : t;
+						struct T t2 = true ? t : 0;
+						struct T t3 = true ? 0 : t;
+						
+						int a1[1] = true ? a : a;
+						int a2[1] = true ? a : 0;
+						int a3[1] = true ? 0 : a;
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.IncompatibleOptionTypes, 13)
+		.expectError(IssueCodes.IncompatibleOptionTypes, 14)
+		.expectError(IssueCodes.IncompatibleOptionTypes, 17)
+		.expectError(IssueCodes.IncompatibleOptionTypes, 18)
+		.run();
+	}
 }
 
 

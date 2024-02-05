@@ -1238,7 +1238,7 @@ class CoreDslAnalyzer {
 
 	/**
 	 * 1. The condition must be an expression with a scalar type. <i>(NonScalarCondition)</i><br>
-	 * 2. One of the two options' type has to be implicitly convertible to the other one. <i>(IncompatibleOptionTypes)</i>
+	 * 2. One of the two options' type has to be implicitly convertible to the other one, or both needs to be integer types. <i>(IncompatibleOptionTypes)</i>
 	 */
 	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, ConditionalExpression expression) {
 		val conditionType = analyzeExpression(ctx, expression.condition);
