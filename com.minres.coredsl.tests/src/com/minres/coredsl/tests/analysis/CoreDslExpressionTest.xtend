@@ -20,6 +20,7 @@ import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.FunctionCallExpression
+import com.minres.coredsl.coreDsl.IndexAccessExpression
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -645,6 +646,136 @@ class CoreDslExpressionTest {
 		.testStatements()
 		.expectError(IssueCodes.InvalidFunction, 2)
 		.expectError(IssueCodes.InvalidFunction, 3)
+		.run();
+	}
+	
+	@Test
+	def indexAccessExpression() {
+		'''
+			InstructionSet TestISA {
+				architectural_state {
+					extern unsigned char mem[4];
+				}
+				functions {
+					void testFunc() {
+						unsigned char arr[4];
+						unsigned<4> val;
+						int i = 1;
+						long v;
+						
+						v = mem[0];
+						v = mem[3:1];
+						v = mem[i:i-1];
+						
+						v = arr[0];
+						v = arr[3:1];
+						v = arr[i:i-1];
+						
+						v = val[0];
+						v = val[3:1];
+						v = val[i:i-1];
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectType(null, IndexAccessExpression, 12, IntegerType.unsigned(8))
+		.expectType(null, IndexAccessExpression, 13, IntegerType.unsigned(24))
+		.expectType(null, IndexAccessExpression, 14, IntegerType.unsigned(16))
+		.expectType(null, IndexAccessExpression, 16, IntegerType.unsigned(8))
+		.expectType(null, IndexAccessExpression, 17, IntegerType.unsigned(24))
+		.expectType(null, IndexAccessExpression, 18, IntegerType.unsigned(16))
+		.expectType(null, IndexAccessExpression, 20, IntegerType.unsigned(1))
+		.expectType(null, IndexAccessExpression, 21, IntegerType.unsigned(3))
+		.expectType(null, IndexAccessExpression, 22, IntegerType.unsigned(2))
+		.run();
+		
+		'''
+			unsigned char a[4];
+			long v1 = a[0];
+			long v2 = a[3];
+			long v3 = a[-1];
+			long v4 = a[4];
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.unsigned(8))
+		.expectType(null, initializerOf('v2'), IntegerType.unsigned(8))
+		.expectType(null, initializerOf('v3'), IntegerType.unsigned(8))
+		.expectType(null, initializerOf('v4'), IntegerType.unsigned(8))
+		.run();
+		
+		'''
+			unsigned char a[4];
+			long v1 = a[0:3];
+			long v2 = a[3:0];
+			long v3 = a[0:1];
+			long v4 = a[3:2];
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.unsigned(32))
+		.expectType(null, initializerOf('v2'), IntegerType.unsigned(32))
+		.expectType(null, initializerOf('v3'), IntegerType.unsigned(16))
+		.expectType(null, initializerOf('v4'), IntegerType.unsigned(16))
+		.run();
+		
+		'''
+			unsigned char a[4];
+			long v1 = a[a];
+			long v2 = a[0:a];
+			long v3 = a[a:0];
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidIndexType, 2)
+		.expectError(IssueCodes.InvalidIndexType, 3)
+		.expectError(IssueCodes.InvalidIndexType, 4)
+		.run();
+		
+		'''
+			unsigned char a[4];
+			int i = 1;
+			
+			long v1 = a[i];
+			long v2 = a[i:i];
+			long v3 = a[i:i+1];
+			long v4 = a[i:i-1];
+			long v5 = a[i+1:i];
+			long v6 = a[i-1:i];
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.unsigned(8))
+		.expectType(null, initializerOf('v2'), IntegerType.unsigned(8))
+		.expectType(null, initializerOf('v3'), IntegerType.unsigned(16))
+		.expectType(null, initializerOf('v4'), IntegerType.unsigned(16))
+		.expectType(null, initializerOf('v5'), IntegerType.unsigned(16))
+		.expectType(null, initializerOf('v6'), IntegerType.unsigned(16))
+		.run();
+		
+		'''
+			Core TestISA {
+				functions {	
+					void testFunc() {
+						unsigned char a[4];
+						int i = 1, j = 1;
+						
+						long v1 = a[0:i];
+						long v2 = a[i:0];
+						long v3 = a[i:j];
+						long v4 = a[i:1+i];
+						long v5 = a[i:1-i];
+						long v6 = a[1+i:i];
+						long v7 = a[1-i:i];
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.InvalidRangePattern, 7)
+		.expectError(IssueCodes.InvalidRangePattern, 8)
+		.expectError(IssueCodes.InvalidRangePattern, 9)
+		.expectError(IssueCodes.InvalidRangePattern, 10)
+		.expectError(IssueCodes.InvalidRangePattern, 11)
+		.expectError(IssueCodes.InvalidRangePattern, 12)
+		.expectError(IssueCodes.InvalidRangePattern, 13)
 		.run();
 	}
 }
