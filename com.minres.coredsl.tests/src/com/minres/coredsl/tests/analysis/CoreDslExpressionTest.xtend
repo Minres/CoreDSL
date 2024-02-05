@@ -587,6 +587,16 @@ class CoreDslExpressionTest {
 		.expectError(IssueCodes.IncompatibleOptionTypes, 18)
 		.run();
 	}
+	
+	@Test
+	def entityReference() {
+		'''
+			int x = testFunc;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.ReferenceToFunction, 1)
+		.run();
+	}
 }
 
 
