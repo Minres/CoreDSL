@@ -1,1 +1,1 @@
-This is a placeholder for the Eclipse repository.
+This is a placeholder of the CoreDSL Eclipse repository.
