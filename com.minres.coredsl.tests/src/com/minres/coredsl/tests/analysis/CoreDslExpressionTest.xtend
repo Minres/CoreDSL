@@ -778,6 +778,56 @@ class CoreDslExpressionTest {
 		.expectError(IssueCodes.InvalidRangePattern, 13)
 		.run();
 	}
+	
+	@Test
+	def logicOperators() {
+		'''
+			long v1 = true || false;
+			long v2 = 1 || 0;
+			long v3 = 42 || 720;
+			long v4 = -1 || 0xfffffffffffffffffffff;
+			
+			long v5 = true && false;
+			long v6 = 1 && 0;
+			long v7 = 42 && 720;
+			long v8 = -1 || 0xfffffffffffffffffffff;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.bool)
+		.expectType(null, initializerOf('v2'), IntegerType.bool)
+		.expectType(null, initializerOf('v3'), IntegerType.bool)
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.expectType(null, initializerOf('v5'), IntegerType.bool)
+		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.expectType(null, initializerOf('v7'), IntegerType.bool)
+		.expectType(null, initializerOf('v8'), IntegerType.bool)
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a || false;
+			long v2 = true || a;
+			long v3 = a || a;
+			
+			long v4 = a && false;
+			long v5 = true && a;
+			long v6 = a && a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectError(IssueCodes.InvalidOperationType, 6)
+		.expectError(IssueCodes.InvalidOperationType, 7)
+		.expectError(IssueCodes.InvalidOperationType, 8)
+		.expectType(null, initializerOf('v1'), IntegerType.bool)
+		.expectType(null, initializerOf('v2'), IntegerType.bool)
+		.expectType(null, initializerOf('v3'), IntegerType.bool)
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.expectType(null, initializerOf('v5'), IntegerType.bool)
+		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.run();
+	}
 }
 
 
