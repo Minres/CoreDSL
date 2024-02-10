@@ -1024,6 +1024,54 @@ class CoreDslExpressionTest {
 		.expectType(null, initializerOf('v12'), IntegerType.bool)
 		.run();
 	}
+	
+	@Test
+	def shiftOperators() {
+		'''
+			long v1 = 42 << 2;
+			long v2 = (-77) << 3;
+			long v3 = 1 << 6;
+			
+			long v4 = 42 >> 2;
+			long v5 = (-77) >> 3;
+			long v6 = 1 << 6;
+		'''
+		.testStatements()
+		.expectWarning(IssueCodes.ShiftAlwaysZero, 3)
+		.expectWarning(IssueCodes.ShiftAlwaysZero, 7)
+		.expectType(null, initializerOf('v1'), IntegerType.unsigned(6))
+		.expectType(null, initializerOf('v2'), IntegerType.signed(8))
+		.expectType(null, initializerOf('v3'), IntegerType.bool)
+		.expectType(null, initializerOf('v4'), IntegerType.unsigned(6))
+		.expectType(null, initializerOf('v5'), IntegerType.signed(8))
+		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a << 0;
+			long v2 = 0 << a;
+			long v3 = a << a;
+			
+			long v4 = a >> 0;
+			long v5 = 0 >> a;
+			long v6 = a >> a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectError(IssueCodes.InvalidOperationType, 6)
+		.expectError(IssueCodes.InvalidOperationType, 7)
+		.expectError(IssueCodes.InvalidOperationType, 8)
+		.expectType(null, initializerOf('v1'), ErrorType.invalid)
+		.expectType(null, initializerOf('v2'), ErrorType.invalid)
+		.expectType(null, initializerOf('v3'), ErrorType.invalid)
+		.expectType(null, initializerOf('v4'), ErrorType.invalid)
+		.expectType(null, initializerOf('v5'), ErrorType.invalid)
+		.expectType(null, initializerOf('v6'), ErrorType.invalid)
+		.run();
+	}
 }
 
 
