@@ -892,6 +892,66 @@ class CoreDslExpressionTest {
 		.expectType(null, initializerOf('v9'), ErrorType.invalid)
 		.run();
 	}
+	
+	@Test
+	def equalityComparison() {
+		'''
+			long v1 = true == false;
+			long v2 = 6'd42 == 15'd720;
+			long v3 = 8'shff == 8'hff;
+			
+			long v4 = true != false;
+			long v5 = 6'd42 != 15'd720;
+			long v6 = 8'shff != 8'hff;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.bool)
+		.expectType(null, initializerOf('v2'), IntegerType.bool)
+		.expectType(null, initializerOf('v3'), IntegerType.bool)
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.expectType(null, initializerOf('v5'), IntegerType.bool)
+		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a == false;
+			long v2 = true == a;
+			long v3 = a == a;
+			
+			long v4 = a != false;
+			long v5 = true != a;
+			long v6 = a != a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 6)
+		.expectError(IssueCodes.InvalidOperationType, 7)
+		.expectType(null, initializerOf('v1'), IntegerType.bool)
+		.expectType(null, initializerOf('v2'), IntegerType.bool)
+		.expectType(null, initializerOf('v3'), IntegerType.bool)
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.expectType(null, initializerOf('v5'), IntegerType.bool)
+		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.run();
+		
+		'''
+			InstructionSet TestISA {
+				architectural_state {
+					extern unsigned char mem[4];
+				}
+				functions {
+					void testFunc() {
+						bool equal = mem == mem;
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.InvalidOperationType, 7)
+		.run();
+	}
 }
 
 
