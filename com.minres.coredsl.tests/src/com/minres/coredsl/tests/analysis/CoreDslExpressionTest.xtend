@@ -952,6 +952,78 @@ class CoreDslExpressionTest {
 		.expectError(IssueCodes.InvalidOperationType, 7)
 		.run();
 	}
+	
+	@Test
+	def magnitudeComparison() {
+		'''
+			long v1 = 6'd42 < 15'd720;
+			long v2 = 8'shff < 8'hff;
+			
+			long v3 = 6'd42 > 15'd720;
+			long v4 = 8'shff > 8'hff;
+			
+			long v5 = 6'd42 <= 15'd720;
+			long v6 = 8'shff <= 8'hff;
+			
+			long v7 = 6'd42 >= 15'd720;
+			long v8 = 8'shff >= 8'hff;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.bool)
+		.expectType(null, initializerOf('v2'), IntegerType.bool)
+		.expectType(null, initializerOf('v3'), IntegerType.bool)
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.expectType(null, initializerOf('v5'), IntegerType.bool)
+		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.expectType(null, initializerOf('v7'), IntegerType.bool)
+		.expectType(null, initializerOf('v8'), IntegerType.bool)
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a < 0;
+			long v2 = 0 < a;
+			long v3 = a < a;
+			
+			long v4 = a > 0;
+			long v5 = 0 > a;
+			long v6 = a > a;
+			
+			long v7 = a <= 0;
+			long v8 = 0 <= a;
+			long v9 = a <= a;
+			
+			long v10 = a >= 0;
+			long v11 = 0 >= a;
+			long v12 = a >= a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectError(IssueCodes.InvalidOperationType, 6)
+		.expectError(IssueCodes.InvalidOperationType, 7)
+		.expectError(IssueCodes.InvalidOperationType, 8)
+		.expectError(IssueCodes.InvalidOperationType, 10)
+		.expectError(IssueCodes.InvalidOperationType, 11)
+		.expectError(IssueCodes.InvalidOperationType, 12)
+		.expectError(IssueCodes.InvalidOperationType, 14)
+		.expectError(IssueCodes.InvalidOperationType, 15)
+		.expectError(IssueCodes.InvalidOperationType, 16)
+		.expectType(null, initializerOf('v1'), IntegerType.bool)
+		.expectType(null, initializerOf('v2'), IntegerType.bool)
+		.expectType(null, initializerOf('v3'), IntegerType.bool)
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.expectType(null, initializerOf('v5'), IntegerType.bool)
+		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.expectType(null, initializerOf('v7'), IntegerType.bool)
+		.expectType(null, initializerOf('v8'), IntegerType.bool)
+		.expectType(null, initializerOf('v9'), IntegerType.bool)
+		.expectType(null, initializerOf('v10'), IntegerType.bool)
+		.expectType(null, initializerOf('v11'), IntegerType.bool)
+		.expectType(null, initializerOf('v12'), IntegerType.bool)
+		.run();
+	}
 }
 
 
