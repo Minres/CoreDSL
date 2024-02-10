@@ -24,6 +24,8 @@ import org.eclipse.xtext.validation.Issue.IssueImpl
 import static org.junit.jupiter.api.Assertions.*
 
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.coreDsl.Expression
+import com.minres.coredsl.analysis.CoreDslConstantExpressionEvaluator
 
 class CoreDslTestCase<TRoot> {
 	final static Pattern newLinePattern = Pattern.compile("\r?\n");
@@ -36,6 +38,7 @@ class CoreDslTestCase<TRoot> {
 	final List<IssueDescription> expectedIssues = new ArrayList();
 	final List<Expectation> semanticExpectations = new ArrayList();
 
+	boolean forceEvaluateExpressions;
 	boolean checkDiagnosticsOnly;
 	boolean isGenericSyntaxTest;
 	boolean hasRun;
@@ -58,6 +61,11 @@ class CoreDslTestCase<TRoot> {
 			}
 		}
 		this.prologLines = prologLines;
+	}
+	
+	def evaluateExpressions() {
+		forceEvaluateExpressions = true;
+		return this;
 	}
 
 	def diagnosticsOnly() {
@@ -237,6 +245,16 @@ class CoreDslTestCase<TRoot> {
 		if(!checkDiagnosticsOnly) {
 			val sink = new ValidationMessageSink();
 			results = CoreDslAnalyzer.analyze(model, sink);
+			
+			if(forceEvaluateExpressions) {
+				for(isa : results.results.keySet) {
+					val ctx = results.results.get(isa);
+					for(expr : isa.descendantsOfType(Expression)) {
+						CoreDslConstantExpressionEvaluator.evaluate(ctx, expr);
+					}
+				}
+			}
+			
 			issues.addAll(sink.issues);
 		}
 
