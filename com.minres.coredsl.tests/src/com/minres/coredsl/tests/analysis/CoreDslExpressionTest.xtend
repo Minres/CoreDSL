@@ -21,6 +21,7 @@ import static extension com.minres.coredsl.util.ModelExtensions.*
 import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.FunctionCallExpression
 import com.minres.coredsl.coreDsl.IndexAccessExpression
+import com.minres.coredsl.type.ErrorType
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -790,7 +791,7 @@ class CoreDslExpressionTest {
 			long v5 = true && false;
 			long v6 = 1 && 0;
 			long v7 = 42 && 720;
-			long v8 = -1 || 0xfffffffffffffffffffff;
+			long v8 = -1 && 0xfffffffffffffffffffff;
 		'''
 		.testStatements()
 		.expectType(null, initializerOf('v1'), IntegerType.bool)
@@ -826,6 +827,69 @@ class CoreDslExpressionTest {
 		.expectType(null, initializerOf('v4'), IntegerType.bool)
 		.expectType(null, initializerOf('v5'), IntegerType.bool)
 		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.run();
+	}
+	
+	@Test
+	def bitwiseOperators() {
+		'''
+			long v1 = true | false;
+			long v2 = 6'h33 | 15'h7755;
+			long v3 = 8'shff | 8'haa;
+			
+			long v4 = true & false;
+			long v5 = 6'h33 & 15'h7755;
+			long v6 = 8'shff & 8'haa;
+			
+			long v7 = true ^ false;
+			long v8 = 6'h33 ^ 15'h7755;
+			long v9 = 8'shff ^ 8'haa;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.bool)
+		.expectType(null, initializerOf('v2'), IntegerType.unsigned(15))
+		.expectType(null, initializerOf('v3'), IntegerType.signed(8))
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.expectType(null, initializerOf('v5'), IntegerType.unsigned(15))
+		.expectType(null, initializerOf('v6'), IntegerType.signed(8))
+		.expectType(null, initializerOf('v7'), IntegerType.bool)
+		.expectType(null, initializerOf('v8'), IntegerType.unsigned(15))
+		.expectType(null, initializerOf('v9'), IntegerType.signed(8))
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a | false;
+			long v2 = true | a;
+			long v3 = a | a;
+			
+			long v4 = a & false;
+			long v5 = true & a;
+			long v6 = a & a;
+			
+			long v7 = a ^ false;
+			long v8 = true ^ a;
+			long v9 = a ^ a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectError(IssueCodes.InvalidOperationType, 6)
+		.expectError(IssueCodes.InvalidOperationType, 7)
+		.expectError(IssueCodes.InvalidOperationType, 8)
+		.expectError(IssueCodes.InvalidOperationType, 10)
+		.expectError(IssueCodes.InvalidOperationType, 11)
+		.expectError(IssueCodes.InvalidOperationType, 12)
+		.expectType(null, initializerOf('v1'), ErrorType.invalid)
+		.expectType(null, initializerOf('v2'), ErrorType.invalid)
+		.expectType(null, initializerOf('v3'), ErrorType.invalid)
+		.expectType(null, initializerOf('v4'), ErrorType.invalid)
+		.expectType(null, initializerOf('v5'), ErrorType.invalid)
+		.expectType(null, initializerOf('v6'), ErrorType.invalid)
+		.expectType(null, initializerOf('v7'), ErrorType.invalid)
+		.expectType(null, initializerOf('v8'), ErrorType.invalid)
+		.expectType(null, initializerOf('v9'), ErrorType.invalid)
 		.run();
 	}
 }
