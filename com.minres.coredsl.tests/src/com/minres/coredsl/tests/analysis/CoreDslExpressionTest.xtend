@@ -1103,6 +1103,37 @@ class CoreDslExpressionTest {
 		.expectType(null, initializerOf('v3'), ErrorType.invalid)
 		.run();
 	}
+	
+	@Test
+	def subtraction() {
+		'''
+			long v1 = 6'd0 - 4'd0;
+			long v2 = 6'sd0 - 4'sd0;
+			long v3 = 6'sd0 - 4'd0;
+			long v4 = 6'd0 - 4'sd0;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.signed(7))
+		.expectType(null, initializerOf('v2'), IntegerType.signed(7))
+		.expectType(null, initializerOf('v3'), IntegerType.signed(7))
+		.expectType(null, initializerOf('v4'), IntegerType.signed(8))
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a - 0;
+			long v2 = 0 - a;
+			long v3 = a - a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectType(null, initializerOf('v1'), ErrorType.invalid)
+		.expectType(null, initializerOf('v2'), ErrorType.invalid)
+		.expectType(null, initializerOf('v3'), ErrorType.invalid)
+		.run();
+	}
 }
 
 
