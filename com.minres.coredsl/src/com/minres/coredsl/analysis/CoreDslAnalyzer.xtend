@@ -1496,7 +1496,13 @@ class CoreDslAnalyzer {
 			}
 			case '==',
 			case '!=': {
-				if(leftType != rightType && !leftType.isIntegerType || !rightType.isIntegerType) {
+				if(leftType.isAddressSpaceType || rightType.isAddressSpaceType) {
+					ctx.acceptError(
+						"Equality comparisons on address spaces are not allowed",
+						expression, CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR, -1,
+						IssueCodes.InvalidOperationType);
+				}
+				else if(leftType != rightType && (!leftType.isIntegerType || !rightType.isIntegerType)) {
 					ctx.acceptError(
 						"Equality comparisons are only valid on integer types or two operands of the same type",
 						expression, CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR, -1,
