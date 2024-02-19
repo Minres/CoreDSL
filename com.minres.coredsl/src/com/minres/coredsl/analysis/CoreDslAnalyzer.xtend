@@ -1716,6 +1716,7 @@ class CoreDslAnalyzer {
 		if(!operandType.isIntegerType && !operandType.isError) {
 			ctx.acceptError("Increment and decrement operators are only valid on integer types", expression,
 				CoreDslPackage.Literals.POSTFIX_EXPRESSION__OPERATOR, -1, IssueCodes.InvalidOperationType);
+			return ctx.setExpressionType(expression, ErrorType.invalid);
 		}
 
 		return ctx.setExpressionType(expression, operandType);
@@ -1754,6 +1755,7 @@ class CoreDslAnalyzer {
 				if(!operandType.isIntegerType && !operandType.isError) {
 					ctx.acceptError("Increment and decrement operators are only valid on integer types", expression,
 						CoreDslPackage.Literals.PREFIX_EXPRESSION__OPERATOR, -1, IssueCodes.InvalidOperationType);
+					return ctx.setExpressionType(expression, ErrorType.invalid);
 				}
 
 				return ctx.setExpressionType(expression, operandType);
@@ -1762,6 +1764,7 @@ class CoreDslAnalyzer {
 				if(!operandType.isIntegerType && !operandType.isError) {
 					ctx.acceptError("Bitwise negation is only valid on integer types", expression,
 						CoreDslPackage.Literals.PREFIX_EXPRESSION__OPERATOR, -1, IssueCodes.InvalidOperationType);
+					return ctx.setExpressionType(expression, ErrorType.invalid);
 				}
 
 				return ctx.setExpressionType(expression, operandType);
@@ -1770,6 +1773,7 @@ class CoreDslAnalyzer {
 				if(!operandType.isIntegerType && !operandType.isError) {
 					ctx.acceptError("Unary plus is only valid on integer types", expression,
 						CoreDslPackage.Literals.PREFIX_EXPRESSION__OPERATOR, -1, IssueCodes.InvalidOperationType);
+					return ctx.setExpressionType(expression, ErrorType.invalid);
 				}
 
 				return ctx.setExpressionType(expression, operandType);
@@ -1778,10 +1782,10 @@ class CoreDslAnalyzer {
 				if(!operandType.isIntegerType && !operandType.isError) {
 					ctx.acceptError("Unary minus is only valid on integer types", expression,
 						CoreDslPackage.Literals.PREFIX_EXPRESSION__OPERATOR, -1, IssueCodes.InvalidOperationType);
+					return ctx.setExpressionType(expression, ErrorType.invalid);
 				}
 
-				val intType = operandType as IntegerType;
-				return ctx.setExpressionType(expression, IntegerType.signed(intType.bitSize + 1));
+				return ctx.setExpressionType(expression, IntegerType.signed(operandType.bitSize + 1));
 			}
 			case '!': {
 				if(!operandType.isScalarType && !operandType.isError) {
