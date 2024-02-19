@@ -108,6 +108,8 @@ class CoreDslConstantExpressionEvaluator {
 				ctx.acceptError("Division by zero", expression, CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR, -1,
 					IssueCodes.DivisionByZero);
 			}
+			// TODO these don't work correctly at the moment, because the operands first need to be zero-extended
+			// to the result type first, but neither the operand types, nor the result type are known
 			case '&':
 				return new ConstantValue(left.value.and(right.value))
 			case '|':

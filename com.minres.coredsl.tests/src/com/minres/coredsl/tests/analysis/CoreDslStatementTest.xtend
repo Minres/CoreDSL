@@ -152,6 +152,16 @@ class CoreDslStatementTest {
 		.run();
 		
 		'''
+			bool b;
+			
+			if(b = 0);
+			if(b == 0);
+		'''
+		.testStatements()
+		.expectWarning(IssueCodes.LikelyAccidentalAssignment, 3)
+		.run();
+		
+		'''
 			if(true);
 			if(false);
 			if(0);
@@ -273,6 +283,16 @@ class CoreDslStatementTest {
 		.run();
 		
 		'''
+			bool b;
+			
+			while(b = 0);
+			while(b == 0);
+		'''
+		.testStatements()
+		.expectWarning(IssueCodes.LikelyAccidentalAssignment, 3)
+		.run();
+		
+		'''
 			while(true);
 			while(false);
 			while(0);
@@ -308,6 +328,16 @@ class CoreDslStatementTest {
 		.run();
 		
 		'''
+			bool b;
+			
+			do ; while(b = 0);
+			do ; while(b == 0);
+		'''
+		.testStatements()
+		.expectWarning(IssueCodes.LikelyAccidentalAssignment, 3)
+		.run();
+		
+		'''
 			do ; while(true);
 			do ; while(false);
 			do ; while(0);
@@ -340,6 +370,16 @@ class CoreDslStatementTest {
 		.testProgram()
 		.expectError(IssueCodes.NonScalarCondition, 12)
 		.expectError(IssueCodes.NonScalarCondition, 13)
+		.run();
+		
+		'''
+			bool b;
+			
+			for(;b = 0;);
+			for(;b == 0;);
+		'''
+		.testStatements()
+		.expectWarning(IssueCodes.LikelyAccidentalAssignment, 3)
 		.run();
 		
 		'''

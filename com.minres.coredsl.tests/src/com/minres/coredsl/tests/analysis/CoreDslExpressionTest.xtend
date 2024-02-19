@@ -18,6 +18,11 @@ import org.junit.jupiter.api.^extension.ExtendWith
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.coreDsl.DescriptionContent
+import com.minres.coredsl.coreDsl.FunctionCallExpression
+import com.minres.coredsl.coreDsl.IndexAccessExpression
+import com.minres.coredsl.type.ErrorType
+import com.minres.coredsl.type.ArrayType
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -28,6 +33,15 @@ class CoreDslExpressionTest {
 	def (EList<Statement>) => EObject initializerOf(String name) {
 		return [
 			it.flatMap[it.descendantsOfType(Declarator)]
+			  .findFirst[it.name == name]
+			  ?.initializer.castOrNull(ExpressionInitializer)
+			  ?.value
+		]
+	}
+	
+	def (DescriptionContent) => EObject progInitializerOf(String name) {
+		return [
+			it.descendantsOfType(Declarator)
 			  .findFirst[it.name == name]
 			  ?.initializer.castOrNull(ExpressionInitializer)
 			  ?.value
@@ -421,6 +435,876 @@ class CoreDslExpressionTest {
 		.expectError(IssueCodes.InvalidIsaStateElementValue, 1)
 		.expectError(IssueCodes.UnsupportedSizeOfDuringElaboration, 3)
 		.expectError(IssueCodes.UnsupportedSizeOfDuringElaboration, 4)
+		.run();
+	}
+
+	@Test
+	def castExpression() {
+		'''
+			long a = (int)0;
+			long b = (int)0x100000000;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('a'), IntegerType.signed(32))
+		.expectType(null, initializerOf('b'), IntegerType.signed(32))
+		.run();
+		
+		'''
+			long a = (unsigned int)0;
+			long b = (unsigned int)0x100000000;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('a'), IntegerType.unsigned(32))
+		.expectType(null, initializerOf('b'), IntegerType.unsigned(32))
+		.run();
+		
+		'''
+			long a = (signed<14>)0;
+			long b = (unsigned<14>)0;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('a'), IntegerType.signed(14))
+		.expectType(null, initializerOf('b'), IntegerType.unsigned(14))
+		.run();
+		
+		'''
+			long a = (signed)(unsigned int)0;
+			long b = (unsigned)(signed int)0;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('a'), IntegerType.signed(32))
+		.expectType(null, initializerOf('b'), IntegerType.unsigned(32))
+		.run();
+		
+		
+		'''
+			long a = (signed)(signed int)0;
+			long b = (unsigned)(unsigned int)0;
+			long c = (signed int)(signed int)0;
+			long d = (unsigned int)(unsigned int)0;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('a'), IntegerType.signed(32))
+		.expectType(null, initializerOf('b'), IntegerType.unsigned(32))
+		.expectType(null, initializerOf('c'), IntegerType.signed(32))
+		.expectType(null, initializerOf('d'), IntegerType.unsigned(32))
+		.expectWarning(IssueCodes.IdentityCast, 1)
+		.expectWarning(IssueCodes.IdentityCast, 2)
+		.expectWarning(IssueCodes.IdentityCast, 3)
+		.expectWarning(IssueCodes.IdentityCast, 4)
+		.run();
+	}
+
+	@Test
+	def concatenationExpression() {
+		'''
+			unsigned<1> u1;
+			unsigned<2> u2;
+			unsigned<4> u4;
+			signed<1> s1;
+			signed<2> s2;
+			signed<4> s4;
+			
+			long a = u1 :: u2 :: u4;
+			long b = s1 :: s2 :: s4;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('a'), IntegerType.unsigned(7))
+		.expectType(null, initializerOf('b'), IntegerType.unsigned(7))
+		.run();
+	}
+
+	@Test
+	def conditionalExpression() {
+		'''
+			InstructionSet TestISA {
+				architectural_state {
+					struct T {
+						int f;
+					}
+				}
+				functions {
+					void testFunc() {
+						struct T t;
+						int a[1];
+						
+						bool b1 = t ? 1 : 0;
+						bool b2 = a ? 1 : 0;
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.NonScalarCondition, 12)
+		.expectError(IssueCodes.NonScalarCondition, 13)
+		.run();
+		
+		'''
+			unsigned<16> u16;
+			unsigned<32> u32;
+			signed<16> s16;
+			signed<32> s32;
+			
+			long a = true ? u32 : u32;
+			long b = true ? s32 : s32;
+			long c = true ? u16 : u32;
+			long d = true ? u32 : u16;
+			long e = true ? s16 : s32;
+			long f = true ? s32 : s16;
+			
+			long g = true ? s32 : u16;
+			long h = true ? u16 : s32;
+			
+			long i = true ? s16 : u32;
+			long j = true ? u32 : s16;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('a'), IntegerType.unsigned(32))
+		.expectType(null, initializerOf('b'), IntegerType.signed(32))
+		.expectType(null, initializerOf('c'), IntegerType.unsigned(32))
+		.expectType(null, initializerOf('d'), IntegerType.unsigned(32))
+		.expectType(null, initializerOf('e'), IntegerType.signed(32))
+		.expectType(null, initializerOf('f'), IntegerType.signed(32))
+		.expectType(null, initializerOf('g'), IntegerType.signed(32))
+		.expectType(null, initializerOf('h'), IntegerType.signed(32))
+		.expectType(null, initializerOf('i'), IntegerType.signed(33))
+		.expectType(null, initializerOf('j'), IntegerType.signed(33))
+		.run();
+		
+		'''
+			InstructionSet TestISA {
+				architectural_state {
+					struct T {
+						int f;
+					}
+				}
+				functions {
+					void testFunc() {
+						struct T t;
+						int a[1];
+						
+						struct T t1 = true ? t : t;
+						struct T t2 = true ? t : 0;
+						struct T t3 = true ? 0 : t;
+						
+						int a1[1] = true ? a : a;
+						int a2[1] = true ? a : 0;
+						int a3[1] = true ? 0 : a;
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.IncompatibleOptionTypes, 13)
+		.expectError(IssueCodes.IncompatibleOptionTypes, 14)
+		.expectError(IssueCodes.IncompatibleOptionTypes, 17)
+		.expectError(IssueCodes.IncompatibleOptionTypes, 18)
+		.run();
+	}
+	
+	@Test
+	def entityReference() {
+		'''
+			int x = testFunc;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.ReferenceToFunction, 1)
+		.run();
+	}
+	
+	@Test
+	def functionCallExpression() {
+		'''
+			InstructionSet TestISA {
+				functions {
+					signed<42> double(signed<41> value) {
+						return value + value;
+					}
+						
+					void testFunc() {
+						double();
+						double(5);
+						double((long)0);
+						double(1, 2);
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectType(null, FunctionCallExpression, 8, IntegerType.signed(42))
+		.expectType(null, FunctionCallExpression, 9, IntegerType.signed(42))
+		.expectType(null, FunctionCallExpression, 10, IntegerType.signed(42))
+		.expectType(null, FunctionCallExpression, 11, IntegerType.signed(42))
+		.expectError(IssueCodes.InvalidArgumentCount, 8)
+		.expectError(IssueCodes.InvalidArgumentType, 10)
+		.expectError(IssueCodes.InvalidArgumentCount, 11)
+		.run();
+		
+		'''
+			int a;
+			a();
+			a(17);
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidFunction, 2)
+		.expectError(IssueCodes.InvalidFunction, 3)
+		.run();
+	}
+	
+	@Test
+	def indexAccessExpression() {
+		'''
+			InstructionSet TestISA {
+				architectural_state {
+					extern unsigned char mem[4];
+				}
+				functions {
+					void testFunc() {
+						unsigned char arr[4];
+						unsigned<4> val;
+						int i = 1;
+						long v;
+						
+						v = mem[0];
+						v = mem[3:1];
+						v = mem[i:i-1];
+						
+						v = arr[0];
+						v = arr[3:1];
+						v = arr[i:i-1];
+						
+						v = val[0];
+						v = val[3:1];
+						v = val[i:i-1];
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectType(null, IndexAccessExpression, 12, IntegerType.unsigned(8))
+		.expectType(null, IndexAccessExpression, 13, IntegerType.unsigned(24))
+		.expectType(null, IndexAccessExpression, 14, IntegerType.unsigned(16))
+		.expectType(null, IndexAccessExpression, 16, IntegerType.unsigned(8))
+		.expectType(null, IndexAccessExpression, 17, IntegerType.unsigned(24))
+		.expectType(null, IndexAccessExpression, 18, IntegerType.unsigned(16))
+		.expectType(null, IndexAccessExpression, 20, IntegerType.unsigned(1))
+		.expectType(null, IndexAccessExpression, 21, IntegerType.unsigned(3))
+		.expectType(null, IndexAccessExpression, 22, IntegerType.unsigned(2))
+		.run();
+		
+		'''
+			unsigned char a[4];
+			long v1 = a[0];
+			long v2 = a[3];
+			long v3 = a[-1];
+			long v4 = a[4];
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.unsigned(8))
+		.expectType(null, initializerOf('v2'), IntegerType.unsigned(8))
+		.expectType(null, initializerOf('v3'), IntegerType.unsigned(8))
+		.expectType(null, initializerOf('v4'), IntegerType.unsigned(8))
+		.run();
+		
+		'''
+			unsigned char a[4];
+			long v1 = a[0:3];
+			long v2 = a[3:0];
+			long v3 = a[0:1];
+			long v4 = a[3:2];
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.unsigned(32))
+		.expectType(null, initializerOf('v2'), IntegerType.unsigned(32))
+		.expectType(null, initializerOf('v3'), IntegerType.unsigned(16))
+		.expectType(null, initializerOf('v4'), IntegerType.unsigned(16))
+		.run();
+		
+		'''
+			unsigned char a[4];
+			long v1 = a[a];
+			long v2 = a[0:a];
+			long v3 = a[a:0];
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidIndexType, 2)
+		.expectError(IssueCodes.InvalidIndexType, 3)
+		.expectError(IssueCodes.InvalidIndexType, 4)
+		.run();
+		
+		'''
+			unsigned char a[4];
+			int i = 1;
+			
+			long v1 = a[i];
+			long v2 = a[i:i];
+			long v3 = a[i:i+1];
+			long v4 = a[i:i-1];
+			long v5 = a[i+1:i];
+			long v6 = a[i-1:i];
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.unsigned(8))
+		.expectType(null, initializerOf('v2'), IntegerType.unsigned(8))
+		.expectType(null, initializerOf('v3'), IntegerType.unsigned(16))
+		.expectType(null, initializerOf('v4'), IntegerType.unsigned(16))
+		.expectType(null, initializerOf('v5'), IntegerType.unsigned(16))
+		.expectType(null, initializerOf('v6'), IntegerType.unsigned(16))
+		.run();
+		
+		'''
+			Core TestISA {
+				functions {	
+					void testFunc() {
+						unsigned char a[4];
+						int i = 1, j = 1;
+						
+						long v1 = a[0:i];
+						long v2 = a[i:0];
+						long v3 = a[i:j];
+						long v4 = a[i:1+i];
+						long v5 = a[i:1-i];
+						long v6 = a[1+i:i];
+						long v7 = a[1-i:i];
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.InvalidRangePattern, 7)
+		.expectError(IssueCodes.InvalidRangePattern, 8)
+		.expectError(IssueCodes.InvalidRangePattern, 9)
+		.expectError(IssueCodes.InvalidRangePattern, 10)
+		.expectError(IssueCodes.InvalidRangePattern, 11)
+		.expectError(IssueCodes.InvalidRangePattern, 12)
+		.expectError(IssueCodes.InvalidRangePattern, 13)
+		.run();
+	}
+	
+	@Test
+	def logicOperators() {
+		'''
+			long v1 = true || false;
+			long v2 = 1 || 0;
+			long v3 = 42 || 720;
+			long v4 = -1 || 0xfffffffffffffffffffff;
+			
+			long v5 = true && false;
+			long v6 = 1 && 0;
+			long v7 = 42 && 720;
+			long v8 = -1 && 0xfffffffffffffffffffff;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.bool)
+		.expectType(null, initializerOf('v2'), IntegerType.bool)
+		.expectType(null, initializerOf('v3'), IntegerType.bool)
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.expectType(null, initializerOf('v5'), IntegerType.bool)
+		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.expectType(null, initializerOf('v7'), IntegerType.bool)
+		.expectType(null, initializerOf('v8'), IntegerType.bool)
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a || false;
+			long v2 = true || a;
+			long v3 = a || a;
+			
+			long v4 = a && false;
+			long v5 = true && a;
+			long v6 = a && a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectError(IssueCodes.InvalidOperationType, 6)
+		.expectError(IssueCodes.InvalidOperationType, 7)
+		.expectError(IssueCodes.InvalidOperationType, 8)
+		.expectType(null, initializerOf('v1'), IntegerType.bool)
+		.expectType(null, initializerOf('v2'), IntegerType.bool)
+		.expectType(null, initializerOf('v3'), IntegerType.bool)
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.expectType(null, initializerOf('v5'), IntegerType.bool)
+		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.run();
+	}
+	
+	@Test
+	def bitwiseOperators() {
+		'''
+			long v1 = true | false;
+			long v2 = 6'h33 | 15'h7755;
+			long v3 = 8'shff | 8'haa;
+			
+			long v4 = true & false;
+			long v5 = 6'h33 & 15'h7755;
+			long v6 = 8'shff & 8'haa;
+			
+			long v7 = true ^ false;
+			long v8 = 6'h33 ^ 15'h7755;
+			long v9 = 8'shff ^ 8'haa;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.bool)
+		.expectType(null, initializerOf('v2'), IntegerType.unsigned(15))
+		.expectType(null, initializerOf('v3'), IntegerType.signed(8))
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.expectType(null, initializerOf('v5'), IntegerType.unsigned(15))
+		.expectType(null, initializerOf('v6'), IntegerType.signed(8))
+		.expectType(null, initializerOf('v7'), IntegerType.bool)
+		.expectType(null, initializerOf('v8'), IntegerType.unsigned(15))
+		.expectType(null, initializerOf('v9'), IntegerType.signed(8))
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a | false;
+			long v2 = true | a;
+			long v3 = a | a;
+			
+			long v4 = a & false;
+			long v5 = true & a;
+			long v6 = a & a;
+			
+			long v7 = a ^ false;
+			long v8 = true ^ a;
+			long v9 = a ^ a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectError(IssueCodes.InvalidOperationType, 6)
+		.expectError(IssueCodes.InvalidOperationType, 7)
+		.expectError(IssueCodes.InvalidOperationType, 8)
+		.expectError(IssueCodes.InvalidOperationType, 10)
+		.expectError(IssueCodes.InvalidOperationType, 11)
+		.expectError(IssueCodes.InvalidOperationType, 12)
+		.expectType(null, initializerOf('v1'), ErrorType.invalid)
+		.expectType(null, initializerOf('v2'), ErrorType.invalid)
+		.expectType(null, initializerOf('v3'), ErrorType.invalid)
+		.expectType(null, initializerOf('v4'), ErrorType.invalid)
+		.expectType(null, initializerOf('v5'), ErrorType.invalid)
+		.expectType(null, initializerOf('v6'), ErrorType.invalid)
+		.expectType(null, initializerOf('v7'), ErrorType.invalid)
+		.expectType(null, initializerOf('v8'), ErrorType.invalid)
+		.expectType(null, initializerOf('v9'), ErrorType.invalid)
+		.run();
+	}
+	
+	@Test
+	def equalityComparison() {
+		'''
+			long v1 = true == false;
+			long v2 = 6'd42 == 15'd720;
+			long v3 = 8'shff == 8'hff;
+			
+			long v4 = true != false;
+			long v5 = 6'd42 != 15'd720;
+			long v6 = 8'shff != 8'hff;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.bool)
+		.expectType(null, initializerOf('v2'), IntegerType.bool)
+		.expectType(null, initializerOf('v3'), IntegerType.bool)
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.expectType(null, initializerOf('v5'), IntegerType.bool)
+		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a == false;
+			long v2 = true == a;
+			long v3 = a == a;
+			
+			long v4 = a != false;
+			long v5 = true != a;
+			long v6 = a != a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 6)
+		.expectError(IssueCodes.InvalidOperationType, 7)
+		.expectType(null, initializerOf('v1'), IntegerType.bool)
+		.expectType(null, initializerOf('v2'), IntegerType.bool)
+		.expectType(null, initializerOf('v3'), IntegerType.bool)
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.expectType(null, initializerOf('v5'), IntegerType.bool)
+		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.run();
+		
+		'''
+			InstructionSet TestISA {
+				architectural_state {
+					extern unsigned char mem[4];
+				}
+				functions {
+					void testFunc() {
+						bool equal = mem == mem;
+					}
+				}
+			}
+		'''
+		.testProgram()
+		.expectError(IssueCodes.InvalidOperationType, 7)
+		.run();
+	}
+	
+	@Test
+	def magnitudeComparison() {
+		'''
+			long v1 = 6'd42 < 15'd720;
+			long v2 = 8'shff < 8'hff;
+			
+			long v3 = 6'd42 > 15'd720;
+			long v4 = 8'shff > 8'hff;
+			
+			long v5 = 6'd42 <= 15'd720;
+			long v6 = 8'shff <= 8'hff;
+			
+			long v7 = 6'd42 >= 15'd720;
+			long v8 = 8'shff >= 8'hff;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.bool)
+		.expectType(null, initializerOf('v2'), IntegerType.bool)
+		.expectType(null, initializerOf('v3'), IntegerType.bool)
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.expectType(null, initializerOf('v5'), IntegerType.bool)
+		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.expectType(null, initializerOf('v7'), IntegerType.bool)
+		.expectType(null, initializerOf('v8'), IntegerType.bool)
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a < 0;
+			long v2 = 0 < a;
+			long v3 = a < a;
+			
+			long v4 = a > 0;
+			long v5 = 0 > a;
+			long v6 = a > a;
+			
+			long v7 = a <= 0;
+			long v8 = 0 <= a;
+			long v9 = a <= a;
+			
+			long v10 = a >= 0;
+			long v11 = 0 >= a;
+			long v12 = a >= a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectError(IssueCodes.InvalidOperationType, 6)
+		.expectError(IssueCodes.InvalidOperationType, 7)
+		.expectError(IssueCodes.InvalidOperationType, 8)
+		.expectError(IssueCodes.InvalidOperationType, 10)
+		.expectError(IssueCodes.InvalidOperationType, 11)
+		.expectError(IssueCodes.InvalidOperationType, 12)
+		.expectError(IssueCodes.InvalidOperationType, 14)
+		.expectError(IssueCodes.InvalidOperationType, 15)
+		.expectError(IssueCodes.InvalidOperationType, 16)
+		.expectType(null, initializerOf('v1'), IntegerType.bool)
+		.expectType(null, initializerOf('v2'), IntegerType.bool)
+		.expectType(null, initializerOf('v3'), IntegerType.bool)
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.expectType(null, initializerOf('v5'), IntegerType.bool)
+		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.expectType(null, initializerOf('v7'), IntegerType.bool)
+		.expectType(null, initializerOf('v8'), IntegerType.bool)
+		.expectType(null, initializerOf('v9'), IntegerType.bool)
+		.expectType(null, initializerOf('v10'), IntegerType.bool)
+		.expectType(null, initializerOf('v11'), IntegerType.bool)
+		.expectType(null, initializerOf('v12'), IntegerType.bool)
+		.run();
+	}
+	
+	@Test
+	def shiftOperators() {
+		'''
+			long v1 = 42 << 2;
+			long v2 = (-77) << 3;
+			long v3 = 1 << 6;
+			
+			long v4 = 42 >> 2;
+			long v5 = (-77) >> 3;
+			long v6 = 1 << 6;
+		'''
+		.testStatements()
+		.expectWarning(IssueCodes.ShiftAlwaysZero, 3)
+		.expectWarning(IssueCodes.ShiftAlwaysZero, 7)
+		.expectType(null, initializerOf('v1'), IntegerType.unsigned(6))
+		.expectType(null, initializerOf('v2'), IntegerType.signed(8))
+		.expectType(null, initializerOf('v3'), IntegerType.bool)
+		.expectType(null, initializerOf('v4'), IntegerType.unsigned(6))
+		.expectType(null, initializerOf('v5'), IntegerType.signed(8))
+		.expectType(null, initializerOf('v6'), IntegerType.bool)
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a << 0;
+			long v2 = 0 << a;
+			long v3 = a << a;
+			
+			long v4 = a >> 0;
+			long v5 = 0 >> a;
+			long v6 = a >> a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectError(IssueCodes.InvalidOperationType, 6)
+		.expectError(IssueCodes.InvalidOperationType, 7)
+		.expectError(IssueCodes.InvalidOperationType, 8)
+		.expectType(null, initializerOf('v1'), ErrorType.invalid)
+		.expectType(null, initializerOf('v2'), ErrorType.invalid)
+		.expectType(null, initializerOf('v3'), ErrorType.invalid)
+		.expectType(null, initializerOf('v4'), ErrorType.invalid)
+		.expectType(null, initializerOf('v5'), ErrorType.invalid)
+		.expectType(null, initializerOf('v6'), ErrorType.invalid)
+		.run();
+	}
+	
+	@Test
+	def addition() {
+		'''
+			long v1 = 6'd0 + 4'd0;
+			long v2 = 6'sd0 + 4'sd0;
+			long v3 = 6'sd0 + 4'd0;
+			long v4 = 6'd0 + 4'sd0;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.unsigned(7))
+		.expectType(null, initializerOf('v2'), IntegerType.signed(7))
+		.expectType(null, initializerOf('v3'), IntegerType.signed(7))
+		.expectType(null, initializerOf('v4'), IntegerType.signed(8))
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a + 0;
+			long v2 = 0 + a;
+			long v3 = a + a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectType(null, initializerOf('v1'), ErrorType.invalid)
+		.expectType(null, initializerOf('v2'), ErrorType.invalid)
+		.expectType(null, initializerOf('v3'), ErrorType.invalid)
+		.run();
+	}
+	
+	@Test
+	def subtraction() {
+		'''
+			long v1 = 6'd0 - 4'd0;
+			long v2 = 6'sd0 - 4'sd0;
+			long v3 = 6'sd0 - 4'd0;
+			long v4 = 6'd0 - 4'sd0;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.signed(7))
+		.expectType(null, initializerOf('v2'), IntegerType.signed(7))
+		.expectType(null, initializerOf('v3'), IntegerType.signed(7))
+		.expectType(null, initializerOf('v4'), IntegerType.signed(8))
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a - 0;
+			long v2 = 0 - a;
+			long v3 = a - a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectType(null, initializerOf('v1'), ErrorType.invalid)
+		.expectType(null, initializerOf('v2'), ErrorType.invalid)
+		.expectType(null, initializerOf('v3'), ErrorType.invalid)
+		.run();
+	}
+	
+	@Test
+	def multiplication() {
+		'''
+			long v1 = 6'd0 * 4'd0;
+			long v2 = 6'sd0 * 4'sd0;
+			long v3 = 6'sd0 * 4'd0;
+			long v4 = 6'd0 * 4'sd0;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.unsigned(10))
+		.expectType(null, initializerOf('v2'), IntegerType.signed(10))
+		.expectType(null, initializerOf('v3'), IntegerType.signed(10))
+		.expectType(null, initializerOf('v4'), IntegerType.signed(10))
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a * 0;
+			long v2 = 0 * a;
+			long v3 = a * a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectType(null, initializerOf('v1'), ErrorType.invalid)
+		.expectType(null, initializerOf('v2'), ErrorType.invalid)
+		.expectType(null, initializerOf('v3'), ErrorType.invalid)
+		.run();
+	}
+	
+	@Test
+	def division() {
+		'''
+			long v1 = 6'd0 / 4'd0;
+			long v2 = 6'sd0 / 4'sd0;
+			long v3 = 6'sd0 / 4'd0;
+			long v4 = 6'd0 / 4'sd0;
+		'''
+		.testStatements()
+		.evaluateExpressions()
+		.expectError(IssueCodes.DivisionByZero, 1)
+		.expectError(IssueCodes.DivisionByZero, 2)
+		.expectError(IssueCodes.DivisionByZero, 3)
+		.expectError(IssueCodes.DivisionByZero, 4)
+		.expectType(null, initializerOf('v1'), IntegerType.unsigned(6))
+		.expectType(null, initializerOf('v2'), IntegerType.signed(7))
+		.expectType(null, initializerOf('v3'), IntegerType.signed(6))
+		.expectType(null, initializerOf('v4'), IntegerType.signed(7))
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a / 1;
+			long v2 = 1 / a;
+			long v3 = a / a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectType(null, initializerOf('v1'), ErrorType.invalid)
+		.expectType(null, initializerOf('v2'), ErrorType.invalid)
+		.expectType(null, initializerOf('v3'), ErrorType.invalid)
+		.run();
+	}
+	
+	@Test
+	def modulo() {
+		'''
+			long v1 = 6'd0 % 4'd0;
+			long v2 = 6'sd0 % 4'sd0;
+			long v3 = 6'sd0 % 4'd0;
+			long v4 = 6'd0 % 4'sd0;
+			long v5 = 4'sd0 % 6'd0;
+			long v6 = 4'd0 % 6'sd0;
+		'''
+		.testStatements()
+		// TODO implement constant expression evaluation for modulo
+		//.evaluateExpressions()
+		//.expectError(IssueCodes.DivisionByZero, 1)
+		//.expectError(IssueCodes.DivisionByZero, 2)
+		//.expectError(IssueCodes.DivisionByZero, 3)
+		//.expectError(IssueCodes.DivisionByZero, 4)
+		//.expectError(IssueCodes.DivisionByZero, 5)
+		//.expectError(IssueCodes.DivisionByZero, 6)
+		.expectType(null, initializerOf('v1'), IntegerType.unsigned(4))
+		.expectType(null, initializerOf('v2'), IntegerType.signed(4))
+		.expectType(null, initializerOf('v3'), IntegerType.signed(5))
+		.expectType(null, initializerOf('v4'), IntegerType.unsigned(3))
+		.expectType(null, initializerOf('v5'), IntegerType.signed(4))
+		.expectType(null, initializerOf('v6'), IntegerType.unsigned(4))
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a % 1;
+			long v2 = 1 % a;
+			long v3 = a % a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectType(null, initializerOf('v1'), ErrorType.invalid)
+		.expectType(null, initializerOf('v2'), ErrorType.invalid)
+		.expectType(null, initializerOf('v3'), ErrorType.invalid)
+		.run();
+	}
+	
+	@Test
+	def incrementDecrement() {
+		'''
+			int a = 0;
+			long v1 = a++;
+			long v2 = a--;
+			long v3 = ++a;
+			long v4 = --a;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.signed(32))
+		.expectType(null, initializerOf('v2'), IntegerType.signed(32))
+		.expectType(null, initializerOf('v3'), IntegerType.signed(32))
+		.expectType(null, initializerOf('v4'), IntegerType.signed(32))
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a++;
+			long v2 = a--;
+			long v3 = ++a;
+			long v4 = --a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectError(IssueCodes.InvalidOperationType, 5)
+		.run();
+	}
+	
+	@Test
+	def prefix() {
+		'''
+			int a = 0;
+			long v1 = ~a;
+			long v2 = -a;
+			long v3 = +a;
+			long v4 = !a;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.signed(32))
+		.expectType(null, initializerOf('v2'), IntegerType.signed(33))
+		.expectType(null, initializerOf('v3'), IntegerType.signed(32))
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = ~a;
+			long v2 = -a;
+			long v3 = +a;
+			long v4 = !a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectError(IssueCodes.InvalidOperationType, 5)
 		.run();
 	}
 }

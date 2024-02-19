@@ -1238,7 +1238,7 @@ class CoreDslAnalyzer {
 
 	/**
 	 * 1. The condition must be an expression with a scalar type. <i>(NonScalarCondition)</i><br>
-	 * 2. One of the two options' type has to be implicitly convertible to the other one. <i>(IncompatibleOptionTypes)</i>
+	 * 2. One of the two options' type has to be implicitly convertible to the other one, or both needs to be integer types. <i>(IncompatibleOptionTypes)</i>
 	 */
 	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, ConditionalExpression expression) {
 		val conditionType = analyzeExpression(ctx, expression.condition);
@@ -1361,9 +1361,11 @@ class CoreDslAnalyzer {
 			}
 
 			val elementCount = getRangeSize(ctx, expression.index, expression.endIndex);
-			if(elementCount === null && !ctx.isPartialAnalysis) {
-				ctx.acceptError("Invalid range pattern", expression,
-					CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1, IssueCodes.InvalidRangePattern);
+			if(elementCount === null) {
+				if(!ctx.isPartialAnalysis) {
+					ctx.acceptError("Invalid range pattern", expression,
+						CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__TCOLON, -1, IssueCodes.InvalidRangePattern);
+				}
 				return ctx.setExpressionType(expression, ErrorType.invalid);
 			}
 
@@ -1387,7 +1389,12 @@ class CoreDslAnalyzer {
 	 * Implements the patterns described <a href="https://github.com/Minres/CoreDSL/wiki/Expressions#range-operator">here</a>.
 	 */
 	def static BigInteger getRangeSize(AnalysisContext ctx, Expression start, Expression end) {
-		if(start instanceof EntityReference && end instanceof InfixExpression ||
+		if(start instanceof EntityReference && end instanceof EntityReference) {
+			if((start as EntityReference).target == (end as EntityReference).target) {
+				return BigInteger.ONE;
+			}
+		}
+		else if(start instanceof EntityReference && end instanceof InfixExpression ||
 			start instanceof InfixExpression && end instanceof EntityReference) {
 			val reference = start instanceof EntityReference ? start : end as EntityReference;
 			val infix = start instanceof InfixExpression ? start : end as InfixExpression;
@@ -1489,7 +1496,13 @@ class CoreDslAnalyzer {
 			}
 			case '==',
 			case '!=': {
-				if(leftType != rightType && !leftType.isIntegerType || !rightType.isIntegerType) {
+				if(leftType.isAddressSpaceType || rightType.isAddressSpaceType) {
+					ctx.acceptError(
+						"Equality comparisons on address spaces are not allowed",
+						expression, CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR, -1,
+						IssueCodes.InvalidOperationType);
+				}
+				else if(leftType != rightType && (!leftType.isIntegerType || !rightType.isIntegerType)) {
 					ctx.acceptError(
 						"Equality comparisons are only valid on integer types or two operands of the same type",
 						expression, CoreDslPackage.Literals.INFIX_EXPRESSION__OPERATOR, -1,
@@ -1703,6 +1716,7 @@ class CoreDslAnalyzer {
 		if(!operandType.isIntegerType && !operandType.isError) {
 			ctx.acceptError("Increment and decrement operators are only valid on integer types", expression,
 				CoreDslPackage.Literals.POSTFIX_EXPRESSION__OPERATOR, -1, IssueCodes.InvalidOperationType);
+			return ctx.setExpressionType(expression, ErrorType.invalid);
 		}
 
 		return ctx.setExpressionType(expression, operandType);
@@ -1741,6 +1755,7 @@ class CoreDslAnalyzer {
 				if(!operandType.isIntegerType && !operandType.isError) {
 					ctx.acceptError("Increment and decrement operators are only valid on integer types", expression,
 						CoreDslPackage.Literals.PREFIX_EXPRESSION__OPERATOR, -1, IssueCodes.InvalidOperationType);
+					return ctx.setExpressionType(expression, ErrorType.invalid);
 				}
 
 				return ctx.setExpressionType(expression, operandType);
@@ -1749,6 +1764,7 @@ class CoreDslAnalyzer {
 				if(!operandType.isIntegerType && !operandType.isError) {
 					ctx.acceptError("Bitwise negation is only valid on integer types", expression,
 						CoreDslPackage.Literals.PREFIX_EXPRESSION__OPERATOR, -1, IssueCodes.InvalidOperationType);
+					return ctx.setExpressionType(expression, ErrorType.invalid);
 				}
 
 				return ctx.setExpressionType(expression, operandType);
@@ -1757,6 +1773,7 @@ class CoreDslAnalyzer {
 				if(!operandType.isIntegerType && !operandType.isError) {
 					ctx.acceptError("Unary plus is only valid on integer types", expression,
 						CoreDslPackage.Literals.PREFIX_EXPRESSION__OPERATOR, -1, IssueCodes.InvalidOperationType);
+					return ctx.setExpressionType(expression, ErrorType.invalid);
 				}
 
 				return ctx.setExpressionType(expression, operandType);
@@ -1765,10 +1782,10 @@ class CoreDslAnalyzer {
 				if(!operandType.isIntegerType && !operandType.isError) {
 					ctx.acceptError("Unary minus is only valid on integer types", expression,
 						CoreDslPackage.Literals.PREFIX_EXPRESSION__OPERATOR, -1, IssueCodes.InvalidOperationType);
+					return ctx.setExpressionType(expression, ErrorType.invalid);
 				}
 
-				val intType = operandType as IntegerType;
-				return ctx.setExpressionType(expression, IntegerType.signed(intType.bitSize + 1));
+				return ctx.setExpressionType(expression, IntegerType.signed(operandType.bitSize + 1));
 			}
 			case '!': {
 				if(!operandType.isScalarType && !operandType.isError) {
