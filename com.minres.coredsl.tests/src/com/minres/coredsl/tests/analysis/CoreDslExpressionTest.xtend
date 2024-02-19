@@ -1276,6 +1276,37 @@ class CoreDslExpressionTest {
 		.expectError(IssueCodes.InvalidOperationType, 5)
 		.run();
 	}
+	
+	@Test
+	def prefix() {
+		'''
+			int a = 0;
+			long v1 = ~a;
+			long v2 = -a;
+			long v3 = +a;
+			long v4 = !a;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.signed(32))
+		.expectType(null, initializerOf('v2'), IntegerType.signed(33))
+		.expectType(null, initializerOf('v3'), IntegerType.signed(32))
+		.expectType(null, initializerOf('v4'), IntegerType.bool)
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = ~a;
+			long v2 = -a;
+			long v3 = +a;
+			long v4 = !a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectError(IssueCodes.InvalidOperationType, 5)
+		.run();
+	}
 }
 
 
