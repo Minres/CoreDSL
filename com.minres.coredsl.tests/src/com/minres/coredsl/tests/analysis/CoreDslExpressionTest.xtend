@@ -22,6 +22,7 @@ import com.minres.coredsl.coreDsl.DescriptionContent
 import com.minres.coredsl.coreDsl.FunctionCallExpression
 import com.minres.coredsl.coreDsl.IndexAccessExpression
 import com.minres.coredsl.type.ErrorType
+import com.minres.coredsl.type.ArrayType
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -1242,6 +1243,37 @@ class CoreDslExpressionTest {
 		.expectType(null, initializerOf('v1'), ErrorType.invalid)
 		.expectType(null, initializerOf('v2'), ErrorType.invalid)
 		.expectType(null, initializerOf('v3'), ErrorType.invalid)
+		.run();
+	}
+	
+	@Test
+	def incrementDecrement() {
+		'''
+			int a = 0;
+			long v1 = a++;
+			long v2 = a--;
+			long v3 = ++a;
+			long v4 = --a;
+		'''
+		.testStatements()
+		.expectType(null, initializerOf('v1'), IntegerType.signed(32))
+		.expectType(null, initializerOf('v2'), IntegerType.signed(32))
+		.expectType(null, initializerOf('v3'), IntegerType.signed(32))
+		.expectType(null, initializerOf('v4'), IntegerType.signed(32))
+		.run();
+		
+		'''
+			int a[4];
+			long v1 = a++;
+			long v2 = a--;
+			long v3 = ++a;
+			long v4 = --a;
+		'''
+		.testStatements()
+		.expectError(IssueCodes.InvalidOperationType, 2)
+		.expectError(IssueCodes.InvalidOperationType, 3)
+		.expectError(IssueCodes.InvalidOperationType, 4)
+		.expectError(IssueCodes.InvalidOperationType, 5)
 		.run();
 	}
 }
