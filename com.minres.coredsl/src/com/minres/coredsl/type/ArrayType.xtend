@@ -25,6 +25,13 @@ class ArrayType extends AggregateType {
 	
 	override toString() { return isUnknownSize ? '''«elementType»[?]''' : '''«elementType»[«count»]'''; }
 	
+	override equals(Object obj) {
+		if(obj instanceof ArrayType) {
+			return obj.count == count && obj.isUnknownSize == isUnknownSize && obj.elementType == elementType;
+		}
+		return false;
+	}
+	
 	def static ofUnknownSize(CoreDslType elementType) {
 		return new ArrayType(elementType);
 	}

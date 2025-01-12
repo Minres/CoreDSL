@@ -25,4 +25,11 @@ class IntegerType extends CoreDslType {
 	override isIntegerType() { return true; }
 	
 	override toString() { return isSigned ? '''signed<«bitSize»>''' : '''unsigned<«bitSize»>'''; }
+	
+	override equals(Object obj) {
+		if(obj instanceof IntegerType) {
+			return obj.bitSize == bitSize && obj.isSigned == isSigned;
+		}
+		return false;
+	}
 }
