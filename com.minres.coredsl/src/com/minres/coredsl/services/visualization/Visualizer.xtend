@@ -64,6 +64,8 @@ import java.util.List
 import java.util.Map
 import java.util.function.Supplier
 import org.eclipse.emf.ecore.EObject
+import com.minres.coredsl.coreDsl.DeclarationStatement
+import com.minres.coredsl.coreDsl.ConditionalExpression
 
 class Visualizer {
 	
@@ -356,6 +358,12 @@ class Visualizer {
 		);
 	}
 	
+	private def dispatch VisualNode genNode(DeclarationStatement node) {
+		return makeNode(node, "Declaration Statement",
+			makeChild("Declaration", node.declaration)
+		);
+	}
+	
 	// declarations
 	
 	private def dispatch VisualNode genNode(Declaration node) {
@@ -525,6 +533,14 @@ class Visualizer {
 		return makeNode(node, "Intrinsic Function Call",
 			makeNamedLiteral("Function", node.function),
 			makeGroup("Arguments", node.arguments)
+		);
+	}
+	
+		private def dispatch VisualNode genNode(ConditionalExpression node) {
+		return makeNode(node, "Conditional expression", 
+			makeChild("Condition", node.condition),
+			makeChild("Then Branch", node.thenExpression),
+			makeChild("Else Branch", node.elseExpression)
 		);
 	}
 	
