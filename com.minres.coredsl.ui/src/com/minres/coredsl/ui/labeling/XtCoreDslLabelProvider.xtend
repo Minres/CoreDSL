@@ -4,18 +4,41 @@
 package com.minres.coredsl.ui.labeling
 
 import com.google.inject.Inject
+import com.minres.coredsl.coreDsl.AssignmentExpression
 import com.minres.coredsl.coreDsl.BitField
 import com.minres.coredsl.coreDsl.BitValue
+import com.minres.coredsl.coreDsl.CompoundStatement
 import com.minres.coredsl.coreDsl.CoreDef
 import com.minres.coredsl.coreDsl.Declaration
+import com.minres.coredsl.coreDsl.DeclarationStatement
 import com.minres.coredsl.coreDsl.Encoding
+import com.minres.coredsl.coreDsl.EntityReference
+import com.minres.coredsl.coreDsl.Expression
+import com.minres.coredsl.coreDsl.ExpressionInitializer
+import com.minres.coredsl.coreDsl.ExpressionStatement
 import com.minres.coredsl.coreDsl.FunctionDefinition
+import com.minres.coredsl.coreDsl.IfStatement
+import com.minres.coredsl.coreDsl.IndexAccessExpression
+import com.minres.coredsl.coreDsl.InfixExpression
 import com.minres.coredsl.coreDsl.Instruction
 import com.minres.coredsl.coreDsl.InstructionSet
+import com.minres.coredsl.coreDsl.IntegerConstant
+import com.minres.coredsl.coreDsl.IntegerSignedness
+import com.minres.coredsl.coreDsl.IntegerTypeSpecifier
 import com.minres.coredsl.coreDsl.Statement
+import com.minres.coredsl.coreDsl.TypeSpecifier
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
+import com.minres.coredsl.coreDsl.FunctionCallExpression
+import com.minres.coredsl.coreDsl.VoidTypeSpecifier
+import com.minres.coredsl.coreDsl.BoolTypeSpecifier
+import com.minres.coredsl.coreDsl.EnumTypeSpecifier
+import com.minres.coredsl.coreDsl.StructTypeSpecifier
+import com.minres.coredsl.coreDsl.UnionTypeSpecifier
+import com.minres.coredsl.coreDsl.ConditionalExpression
+import com.minres.coredsl.coreDsl.ParenthesisExpression
+import com.minres.coredsl.coreDsl.CastExpression
 
 /**
  * Provides labels for EObjects.
@@ -24,82 +47,183 @@ import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
  */
 class XtCoreDslLabelProvider extends CoreDslLabelProvider {
 
-    @Inject
-    new(AdapterFactoryLabelProvider delegate) {
-        super(delegate);
-    }
+	@Inject
+	new(AdapterFactoryLabelProvider delegate) {
+		super(delegate);
+	}
 
-    def text(CoreDef core) {
-        'Core ' + core.name
-    }
+	def text(CoreDef core) {
+		'Core ' + core.name
+	}
 
-    def text(InstructionSet isa) {
-        'ISA ' + isa.name
-    }
+	def text(InstructionSet isa) {
+		'ISA ' + isa.name
+	}
 
-//    def text(DeclarationStatement declStmt) {
-//        decl.declarators.map[it.name].join(', ')
-//    }
+	def text(DeclarationStatement declStmt) {
+		val type = declStmt.declaration.type.text
+		type + " " + declStmt.declaration.declarators.map [
+			val initializer = if(it.initializer !== null) {
+					val init = it.initializer
+					if(init instanceof ExpressionInitializer)
+						it.name + "=" + init.value.text
+				} else
+					it.name
+			return (it.alias ? "&" : "") + initializer
+		].join(', ')
+	}
 
-    def text(Declaration decl) {
-        decl.declarators.map[it.name].join(', ')
-    }
+	def text(Declaration decl) {
+		decl.declarators.map[it.name].join(', ')
+	}
 
-    def text(Instruction ele) {
-        if (ele.attributes.size > 0)
-            return '''«ele.name» [«FOR attr : ele.attributes SEPARATOR ', '»«attr.attributeName»«ENDFOR»]'''
-        else
-            ele.name
-    }
+	def text(Instruction ele) {
+		if(ele.attributes.size > 0)
+			return '''«ele.name» [«FOR attr : ele.attributes SEPARATOR ', '»«attr.attributeName»«ENDFOR»]'''
+		else
+			ele.name
+	}
 
-    def text(FunctionDefinition ele) {
-        ele.name
-    }
+	def text(TypeSpecifier spc) {
+		switch spc {
+			IntegerTypeSpecifier:
+				(spc.signedness == IntegerSignedness.SIGNED ? "signed" : "unsigned") +
+					(spc.size !== null ? "<" + spc.size.text + ">" : "")
+			BoolTypeSpecifier:
+				"bool"
+			EnumTypeSpecifier:
+				spc.target.name
+			StructTypeSpecifier:
+				spc.target.name
+			UnionTypeSpecifier:
+				spc.target.name
+			VoidTypeSpecifier:
+				"void"
+			default:
+				spc.eClass.name
+		}
+	}
 
-    def text(Encoding ele) {
-        'encoding: ' + ele.fields.map[it.toText].join('::')
-    }
+	private def String getTextPrefix(EObject stmt) {
+		val parent = stmt.eContainer
+		if(parent instanceof IfStatement) {
+			if(parent.thenBody === stmt)
+				"then"
+			else if(parent.elseBody === stmt)
+				"else"
+			else if(parent.condition === stmt)
+				"cond"
+			else
+				""
+		} else
+			""
+	}
 
-    def text(EObject ele) {
-        ele.eClass.name
-    }
+	def text(Statement stmt) {
+		val prefix = stmt.textPrefix
+		switch stmt {
+			ExpressionStatement: (prefix.length > 0 ? prefix + ": " : "") + stmt.expression.text
+			CompoundStatement: prefix.length > 0 ? prefix : "Block"
+			IfStatement: "if"
+			default: stmt.eClass.name
+		}
 
-    private def dispatch String getToText(BitField field) {
-        if (field.startIndex !== null && field.endIndex !== null)
-            field.name + "[" + field.startIndex.value.intValue + ":" + field.endIndex.value.intValue + "]"
-        else
-            field.name
-    }
+	}
 
-    private def dispatch String getToText(BitValue value) {
-        value.value.toString(2)
-    }
+	def String text(Expression expr) {
+		val prefix = expr.textPrefix
+		if(prefix.length > 0)
+			prefix + ": " + _text(expr)
+		else
+			_text(expr)
+	}
 
-    def image(CoreDef e) {
-        'application.png'
-    }
+	private def String _text(Expression expr) {
+		switch expr {
+			AssignmentExpression:
+				expr.target.text + expr.operator + expr.value.text
+			EntityReference:
+				expr.target.name
+			IntegerConstant:
+				expr.value.toString
+			IndexAccessExpression:
+				expr.target.text + "[" + expr.index.text + (expr.endIndex !== null ? expr.endIndex.text : "") + "]"
+			InfixExpression:
+				expr.left.text + " " + expr.operator + " " + expr.right.text
+			FunctionCallExpression:
+				expr.target.text + "(" + expr.arguments.map[it.text].join(", ") + ")"
+			ConditionalExpression:
+				expr.condition.text + "? " + expr.thenExpression.text + " : " + expr.elseExpression.text
+			ParenthesisExpression:
+				"(" + expr.inner.text + ")"
+			CastExpression:
+				if(expr.targetType !== null)
+					"(" + expr.targetType.text + ")" + expr.operand.text
+				else
+					"(" + expr.signedness.literal + ")" + expr.operand.text
+			default:
+				expr.eClass.name
+		}
+	}
 
-    def image(InstructionSet e) {
-        'package.png'
-    }
+	def text(FunctionDefinition ele) {
+		ele.returnType.text + " " + ele.name + "(" + ele.parameters.map [
+			it.type.text + " " + it.text
+		].join(", ") + ")"
+	}
 
-    def image(Instruction e) {
-        'brick.png'
-    }
+	def text(Encoding ele) {
+		'encoding: ' + ele.fields.map[it.toText].join('::')
+	}
 
-    def image(Statement e) {
-        'script.png'
-    }
+	def text(EObject ele) {
+		ele.eClass.name
+	}
 
-    def image(Encoding e) {
-        'pill.png'
-    }
+	private def dispatch String getToText(BitField field) {
+		if(field.startIndex !== null && field.endIndex !== null)
+			field.name + "[" + field.startIndex.value.intValue + ":" + field.endIndex.value.intValue + "]"
+		else
+			field.name
+	}
 
-    def image(EObject e) {
-        'brick.png'
-    }
+	private def dispatch String getToText(BitValue value) {
+		value.value.toString(2)
+	}
 
-    def image(EList<?> e) {
-        'folder_brick.png'
-    }
+	def image(CoreDef e) {
+		'application.png'
+	}
+
+	def image(InstructionSet e) {
+		'package.png'
+	}
+
+	def image(Instruction e) {
+		'brick.png'
+	}
+
+	def image(Statement stmt) {
+		'script.png'
+	}
+
+	def image(Expression expr) {
+		val parent = expr.eContainer
+		if(parent instanceof IfStatement)
+			if(parent.condition === expr)
+				return "arrow_branch.png"
+		'calculator.png'
+	}
+
+	def image(Encoding e) {
+		'pill.png'
+	}
+
+	def image(EObject e) {
+		'brick.png'
+	}
+
+	def image(EList<?> e) {
+		'folder_brick.png'
+	}
 }
