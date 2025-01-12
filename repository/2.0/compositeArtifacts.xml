@@ -2,10 +2,10 @@
 <?compositeArtifactRepository version='1.0.0'?>
 <repository name='CoreDSL Software Repository 2.0' type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository' version='1.0.0'>
   <properties size='2'>
-    <property name='p2.timestamp' value='1736695987439'/>
+    <property name='p2.timestamp' value='1736706856951'/>
     <property name='p2.atomic.composite.loading' value='true'/>
   </properties>
-  <children size='12'>
+  <children size='13'>
     <child location='2.0.2'/>
     <child location='2.0.3'/>
     <child location='2.0.4'/>
@@ -18,5 +18,6 @@
     <child location='2.0.11'/>
     <child location='2.0.12'/>
     <child location='2.0.13'/>
+    <child location='2.0.14'/>
   </children>
 </repository>
