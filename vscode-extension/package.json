@@ -1,0 +1,62 @@
+{
+    "name": "coredsl-vscode",
+    "displayName": "CoreDSL",
+    "description": "A CoreDSL plugin for VS Code",
+    "version": "0.0.1",
+    "publisher": "minres",
+    "icon": "images/xtext.png",
+    "license": "EPL-1.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Minres/CoreDSL.git"
+    },
+    "bugs": {
+        "url": "https://github.com/Minres/CoreDSL/issues"
+    },
+    "engines": {
+        "vscode": "^1.67.1"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "activationEvents": [
+        "onLanguage:CoreDSL"
+    ],
+    "main": "out/extension",
+    "contributes": {
+        "languages": [
+            {
+                "id": "coredsl",
+                "aliases": [
+                    "CoreDSL", "coredsl"
+                ],
+                "extensions": [
+                    ".core_desc"
+                ],
+                "configuration": "./coredsl.configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "coredsl",
+                "scopeName": "text.coredsl",
+                "path": "./syntaxes/coredsl.tmLanguage.json"
+            }
+        ]
+    },
+    "devDependencies": {
+        "@types/node": "^17.0.34",
+        "@types/vscode": "^1.67.0",
+        "typescript": "^4.6.4",
+        "@vscode/test-electron": "^2.1.3"
+    },
+    "dependencies": {
+        "vscode-languageclient": "^8.0.1"
+    },
+    "scripts": {
+        "prepublish": "tsc -p ./src",
+        "compile": "tsc -p ./src",
+        "watch": "tsc -w -p ./src",
+        "update-vscode": "node ./node_modules/vscode/bin/install"
+    }
+}

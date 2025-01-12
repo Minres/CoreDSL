@@ -27,7 +27,7 @@ class AnalysisContext extends ProxyMessageAcceptor {
 	
 	public val ISA root;
 	public val boolean isPartialAnalysis;
-	public val Set<ISA> analyzedIsas = new HashSet();
+	public val Map<String, ISA> analyzedIsas = new HashMap();
 	public var isElaborationDone = false;
 	
 	new(ISA root, ValidationMessageAcceptor acceptor) {

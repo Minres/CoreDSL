@@ -11,7 +11,9 @@ generate coreDsl "http://www.minres.com/coredsl/CoreDsl/2.0"
 DescriptionContent: (imports+=Import)* definitions+=(InstructionSet | CoreDef)*;
 Import: 'import' importURI=STRING;
 
-InstructionSet: 'InstructionSet' name=ID ( 'extends' superType=[InstructionSet] )? '{' ISA '}';
+InstructionSet: 'InstructionSet' name=ID (
+	('combines' providedInstructionSets+=[InstructionSet] (',' providedInstructionSets+=[InstructionSet])* ';')
+	| (('extends' superType=[InstructionSet]) ? '{' ISA '}'));
 CoreDef: 'Core' name=ID ( 'provides' providedInstructionSets+=[InstructionSet] (',' providedInstructionSets+=[InstructionSet])*)? '{' ISA '}';
 
 fragment ISA:

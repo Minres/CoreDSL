@@ -64,6 +64,8 @@ import java.util.List
 import java.util.Map
 import java.util.function.Supplier
 import org.eclipse.emf.ecore.EObject
+import com.minres.coredsl.coreDsl.DeclarationStatement
+import com.minres.coredsl.coreDsl.ConditionalExpression
 
 class Visualizer {
 	
@@ -214,6 +216,7 @@ class Visualizer {
 		return makeNode(node, "Instruction Set",
 			makeNamedLiteral("Name", node.name),
 			makeNamedLiteral("Super Type", node.superType?.name),
+			makeGroup("Provided Instruction Sets", node.providedInstructionSets),
 			makeGroup("Architectural State", node.archStateBody),
 			makeGroup("Types", node.typeDeclarations),
 			makeGroup("Functions", node.functions),
@@ -352,6 +355,12 @@ class Visualizer {
 	private def dispatch VisualNode genNode(SpawnStatement node) {
 		return makeNode(node, "Spawn Statement",
 			makeChild("Body", node.body)
+		);
+	}
+	
+	private def dispatch VisualNode genNode(DeclarationStatement node) {
+		return makeNode(node, "Declaration Statement",
+			makeChild("Declaration", node.declaration)
 		);
 	}
 	
@@ -524,6 +533,14 @@ class Visualizer {
 		return makeNode(node, "Intrinsic Function Call",
 			makeNamedLiteral("Function", node.function),
 			makeGroup("Arguments", node.arguments)
+		);
+	}
+	
+		private def dispatch VisualNode genNode(ConditionalExpression node) {
+		return makeNode(node, "Conditional expression", 
+			makeChild("Condition", node.condition),
+			makeChild("Then Branch", node.thenExpression),
+			makeChild("Else Branch", node.elseExpression)
 		);
 	}
 	

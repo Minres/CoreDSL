@@ -125,18 +125,26 @@ class CoreDslAnalyzer {
 	// ////////////////////////////// Top level ////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////
 	def static dispatch void analyzeIsa(AnalysisContext ctx, CoreDef core) {
-		if(!ctx.analyzedIsas.add(core)) return;
+		if(ctx.analyzedIsas.put(core.name, core) !== null) return;
 		for (iset : core.providedInstructionSets) {
-			analyzeIsa(ctx, iset);
+			analyzeIsa(ctx, iset, core.name);
 		}
 		analyzeIsaShared(ctx, core);
 	}
 
 	def static dispatch void analyzeIsa(AnalysisContext ctx, InstructionSet iset) {
-		if(!ctx.analyzedIsas.add(iset)) return;
+		analyzeIsa(ctx, iset, "")
+	}
+
+	def static void analyzeIsa(AnalysisContext ctx, InstructionSet iset, String qualifier) {
+		if(ctx.analyzedIsas.put(qualifier.length>0? qualifier + ":" + iset.name : iset.name, iset) !== null)
+			return;
 		if(iset.superType !== null) {
-			analyzeIsa(ctx, iset.superType);
-		}
+			analyzeIsa(ctx, iset.superType, qualifier);
+		} else 
+			for (i : iset.providedInstructionSets) {
+				analyzeIsa(ctx, i, qualifier);
+			}
 		analyzeIsaShared(ctx, iset);
 	}
 
@@ -158,7 +166,20 @@ class CoreDslAnalyzer {
 
 		// instructions
 		for (instruction : isa.instructions) {
-			analyzeInstruction(ctx, instruction);
+			if(instruction.attributes.size > 0) {
+				val res = instruction.attributes.map [
+					analyzeAttribute(ctx, it, AttributeRegistry.AttributeUsage.instruction);
+					if(it.attributeName == "enable") {
+						val attrValue = CoreDslConstantExpressionEvaluator.tryEvaluate(ctx, it.parameters.get(0))
+						if(attrValue.isValid && attrValue.value.intValue == 0)
+							return false
+					}
+					return true
+				].reduce[p1, p2|p1 && p2]
+				if(res)
+					analyzeInstruction(ctx, instruction);
+			} else
+				analyzeInstruction(ctx, instruction);
 		}
 		analyzeAttributes(ctx, isa.commonInstructionAttributes, AttributeRegistry.AttributeUsage.instruction);
 
@@ -306,7 +327,6 @@ class CoreDslAnalyzer {
 
 	def static analyzeInstruction(AnalysisContext ctx, Instruction instruction) {
 		analyzeInstructionEncoding(ctx, instruction.encoding);
-		analyzeAttributes(ctx, instruction.attributes, AttributeRegistry.AttributeUsage.instruction);
 		analyzeStatement(ctx, instruction.behavior);
 	}
 
@@ -1130,7 +1150,7 @@ class CoreDslAnalyzer {
 		com.minres.coredsl.analysis.CoreDslAnalyzer.checkImplicitConversion(ctx, valueType, targetType,
 			expression.value, reportTarget, IssueCodes.InvalidAssignmentType);
 
-		if(expression.operator != '=' && (!targetType.isIntegerType || !valueType.isIntegerType)) {
+		if(expression.operator != '=' && !ctx.isPartialAnalysis && (!targetType.isIntegerType || !valueType.isIntegerType)) {
 			ctx.acceptError(
 				"Cannot combine " + valueType + " and " + targetType + " with the " +
 					expression.operator.substring(0, 1) + " operator", expression,

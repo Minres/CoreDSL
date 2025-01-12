@@ -6,7 +6,7 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>org.eclipse.m2e.core.maven2Builder</name>
+			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -16,12 +16,12 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
+			<name>org.eclipse.buildship.core.gradleprojectbuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.eclipse.buildship.core.gradleprojectbuilder</name>
+			<name>org.eclipse.m2e.core.maven2Builder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -43,4 +43,15 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
 	</natures>
+	<filteredResources>
+		<filter>
+			<id>1707073375464</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.core.resources.regexFilterMatcher</id>
+				<arguments>node_modules|\.git|__CREATED_BY_JAVA_LANGUAGE_SERVER__</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>

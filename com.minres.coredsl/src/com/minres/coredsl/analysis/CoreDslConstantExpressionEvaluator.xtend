@@ -119,6 +119,18 @@ class CoreDslConstantExpressionEvaluator {
 				return new ConstantValue(left.value.shiftLeft(right.value.intValueExact))
 			case '>>':
 				return new ConstantValue(left.value.shiftRight(right.value.intValueExact))
+			case '==':
+				return new ConstantValue(left.value == right.value?1:0)
+			case '!=':
+				return new ConstantValue(left.value != right.value?1:0)
+			case '<':
+				return new ConstantValue(left.value < right.value?1:0)
+			case '>':
+				return new ConstantValue(left.value > right.value?1:0)
+			case '<=':
+				return new ConstantValue(left.value <= right.value?1:0)
+			case '>=':
+				return new ConstantValue(left.value >= right.value?1:0)
 			default: {
 				if(!suppressErrors) {
 					ctx.acceptError("Infix expression " + expression.operator +

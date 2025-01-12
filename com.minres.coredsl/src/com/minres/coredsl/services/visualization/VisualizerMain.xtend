@@ -13,6 +13,7 @@ import java.nio.file.Paths
 import java.io.ByteArrayOutputStream
 import java.io.PrintWriter
 import com.minres.coredsl.services.visualization.dot.DotBuilder
+import org.eclipse.xtext.diagnostics.Severity
 
 class VisualizerMain {
     def static main(String[] args) {
@@ -60,7 +61,9 @@ class VisualizerMain {
         val issues = validator.validate(resource, CheckMode.ALL, CancelIndicator.NullImpl)
         if (!issues.empty) {
             issues.forEach[System.err.println(it)]
-            return
+            val errors = issues.filter[it.severity== Severity.ERROR].toList
+            if(errors.size>0)
+            	return
         }
 
         if (resource.contents.size != 1)

@@ -16,6 +16,11 @@ import org.eclipse.xtext.ui.editor.outline.IOutlineNode
 import org.eclipse.xtext.ui.editor.outline.impl.DocumentRootNode
 import com.minres.coredsl.coreDsl.DeclarationStatement
 import com.minres.coredsl.coreDsl.ExpressionStatement
+import com.minres.coredsl.coreDsl.ISA
+import com.minres.coredsl.coreDsl.Expression
+import org.eclipse.swt.graphics.Image
+import com.minres.coredsl.coreDsl.IfStatement
+import com.minres.coredsl.coreDsl.CompoundStatement
 
 class XtCoreDslOutlineTreeProvider extends CoreDslOutlineTreeProvider {
 
@@ -25,35 +30,40 @@ class XtCoreDslOutlineTreeProvider extends CoreDslOutlineTreeProvider {
 		]
 	}
 
+	private def _createIsaChildren(IOutlineNode parentNode, ISA modelElement, Image image) {
+		if(modelElement.archStateBody.size > 0)
+			createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__ARCH_STATE_BODY, image,
+				"Declarations & Assignments", false)
+		if(modelElement.functions.size > 0)
+			createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__FUNCTIONS, image,
+				"Functions", false)
+		if(modelElement.instructions.size > 0)
+			createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__INSTRUCTIONS, image,
+				"Instructions", false)
+
+	}
+
 	def void _createChildren(IOutlineNode parentNode, InstructionSet modelElement) {
 		val image = imageDispatcher.invoke(modelElement)
-		if(modelElement.superType !==null)
-		  	createEObjectNode(parentNode, modelElement.superType);
-		if(modelElement.archStateBody.size>0)
-		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__ARCH_STATE_BODY,
-			image, "Declarations & Assignments", false)
-		if(modelElement.functions.size>0)
-		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__FUNCTIONS,
-			image, "Functions", false)
-		if(modelElement.instructions.size>0)
-		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__INSTRUCTIONS,
-			image, "Instructions", false)
+		if(modelElement.superType !== null)
+			createEObjectNode(parentNode, modelElement.superType, imageDispatcher.invoke(modelElement.superType),
+				"Extends: " + textDispatcher.invoke(modelElement.superType), true);
+		if(modelElement.providedInstructionSets.size > 0) {
+			val text = modelElement.providedInstructionSets.map[it.name].join(", ")
+			createEStructuralFeatureNode(parentNode, modelElement,
+				CoreDslPackage.Literals.ISA__PROVIDED_INSTRUCTION_SETS, image, "Combines: " + text, true)
+		}
+		_createIsaChildren(parentNode, modelElement, image)
 	}
 
 	def void _createChildren(IOutlineNode parentNode, CoreDef modelElement) {
 		val image = imageDispatcher.invoke(modelElement)
-		if(modelElement.providedInstructionSets.size>0)
-      	createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.CORE_DEF__PROVIDED_INSTRUCTION_SETS, 
-	        image, "Contributing", false)
-        if(modelElement.archStateBody.size>0)
-        createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__ARCH_STATE_BODY,
-            image, "Declarations & Assignments", false)
-		if(modelElement.functions.size>0)
-		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__FUNCTIONS,
-			image, "Functions", false)
-		if(modelElement.instructions.size>0)
-		createEStructuralFeatureNode(parentNode, modelElement, CoreDslPackage.Literals.ISA__INSTRUCTIONS,
-			image, "Instructions", false)
+		if(modelElement.providedInstructionSets.size > 0) {
+			val text = modelElement.providedInstructionSets.map[it.name].join(", ")
+			createEStructuralFeatureNode(parentNode, modelElement,
+				CoreDslPackage.Literals.ISA__PROVIDED_INSTRUCTION_SETS, image, "Contributing: " + text, true)
+		}
+		_createIsaChildren(parentNode, modelElement, image)
 	}
 
 	def void _createChildren(IOutlineNode parentNode, Instruction instr) {
@@ -61,11 +71,24 @@ class XtCoreDslOutlineTreeProvider extends CoreDslOutlineTreeProvider {
 		createNode(parentNode, instr.behavior)
 	}
 
-    def void _createChildren(IOutlineNode parentNode, DeclarationStatement declStmt) {
-        if(declStmt.declaration !== null) {
-            createEObjectNode(parentNode, declStmt.declaration);
-        }
-    }
+	def void _createChildren(IOutlineNode parentNode, Statement stmt) {
+		switch (stmt) {
+			IfStatement: {
+				createEObjectNode(parentNode, stmt.condition);
+				createEObjectNode(parentNode, stmt.thenBody);
+				if(stmt.elseBody !== null)
+					createEObjectNode(parentNode, stmt.elseBody);
+			}
+			CompoundStatement: {
+				for (element : stmt.statements) {
+					createEObjectNode(parentNode, element, imageDispatcher.invoke(element),
+						textDispatcher.invoke(element), false);
+				}
+			}
+			default: {
+			}
+		}
+	}
 
 	def boolean _isLeaf(NamedEntity variable) {
 		return true;
@@ -80,9 +103,17 @@ class XtCoreDslOutlineTreeProvider extends CoreDslOutlineTreeProvider {
 	}
 
 	def boolean _isLeaf(Statement stmt) {
-	    switch(stmt) {
-	        DeclarationStatement, ExpressionStatement: false
-	        default: true
-	    }
+		switch (stmt) {
+			DeclarationStatement,
+			ExpressionStatement:
+				true
+			default:
+				false
+		}
 	}
+
+	def boolean _isLeaf(Expression expr) {
+		return true;
+	}
+
 }
