@@ -125,20 +125,25 @@ class CoreDslAnalyzer {
 	// ////////////////////////////// Top level ////////////////////////////////
 	// /////////////////////////////////////////////////////////////////////////
 	def static dispatch void analyzeIsa(AnalysisContext ctx, CoreDef core) {
-		if(!ctx.analyzedIsas.add(core)) return;
+		if(ctx.analyzedIsas.put(core.name, core) !== null) return;
 		for (iset : core.providedInstructionSets) {
-			analyzeIsa(ctx, iset);
+			analyzeIsa(ctx, iset, core.name);
 		}
 		analyzeIsaShared(ctx, core);
 	}
 
 	def static dispatch void analyzeIsa(AnalysisContext ctx, InstructionSet iset) {
-		if(!ctx.analyzedIsas.add(iset)) return;
+		analyzeIsa(ctx, iset, "")
+	}
+
+	def static void analyzeIsa(AnalysisContext ctx, InstructionSet iset, String qualifier) {
+		if(ctx.analyzedIsas.put(qualifier.length>0? qualifier + ":" + iset.name : iset.name, iset) !== null)
+			return;
 		if(iset.superType !== null) {
-			analyzeIsa(ctx, iset.superType);
+			analyzeIsa(ctx, iset.superType, qualifier);
 		} else 
 			for (i : iset.providedInstructionSets) {
-				analyzeIsa(ctx, i);
+				analyzeIsa(ctx, i, qualifier);
 			}
 		analyzeIsaShared(ctx, iset);
 	}
@@ -1133,7 +1138,7 @@ class CoreDslAnalyzer {
 		com.minres.coredsl.analysis.CoreDslAnalyzer.checkImplicitConversion(ctx, valueType, targetType,
 			expression.value, reportTarget, IssueCodes.InvalidAssignmentType);
 
-		if(expression.operator != '=' && (!targetType.isIntegerType || !valueType.isIntegerType)) {
+		if(expression.operator != '=' && !ctx.isPartialAnalysis && (!targetType.isIntegerType || !valueType.isIntegerType)) {
 			ctx.acceptError(
 				"Cannot combine " + valueType + " and " + targetType + " with the " +
 					expression.operator.substring(0, 1) + " operator", expression,
