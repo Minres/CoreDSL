@@ -74,7 +74,7 @@ class CoreDslElaborator {
 				ctx.acceptError(
 					'Core provides the instruction set ' + iset.name + ' multiple times',
 					core,
-					CoreDslPackage.Literals.CORE_DEF__PROVIDED_INSTRUCTION_SETS,
+					CoreDslPackage.Literals.ISA__PROVIDED_INSTRUCTION_SETS,
 					i,
 					IssueCodes.MultipleIdenticalProvides
 				);
@@ -107,6 +107,23 @@ class CoreDslElaborator {
 			ctx.currentInheritanceStack.push(iset);
 			buildElaborationOrder(ctx, iset.superType);
 			ctx.currentInheritanceStack.pop();
+		} else {
+			val providedInstructionSets = new HashSet();
+			for (var i = 0; i < iset.providedInstructionSets.length; i++) {
+				val isa = iset.providedInstructionSets.get(i);
+				if(providedInstructionSets.add(isa)) {
+					buildElaborationOrder(ctx, isa);
+				} else {
+					ctx.acceptError(
+						'Core provides the instruction set ' + iset.name + ' multiple times',
+						isa,
+						CoreDslPackage.Literals.ISA__PROVIDED_INSTRUCTION_SETS,
+						i,
+						IssueCodes.MultipleIdenticalProvides
+					);
+				}
+
+			}
 		}
 
 		if(!ctx.elaborationOrder.contains(iset))
@@ -259,8 +276,14 @@ class CoreDslElaborator {
 			CompilerAssertion.assertThat(superNames !== null,
 				"Super instruction set must be analyzed before the deriving instruction set");
 			exposedNames.addAll(superNames);
-		}
-
+		} else
+			for (isa : iset.providedInstructionSets) {
+				val isetNames = ctx.getExposedNames(isa);
+				CompilerAssertion.assertThat(isetNames !== null,
+					"Provided instruction set must be analyzed before the providing core");
+				exposedNames.addAll(isetNames);
+			}
+		
 		return exposedNames;
 	}
 

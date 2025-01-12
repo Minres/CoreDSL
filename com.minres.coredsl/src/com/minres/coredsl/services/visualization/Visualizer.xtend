@@ -214,6 +214,7 @@ class Visualizer {
 		return makeNode(node, "Instruction Set",
 			makeNamedLiteral("Name", node.name),
 			makeNamedLiteral("Super Type", node.superType?.name),
+			makeGroup("Provided Instruction Sets", node.providedInstructionSets),
 			makeGroup("Architectural State", node.archStateBody),
 			makeGroup("Types", node.typeDeclarations),
 			makeGroup("Functions", node.functions),

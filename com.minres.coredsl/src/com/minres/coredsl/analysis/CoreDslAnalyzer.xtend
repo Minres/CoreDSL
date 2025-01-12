@@ -136,7 +136,10 @@ class CoreDslAnalyzer {
 		if(!ctx.analyzedIsas.add(iset)) return;
 		if(iset.superType !== null) {
 			analyzeIsa(ctx, iset.superType);
-		}
+		} else 
+			for (i : iset.providedInstructionSets) {
+				analyzeIsa(ctx, i);
+			}
 		analyzeIsaShared(ctx, iset);
 	}
 

@@ -52,7 +52,7 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 		//println('''Trying to resolve «reference.EType.name» «(reference.eContainer as EClass).name».«reference.name» on «context.eClass.name»''');
 
 		switch (reference) {
-			case CoreDslPackage.Literals.CORE_DEF__PROVIDED_INSTRUCTION_SETS,
+			case CoreDslPackage.Literals.ISA__PROVIDED_INSTRUCTION_SETS,
 			case CoreDslPackage.Literals.INSTRUCTION_SET__SUPER_TYPE: {
 				return getIsaScope(context, reference);
 			}
@@ -210,8 +210,11 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 	}
 
 	def private static dispatch IScope getInheritedScope(InstructionSet iset) {
-		if(iset.superType === null) return IScope.NULLSCOPE;
-		Scopes.scopeFor(getDeclarationsTransitive(iset.superType))
+		if(iset.superType !== null)
+			return Scopes.scopeFor(getDeclarationsTransitive(iset.superType))
+		val declarations = iset.providedInstructionSets.flatMap[getDeclarationsTransitive(it)];
+		val seen = new HashSet();
+		return Scopes.scopeFor(declarations.filter[seen.add(it)]);
 	}
 
 	def private static dispatch IScope getNamedEntityScope(ISA context, EObject child) {

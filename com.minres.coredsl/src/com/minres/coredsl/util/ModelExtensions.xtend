@@ -143,7 +143,12 @@ abstract class ModelExtensions {
 
 	private static def dispatch void getElaborationOrder(InstructionSet iset, List<ISA> order, HashSet<ISA> seen) {
 		if(!seen.add(iset)) return;
-		if(iset.superType !== null) getElaborationOrder(iset.superType, order, seen);
+		if(iset.superType !== null)
+			getElaborationOrder(iset.superType, order, seen)
+		else
+			for (isa : iset.providedInstructionSets) {
+				getElaborationOrder(isa, order, seen);
+			}
 		order.add(iset);
 	}
 
