@@ -166,7 +166,20 @@ class CoreDslAnalyzer {
 
 		// instructions
 		for (instruction : isa.instructions) {
-			analyzeInstruction(ctx, instruction);
+			if(instruction.attributes.size > 0) {
+				val res = instruction.attributes.map [
+					analyzeAttribute(ctx, it, AttributeRegistry.AttributeUsage.instruction);
+					if(it.attributeName == "enable") {
+						val attrValue = CoreDslConstantExpressionEvaluator.tryEvaluate(ctx, it.parameters.get(0))
+						if(attrValue.isValid && attrValue.value.intValue == 0)
+							return false
+					}
+					return true
+				].reduce[p1, p2|p1 && p2]
+				if(res)
+					analyzeInstruction(ctx, instruction);
+			} else
+				analyzeInstruction(ctx, instruction);
 		}
 		analyzeAttributes(ctx, isa.commonInstructionAttributes, AttributeRegistry.AttributeUsage.instruction);
 
@@ -314,7 +327,6 @@ class CoreDslAnalyzer {
 
 	def static analyzeInstruction(AnalysisContext ctx, Instruction instruction) {
 		analyzeInstructionEncoding(ctx, instruction.encoding);
-		analyzeAttributes(ctx, instruction.attributes, AttributeRegistry.AttributeUsage.instruction);
 		analyzeStatement(ctx, instruction.behavior);
 	}
 
