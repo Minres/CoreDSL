@@ -1,5 +1,3 @@
-project.version="2.0.12"
-
 task copyApplication(type: Sync) {
     def installDistTask = project(':com.minres.coredsl.ide').tasks.installDist
     dependsOn installDistTask

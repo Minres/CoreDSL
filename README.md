@@ -8,6 +8,13 @@ This repo contains the XText bundles/plugins for [CoreDSL](https://minres.github
 
 [Programmer's manual](https://github.com/Minres/CoreDSL/wiki/CoreDSL-2-programmer's-manual)
 
+## Building VSCode plugin
+
+* fix version number in build.gradle
+* run 
+  ```
+  (cd vscode-extension-self-contained/; ../gradlew clean vscodeExtension)
+  ```
 
 ## References
 

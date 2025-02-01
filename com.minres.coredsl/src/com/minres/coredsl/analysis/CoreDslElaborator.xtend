@@ -28,10 +28,12 @@ import java.util.ArrayList
 import java.util.HashSet
 import java.util.Set
 import org.eclipse.xtext.validation.ValidationMessageAcceptor
+import com.minres.coredsl.type.AddressSpaceType
+import com.minres.coredsl.coreDsl.StorageClassSpecifier
+import com.minres.coredsl.type.ArrayType
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
-import com.minres.coredsl.type.AddressSpaceType
 
 class CoreDslElaborator {
 
@@ -368,10 +370,19 @@ class CoreDslElaborator {
 				val value = CoreDslConstantExpressionEvaluator.evaluate(analysisContext, expression);
 
 				if(value.isValid) {
-					if(value.value < BigInteger.ZERO) {
-						type = AddressSpaceType.ofUnknownSize(type);
+					val declaration = declarator.eContainer as Declaration
+					if(declaration.storage.contains(StorageClassSpecifier.EXTERN)){
+						if(value.value < BigInteger.ZERO) {
+							type = AddressSpaceType.ofUnknownSize(type);
+						} else {
+							type = new AddressSpaceType(type, value.value);
+						}
 					} else {
-						type = new AddressSpaceType(type, value.value);
+						if(value.value < BigInteger.ZERO) {
+							type = ArrayType.ofUnknownSize(type);
+						} else {
+							type = new ArrayType(type, value.value.intValue);
+						}						
 					}
 				} else if(failed) {
 					type = AddressSpaceType.ofUnknownSize(type);

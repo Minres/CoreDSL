@@ -21,5 +21,12 @@ class CompositeType extends CoreDslType {
 	override isStructType() { return declaration instanceof StructTypeDeclaration; }
 	override isUnionType() { return declaration instanceof UnionTypeDeclaration; }
 	
+	override equals(Object obj) {
+		if(obj instanceof CompositeType) {
+			return obj.declaration === declaration;
+		}
+		return false;
+	}
+	
 	override toString() { return isStructType ? '''struct «declaration.name»''' : '''union «declaration.name»'''; }
 }

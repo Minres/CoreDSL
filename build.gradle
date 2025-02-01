@@ -40,7 +40,7 @@ configure(subprojects.findAll { it.name.startsWith('com.minres') }) {
 	apply plugin: 'eclipse'
 	
 	group = 'com.minres.coredsl'
-	version = '2.0.12'
+	version = '2.0.15'
 
 	java {
 		sourceCompatibility = JavaVersion.VERSION_17
@@ -71,7 +71,7 @@ configure(subprojects.findAll { it.name.startsWith('vscode') }) {
 	    download = true
 	}
 
-	version = '2.0.12'
+	version = '2.0.15'
 
 	def inputFiles = fileTree(
 		dir: projectDir, 
