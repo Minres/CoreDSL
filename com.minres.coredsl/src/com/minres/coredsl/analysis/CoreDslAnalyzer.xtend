@@ -999,9 +999,14 @@ class CoreDslAnalyzer {
 		if(rangeAccess === null) return false;
 		if(rangeAccess.endIndex === null) return false;
 
-		val initSpace = ctx.getExpressionType(rangeAccess.target) as AddressSpaceType;
+		val initSpace = ctx.getExpressionType(rangeAccess.target);
 		if(initSpace === null) return false;
-		if(initSpace.elementType != aliasSpace.elementType) return false;
+		if(initSpace instanceof AddressSpaceType) {
+			if(initSpace.elementType != aliasSpace.elementType) return false;	
+		} else if(initSpace instanceof ArrayType) {
+			if(initSpace.elementType != aliasSpace.elementType) return false;
+		} else
+			return false
 
 		val aliasSize = aliasSpace.count * BigInteger.valueOf(aliasSpace.elementType.bitSize);
 		val rangeSize = BigInteger.valueOf(ctx.getExpressionType(rangeAccess).bitSize);
@@ -1062,6 +1067,11 @@ class CoreDslAnalyzer {
 							checkIndexAccessBounds(ctx, indexValue.value, targetType.count, expression,
 								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
 						}
+					} else if(targetType instanceof ArrayType) {
+						if(!targetType.isUnknownSize) {
+							checkIndexAccessBounds(ctx, indexValue.value, BigInteger.valueOf(targetType.count), expression,
+								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
+						}
 					} else if(targetType instanceof IntegerType) {
 						checkIndexAccessBounds(ctx, indexValue.value, BigInteger.valueOf(targetType.bitSize),
 							expression, CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__INDEX);
@@ -1076,6 +1086,9 @@ class CoreDslAnalyzer {
 					if(endIndexValue.isValid) {
 						if(targetType instanceof AddressSpaceType) {
 							checkIndexAccessBounds(ctx, endIndexValue.value, targetType.count, expression,
+								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__END_INDEX);
+						} else if(targetType instanceof ArrayType) {
+							checkIndexAccessBounds(ctx, endIndexValue.value, BigInteger.valueOf(targetType.count), expression,
 								CoreDslPackage.Literals.INDEX_ACCESS_EXPRESSION__END_INDEX);
 						} else if(targetType instanceof IntegerType) {
 							checkIndexAccessBounds(ctx, endIndexValue.value, BigInteger.valueOf(targetType.bitSize),
