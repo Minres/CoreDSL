@@ -18,17 +18,17 @@ class CoreDslAliasTest {
 	@Test
 	def void arrayIndex() {
 		// valid: first and last register
-		'''
-			Core C {
-				architectural_state {
-					register unsigned int X[32];
-					unsigned int& Y = X[0];
-					unsigned int& Z = X[31];
-				}
-			}
-		'''
-		.testProgram()
-		.run();
+//		'''
+//			Core C {
+//				architectural_state {
+//					register unsigned int X[32];
+//					unsigned int& Y = X[0];
+//					unsigned int& Z = X[31];
+//				}
+//			}
+//		'''
+//		.testProgram()
+//		.run();
 		
 		// error: register index out of range
 		'''

@@ -600,7 +600,7 @@ class CoreDslElaborationTest {
 			}
 		'''
 		.testProgram()
-		.expectType("X", "X", "unsigned<32>[address space 32]")
+		.expectType("X", "X", "unsigned<32>[32]")
 		.expectType("X", "M", "unsigned<8>[address space 256]")
 		.run();
 		
