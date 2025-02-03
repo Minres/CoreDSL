@@ -2,7 +2,7 @@
     "name": "coredsl-vscode",
     "displayName": "CoreDSL",
     "description": "A CoreDSL plugin for VS Code",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "MINRES",
     "icon": "images/Minres_logo_square.png",
     "license": "EPL-1.0",

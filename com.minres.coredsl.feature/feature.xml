@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature id="com.minres.coredsl.feature"
 	label="CoreDsl Feature "
-	version="2.0.15">
+	version="2.0.16">
 	<plugin
 			id="com.minres.coredsl"
 			download-size="0"
