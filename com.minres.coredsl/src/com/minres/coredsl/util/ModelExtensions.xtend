@@ -19,6 +19,9 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 
 import static extension com.minres.coredsl.util.DataExtensions.*
+import com.minres.coredsl.coreDsl.ExpressionInitializer
+import com.minres.coredsl.coreDsl.IndexAccessExpression
+import com.minres.coredsl.coreDsl.EntityReference
 
 abstract class ModelExtensions {
 	private new() {
@@ -157,5 +160,21 @@ abstract class ModelExtensions {
 			getElaborationOrder(iset, order, seen);
 		}
 		order.add(core);
+	}
+	
+	static def getRealDeclarator(Declarator declarator) {
+		if(declarator.isAlias) {
+			val initializer = declarator.initializer
+			if(initializer instanceof ExpressionInitializer) {
+				val value = initializer.value
+				if(value instanceof IndexAccessExpression) {
+					val target = value.target
+					if(target instanceof EntityReference)
+						if(target.target instanceof Declarator)
+							return target.target as Declarator
+				}
+			}
+		}
+		declarator
 	}
 }

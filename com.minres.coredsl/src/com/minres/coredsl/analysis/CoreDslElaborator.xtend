@@ -609,7 +609,7 @@ class CoreDslElaborator {
 			val effectiveDeclarator = info.declarators.last;
 
 			if(info.assignments.empty) {
-				if(analysisContext.getStorageClass(info.declarators.get(0)) === StorageClass.param) {
+				if(analysisContext.getStorageClass(info.declarators.get(0)) === StorageClass.param && info.declarators.get(0).initializer === null) {
 					unassignedParameters.add(info.name);
 				}
 			} else {
