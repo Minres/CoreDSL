@@ -82,6 +82,7 @@ import static com.minres.coredsl.analysis.AttributeRegistry.AttributeUsage.instr
 
 import static extension com.minres.coredsl.util.DataExtensions.*
 import static extension com.minres.coredsl.util.ModelExtensions.*
+import com.minres.coredsl.coreDsl.StorageClassSpecifier
 
 class CoreDslAnalyzer {
 	public static var boolean emitDebugInfo = false;
@@ -790,24 +791,26 @@ class CoreDslAnalyzer {
 	 * @see CoreDslAnalyzer#analyzeAliasDeclarator(AnalysisContext, Declarator, CoreDslType, boolean)
 	 */
 	def static void analyzeDeclarator(AnalysisContext ctx, Declarator declarator, CoreDslType declarationType,
-		boolean isIsaStateElement) {
+		boolean isArchStateElement) {
 		var type = declarationType;
 
 		// storage class of state elements and type members has already been set during elaboration
-		if(!isIsaStateElement && !declarator.isUserTypeMember) {
+		if(!isArchStateElement && !declarator.isUserTypeMember) {
 			ctx.setStorageClass(declarator, StorageClass.local);
 		}
 
 		// do this first because it may modify the type
 		if(!declarator.dimensions.empty) {
-			if(declarator.isIsaParameter) {
+			if(declarator.isIsaParameter && !declarator.isConst) {
 				ctx.acceptError("An ISA parameter may not be declared as an array", declarator,
 					CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, 1, IssueCodes.InvalidIsaParameterDeclaration);
 			}
 
-			val isAddressSpace = isIsaStateElement;
+			val decl = declarator.realDeclarator
+			val isAddressSpace = (decl.eContainer as Declaration).storage.contains(StorageClassSpecifier.EXTERN)
+			val isRegister = (decl.eContainer as Declaration).storage.contains(StorageClassSpecifier.REGISTER)
 
-			if(isAddressSpace && declarator.dimensions.size > 1) {
+			if((isAddressSpace || isRegister) && declarator.dimensions.size > 1) {
 				ctx.acceptError("Multidimensional address spaces are not allowed", declarator,
 					CoreDslPackage.Literals.DECLARATOR__DIMENSIONS, declarator.dimensions.size - 2,
 					IssueCodes.MultidimensionalAddressSpace);
@@ -845,7 +848,7 @@ class CoreDslAnalyzer {
 		}
 
 		// type of state elements and type members has already been set during elaboration
-		if(!isIsaStateElement && !declarator.isUserTypeMember) {
+		if(!isArchStateElement && !declarator.isUserTypeMember) {
 			ctx.setDeclaredType(declarator, type);
 		}
 
@@ -858,7 +861,7 @@ class CoreDslAnalyzer {
 		}
 
 		if(declarator.isAlias) {
-			analyzeAliasDeclarator(ctx, declarator, type, isIsaStateElement);
+			analyzeAliasDeclarator(ctx, declarator, type, isArchStateElement);
 		} else if(declarator.initializer !== null) {
 			var initializer = declarator.initializer;
 			if(initializer instanceof ExpressionInitializer) {
@@ -889,7 +892,7 @@ class CoreDslAnalyzer {
 						val reportTarget = new IssueReportTarget(subInitializer.value, null);
 						com.minres.coredsl.analysis.CoreDslAnalyzer.checkImplicitConversion(ctx, valueType, elementType,
 							subInitializer.value, reportTarget, IssueCodes.InvalidAssignmentType);
-						if(isIsaStateElement) {
+						if(isArchStateElement) {
 							CoreDslConstantExpressionEvaluator.evaluate(ctx, subInitializer.value);
 						}
 					} else {
@@ -992,8 +995,11 @@ class CoreDslAnalyzer {
 
 	def private static isValidRangeAlias(AnalysisContext ctx, Declarator aliasDeclarator, CoreDslType aliasType,
 		Expression initExpression) {
-		val aliasSpace = aliasType as AddressSpaceType;
-		if(aliasSpace === null) return false;
+		if(aliasType === null) return false;
+		val aliasSpaceElementType = if(aliasType instanceof AddressSpaceType) aliasType.elementType 
+		else if(aliasType instanceof ArrayType) aliasType.elementType else ErrorType.invalid
+		val aliasSpaceCount = if(aliasType instanceof AddressSpaceType) aliasType.count 
+		else if(aliasType instanceof ArrayType) BigInteger.valueOf(aliasType.count) else BigInteger.ZERO
 
 		val rangeAccess = initExpression as IndexAccessExpression;
 		if(rangeAccess === null) return false;
@@ -1002,13 +1008,13 @@ class CoreDslAnalyzer {
 		val initSpace = ctx.getExpressionType(rangeAccess.target);
 		if(initSpace === null) return false;
 		if(initSpace instanceof AddressSpaceType) {
-			if(initSpace.elementType != aliasSpace.elementType) return false;	
+			if(initSpace.elementType != aliasSpaceElementType) return false;	
 		} else if(initSpace instanceof ArrayType) {
-			if(initSpace.elementType != aliasSpace.elementType) return false;
+			if(initSpace.elementType != aliasSpaceElementType) return false;
 		} else
 			return false
 
-		val aliasSize = aliasSpace.count * BigInteger.valueOf(aliasSpace.elementType.bitSize);
+		val aliasSize = aliasSpaceCount * BigInteger.valueOf(aliasSpaceElementType.bitSize);
 		val rangeSize = BigInteger.valueOf(ctx.getExpressionType(rangeAccess).bitSize);
 		if(aliasSize != rangeSize) return false;
 
