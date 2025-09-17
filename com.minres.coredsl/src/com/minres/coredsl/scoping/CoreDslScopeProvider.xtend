@@ -200,7 +200,10 @@ class CoreDslScopeProvider extends AbstractCoreDslScopeProvider {
 		val functions = isa.functions;
 		
 		val entities = declarations + enumMembers + functions;
-		return isa.superType !== null ? entities + getDeclarationsTransitive(isa.superType) : entities;
+		if(isa.superType !== null)
+		 	entities + getDeclarationsTransitive(isa.superType)
+		else
+			entities + isa.providedInstructionSets.flatMap[getDeclarationsTransitive(it)];
 	}
 
 	def private static dispatch IScope getInheritedScope(CoreDef core) {
