@@ -3,7 +3,7 @@ Automatic-Module-Name: com.minres.coredsl.tests
 Bundle-ManifestVersion: 2
 Bundle-Name: com.minres.coredsl.tests
 Bundle-Vendor: MINRES Technologies GmbH
-Bundle-Version: 2.0.16
+Bundle-Version: 2.0.17
 Bundle-SymbolicName: com.minres.coredsl.tests; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: com.minres.coredsl,
