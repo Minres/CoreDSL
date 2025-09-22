@@ -1229,7 +1229,7 @@ class CoreDslAnalyzer {
 	 */
 	def static dispatch CoreDslType analyzeExpression(AnalysisContext ctx, CastExpression expression) {
 		val valueType = analyzeExpression(ctx, expression.operand);
-
+		val strict = Boolean.parseBoolean(System.properties.getProperty("strict", "False"));
 		if(expression.targetType !== null) {
 			val targetType = analyzeTypeSpecifier(ctx, expression.targetType);
 
@@ -1238,7 +1238,7 @@ class CoreDslAnalyzer {
 					CoreDslPackage.Literals.CAST_EXPRESSION__TARGET_TYPE, -1, IssueCodes.InvalidCast);
 			}
 
-			if(targetType.equals(valueType) && !targetType.isIncomplete) {
+			if(strict && targetType.equals(valueType) && !targetType.isIncomplete) {
 				ctx.acceptWarning("Identity cast does nothing", expression,
 					CoreDslPackage.Literals.CAST_EXPRESSION__TARGET_TYPE, -1, IssueCodes.IdentityCast);
 			}
@@ -1257,7 +1257,7 @@ class CoreDslAnalyzer {
 
 			val intType = valueType as IntegerType;
 			val toSigned = expression.signedness == IntegerSignedness.SIGNED;
-			if(toSigned == intType.signed) {
+			if(strict && toSigned == intType.signed) {
 				ctx.acceptWarning("Identity cast does nothing", expression,
 					CoreDslPackage.Literals.CAST_EXPRESSION__SIGNEDNESS, -1, IssueCodes.IdentityCast);
 			}
