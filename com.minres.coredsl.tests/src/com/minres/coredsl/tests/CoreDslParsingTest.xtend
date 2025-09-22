@@ -13,6 +13,7 @@ import org.junit.jupiter.api.^extension.ExtendWith
 import org.junit.jupiter.api.Test
 import static org.junit.jupiter.api.Assertions.assertFalse
 import static org.junit.jupiter.api.Assertions.assertTrue
+import javax.print.attribute.standard.Severity
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -234,7 +235,8 @@ class CoreDslParsingTest {
                     unsigned int count, endpc, startpc;
                 }
                 functions {
-                    extern void blub(unsigned int x) [[ uses_mems ]];
+                    extern void blub(unsigned int x) [[ uses_mem ]];
+                    extern void blah(unsigned int x) [[ blub ]];
                 }
                 instructions {
                     FOO {
@@ -251,7 +253,8 @@ class CoreDslParsingTest {
             }
         '''.parse
         val issues = validator.validate(content)
-        for (iss : issues) println(iss)
-        assertTrue(issues.isEmpty())
+        // for (iss : issues) println(iss)
+        assertTrue(issues.filter[it.severity == Severity.ERROR].isEmpty())
+        assertTrue(issues.size == 1)
     }
 }
