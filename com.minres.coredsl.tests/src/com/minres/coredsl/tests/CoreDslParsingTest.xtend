@@ -10,6 +10,9 @@ import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.junit.jupiter.api.Test
+import static org.junit.jupiter.api.Assertions.assertFalse
+import static org.junit.jupiter.api.Assertions.assertTrue
 
 @ExtendWith(InjectionExtension)
 @InjectWith(CoreDslInjectorProvider)
@@ -141,7 +144,7 @@ class CoreDslParsingTest {
         val content = '''
             InstructionSet TestISA {
                 architectural_state {
-                	register int PC [[is_pc]];
+                    register int PC [[is_pc]];
                     register float Freg[32];
                     register bool F_ready[32] [[is_interlock_for=Freg]];  // use attribute to indicate purpose of F_ready
                 }
@@ -169,8 +172,8 @@ class CoreDslParsingTest {
         val content = '''
             InstructionSet TestISA {
                 architectural_state {
-                	register int PC;
-                	register int X[32];
+                    register int PC;
+                    register int X[32];
                     unsigned int count, endpc, startpc;
                 }
                 functions {
@@ -219,5 +222,36 @@ class CoreDslParsingTest {
         }
         '''.addInstructionContext.parse
         validator.assertNoErrors(content)
+    }
+
+    @Test
+    def void parseFunctionAttr() {
+        val content = '''
+            InstructionSet TestISA {
+                architectural_state {
+                    register int PC;
+                    register int X[32];
+                    unsigned int count, endpc, startpc;
+                }
+                functions {
+                    extern void blub(unsigned int x) [[ uses_mems ]];
+                }
+                instructions {
+                    FOO {
+                        encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  
+                        assembly: "{name(rd)}, {name(rs1)}, {name(rs2)}";
+                        behavior: {
+                            switch(rs1) {
+                                case 1: blub(18); break;
+                                case 2: blub(0); break;
+                            }
+                        }
+                    }
+                }
+            }
+        '''.parse
+        val issues = validator.validate(content)
+        for (iss : issues) println(iss)
+        assertTrue(issues.isEmpty())
     }
 }

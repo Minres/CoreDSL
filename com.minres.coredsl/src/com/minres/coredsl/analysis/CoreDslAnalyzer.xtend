@@ -100,6 +100,7 @@ class CoreDslAnalyzer {
 		registry.register("is_main_mem", 0, declarator);
 		registry.register("is_interlock_for", 1, declarator);
 		registry.register("clk_budget", 1, function);
+		registry.register("uses_mem", 0, function);
 		registry.register("type", 1, instruction);
 		registry.register("expected_encoding_size", 1, attribValidator_expectedEncodingSize, instruction);
 		return registry;
@@ -207,22 +208,24 @@ class CoreDslAnalyzer {
 		if(info === null) {
 			ctx.acceptWarning("Unknown attribute '" + attribute.attributeName + "'", attribute, null, -1,
 				IssueCodes.UnknownAttribute);
-		}
+		} else {
 
-		if(!info.allowedUsage.contains(expectedUsage)) {
-			ctx.acceptError("Attribute '" + attribute.attributeName + "' cannot be placed here", attribute, null, -1,
-				IssueCodes.InvalidAttributePlacement);
-		}
-
-		if(attribute.parameters.size !== info.paramCount && info.paramCount != -1) {
-			val countString = info.paramCount == 1 ? "1 parameter" : info.paramCount + " parameters";
-			ctx.acceptError(
-				"Attribute '" + attribute.attributeName + "' requires exactly " + countString + ", but got " +
-					attribute.parameters.size, attribute, null, -1, IssueCodes.InvalidAttributePlacement);
-		}
-
-		if(info.validator !== null) {
-			info.validator.apply(ctx, attribute, expectedUsage);
+			if(!info.allowedUsage.contains(expectedUsage)) {
+				ctx.acceptError("Attribute '" + attribute.attributeName + "' cannot be placed here", attribute, null, -1,
+					IssueCodes.InvalidAttributePlacement);
+			}
+	
+			if(attribute.parameters.size !== info.paramCount && info.paramCount != -1) {
+				val countString = info.paramCount == 1 ? "1 parameter" : info.paramCount + " parameters";
+				ctx.acceptError(
+					"Attribute '" + attribute.attributeName + "' requires exactly " + countString + ", but got " +
+						attribute.parameters.size, attribute, null, -1, IssueCodes.InvalidAttributePlacement);
+			}
+	
+			if(info.validator !== null) {
+				info.validator.apply(ctx, attribute, expectedUsage);
+			}
+		
 		}
 	}
 
