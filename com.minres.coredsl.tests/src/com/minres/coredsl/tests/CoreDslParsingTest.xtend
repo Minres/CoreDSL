@@ -257,4 +257,29 @@ class CoreDslParsingTest {
         assertTrue(issues.filter[it.severity == Severity.ERROR].isEmpty())
         assertTrue(issues.size == 1)
     }
+    @Test
+    def void unaryExpressionFromIndexed() {
+        val content = '''
+            InstructionSet TestISA {
+                architectural_state {
+                    unsigned int XLEN;
+                    register unsigned<XLEN> X[32];
+                }
+                instructions {
+                    FOO {
+                        encoding: 0b0000000 :: rs2[4:0] :: rs1[4:0] :: 0b000 :: rd[4:0] :: 0b1111011;  
+                        behavior: {
+                if (rd != 0) {
+                    X[rd][15: 0] = (unsigned<16>)(-X[rs1][15: 0]);
+                }
+                        }
+                    }
+                }
+            }
+        '''.parse
+        val issues = validator.validate(content)
+        for (iss : issues) println(iss)
+        assertTrue(issues.filter[it.severity == Severity.ERROR].isEmpty())
+        assertTrue(issues.size == 0)
+    }
 }
