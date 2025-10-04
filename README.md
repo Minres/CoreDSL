@@ -8,6 +8,20 @@ This repo contains the XText bundles/plugins for [CoreDSL](https://minres.github
 
 [Programmer's manual](https://github.com/Minres/CoreDSL/wiki/CoreDSL-2-programmer's-manual)
 
+## Standalone validator
+
+The project provides a standalone validator. After building the project with Maven:
+
+```
+mvn package
+```
+
+the com.minres.coredsl.repository bundle contains an all-in-one jar for the validator. It can be used as follows:
+
+```
+java -jar com.minres.coredsl.repository/target/com.minres.coredsl.validator-2.0.20.jar -r <path to inc dir> <core_desc file>
+```
+
 ## Building VSCode plugin
 
 * fix version number in build.gradle
