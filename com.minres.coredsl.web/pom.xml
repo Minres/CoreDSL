@@ -22,7 +22,7 @@
 		</resources>
 		<plugins>
 			<plugin>
-				<groupId>org.eclipse.xtend</groupId>
+				<groupId>org.eclipse.xtext</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
@@ -47,6 +47,7 @@
 				<version>3.3.0</version>
 				<executions>
 					<execution>
+						<?m2e ignore?>
 						<id>add-source</id>
 						<phase>initialize</phase>
 						<goals>
