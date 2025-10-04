@@ -12,7 +12,6 @@ import org.eclipse.xtext.service.SingletonBinding;
 import com.minres.coredsl.converter.CoreDslTerminalConverters;
 import com.minres.coredsl.scoping.CoreDslGlobalScopeProvider;
 import com.minres.coredsl.scoping.CoreDslResourceDescriptionStrategy;
-import com.minres.coredsl.scoping.CoreDslScopeProvider;
 import com.minres.coredsl.validation.CoreDslValidator;
 import com.minres.coredsl.validation.XtCoreDslValidator;
 
@@ -35,11 +34,6 @@ public class CoreDslRuntimeModule extends AbstractCoreDslRuntimeModule {
     public Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
         return CoreDslResourceDescriptionStrategy.class;
         // return XtextResourceDescriptionStrategy.class;
-    }
-
-    @Override
-    public Class<? extends IScopeProvider> bindIScopeProvider() {
-        return CoreDslScopeProvider.class;
     }
 
     @Override
