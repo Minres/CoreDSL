@@ -606,7 +606,7 @@ class CoreDslElaborator {
 		val invalidTypes = new ArrayList();
 
 		for (info : ctx.declInfo.values) {
-			val effectiveDeclarator = info.declarators.last;
+			val effectiveDeclarator = info.declarators.last
 
 			if(info.assignments.empty) {
 				if(analysisContext.getStorageClass(info.declarators.get(0)) === StorageClass.param && info.declarators.get(0).initializer === null) {
