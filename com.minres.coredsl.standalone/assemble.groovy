@@ -46,17 +46,6 @@ def root = new File(project.getBasedir(), 'target/classes')
 def libs = new File(project.getBasedir(), 'target/classes/lib')
 def meta_inf = new File(project.getBasedir(), 'target/classes/META-INF')
 
-//libs.eachFileRecurse (FILES) { file ->
-//    if(file.name =~/org\.codehaus\.groovy_/) { // we need to unpack this one sinc it is already jar in jar
-//        println("Unpacking ${file}")
-//        def zipFile = new java.util.zip.ZipFile(file)
-//        zipFile.entries().findAll {ZipEntry entry -> !entry.directory && entry.name =~/\.jar$/}.each {ZipEntry entry ->
-//            def outFile = new File(libs, entry.name.split(/\//)[-1])
-//            println "Extracting file ${entry.name} to ${outFile.path} with size ${entry.size}bytes (${entry.compressedSize}bytes)"
-//            Files.copy(zipFile.getInputStream(entry), outFile.toPath())
-//        }
-//    }
-//}
 libs.eachFileRecurse (FILES) { file ->
     def fileName = file.name.split("/")[-1]
     if(needed_jars.find{fileName =~ it}) {
