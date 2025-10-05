@@ -1,6 +1,7 @@
 dependencies {
 	api "org.eclipse.xtext:org.eclipse.xtext:${xtextVersion}"
 	api "org.eclipse.xtext:org.eclipse.xtext.xbase:${xtextVersion}"
+        api "org.eclipse.emf:org.eclipse.emf.mwe.utils"
 }
 configurations {
 	mwe2 {
@@ -10,6 +11,7 @@ configurations {
 
 dependencies {
 	mwe2 'org.eclipse.emf:org.eclipse.emf.mwe2.launch'
+	mwe2 'org.eclipse.emf:org.eclipse.emf.mwe.utils'
 	mwe2 "org.eclipse.xtext:org.eclipse.xtext.common.types:${xtextVersion}"
 	mwe2 "org.eclipse.xtext:org.eclipse.xtext.xtext.generator:${xtextVersion}"
 	mwe2 'org.eclipse.xtext:xtext-antlr-generator'
