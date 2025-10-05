@@ -36,6 +36,9 @@ class Main implements Callable<Integer> {
     @Option(names=#["-v", "--verbose"], description="verbose output")
     public Boolean verbose = false;
 
+    @Option(names=#["-w", "--strict"], description="verbose output")
+    public Boolean strict = false;
+
     def static main(String[] args) {
         val ret = new CommandLine(new Main()).execute(args);
         System.exit(ret)
