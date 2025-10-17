@@ -24,6 +24,7 @@ import org.eclipse.xtext.validation.Issue
 import picocli.CommandLine
 import picocli.CommandLine.Option
 import picocli.CommandLine.Parameters
+import java.io.FileNotFoundException
 
 class Main implements Callable<Integer> {
 
@@ -35,6 +36,9 @@ class Main implements Callable<Integer> {
 
     @Option(names=#["-v", "--verbose"], description="verbose output")
     public Boolean verbose = false;
+
+    @Option(names=#["-w", "--strict"], description="verbose output")
+    public Boolean strict = false;
 
     def static main(String[] args) {
         val ret = new CommandLine(new Main()).execute(args);
@@ -58,12 +62,13 @@ class ValidatorMain {
     @Inject IResourceValidator validator
 
     def run(Main params) {
-        params.repositories.forEach[repository, idx|
-            val projectMapping = new ProjectMapping
-            projectMapping.projectName = "Repository:"+idx
-            projectMapping.path = repository
-            new StandaloneSetup().addProjectMapping(projectMapping)
-        ]
+        if(params.repositories !== null && params.repositories.size()>0)
+            params.repositories.forEach[repository, idx|
+                val projectMapping = new ProjectMapping
+                projectMapping.projectName = "Repository:"+idx
+                projectMapping.path = repository
+                new StandaloneSetup().addProjectMapping(projectMapping)
+            ]
         try {
             for (file : params.files) {
                 // Load the resource
@@ -89,7 +94,7 @@ class ValidatorMain {
                     if (!errors.empty) {
                         logger.error("Error validating " + resource.URI)
                         issues.forEach[logger.error(it)]
-                        throw new ParseException("error validating " + resource.URI)
+                        throw new ParseException("Errors validating " + resource.URI)
                     } else if (!warnings.empty) {
                         logger.warn("There are warnings validating " + resource.URI)
                         issues.forEach[logger.warn(it)]
@@ -97,9 +102,15 @@ class ValidatorMain {
                 }
                 logger.info('Code validation for ' + file + ' finished')
             }
-        } catch (MalformedParametersException | IllegalArgumentException | ParseException e) {
-            logger.error("Command line error " + e.message, e)
+        } catch (ParseException e) {
+            logger.error(e.message)
             return -1
+        } catch (FileNotFoundException e) {
+            logger.error(e.message)
+            return -2
+        } catch (MalformedParametersException | IllegalArgumentException e) {
+            logger.error("Command line error " + e.message)
+            return -3
         }
         return 0
     }

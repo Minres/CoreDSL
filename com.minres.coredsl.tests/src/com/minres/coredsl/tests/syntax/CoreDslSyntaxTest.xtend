@@ -620,4 +620,17 @@ class CoreDslSyntaxTest {
 		'''
 		.testStatementsForValidSyntax();
     }
+
+    @Test
+    def void parsePrePostfixValid() {
+        '''
+            int _;
+            
+            // C syntax
+            _ = ~(unsigned<32>)1;
+            _ = ~((unsigned<32>)1);
+        '''
+        .testStatementsForValidSyntax();
+    }
+
 }

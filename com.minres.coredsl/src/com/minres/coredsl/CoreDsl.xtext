@@ -192,15 +192,12 @@ EqualityExpression returns Expression: RelationalExpression ({InfixExpression.le
 RelationalExpression returns Expression: ShiftExpression ({InfixExpression.left=current} operator=('<'|'>'|'<='|'>=') right=ShiftExpression)*;
 ShiftExpression returns Expression: AdditiveExpression ({InfixExpression.left=current} operator=('<<'|'>>') right=AdditiveExpression)*;
 AdditiveExpression returns Expression: MultiplicativeExpression ({InfixExpression.left=current} operator=('+'|'-') right=MultiplicativeExpression)*;
-MultiplicativeExpression returns Expression: CastExpression ({InfixExpression.left=current} operator=('*' | '/' | '%') right=CastExpression)*;
-
-CastExpression returns Expression:
-	PrefixExpression
-	| {CastExpression} '(' targetType=TypeSpecifier ')' operand=CastExpression
-	| {CastExpression} '(' signedness=IntegerSignedness ')' operand=CastExpression;
+MultiplicativeExpression returns Expression: PrefixExpression ({InfixExpression.left=current} operator=('*' | '/' | '%') right=PrefixExpression)*;
 
 PrefixExpression returns Expression:
 	PostfixExpression
+    | {CastExpression} '(' targetType=TypeSpecifier ')' operand=PrefixExpression
+    | {CastExpression} '(' signedness=IntegerSignedness ')' operand=PrefixExpression
 	| {PrefixExpression} operator=('++' | '--') operand=PrefixExpression
 	| {PrefixExpression} operator=('+' | '-' | '~' | '!') operand=PrefixExpression
     ;

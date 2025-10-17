@@ -12,6 +12,9 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.IResourceDescription
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
 import org.eclipse.xtext.util.IResourceScopeCache
+import org.eclipse.emf.common.util.WrappedException
+import com.minres.coredsl.validation.XtCoreDslValidator
+import org.eclipse.xtext.diagnostics.ExceptionDiagnostic
 
 class CoreDslGlobalScopeProvider extends ImportUriGlobalScopeProvider {
     
@@ -23,6 +26,9 @@ class CoreDslGlobalScopeProvider extends ImportUriGlobalScopeProvider {
     @Inject
     IResourceScopeCache cache;
 
+    @Inject
+    XtCoreDslValidator validator;
+    
     override protected getImportedUris(Resource resource) {
         return cache.get(CoreDslGlobalScopeProvider.getSimpleName(), resource, new Provider<LinkedHashSet<URI>>() {
             override get() {
@@ -50,7 +56,13 @@ class CoreDslGlobalScopeProvider extends ImportUriGlobalScopeProvider {
                                 includedUri = includedUri.resolve(URI::createFileURI(currentPath+"/"))
                             }
                             if(uniqueImportURIs.add(includedUri)) {
-                                collectImportUris(resource.getResourceSet().getResource(includedUri, true), uniqueImportURIs)
+                                try {
+                                    collectImportUris(resource.getResourceSet().getResource(includedUri, true), uniqueImportURIs)
+                                } catch(WrappedException e) {
+                                    /* just ignore it */
+                                    resource.errors.add(new ScopeProviderDiagnostic(e.cause.message))
+                                    //validator.acceptWarning("Could not find file", it.EObjectOrProxy, CoreDslPackage.Literals.IMPORT__IMPORT_URI, 0, "", "")
+                                }
                             }
                         ]
                     }
