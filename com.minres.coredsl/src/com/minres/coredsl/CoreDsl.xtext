@@ -196,8 +196,8 @@ MultiplicativeExpression returns Expression: PrefixExpression ({InfixExpression.
 
 PrefixExpression returns Expression:
 	PostfixExpression
-    | {PrefixExpression} '(' targetType=TypeSpecifier ')' operand=PrefixExpression
-    | {PrefixExpression} '(' signedness=IntegerSignedness ')' operand=PrefixExpression
+    | {CastExpression} '(' targetType=TypeSpecifier ')' operand=PrefixExpression
+    | {CastExpression} '(' signedness=IntegerSignedness ')' operand=PrefixExpression
 	| {PrefixExpression} operator=('++' | '--') operand=PrefixExpression
 	| {PrefixExpression} operator=('+' | '-' | '~' | '!') operand=PrefixExpression
     ;
