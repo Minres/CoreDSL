@@ -1,4 +1,9 @@
 .gitignore
+.project
+.vscode/**
 .gradle/**
 build/**
 *.gradle
+tslint.json
+src/extension.ts
+src/tsconfig.json

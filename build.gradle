@@ -16,8 +16,8 @@ buildscript {
 apply plugin: 'com.github.node-gradle.node'
 apply plugin: 'net.researchgate.release'
 node {
-	version = '16.13.2'
-	npmVersion = '8.3.0'
+	version = '20.19.5'
+	npmVersion = '10.8.2'
 	download = true
 }
 
@@ -40,7 +40,7 @@ configure(subprojects.findAll { it.name.startsWith('com.minres') }) {
 	apply plugin: 'eclipse'
 	
 	group = 'com.minres.coredsl'
-	version = '2.0.16'
+	version = '2.0.21'
 
 	java {
 		sourceCompatibility = JavaVersion.VERSION_17
@@ -54,11 +54,11 @@ configure(subprojects.findAll { it.name.startsWith('com.minres') }) {
 }
 
 task npmInstallVsce(type: NpmTask, dependsOn: npmSetup) {
-	ext.destPath = "$rootProject.projectDir/node_modules/vsce" 
+	ext.destPath = "$rootProject.projectDir/node_modules/@vscode/vsce" 
 	outputs.dir(destPath)
 	group 'Node'
 	description 'Installs the NodeJS package "Visual Studio Code Extension Manager"'
-	args = [ 'install', 'vsce' ]
+	args = [ 'install', '@vscode/vsce' ]
 }
 
 // Configuration for vscode projects
@@ -66,12 +66,12 @@ configure(subprojects.findAll { it.name.startsWith('vscode') }) {
 
 	apply plugin: 'com.github.node-gradle.node'
 	node {
-	    version = '16.13.2'
-	    npmVersion = '8.3.0'
+	    version = '20.19.5'
+	    npmVersion = '10.8.2'
 	    download = true
 	}
 
-	version = '2.0.16'
+	version = '2.0.21'
 
 	def inputFiles = fileTree(
 		dir: projectDir, 

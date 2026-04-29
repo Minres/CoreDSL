@@ -3,36 +3,35 @@
 import * as path from 'path';
 import * as os from 'os';
 
-import {Trace} from 'vscode-jsonrpc';
-import { commands, window, workspace, ExtensionContext, Uri } from 'vscode';
-import { LanguageClient, LanguageClientOptions, ServerOptions } from 'vscode-languageclient/node';
+import { workspace, ExtensionContext } from 'vscode';
+import { LanguageClient, LanguageClientOptions, ServerOptions, Trace } from 'vscode-languageclient/node';
 
-let lc: LanguageClient;
+let languageClient: LanguageClient | undefined;
 
 export function activate(context: ExtensionContext) {
     // The server is a locally installed in src/coredsl
-    let launcher = os.platform() === 'win32' ? 'com.minres.coredsl.ide.bat' : 'com.minres.coredsl.ide';
-    let script = context.asAbsolutePath(path.join('src', 'coredsl', 'bin', launcher));
+    const launcher = os.platform() === 'win32' ? 'com.minres.coredsl.ide.bat' : 'com.minres.coredsl.ide';
+    const script = context.asAbsolutePath(path.join('src', 'coredsl', 'bin', launcher));
 
-    let serverOptions: ServerOptions = {
+    const serverOptions: ServerOptions = {
         run : { command: script },
         debug: { command: script, args: [], options: { env: createDebugEnv() } }
     };
     
-    let clientOptions: LanguageClientOptions = {
-        documentSelector: ['coredsl'],
+    const clientOptions: LanguageClientOptions = {
+        documentSelector: [{ language: 'coredsl' }],
         synchronize: {
             fileEvents: workspace.createFileSystemWatcher('**/*.*')
         }
     };
     // Create the language client and start the client.
-    lc = new LanguageClient('Xtext Server', serverOptions, clientOptions);    
+    languageClient = new LanguageClient('coredslLanguageServer', 'CoreDSL Language Server', serverOptions, clientOptions);
     // enable tracing (.Off, .Messages, Verbose)
-    lc.setTrace(Trace.Verbose);
-    lc.start();
+    void languageClient.setTrace(Trace.Verbose);
+    void languageClient.start();
 }
 export function deactivate() {
-    return lc.stop();
+    return languageClient?.stop();
 }
 function createDebugEnv() {
     return Object.assign({
