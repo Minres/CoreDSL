@@ -2,42 +2,38 @@
 
 import * as net from 'net';
 
-import {Trace} from 'vscode-jsonrpc';
-import { window, workspace, commands, ExtensionContext, Uri } from 'vscode';
-import { LanguageClient, LanguageClientOptions, StreamInfo, Position as LSPosition, Location as LSLocation } from 'vscode-languageclient/node';
+import { workspace, ExtensionContext } from 'vscode';
+import { LanguageClient, LanguageClientOptions, StreamInfo, Trace } from 'vscode-languageclient/node';
 
-let lc: LanguageClient;
+let languageClient: LanguageClient | undefined;
 
 export function activate(context: ExtensionContext) {
     // The server is a started as a separate app and listens on port 5007
-    let connectionInfo = {
+    const connectionInfo = {
         port: 5007
     };
-    let serverOptions = () => {
+    const serverOptions = () => {
         // Connect to language server via socket
-        let socket = net.connect(connectionInfo);
-        let result: StreamInfo = {
+        const socket = net.connect(connectionInfo);
+        const result: StreamInfo = {
             writer: socket,
             reader: socket
         };
         return Promise.resolve(result);
     };
     
-    let clientOptions: LanguageClientOptions = {
-        documentSelector: ['coredsl'],
+    const clientOptions: LanguageClientOptions = {
+        documentSelector: [{ language: 'coredsl' }],
         synchronize: {
             fileEvents: workspace.createFileSystemWatcher('**/*.*')
         }
     };
     // Create the language client and start the client.
-    lc = new LanguageClient('Xtext Server', serverOptions, clientOptions);
+    languageClient = new LanguageClient('coredslLanguageServer', 'CoreDSL Language Server', serverOptions, clientOptions);
     // enable tracing (.Off, .Messages, Verbose)
-    lc.setTrace(Trace.Verbose);
-    let disposable = lc.start();
-    // Push the disposable to the context's subscriptions so that the 
-    // client can be deactivated on extension deactivation
-    context.subscriptions.push(disposable);
+    void languageClient.setTrace(Trace.Verbose);
+    void languageClient.start();
 }
 export function deactivate() {
-    return lc.stop();
+    return languageClient?.stop();
 }
