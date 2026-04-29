@@ -6,7 +6,7 @@
     "publisher": "MINRES",
     "icon": "images/Minres_logo_square.png",
     "license": "EPL-1.0",
-    "homepage": "https://github.com/Minres/CoreDSL/vscode-extension-self-contained#readme",
+    "homepage": "https://github.com/Minres/CoreDSL/blob/master/vscode-extension-self-contained/#readme",
     "repository": {
         "type": "git",
         "url": "https://github.com/Minres/CoreDSL.git"
