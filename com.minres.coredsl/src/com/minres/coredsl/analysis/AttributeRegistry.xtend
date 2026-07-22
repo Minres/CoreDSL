@@ -35,7 +35,8 @@ class AttributeRegistry {
 		instruction,
 		function,
 		declarator,
-		alwaysBlock
+		alwaysBlock,
+		loop
 	}
 
 	static final class AttributeInfo {

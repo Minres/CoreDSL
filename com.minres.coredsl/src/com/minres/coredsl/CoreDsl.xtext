@@ -91,17 +91,17 @@ ReturnStatement: {ReturnStatement} t_return='return' value=ConditionalExpression
 LoopStatement: WhileLoop | ForLoop | DoLoop;
 
 WhileLoop:
-	'while' '(' condition=Expression ')' body=Statement;
+	'while' '(' condition=Expression ')' attributes+=Attribute* body=Statement;
 
 ForLoop:
 	'for' '('
 	(startDeclaration=MultiInitDeclaration | startExpression=AssignmentExpression?) ';'
 	(condition=Expression?) ';'
 	(loopExpressions+=AssignmentExpression (',' loopExpressions+=AssignmentExpression)*)?
-	')' body=Statement;
+	')' attributes+=Attribute* body=Statement;
 
 DoLoop:
-	'do' body=Statement 'while' '(' condition=Expression ')' ';';
+	'do' body=Statement 'while' '(' condition=Expression ')' attributes+=Attribute* ';';
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// Declarations ////////////////////////////////
