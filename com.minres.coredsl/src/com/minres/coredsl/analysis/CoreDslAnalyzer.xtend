@@ -581,6 +581,9 @@ class CoreDslAnalyzer {
      * 2. [Warning] The condition should not be an assignment. <i>(LikelyAccidentalAssignment)</i>
      */
     def static dispatch void analyzeStatement(AnalysisContext ctx, WhileLoop statement) {
+
+        analyzeAttributes(ctx, statement.attributes, AttributeRegistry.AttributeUsage.loop);
+
         val conditionType = analyzeExpression(ctx, statement.condition);
 
         checkAccidentalAssignment(ctx, statement.condition);
@@ -600,6 +603,8 @@ class CoreDslAnalyzer {
      * 4. [Warning] The condition should not be an assignment. <i>(LikelyAccidentalAssignment)</i>
      */
     def static dispatch void analyzeStatement(AnalysisContext ctx, ForLoop statement) {
+
+        analyzeAttributes(ctx, statement.attributes, AttributeRegistry.AttributeUsage.loop);
 
         if (statement.startDeclaration !== null) {
             analyzeDeclaration(ctx, statement.startDeclaration, false);
@@ -641,6 +646,9 @@ class CoreDslAnalyzer {
      * 2. [Warning] The condition should not be an assignment. <i>(LikelyAccidentalAssignment)</i>
      */
     def static dispatch void analyzeStatement(AnalysisContext ctx, DoLoop statement) {
+
+        analyzeAttributes(ctx, statement.attributes, AttributeRegistry.AttributeUsage.loop);
+
         val conditionType = analyzeExpression(ctx, statement.condition);
 
         checkAccidentalAssignment(ctx, statement.condition);
